@@ -1,0 +1,16 @@
+# Copyright 2022 VMware, Inc.
+# SPDX-License-Identifier: Apache-2.0
+kind: Service
+apiVersion: v1
+metadata:
+  name: cloud-native-security-inspector-portal-service
+  namespace: cnsi-system
+spec:
+  selector:
+    cloud-native-security-inspector-portal: portal
+  ports:
+  - protocol: TCP
+    port: 3800
+    targetPort: 3800
+    nodePort: 30150
+  type: NodePort

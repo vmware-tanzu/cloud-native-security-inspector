@@ -1,0 +1,36 @@
+# Copyright 2022 VMware, Inc.
+# SPDX-License-Identifier: Apache-2.0
+apiVersion: goharbor.goharbor.io/v1alpha1
+kind: InspectionPolicy
+metadata:
+  name: inspectionpolicy-sample
+spec:
+  settingsName: sample-setting
+  enabled: true
+  workNamespace: cronjobs
+  schedule: "*/1 * * * *"
+  strategy:
+    historyLimit: 5
+    suspend: false
+    concurrencyRule: "Forbid"
+  inspector:
+    image: projects.registry.vmware.com/cnsi/inspector:0.1
+    imagePullPolicy: IfNotPresent
+  inspection:
+    namespaceSelector:
+      matchLabels:
+        goharbor.io/watch: "true"
+    assessment:
+      generate: true
+      format: "YAML"
+      liveTime: 3600
+      managedBy: true
+    baselines:
+      - kind: "vulnerability"
+        baseline: "High"
+        version: "v1.1"
+        scheme: "application/vnd.security.vulnerability.report; version=1.1"
+    actions:
+      #- kind: "forbid_vulnerable_deployment"
+      - kind: "quarantine_vulnerable_workload"
+      #- kind: "alert"

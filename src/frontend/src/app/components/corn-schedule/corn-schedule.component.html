@@ -1,0 +1,123 @@
+<!--
+    Copyright 2022 VMware, Inc.
+    SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="card">
+  <clr-radio-container>
+    <clr-radio-wrapper>
+      <input type="radio" clrRadio name="weekly" required value="weekly" [(ngModel)]="cornType" />
+      <label>
+        Weekly ({{'cornJob.Weekly'|translate}})
+      </label>
+    </clr-radio-wrapper>
+    <clr-radio-wrapper>
+      <input type="radio" clrRadio name="daily" required value="daily" [(ngModel)]="cornType" />
+      <label>
+        Daily ({{'cornJob.Daily'|translate}})
+      </label>
+    </clr-radio-wrapper>
+    <clr-radio-wrapper>
+      <input type="radio" clrRadio name="hourly" required value='hourly' [(ngModel)]="cornType" />
+      <label>
+        Hourly ({{'cornJob.Hourly'|translate}})
+      </label>
+    </clr-radio-wrapper>
+    <clr-radio-wrapper>
+      <input type="radio" clrRadio name="customize" required value='customize' [(ngModel)]="cornType" />
+      <label>
+        Customize
+      </label>
+    </clr-radio-wrapper>
+  </clr-radio-container>
+  <div [hidden]="!(cornType==='customize')">
+    <!-- <div class="corn">
+      <clr-radio-container clrInline>
+        <label>Execution Type</label>
+        <clr-radio-wrapper>
+          <input type="radio" clrRadio name="once" required [value]="true" [(ngModel)]="executeOne" />
+          <label>execute once</label>
+        </clr-radio-wrapper>
+        <clr-radio-wrapper>
+          <input type="radio" clrRadio name="multiple" required [value]="false" [(ngModel)]="executeOne" />
+          <label>execute multiple times</label>
+        </clr-radio-wrapper>
+      </clr-radio-container>
+    </div> -->
+  
+    <!-- <div [hidden]="!executeOne">
+      <div class="once" >
+        <input class="date-picker" type="date" clrDate name="demo" [(ngModel)]="datePicker">
+        <app-time-picker #timePicker (setTimePicker)="setTimePicker($event)"></app-time-picker>
+      </div>
+    </div> -->
+  
+    <div>
+      <!-- <clr-radio-container clrInline>
+        <label>Time Type</label>
+        <clr-radio-wrapper>
+          <input type="radio" clrRadio name="fixed" required [value]="true" [(ngModel)]="timeType" />
+          <label>Fixed Time</label>
+        </clr-radio-wrapper>
+        <clr-radio-wrapper>
+          <input type="radio" clrRadio name="spaced" required [value]="false" [(ngModel)]="timeType" />
+          <label>Spaced Time</label>
+        </clr-radio-wrapper>
+      </clr-radio-container> -->
+  
+      <div *ngIf="timeType">
+        <div class="multiple" *ngIf="timeType">
+          <select clrSelect name="options" [(ngModel)]="getMultipleType">
+            <option value="year">per year</option>
+            <option value="month">per month</option>
+            <option value="week">weekly</option>
+            <option value="day">every day</option>
+          </select>
+        </div>
+        <div *ngIf="getMultipleType === 'year'">
+          <h4>Month</h4>
+          <div class="specify-content">
+            <clr-checkbox-wrapper *ngFor="let item of months">
+              <input type="checkbox" clrCheckbox name="options1" required [value]="item" (change)="sharedChangeHandle($event,'month',item)"/>
+              <label>{{item}}</label>
+            </clr-checkbox-wrapper>
+          </div>
+        </div>
+        <div *ngIf="getMultipleType !== 'day' && getMultipleType !== 'week'">
+          <h4>Day</h4>
+          <div class="specify-content">
+            <clr-checkbox-wrapper *ngFor="let item of days">
+              <input type="checkbox" clrCheckbox name="options1" required [value]="item" (change)="sharedChangeHandle($event,'day',item)"/>
+              <label>{{item}}</label>
+            </clr-checkbox-wrapper>
+          </div>
+        </div>
+        <div  *ngIf="getMultipleType !== 'day'">
+          <h4>Week</h4>
+          <div class="specify-content">
+            <clr-checkbox-wrapper *ngFor="let item of weeks let i=index">
+              <input type="checkbox" clrCheckbox name="options1" required [value]="item" (change)="sharedChangeHandle($event,'week', i + 1)"/>
+              <label>{{item}}</label>
+            </clr-checkbox-wrapper>
+          </div>
+        </div>
+        <app-time-picker #timePicker (setTimePicker)="setTimePicker($event)"></app-time-picker>  
+      </div>
+  
+<!--   
+      <div class="spaced"  *ngIf="!timeType">
+       <select clrSelect name="format" [(ngModel)]="spacedType" (change)="spacedTypeChange()">
+            <option value="minute">minutes</option>
+            <option value="hour">hours</option>
+            <option value="month">months</option>
+            <option value="week">weeks</option>
+          </select>
+          <input clrInput placeholder="Please enter a time interval" name="name" [(ngModel)]="preValue" />
+      </div> -->
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" (click)='save()' type="button">Save</button>
+    <button class="btn btn-outline" (click)='cancel()' type="button">Cancel</button>
+</div>
+</div>

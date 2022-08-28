@@ -1,0 +1,11 @@
+# Copyright 2022 VMware, Inc.
+# SPDX-License-Identifier: Apache-2.0
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cloud-native-security-inspector-portal-role
+  namespace: cnsi-system
+rules:
+  - apiGroups: ["","goharbor.goharbor.io","apiregistration.k8s.io"]
+    resources: ["pods","namespaces","nodes","apiservices","assessmentreports","inspectionpolicies","settings","secrets"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]

@@ -1,0 +1,114 @@
+/*
+ * Copyright 2022 VMware, Inc.
+ * SSPDX-License-Identifier: Apache-2.0
+ */
+
+.setting-page {
+  height: auto;
+  min-height: 100vh;
+  clr-tabs::ng-deep {
+    .btn{
+      &.create {
+        margin: 20px 10px;
+      }
+    }
+    ul {
+      li {
+          button {
+          &.active {
+            color: #fff;
+          }
+        }
+      }
+    }
+    .schedule {
+      display: flex;
+      align-items: center;
+      color: #fff;
+      h4 {
+        width: 200px;
+        font-size: .65rem;
+        font-weight: bold;
+        color: #fff;
+      }
+      div {
+        margin-top: 24px;
+      }
+      span {
+        display: inline-block;
+        border-bottom: 1px solid #666;
+        margin-right: 20px;
+      }
+      button {
+        border-color: #666;
+        width: 30px;
+        height: 30px;
+        clr-icon {
+          position: relative;
+          top: -3px;
+          left: -5px;
+        }
+      }
+    }
+    .endpoint-container {
+      display: flex;
+      align-items: center;
+      margin-top: 24px;
+      .clr-form-control {
+        margin-top: 0px;
+      }
+      label {
+        width: 200px;
+        color: #fff;
+        font-weight: 600;
+        font-size: .65rem;
+      }
+      clr-select-container {
+        margin-right: 10px;
+      }
+    }
+    .submit-btns {
+      display: flex;
+      justify-content: end;
+      margin-top: 50px;
+    }
+    .actions {
+      margin-left: 0px;
+      h4 {
+        margin: none;
+      }
+    }
+    .clr-accordion-panel-inactive {
+      .clr-accordion-content {
+       
+        .clr-form-control {
+          label {
+            color: #fff;
+          }
+          input {
+            color: #fff;
+          }
+        }
+      }
+    }
+    .clr-accordion-header {
+     
+      .clr-accordion-title {
+        color: #fff;
+      }
+      .clr-accordion-angle {
+        color: #fff;
+      }
+    }
+    form {
+      &::ng-deep {
+        .clr-form-control {
+          flex-direction: row;
+          .clr-control-label {
+            width: 200px !important;
+          }
+        }
+      }
+    }
+  }
+}

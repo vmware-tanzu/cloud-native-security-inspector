@@ -1,0 +1,76 @@
+/*
+ * Copyright 2022 VMware, Inc.
+ * SSPDX-License-Identifier: Apache-2.0
+ */
+
+.card {
+  padding: 10px 20px;
+ 
+  p {
+    color: #fff;
+    font-size: 16px;
+  }
+  &::ng-deep {
+    .clr-form-control  {
+      margin: 10px 10px 0 0;
+      .clr-control-label {
+        color: #fff;
+      }
+      .clr-select-wrapper {
+        .clr-select {
+          color: #fff;
+        }
+      }
+    }
+  }
+}
+.once, .multiple {
+  display: flex;
+  color: #fff;
+  &::ng-deep {
+    .clr-date-container {
+      margin: 10px 10px 0 0;
+      .clr-control-container {
+        input {
+          color: #fff;
+        }
+      }
+    }
+    .clr-form-control  {
+      margin: 10px 10px 0 0;
+      .clr-control-label {
+        color: #fff;
+      }
+    }
+  }
+}
+.specify-content {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  margin-left: 20px;
+  width: 700px;
+  color: #fff;
+
+  clr-checkbox-wrapper {
+    width: 100px;
+    color: #fff;
+
+  }
+}
+.spaced {
+  .date-container{
+    display: flex;
+    margin: 8px;
+    &::ng-deep {
+      .clr-form-control {
+        margin: 0px;
+        input {
+          padding-left: 10px;
+          width: 200px;
+          color: #fff;
+        }
+      }
+    }
+  }
+}

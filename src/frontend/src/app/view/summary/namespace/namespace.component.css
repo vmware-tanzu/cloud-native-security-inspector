@@ -1,0 +1,74 @@
+/*
+ * Copyright 2022 VMware, Inc.
+ * SSPDX-License-Identifier: Apache-2.0
+ */
+
+.cluster {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 20px;
+  color: #fff;
+  margin-bottom: 20px;
+}
+.cluster h3 {
+  color: #fff;
+  margin-top: 10px;
+  display: flex;
+}
+.cluster h3::ng-deep .clr-form-control {
+  margin-top: 0px;
+}
+.cluster h3::ng-deep .clr-form-control select {
+  color: #fff;
+}
+.cluster .left {
+  width: 75%;
+}
+.cluster .left ul {
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+}
+.cluster .left ul li {
+  display: flex;
+  flex-direction: column;
+}
+.cluster .left ul li div.success {
+  margin-right: 10px;
+}
+.cluster .left ul li div.success clr-icon {
+  color: #60B515;
+  position: relative;
+  top: -1px;
+  margin-right: 6px;
+}
+.cluster .left ul li span.content span.success {
+  margin-right: 10px;
+}
+.cluster .left ul li span.content span.success clr-icon {
+  color: #60B515;
+  position: relative;
+  top: -1px;
+  margin-right: 6px;
+}
+.cluster .left ul li span.content span.error clr-icon {
+  color: #F54F47;
+  position: relative;
+  top: -1px;
+  margin-right: 6px;
+}
+.cluster .right {
+  margin-top: 34px;
+  flex: 1;
+  border-left: 1px solid #000;
+  margin-left: 20px;
+  padding-left: 20px;
+}
+.cluster .right p {
+  margin-top: 0px;
+  color: #fff;
+}
+.cluster .right span {
+  color: #E8E5E5;
+  font-size: 12px;
+}

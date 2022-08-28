@@ -1,0 +1,128 @@
+/*
+ * Copyright 2022 VMware, Inc.
+ * SSPDX-License-Identifier: Apache-2.0
+ */
+
+.namespace-page {
+  padding: 20px;
+  height: auto;
+  min-height: 100vh;
+}
+.namespace-page clr-tabs::ng-deep ul li button.active {
+  color: #fff;
+}
+.namespace-page clr-tabs::ng-deep .report {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  background-color: #22343C;
+}
+.namespace-page clr-tabs::ng-deep .report .scan-time {
+  color: #fff;
+  position: absolute;
+  left: 5px;
+  top: 5px;
+}
+.namespace-page clr-tabs::ng-deep .report .scan-time span:first-of-type {
+  font-size: 18px;
+}
+.namespace-page clr-tabs::ng-deep .report .data {
+  display: flex;
+  flex: 1;
+  justify-content: space-evenly;
+  align-items: center;
+}
+.namespace-page clr-tabs::ng-deep .report .data div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.namespace-page clr-tabs::ng-deep .report .data div span {
+  color: #fff;
+}
+.namespace-page clr-tabs::ng-deep .report .data div span.value {
+  margin-bottom: 12px;
+  font-size: 32px;
+  font-weight: 700;
+}
+.namespace-page clr-tabs::ng-deep .report .data div span.value clr-icon {
+  width: 30px;
+  height: 30px;
+}
+.namespace-page clr-tabs::ng-deep .report .data div.normal clr-icon {
+  color: green;
+}
+.namespace-page clr-tabs::ng-deep .report .data div.abnormal-but-compliant clr-icon {
+  color: yellow;
+}
+.namespace-page clr-tabs::ng-deep .report .data div.abnormal clr-icon {
+  color: red;
+}
+.namespace-page clr-tabs::ng-deep .report .clickable {
+  width: 242px;
+}
+.namespace-page clr-tabs::ng-deep .report .clickable .card-block {
+  background-color: #22343C;
+  width: 240px;
+}
+.namespace-page clr-tabs::ng-deep .report .clickable .card-block p {
+  color: #fff;
+}
+.namespace-page clr-tabs::ng-deep .report .clickable .card-block:nth-of-type(2) {
+  height: 120px;
+  padding: 0px;
+}
+.namespace-page clr-tabs::ng-deep .report .clickable .card-block:nth-of-type(2) p {
+  margin: 0px;
+  line-height: 120px;
+  font-size: 50px;
+}
+.namespace-page clr-tabs::ng-deep .report .clickable .card-block:first-of-type {
+  flex-direction: row;
+  color: #fff;
+}
+.namespace-page clr-tabs::ng-deep .report .clickable .card-block:first-of-type img {
+  margin-right: 20px;
+}
+.namespace-page clr-tabs::ng-deep .report .clickable .card-block:last-of-type {
+  height: 96px;
+}
+.namespace-page clr-tabs::ng-deep .report .clickable .card-block.normal .pre,
+.namespace-page clr-tabs::ng-deep .report .clickable .card-block.abnormal .pre {
+  width: 100px;
+  height: 10px;
+  background-color: #fff;
+  position: relative;
+  margin: 0 15px;
+}
+.namespace-page clr-tabs::ng-deep .report .clickable .card-block.normal .pre .pro,
+.namespace-page clr-tabs::ng-deep .report .clickable .card-block.abnormal .pre .pro {
+  height: 10px;
+  position: absolute;
+  left: 0px;
+  background-color: green;
+}
+.namespace-page clr-tabs::ng-deep .report .clickable .card-block.abnormal .pro {
+  background-color: red !important;
+}
+.namespace-page clr-tabs::ng-deep::ng-deep clr-dg-column {
+  background-color: #22343C;
+}
+.namespace-page clr-tabs::ng-deep::ng-deep clr-dg-column::ng-deep button {
+  color: #fff;
+}
+.namespace-page clr-tabs::ng-deep::ng-deep .datagrid-placeholder {
+  background-color: #22343C;
+}
+.namespace-page clr-tabs::ng-deep::ng-deep clr-dg-cell {
+  background-color: #22343C;
+  color: #fff;
+}
+.namespace-page clr-tabs::ng-deep::ng-deep clr-dg-footer {
+  background-color: #22343C;
+  color: #fff;
+}
+.namespace-page clr-tabs::ng-deep h4,
+.namespace-page clr-tabs::ng-deep h2 {
+  color: #fff;
+}

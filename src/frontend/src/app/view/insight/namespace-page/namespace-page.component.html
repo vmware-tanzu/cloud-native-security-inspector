@@ -1,0 +1,123 @@
+<!--
+    Copyright 2022 VMware, Inc.
+    SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="namespace-page">
+  <clr-tabs >
+    <clr-tab>
+        <button clrTabLink >{{'CommonlyUse.summary'|translate}}</button>
+        <ng-template [(clrIfActive)]="summaryFlag">
+          <clr-tab-content >
+              <app-namespace (packedbubbleRender)='packedbubbleRender($event)'></app-namespace>
+            <div class="report">
+             <div class="scan-time">
+               <span>
+                {{'CommonlyUse.time_stamp'|translate}}: 
+               </span>
+               <span>
+                 <b>
+                   {{shardService.scanTime | date:'medium'}}
+                 </b>
+               </span>
+             </div>
+            <div class="data">
+              <a class="card clickable">
+                <div class="card-block normal">
+                  <clr-icon style="width: 25px; height: 25px;" shape="check-circle" class="is-solid"></clr-icon>
+                  <div class="pre">
+                    <div class="pro" [style]="{width: shardService.showNormal/(shardService.showAbnormal + shardService.showNormal)*100 + 'px'}"></div>
+                  </div>
+                  <span *ngIf="shardService.showNormal">{{(shardService.showNormal/(shardService.showAbnormal + shardService.showNormal)*100).toFixed(2)}}%</span>
+                  <span *ngIf="!shardService.showNormal">0%</span>
+                </div>
+                <div class="card-block">
+                  <p class="card-text">
+                    {{shardService.showNormal}}
+                  </p>
+                </div>
+                <div class="card-block">
+                  <p class="card-text">
+                    {{'CommonlyUse.normal_baseline'|translate}}               </p>
+                </div>
+              </a>
+              <a class="card clickable">
+                <div class="card-block abnormal">
+                  <clr-icon style="width: 25px; height: 25px;" shape="exclamation-circle" class="is-solid"></clr-icon>
+                    <div class="pre">
+                      <div class="pro" [style]="{width: shardService.showAbnormal/(shardService.showAbnormal + shardService.showNormal)*100 + 'px'}"></div>
+                    </div>
+                    <span *ngIf="shardService.showAbnormal">{{(shardService.showAbnormal/(shardService.showAbnormal + shardService.showNormal)*100).toFixed(2)}}%</span>
+                    <span *ngIf="!shardService.showAbnormal">0%</span>
+                </div>
+                <div class="card-block">
+                  <p class="card-text">
+                    {{shardService.showAbnormal}}
+                  </p>
+                </div>
+                <div class="card-block">
+                  <p class="card-text">
+                    {{'CommonlyUse.abnormal_baseline'|translate}}
+                </div>
+              </a>
+              <a class="card clickable">
+                <div class="card-block">
+                  <img src="assets/images/sum.png" width="20px" alt="">
+                  {{'CommonlyUse.total'|translate}} :
+                </div>
+                <div class="card-block">
+                  <p class="card-text">
+                    {{shardService.showAbnormal + shardService.showNormal}}
+                  </p>
+                </div>
+                <div class="card-block">
+                  <p class="card-text">
+                    {{'CommonlyUse.all_baseline'|translate}}
+                </div>
+              </a>
+            </div>
+            <app-packedbubble #packedbubble></app-packedbubble> 
+            </div>
+          </clr-tab-content>
+        </ng-template>
+      </clr-tab>
+      <clr-tab>
+        <button clrTabLink>{{'CommonlyUse.violations'|translate}}</button>
+        <ng-template [(clrIfActive)]="violationsFlag">
+            <clr-tab-content>
+              <app-namespace (setNamespaceHistogramChart)="setNamespaceHistogramChart()" [all]='true' #summary></app-namespace>
+              <!-- <app-histogram [chartOptions]="shardService.namespacChartLineOption"></app-histogram> -->
+              <app-histogram #namespaceHistogram [chartOptions]="shardService.workloadChartbarOption"></app-histogram>
+              <clr-datagrid>
+                <clr-dg-column [clrDgField]="'attributes.pool'">{{'CommonlyUse.name'|translate}}</clr-dg-column>
+                <clr-dg-column [clrDgField]="'attributes.business_unit'">{{'CommonlyUse.namespace'|translate}}</clr-dg-column>
+                <clr-dg-column [clrDgField]="'attributes.business_unit'">{{'CommonlyUse.type'|translate}}</clr-dg-column>
+                <clr-dg-column [clrDgField]="'updated_by'">{{'CommonlyUse.containers_total'|translate}}  </clr-dg-column>
+                <clr-dg-column [clrDgSortBy]="'created_at'">{{'CommonlyUse.api_version'|translate}}</clr-dg-column>
+              
+                <clr-dg-row *ngFor="let violation of shardService.currentNamespaceviolationList">
+                  <clr-dg-cell>
+                    <a href="javascript:;" (click)="toWorkload(violation)" >
+                      {{violation.workload.workload.metadata.name}}
+                      <clr-icon shape="pop-out"></clr-icon>
+                    </a>
+                  </clr-dg-cell>
+                  <clr-dg-cell>{{violation.workload.workload.metadata.namespace}}</clr-dg-cell>
+                  <clr-dg-cell>{{violation.workload.workload.metadata.kind}}</clr-dg-cell>
+                  <clr-dg-cell>{{violation.workload.workload.pods.length}}</clr-dg-cell>
+                  <clr-dg-cell>{{violation.workload.workload.metadata.apiVersion}}</clr-dg-cell>
+                </clr-dg-row>
+              
+                <clr-dg-footer>
+                  <clr-dg-pagination #poolpagination [clrDgTotalItems]="shardService.violationList.length">
+                    <clr-dg-page-size [clrPageSizeOptions]="pageSizeOptions">violations per page</clr-dg-page-size>
+                    {{poolpagination.firstItem + 1}} - {{poolpagination.lastItem + 1}} of {{shardService.violationList.length}} Pools
+                  </clr-dg-pagination>
+                </clr-dg-footer>
+              </clr-datagrid>
+            </clr-tab-content>
+        </ng-template> 
+    </clr-tab>
+  
+  </clr-tabs>
+</div>

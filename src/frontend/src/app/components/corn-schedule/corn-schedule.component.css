@@ -1,0 +1,66 @@
+/*
+ * Copyright 2022 VMware, Inc.
+ * SSPDX-License-Identifier: Apache-2.0
+ */
+
+.card {
+  padding: 10px 20px;
+}
+.card p {
+  color: #fff;
+  font-size: 16px;
+}
+.card::ng-deep .clr-form-control {
+  margin: 10px 10px 0 0;
+}
+.card::ng-deep .clr-form-control .clr-control-label {
+  color: #fff;
+}
+.card::ng-deep .clr-form-control .clr-select-wrapper .clr-select {
+  color: #fff;
+}
+.once,
+.multiple {
+  display: flex;
+  color: #fff;
+}
+.once::ng-deep .clr-date-container,
+.multiple::ng-deep .clr-date-container {
+  margin: 10px 10px 0 0;
+}
+.once::ng-deep .clr-date-container .clr-control-container input,
+.multiple::ng-deep .clr-date-container .clr-control-container input {
+  color: #fff;
+}
+.once::ng-deep .clr-form-control,
+.multiple::ng-deep .clr-form-control {
+  margin: 10px 10px 0 0;
+}
+.once::ng-deep .clr-form-control .clr-control-label,
+.multiple::ng-deep .clr-form-control .clr-control-label {
+  color: #fff;
+}
+.specify-content {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  margin-left: 20px;
+  width: 700px;
+  color: #fff;
+}
+.specify-content clr-checkbox-wrapper {
+  width: 100px;
+  color: #fff;
+}
+.spaced .date-container {
+  display: flex;
+  margin: 8px;
+}
+.spaced .date-container::ng-deep .clr-form-control {
+  margin: 0px;
+}
+.spaced .date-container::ng-deep .clr-form-control input {
+  padding-left: 10px;
+  width: 200px;
+  color: #fff;
+}

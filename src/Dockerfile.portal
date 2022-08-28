@@ -1,0 +1,22 @@
+FROM launcher.gcr.io/google/nodejs as builder
+
+WORKDIR /protal
+COPY frontend/ .
+RUN npm --unsafe-perm install 
+# Build
+RUN npm run build
+
+FROM docker.io/ubuntu:18.04 
+WORKDIR /workspace
+RUN apt-get update && apt-get install -y wget 
+
+RUN wget https://nodejs.org/download/release/v14.15.5/node-v14.15.5-linux-x64.tar.gz && \ 
+    tar -xzf node-v14.15.5-linux-x64.tar.gz && \
+    mv node-v14.15.5-linux-x64 /usr/local/nodejs && ln -s /usr/local/nodejs/bin/node /usr/local/bin/ && ln -s /usr/local/nodejs/bin/npm /usr/local/bin/ && \
+    rm node-v14.15.5-linux-x64.tar.gz 
+COPY --from=builder /protal/dist .
+COPY frontend/node-server.js .
+COPY frontend/express-package.json package.json
+RUN npm install
+RUN apt-get remove wget -y
+ENTRYPOINT node node-server.js

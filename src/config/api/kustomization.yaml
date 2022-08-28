@@ -1,0 +1,12 @@
+# Copyright 2022 VMware, Inc.
+# SPDX-License-Identifier: Apache-2.0
+namespace: cnsi-system
+
+namePrefix: cnsi-
+
+resources:
+- server.yaml
+- service.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true

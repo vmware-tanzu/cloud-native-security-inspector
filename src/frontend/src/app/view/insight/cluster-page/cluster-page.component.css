@@ -1,0 +1,128 @@
+/*
+ * Copyright 2022 VMware, Inc.
+ * SSPDX-License-Identifier: Apache-2.0
+ */
+
+.cluster-page {
+  padding: 20px;
+  height: auto;
+  min-height: 100vh;
+}
+.cluster-page clr-tabs::ng-deep ul li button.active {
+  color: #fff;
+}
+.cluster-page clr-tabs::ng-deep .report {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  background-color: #22343C;
+}
+.cluster-page clr-tabs::ng-deep .report .scan-time {
+  color: #fff;
+  position: absolute;
+  left: 5px;
+  top: 5px;
+}
+.cluster-page clr-tabs::ng-deep .report .scan-time span:first-of-type {
+  font-size: 18px;
+}
+.cluster-page clr-tabs::ng-deep .report .data {
+  display: flex;
+  flex: 1;
+  justify-content: space-evenly;
+  align-items: center;
+}
+.cluster-page clr-tabs::ng-deep .report .data div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.cluster-page clr-tabs::ng-deep .report .data div span {
+  color: #fff;
+}
+.cluster-page clr-tabs::ng-deep .report .data div span.value {
+  margin-bottom: 12px;
+  font-size: 32px;
+  font-weight: 700;
+}
+.cluster-page clr-tabs::ng-deep .report .data div span.value clr-icon {
+  width: 30px;
+  height: 30px;
+}
+.cluster-page clr-tabs::ng-deep .report .data div.normal clr-icon {
+  color: green;
+}
+.cluster-page clr-tabs::ng-deep .report .data div.abnormal-but-compliant clr-icon {
+  color: yellow;
+}
+.cluster-page clr-tabs::ng-deep .report .data div.abnormal clr-icon {
+  color: red;
+}
+.cluster-page clr-tabs::ng-deep::ng-deep clr-dg-column {
+  background-color: #22343C;
+}
+.cluster-page clr-tabs::ng-deep::ng-deep clr-dg-column::ng-deep button {
+  color: #fff;
+}
+.cluster-page clr-tabs::ng-deep::ng-deep .datagrid-placeholder {
+  background-color: #22343C;
+}
+.cluster-page clr-tabs::ng-deep::ng-deep clr-dg-cell {
+  background-color: #22343C;
+  color: #fff;
+}
+.cluster-page clr-tabs::ng-deep::ng-deep clr-dg-footer {
+  background-color: #22343C;
+  color: #fff;
+}
+.cluster-page clr-tabs::ng-deep h4,
+.cluster-page clr-tabs::ng-deep h2 {
+  color: #fff;
+}
+.cluster-page clr-tabs::ng-deep .clickable {
+  width: 242px;
+}
+.cluster-page clr-tabs::ng-deep .clickable .card-block {
+  background-color: #22343C;
+  width: 240px;
+}
+.cluster-page clr-tabs::ng-deep .clickable .card-block p {
+  color: #fff;
+}
+.cluster-page clr-tabs::ng-deep .clickable .card-block:nth-of-type(2) {
+  height: 120px;
+  padding: 0px;
+}
+.cluster-page clr-tabs::ng-deep .clickable .card-block:nth-of-type(2) p {
+  margin: 0px;
+  line-height: 120px;
+  font-size: 50px;
+}
+.cluster-page clr-tabs::ng-deep .clickable .card-block:first-of-type {
+  flex-direction: row;
+  color: #fff;
+}
+.cluster-page clr-tabs::ng-deep .clickable .card-block:first-of-type img {
+  margin-right: 20px;
+}
+.cluster-page clr-tabs::ng-deep .clickable .card-block:last-of-type {
+  height: 96px;
+}
+.cluster-page clr-tabs::ng-deep .clickable .card-block.normal .pre,
+.cluster-page clr-tabs::ng-deep .clickable .card-block.abnormal .pre {
+  width: 100px;
+  height: 10px;
+  background-color: #fff;
+  position: relative;
+  margin: 0 15px;
+}
+.cluster-page clr-tabs::ng-deep .clickable .card-block.normal .pre .pro,
+.cluster-page clr-tabs::ng-deep .clickable .card-block.abnormal .pre .pro {
+  height: 10px;
+  position: absolute;
+  left: 0px;
+  background-color: green;
+}
+.cluster-page clr-tabs::ng-deep .clickable .card-block.abnormal .pro {
+  background-color: red !important;
+}

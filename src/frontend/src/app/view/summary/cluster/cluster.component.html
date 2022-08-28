@@ -1,0 +1,57 @@
+<!--
+    Copyright 2022 VMware, Inc.
+    SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="card cluster">
+  <div class="left">
+    <h3>{{'Nav.Insight.cluster' | translate}} {{'CommonlyUse.summary' | translate}}</h3>
+    <ul>
+      <!-- <li>
+        <span class="title"> Name</span>
+        <span class="content"></span>
+      </li>
+      <li>
+        <span class="title"> Status</span>
+        <span class="content">
+          <span class="success" *ngIf="shardService.nodeInfo.status === 'running' || shardService.nodeInfo.status === 'Active'">
+            <clr-icon shape="success-standard" class="is-solid"></clr-icon>
+            {{shardService.nodeInfo.status}}
+          </span>
+          <span class="error" *ngIf="shardService.nodeInfo.status === 'falid'">
+            <clr-icon shape="error-standard" class="is-solid"></clr-icon>
+            {{shardService.nodeInfo.status}}
+          </span>
+        </span>
+      </li> -->
+      <li>
+        <span class="title">{{'Cluster.kubernetes_version'|translate}}</span>
+        <span class="content">{{shardService.nodesInfo.version}}</span>
+      </li>
+      <li>
+        <span class="title">Provider</span>
+        <span class="content">{{provider}}</span>
+      </li>
+      <li *ngIf="shardService.navVariable === 'Cluster'">
+        <span class="title">{{'Cluster.nodes_resource'|translate}}:</span>
+        <div class="content">
+          <div class="success">
+            <label ><clr-icon shape="cpu" class="is-solid"></clr-icon>CPU: </label>
+            
+            <span class="success">{{'Cluster.capacity'|translate}}: <b>{{shardService.nodesInfo.cpu.capacity}}</b> </span>
+            <span class="success"> {{'Cluster.allocatable'|translate}}: <b>{{shardService.nodesInfo.cpu.allocatable}}</b></span>
+          </div>
+          <div class="success">
+            <label ><clr-icon shape="memory" class="is-solid"></clr-icon>{{'Cluster.memory'|translate}}:</label>
+            <span class="success">{{'Cluster.capacity'|translate}}: <b>{{shardService.nodesInfo.memory.capacity}}Ki </b> </span>
+            <span class="success"> {{'Cluster.allocatable'|translate}}: <b>{{shardService.nodesInfo.memory.allocatable}}Ki</b></span>
+          </div>
+        </div>
+      </li>
+      <li *ngIf="shardService.navVariable === 'Cluster'">
+        <span class="title">{{'Cluster.nodes'|translate}}: </span>
+        <span><b>{{shardService.nodesInfo.list?.length}}</b></span>
+      </li>
+    </ul>
+  </div>
+</div>

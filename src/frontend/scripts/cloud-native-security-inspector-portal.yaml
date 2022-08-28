@@ -1,0 +1,24 @@
+# Copyright 2022 VMware, Inc.
+# SPDX-License-Identifier: Apache-2.0
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloud-native-security-inspector-portal
+  namespace: cnsi-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      cloud-native-security-inspector-portal: portal
+  template:
+    metadata:
+      labels:
+        cloud-native-security-inspector-portal: portal
+    spec:
+      serviceAccountName: cloud-native-security-inspector-portal-serviceaccount
+      containers:
+      - name: cloud-native-security-inspector-frontend
+        image: projects.registry.vmware.com/cnsi/portal:0.1
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 3800       

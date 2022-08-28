@@ -1,0 +1,22 @@
+# Copyright 2022 VMware, Inc.
+# SPDX-License-Identifier: Apache-2.0
+# permissions for end users to view inspectionpolicies.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: inspectionpolicy-viewer-role
+rules:
+- apiGroups:
+  - goharbor.goharbor.io
+  resources:
+  - inspectionpolicies
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - goharbor.goharbor.io
+  resources:
+  - inspectionpolicies/status
+  verbs:
+  - get

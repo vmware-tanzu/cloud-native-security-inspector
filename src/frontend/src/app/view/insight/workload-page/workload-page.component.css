@@ -1,0 +1,59 @@
+/*
+ * Copyright 2022 VMware, Inc.
+ * SSPDX-License-Identifier: Apache-2.0
+ */
+
+.workload {
+  height: auto;
+  min-height: 100vh;
+  padding: 20px;
+  position: relative;
+}
+.workload h2 {
+  color: #fff;
+}
+.workload .report-detai-bg {
+  position: absolute;
+  z-index: 99999;
+  right: 0px;
+  top: 0px;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0);
+  transition: background-color 2;
+  width: 100%;
+  height: 100%;
+}
+.workload .report-detai-bg.show {
+  background-color: #000000;
+  transition: background-color 2;
+}
+.workload .report-detai-bg .report-detai {
+  position: absolute;
+  right: -700px;
+  top: 0px;
+  width: 700px;
+  height: auto;
+  min-height: 100vh;
+  opacity: 0;
+  transition: right 5s, opacity 2s;
+}
+.workload .report-detai-bg .report-detai.show {
+  right: 0px;
+  opacity: 1;
+  transition: right 5s, opacity 2s;
+}
+.workload::ng-deep clr-datagrid clr-dg-column .datagrid-column-flex button {
+  color: #fff;
+}
+.workload::ng-deep clr-datagrid clr-dg-row clr-dg-cell {
+  color: #fff;
+}
+.workload::ng-deep clr-datagrid clr-dg-footer clr-dg-page-size {
+  color: #fff;
+}
+.workload::ng-deep clr-datagrid clr-dg-footer clr-dg-page-size .clr-select-wrapper select {
+  color: #fff;
+}
+.workload::ng-deep clr-datagrid clr-dg-footer .pagination-description {
+  color: #fff;
+}

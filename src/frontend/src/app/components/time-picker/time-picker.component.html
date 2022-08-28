@@ -1,0 +1,36 @@
+<!--
+    Copyright 2022 VMware, Inc.
+    SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="time-container">
+  <div class="show-time">
+    <div  (click)="showTimeListFlag = true">
+      {{timePicker.hour.value}}:{{timePicker.minute.value}}
+    </div>
+    <clr-icon *ngIf="timePicker.hour.value || timePicker.minute.value" (click)="resetTime()" class="times" shape="times-circle"></clr-icon>
+    <clr-icon *ngIf="!timePicker.hour.value && !timePicker.minute.value" (click)="showTimeListFlag = false" class="clock" shape="alarm-clock"></clr-icon>
+  </div>
+  <div class="drow-content" *ngIf="showTimeListFlag">
+    <div class="time-list">
+      <ul class="list-sc">
+        <li class="hour">
+          <span [ngClass]="{'active': timePicker.hour.index === i}" *ngFor="let hour of hourInfo.list; let i= index" (click)="timePicker.hour.index= i ; timePicker.hour.value=hour">
+            {{hour}}
+          </span>
+        </li>
+      </ul>
+      <ul class="list-sc">
+        <li class="minutes">
+          <span *ngFor="let minute of minuteInfo.list;let i= index" [ngClass]="{'active': timePicker.minute.index === i}" (click)="timePicker.minute.index= i;timePicker.minute.value= minute">
+            {{minute}}
+          </span>
+        </li>
+      </ul>
+    </div>
+    <div class="btns">
+      <button type="button" class="now" (click)="getTimeNow()">{{'CommonlyUse.now'|translate}}</button>
+      <button type="button" class="ok active" (click)="setTime()">{{'CommonlyUse.ok'|translate}}</button>
+    </div>
+  </div>
+</div>

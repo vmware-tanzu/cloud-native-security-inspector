@@ -1,0 +1,68 @@
+<!--
+    Copyright 2022 VMware, Inc.
+    SPDX-License-Identifier: Apache-2.0
+-->
+
+<clr-vertical-nav [clrVerticalNavCollapsible]="true">
+  <clr-vertical-nav-group
+          routerLinkActive="active">
+      <clr-icon shape="line-chart" clrVerticalNavIcon></clr-icon>
+      {{'Nav.Assessments.title'| translate}}
+      <clr-vertical-nav-group-children>
+          <a clrVerticalNavLink
+             routerLink="/assessments"
+             routerLinkActive="active">
+             {{'Nav.Assessments.report_view'| translate}}
+          </a>
+      </clr-vertical-nav-group-children>
+  </clr-vertical-nav-group>
+  <clr-vertical-nav-group
+          routerLinkActive="active">
+      <clr-icon shape="organization" clrVerticalNavIcon></clr-icon>
+      {{'Nav.Insight.title'| translate}}
+      <clr-vertical-nav-group-children>
+          <a clrVerticalNavLink
+             routerLink="/insight/cluster"
+             routerLinkActive="active">
+             {{'Nav.Insight.cluster'| translate}}
+          </a>
+          <a clrVerticalNavLink
+             routerLink="/insight/namespace"
+             routerLinkActive="active">
+             {{'Nav.Insight.namespace'| translate}}
+              
+          </a>
+          <a clrVerticalNavLink
+             routerLink="/insight/workload"
+             routerLinkActive="active">
+             {{'Nav.Insight.workload'| translate}}
+             
+          </a>
+      </clr-vertical-nav-group-children>
+  </clr-vertical-nav-group>
+  <a clrVerticalNavLink [routerLink]="['/policy']" routerLinkActive='active'>
+    <clr-icon clrVerticalNavIcon shape="file-settings" ></clr-icon>
+    <b>{{'Nav.Policy.title'| translate}}</b>
+  </a>
+  <a clrVerticalNavLink [routerLink]="['/setting']" routerLinkActive='active'>
+    <clr-icon clrVerticalNavIcon shape="cog" ></clr-icon>
+    <b>{{'Nav.Setting.title'| translate}}</b>
+  </a>
+  <!-- <clr-vertical-nav-group
+          routerLinkActive="active">
+      <clr-icon shape="cog" clrVerticalNavIcon></clr-icon>
+      Setting
+      <clr-vertical-nav-group-children>
+          <a clrVerticalNavLink
+             routerLink="./fire/charmander"
+             routerLinkActive="active">
+              Policy
+          </a>
+          <a clrVerticalNavLink
+             routerLink="./fire/charizard"
+             routerLinkActive="active">
+              Harbor
+          </a>
+      </clr-vertical-nav-group-children>
+  </clr-vertical-nav-group> -->
+</clr-vertical-nav>

@@ -1,0 +1,407 @@
+<!--
+    Copyright 2022 VMware, Inc.
+    SPDX-License-Identifier: Apache-2.0
+-->
+
+<clr-tabs>
+  <!-- <clr-tab>
+      <button clrTabLink>Seconds</button>
+      <ng-template [(clrIfActive)]="seconds">
+          <clr-tab-content>
+              <clr-radio-wrapper>
+                <input type="radio" clrRadio name="per_second" value="per_second" [(ngModel)]="secondInfoCorn" />
+                <label>per second</label>
+              </clr-radio-wrapper>
+
+              
+              <div class="period">
+                <clr-radio-wrapper>
+                  <input type="radio" clrRadio name="period" value="period" [(ngModel)]="secondInfoCorn" />
+                  <label>period</label>
+                </clr-radio-wrapper>
+
+                <div class="content">
+                  from
+                  <input class="width-30" (change)="numericalCheck('secondInfo', 'from', 1, 58)" [(ngModel)]="secondInfo.from" [disabled]='secondInfo.type !=="period"' type="text">
+                  to
+                  <input class="width-30" [(ngModel)]="secondInfo.to" (change)="numericalCheck('secondInfo', 'to', 2, 59)" [disabled]='secondInfo.type !=="period"' type="text">
+                  seconds
+                </div>
+              </div>
+              <div class="cycle">
+                <clr-radio-wrapper>
+                  <input type="radio" clrRadio name="cycle" value="cycle" [(ngModel)]="secondInfoCorn" />
+                  <label>cycle</label>
+                </clr-radio-wrapper>
+                <div class="content">
+                  Starts at
+                  <input class="width-30" [(ngModel)]="secondInfo.start" (change)="numericalCheck('secondInfo', 'start', 0, 59)" [disabled]='secondInfo.type !=="cycle"' type="text">
+                  and executes every
+                  <input class="width-30" [(ngModel)]="secondInfo.every" (change)="numericalCheck('secondInfo', 'every', 1, 59)" [disabled]='secondInfo.type !=="cycle"' type="text">
+                  seconds
+                </div>
+              </div>
+
+              <clr-radio-wrapper>
+                <input type="radio" clrRadio name="specify" value="specify" [(ngModel)]="secondInfoCorn" />
+                <label>specify</label>
+              </clr-radio-wrapper>
+              <div class="specify-content" *ngIf="secondInfo.type === 'specify'">
+                  <clr-checkbox-wrapper *ngFor="let item of secondInfo.list">
+                    <input type="checkbox" clrCheckbox name="options1" required [value]="item" (change)="sharedChangeHandle($event,'secondInfo',item)"/>
+                    <label>{{item}}</label>
+                  </clr-checkbox-wrapper>
+              </div>
+          </clr-tab-content>
+      </ng-template>
+  </clr-tab> -->
+
+  <clr-tab>
+      <button clrTabLink>Minutes</button>
+      <ng-template [(clrIfActive)]="minutes">
+          <clr-tab-content>
+            <clr-radio-wrapper>
+              <input type="radio" clrRadio name="per_minute" value="per_minute" [(ngModel)]="minuteInfoCorn" />
+              <label>per minute</label>
+            </clr-radio-wrapper>
+
+            
+            <div class="period">
+              <clr-radio-wrapper>
+                <input type="radio" clrRadio name="period" value="period" [(ngModel)]="minuteInfoCorn" />
+                <label>period</label>
+              </clr-radio-wrapper>
+
+              <div class="content">
+                from
+                <input class="width-30" (change)="numericalCheck('minuteInfo', 'from', 0, 58)" [(ngModel)]="minuteInfo.from" [disabled]='minuteInfo.type !=="period"' type="text">
+                to
+                <input class="width-30" [(ngModel)]="minuteInfo.to" (change)="numericalCheck('minuteInfo', 'to', 1, 59)" [disabled]='minuteInfo.type !=="period"' type="text">
+                minutes
+              </div>
+            </div>
+            <div class="cycle">
+              <clr-radio-wrapper>
+                <input type="radio" clrRadio name="cycle" value="cycle" [(ngModel)]="minuteInfoCorn" />
+                <label>cycle</label>
+              </clr-radio-wrapper>
+              <div class="content">
+                Starts at
+                <input class="width-30" [(ngModel)]="minuteInfo.start" (change)="numericalCheck('minuteInfo', 'start', 0, 59)" [disabled]='minuteInfo.type !=="cycle"' type="text">
+                and executes every
+                <input class="width-30" [(ngModel)]="minuteInfo.every" (change)="numericalCheck('minuteInfo', 'every', 1, 59)" [disabled]='minuteInfo.type !=="cycle"' type="text">
+                minutes
+              </div>
+            </div>
+
+            <clr-radio-wrapper>
+              <input type="radio" clrRadio name="specify" value="specify" [(ngModel)]="minuteInfoCorn" />
+              <label>specify</label>
+            </clr-radio-wrapper>
+            <div class="specify-content" *ngIf="minuteInfo.type === 'specify'">
+                <clr-checkbox-wrapper *ngFor="let item of minuteInfo.list">
+                  <input type="checkbox" clrCheckbox name="options1" required [value]="item" (change)="sharedChangeHandle($event,'minuteInfo',item)"/>
+                  <label>{{item}}</label>
+                </clr-checkbox-wrapper>
+            </div>
+        </clr-tab-content>
+      </ng-template>
+  </clr-tab>
+
+  <clr-tab>
+      <button clrTabLink>Hours</button>
+      <ng-template [(clrIfActive)]="hours">
+          <clr-tab-content>
+            <clr-radio-wrapper>
+              <input type="radio" clrRadio name="per_hour" value="per_hour" [(ngModel)]="hourInfoCorn" />
+              <label>per hour</label>
+            </clr-radio-wrapper>
+
+            
+            <div class="period">
+              <clr-radio-wrapper>
+                <input type="radio" clrRadio name="period" value="period" [(ngModel)]="hourInfoCorn" />
+                <label>period</label>
+              </clr-radio-wrapper>
+
+              <div class="content">
+                from
+                <input class="width-30" (change)="numericalCheck('hourInfo', 'from', 0, 22)" [(ngModel)]="hourInfo.from" [disabled]='hourInfo.type !=="period"' type="text">
+                to
+                <input class="width-30" [(ngModel)]="hourInfo.to" (change)="numericalCheck('hourInfo', 'to', 1, 23)" [disabled]='hourInfo.type !=="period"' type="text">
+                hours
+              </div>
+            </div>
+            <div class="cycle">
+              <clr-radio-wrapper>
+                <input type="radio" clrRadio name="cycle" value="cycle" [(ngModel)]="hourInfoCorn" />
+                <label>cycle</label>
+              </clr-radio-wrapper>
+              <div class="content">
+                Starts at
+                <input class="width-30" [(ngModel)]="hourInfo.start" (change)="numericalCheck('hourInfo', 'start', 0, 23)" [disabled]='hourInfo.type !=="cycle"' type="text">
+                and executes every
+                <input class="width-30" [(ngModel)]="hourInfo.every" (change)="numericalCheck('hourInfo', 'every', 1, 23)" [disabled]='hourInfo.type !=="cycle"' type="text">
+                hours
+              </div>
+            </div>
+
+            <clr-radio-wrapper>
+              <input type="radio" clrRadio name="specify" value="specify" [(ngModel)]="hourInfoCorn" />
+              <label>specify</label>
+            </clr-radio-wrapper>
+            <div class="specify-content" *ngIf="hourInfo.type === 'specify'">
+                <clr-checkbox-wrapper *ngFor="let item of hourInfo.list">
+                  <input type="checkbox" clrCheckbox name="options1" required [value]="item" (change)="sharedChangeHandle($event,'hourInfo',item)"/>
+                  <label>{{item}}</label>
+                </clr-checkbox-wrapper>
+            </div>
+          </clr-tab-content>
+      </ng-template>
+  </clr-tab>
+
+  <clr-tab>
+    <button clrTabLink>Day-of-Month</button>
+    <ng-template [(clrIfActive)]="day">
+        <clr-tab-content>
+          <clr-radio-wrapper>
+            <input type="radio" clrRadio name="per_day" value="per_day" [(ngModel)]="dayInfoCorn" />
+            <label>per day</label>
+          </clr-radio-wrapper>
+
+          <div style="position: relative; top: 15px;">
+            <clr-radio-wrapper>
+              <input type="radio" clrRadio name="not_specify" value="not_specify" [(ngModel)]="dayInfoCorn" />
+              <label>not specify</label>
+            </clr-radio-wrapper>
+          </div>
+
+          
+          <div class="period">
+            <clr-radio-wrapper>
+              <input type="radio" clrRadio name="period" value="period" [(ngModel)]="dayInfoCorn" />
+              <label>period</label>
+            </clr-radio-wrapper>
+
+            <div class="content">
+              from
+              <input class="width-30" (change)="numericalCheck('dayInfo', 'from', 1, 31)" [(ngModel)]="dayInfo.from" [disabled]='dayInfo.type !=="period"' type="text">
+              to
+              <input class="width-30" [(ngModel)]="dayInfo.to" (change)="numericalCheck('dayInfo', 'to', 2, 31)" [disabled]='dayInfo.type !=="period"' type="text">
+              days
+            </div>
+          </div>
+          <div class="cycle">
+            <clr-radio-wrapper>
+              <input type="radio" clrRadio name="cycle" value="cycle" [(ngModel)]="dayInfoCorn" />
+              <label>cycle</label>
+            </clr-radio-wrapper>
+            <div class="content">
+              Starts at
+              <input class="width-30" [(ngModel)]="dayInfo.start" (change)="numericalCheck('dayInfo', 'start', 1, 31)" [disabled]='dayInfo.type !=="cycle"' type="text">
+              and executes every
+              <input class="width-30" [(ngModel)]="dayInfo.every" (change)="numericalCheck('dayInfo', 'every', 1, 31)" [disabled]='dayInfo.type !=="cycle"' type="text">
+              days
+            </div>
+          </div>
+
+          <clr-radio-wrapper>
+            <input type="radio" clrRadio name="specify" value="specify" [(ngModel)]="dayInfoCorn" />
+            <label>specify</label>
+          </clr-radio-wrapper>
+          <div class="specify-content" *ngIf="dayInfo.type === 'specify'">
+              <clr-checkbox-wrapper *ngFor="let item of dayInfo.list">
+                <input type="checkbox" clrCheckbox name="options1" required [value]="item" (change)="sharedChangeHandle($event,'dayInfo',item)"/>
+                <label>{{item}}</label>
+              </clr-checkbox-wrapper>
+          </div>
+      </clr-tab-content>
+    </ng-template>
+  </clr-tab>
+  <clr-tab>
+    <button clrTabLink>Month</button>
+    <ng-template [(clrIfActive)]="month">
+        <clr-tab-content>
+          <clr-radio-wrapper>
+            <input type="radio" clrRadio name="per_month" value="per_month" [(ngModel)]="monthInfoCorn" />
+            <label>per month</label>
+          </clr-radio-wrapper>
+
+          <div style="position: relative; top: 15px;">
+            <clr-radio-wrapper>
+              <input type="radio" clrRadio name="not_specify" value="not_specify" [(ngModel)]="monthInfoCorn" />
+              <label>not specify</label>
+            </clr-radio-wrapper>
+          </div>
+
+          
+          <div class="period">
+            <clr-radio-wrapper>
+              <input type="radio" clrRadio name="period" value="period" [(ngModel)]="monthInfoCorn" />
+              <label>period</label>
+            </clr-radio-wrapper>
+
+            <div class="content">
+              from
+              <input class="width-30" (change)="numericalCheck('monthInfo', 'from', 1, 12)" [(ngModel)]="monthInfo.from" [disabled]='monthInfo.type !=="period"' type="text">
+              to
+              <input class="width-30" [(ngModel)]="monthInfo.to" (change)="numericalCheck('monthInfo', 'to', 1, 12)" [disabled]='monthInfo.type !=="period"' type="text">
+              months
+            </div>
+          </div>
+          
+          <div class="cycle">
+            <clr-radio-wrapper>
+              <input type="radio" clrRadio name="cycle" value="cycle" [(ngModel)]="monthInfoCorn" />
+              <label>cycle</label>
+            </clr-radio-wrapper>
+            <div class="content">
+              Starts at
+              <input class="width-30" [(ngModel)]="monthInfo.start" (change)="numericalCheck('monthInfo', 'start', 1, 12)" [disabled]='monthInfo.type !=="cycle"' type="text">
+              and executes every
+              <input class="width-30" [(ngModel)]="monthInfo.every" (change)="numericalCheck('monthInfo', 'every', 1, 12)" [disabled]='monthInfo.type !=="cycle"' type="text">
+              months
+            </div>
+          </div>
+
+          <clr-radio-wrapper>
+            <input type="radio" clrRadio name="specify" value="specify" [(ngModel)]="monthInfoCorn" />
+            <label>specify</label>
+          </clr-radio-wrapper>
+          <div class="specify-content" *ngIf="monthInfo.type === 'specify'">
+              <clr-checkbox-wrapper *ngFor="let item of monthInfo.list">
+                <input type="checkbox" clrCheckbox name="options1" required [value]="item" (change)="sharedChangeHandle($event,'monthInfo',item)"/>
+                <label>{{item}}</label>
+              </clr-checkbox-wrapper>
+          </div>
+        </clr-tab-content>
+    </ng-template>
+  </clr-tab>
+  <clr-tab>
+    <button clrTabLink>Day-of-Week</button>
+    <ng-template [(clrIfActive)]="week">
+        <clr-tab-content>
+          <clr-radio-wrapper>
+            <input type="radio" clrRadio name="per_week" value="per_week" [(ngModel)]="weekInfoCorn" />
+            <label>per week</label>
+          </clr-radio-wrapper>
+
+          <div style="position: relative; top: 15px;">
+            <clr-radio-wrapper>
+              <input type="radio" clrRadio name="not_specify" value="not_specify" [(ngModel)]="weekInfoCorn" />
+              <label>not specify</label>
+            </clr-radio-wrapper>
+          </div>
+
+          
+          <div class="period">
+            <clr-radio-wrapper>
+              <input type="radio" clrRadio name="period" value="period" [(ngModel)]="weekInfoCorn" />
+              <label>period</label>
+            </clr-radio-wrapper>
+
+            <div class="content">
+              from
+              <input class="width-30" (change)="numericalCheck('weekInfo', 'from', 0, 6)" [(ngModel)]="weekInfo.from" [disabled]='weekInfo.type !=="period"' type="text">
+              to
+              <input class="width-30" [(ngModel)]="weekInfo.to" (change)="numericalCheck('weekInfo', 'to', 1, 6)" [disabled]='weekInfo.type !=="period"' type="text">
+            </div>
+          </div>
+          <div class="cycle">
+            <clr-radio-wrapper>
+              <input type="radio" clrRadio name="cycle" value="cycle" [(ngModel)]="weekInfoCorn" />
+              <label>cycle</label>
+            </clr-radio-wrapper>
+            <div class="content">
+              Starts at
+              <input class="width-30" [(ngModel)]="weekInfo.start" (change)="numericalCheck('weekInfo', 'start', 1, 7)" [disabled]='weekInfo.type !=="cycle"' type="text">
+              and executes every
+              <input class="width-30" [(ngModel)]="weekInfo.every" (change)="numericalCheck('weekInfo', 'every', 1, 7)" [disabled]='weekInfo.type !=="cycle"' type="text">
+              weeks
+            </div>
+          </div>
+
+          <div class="cycle specify-week">
+            <clr-radio-wrapper>
+              <input type="radio" clrRadio name="specify_week" value="specify_week" [(ngModel)]="weekInfoCorn" />
+              <label>specify week</label>
+            </clr-radio-wrapper>
+            <div class="content">
+              Starting from the
+              <input class="width-30" [(ngModel)]="weekInfo.startWeek" (change)="numericalCheck('weekInfo', 'startWeek', 1, 4)" [disabled]='weekInfo.type !=="specify_week"' type="text">
+              week of the month, executed once on
+              <input class="width-30" [(ngModel)]="weekInfo.week" (change)="numericalCheck('weekInfo', 'week', 1, 7)" [disabled]='weekInfo.type !=="specify_week"' type="text">
+              days
+            </div>
+          </div>
+
+          <clr-radio-wrapper>
+            <input type="radio" clrRadio name="specify" value="specify" [(ngModel)]="weekInfoCorn" />
+            <label>specify</label>
+          </clr-radio-wrapper>
+          <div class="specify-content" *ngIf="weekInfo.type === 'specify'">
+              <clr-checkbox-wrapper *ngFor="let item of weekInfo.list">
+                <input type="checkbox" clrCheckbox name="options1" required [value]="item" (change)="sharedChangeHandle($event,'weekInfo',item)"/>
+                <label>{{item}}</label>
+              </clr-checkbox-wrapper>
+          </div>        </clr-tab-content>
+    </ng-template>
+  </clr-tab>
+  <!-- <clr-tab>
+    <button clrTabLink>Year</button>
+    <ng-template [(clrIfActive)]="year">
+        <clr-tab-content>
+          <clr-radio-wrapper>
+            <input type="radio" clrRadio name="per_week" value="per_year" [(ngModel)]="yearInfoCorn" />
+            <label>per year</label>
+          </clr-radio-wrapper>
+
+          <div style="position: relative; top: 15px;">
+            <clr-radio-wrapper>
+              <input type="radio" clrRadio name="not_specify" value="not_specify" [(ngModel)]="yearInfoCorn" />
+              <label>not specify</label>
+            </clr-radio-wrapper>
+          </div>
+
+          
+          <div class="period">
+            <clr-radio-wrapper>
+              <input type="radio" clrRadio name="period" value="period" [(ngModel)]="yearInfoCorn" />
+              <label>period</label>
+            </clr-radio-wrapper>
+
+            <div class="content">
+              from
+              <input class="width-60"  [(ngModel)]="yearInfo.from" disabled type="text">
+              to
+              <input class="width-60" [(ngModel)]="yearInfo.to" (change)="numericalCheck('weekInfo', 'to', 2022, 9999)" [disabled]='yearInfo.type !=="period"' type="text">
+            </div>
+          </div>        </clr-tab-content>
+    </ng-template>
+  </clr-tab> -->
+</clr-tabs>
+
+<table class="table">
+  <thead>
+      <tr>
+          <!-- <th>Seconds</th> -->
+          <th>Minutes</th>
+          <th>Hours</th>
+          <th>Day-of-Month</th>
+          <th>Month</th>
+          <th>Day-of-Week</th>
+          <!-- <th>Year</th> -->
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <!-- <td>{{schedule.secondInfo}}</td> -->
+        <td>{{schedule.minuteInfo}}</td>
+        <td>{{schedule.hourInfo}}</td>
+        <td>{{schedule.dayInfo}}</td>
+        <td>{{schedule.monthInfo}}</td>
+        <td>{{schedule.weekInfo}}</td>
+        <!-- <td>{{schedule.yearInfo}}</td> -->
+      </tr>
+  </tbody>
+</table>

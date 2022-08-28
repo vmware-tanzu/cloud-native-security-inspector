@@ -1,0 +1,22 @@
+# Copyright 2022 VMware, Inc.
+# SPDX-License-Identifier: Apache-2.0
+# permissions for end users to view assessmentreports.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: assessmentreport-viewer-role
+rules:
+- apiGroups:
+  - goharbor.goharbor.io
+  resources:
+  - assessmentreports
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - goharbor.goharbor.io
+  resources:
+  - assessmentreports/status
+  verbs:
+  - get
