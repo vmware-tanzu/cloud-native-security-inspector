@@ -1,0 +1,140 @@
+/*
+ * Copyright 2022 VMware, Inc.
+ * SSPDX-License-Identifier: Apache-2.0
+ */
+
+.detail-bg {
+  height: 100vh;
+  overflow: auto;
+}
+.list.warp-1 {
+  padding: 20px 10px;
+}
+.list.warp-1 li {
+  margin: 10px;
+  color: #fff;
+}
+.list.warp-1 li b {
+  font-size: 14px;
+  margin-right: 10px;
+}
+.list.warp-1 li span {
+  font-size: 12px;
+}
+.list .warp-2 {
+  padding: 0px;
+  padding-left: 15px;
+}
+.list .warp-2 b {
+  font-size: 16px;
+  margin-right: 10px;
+}
+.list .warp-2 span {
+  font-size: 14px;
+}
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content .clr-form-control label {
+  color: #fff;
+}
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content .clr-form-control input {
+  color: #fff;
+}
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content h4 {
+  color: #fff;
+}
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content clr-datagrid .datagrid-outer-wrapper .datagrid .datagrid-table-wrapper {
+  background-color: gray;
+}
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content clr-datagrid .datagrid-outer-wrapper .datagrid .datagrid-table-wrapper .datagrid-column,
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content clr-datagrid .datagrid-outer-wrapper .datagrid .datagrid-table-wrapper .datagrid-column {
+  background-color: #1C2A32 !important;
+}
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content clr-datagrid .datagrid-outer-wrapper .datagrid .datagrid-table-wrapper .datagrid-column .datagrid-column-flex button,
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content clr-datagrid .datagrid-outer-wrapper .datagrid .datagrid-table-wrapper .datagrid-column .datagrid-column-flex button,
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content clr-datagrid .datagrid-outer-wrapper .datagrid .datagrid-table-wrapper .datagrid-column .datagrid-column-flex span,
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content clr-datagrid .datagrid-outer-wrapper .datagrid .datagrid-table-wrapper .datagrid-column .datagrid-column-flex span {
+  color: #fff !important;
+}
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content clr-datagrid .datagrid-outer-wrapper .datagrid .datagrid-table-wrapper .datagrid-column .datagrid-column-flex button cds-icon,
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content clr-datagrid .datagrid-outer-wrapper .datagrid .datagrid-table-wrapper .datagrid-column .datagrid-column-flex button cds-icon,
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content clr-datagrid .datagrid-outer-wrapper .datagrid .datagrid-table-wrapper .datagrid-column .datagrid-column-flex span cds-icon,
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content clr-datagrid .datagrid-outer-wrapper .datagrid .datagrid-table-wrapper .datagrid-column .datagrid-column-flex span cds-icon {
+  color: #fff !important;
+  position: relative;
+  top: -3px;
+}
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content clr-datagrid clr-dg-footer {
+  background-color: #1C2A32 !important;
+}
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content clr-datagrid clr-dg-footer clr-dg-page-size {
+  color: #fff !important;
+}
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content clr-datagrid clr-dg-footer clr-dg-page-size .clr-select-wrapper select {
+  color: #fff !important;
+}
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content clr-datagrid clr-dg-footer .pagination-description {
+  color: #fff !important;
+}
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content clr-datagrid .datagrid-placeholder {
+  background-color: #1C2A32 !important;
+}
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content clr-datagrid .datagrid-row .datagrid-row-sticky {
+  background-color: #1C2A32;
+}
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content clr-datagrid .datagrid-row .datagrid-row-sticky .datagrid-detail-caret-icon {
+  color: #fff;
+}
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content clr-datagrid .datagrid-row clr-dg-cell {
+  background-color: #1C2A32 !important;
+  color: #fff !important;
+}
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content clr-datagrid clr-dg-detail {
+  background-color: #1C2A32 !important;
+  color: #fff;
+}
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content clr-datagrid clr-dg-detail h5 {
+  color: #fff;
+}
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content .workload-section {
+  display: flex;
+}
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content .workload-section .card {
+  width: 50%;
+  flex: 1;
+  padding: 10px;
+  margin-right: 15px;
+}
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content .workload-section .list li {
+  margin-bottom: 10px;
+}
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content .workload-section .list li span {
+  box-sizing: inherit;
+  word-break: break-all;
+}
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content .pods {
+  width: auto;
+  padding: 10px;
+}
+clr-accordion ::ng-deep .clr-accordion-header .clr-accordion-title {
+  color: #fff;
+}
+clr-accordion ::ng-deep .clr-accordion-header .clr-accordion-angle {
+  color: #fff;
+}
+.bac-white::ng-deep clr-dg-column {
+  background-color: #fff !important;
+}
+.bac-white::ng-deep clr-dg-column::ng-deep button {
+  color: #333 !important;
+}
+.bac-white::ng-deep .datagrid-placeholder {
+  background-color: #fff !important;
+}
+.bac-white::ng-deep clr-dg-cell {
+  background-color: #fff !important;
+  color: #333 !important;
+  word-break: break-all;
+}
+.bac-white::ng-deep clr-dg-footer {
+  background-color: #fff !important;
+  color: #333 !important;
+}

@@ -1,0 +1,44 @@
+<!--
+    Copyright 2022 VMware, Inc.
+    SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="card cluster">
+  <div class="left">
+    <div style="margin-bottom: 10px;">
+      <h3>Kubernetes{{'Nav.Insight.namespace' | translate}}: {{namespace.name}}
+        <select clrSelect name="options" (ngModelChange)="switchNamespace($event)" [(ngModel)]="shardService.namespaceDefault">
+          <!-- <option *ngIf="all" value="all">All Namespace</option> -->
+          <option *ngFor="let namespace of shardService.namespaceList" [value]="namespace.name">{{namespace.name}}</option>
+        </select>
+      </h3>
+    </div>
+    <ul>
+      <li *ngIf="!all">
+        <span class="title">{{'Cluster.kubernetes_version'|translate}}</span>
+        <span class="content">{{shardService.nodesInfo.version}}</span>
+      </li>
+      <li *ngIf="!all">
+        <span class="title">{{'CommonlyUse.status'|translate}}</span>
+        <span class="content" *ngIf="shardService.currentNamespaceInfo?.status === 'Active'">
+          <clr-icon style="color: green;" shape="success-standard" class="is-solid"></clr-icon>
+          {{shardService.currentNamespaceInfo?.status}}
+        </span>
+        <span class="content" *ngIf="shardService.currentNamespaceInfo?.status !== 'Active'">
+          <clr-icon style="color: red;" shape="error-standard" class="is-solid"></clr-icon>
+          {{shardService.currentNamespaceInfo?.status}}
+        </span>
+      </li>
+      <li *ngIf="!all">
+        <span class="title">Provider</span>
+        <span class="content">{{provider}}</span>
+      </li>
+      <li *ngIf="!all">
+        <span class="title">{{'CommonlyUse.workload_amount'|translate}}</span>
+        <span *ngIf="shardService.currentNamespaceInfo" class="content">{{
+          shardService.currentNamespaceInfo.workloads.normal + shardService.currentNamespaceInfo.workloads.abnormal
+        }}</span>
+      </li>
+    </ul>
+  </div>
+</div>

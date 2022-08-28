@@ -1,0 +1,138 @@
+<!--
+    Copyright 2022 VMware, Inc.
+    SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class='card' style="height: 100%;">
+  <clr-accordion clrAccordionMultiPanel="true" *ngIf="shardService.currentWorkload.workload.workload">
+    <clr-accordion-panel >
+      <clr-accordion-title>{{'Workload.view'| translate}}</clr-accordion-title>
+      <clr-accordion-content *clrIfExpanded>
+        <ul class="list warp-1">
+          <li>
+            <b>UID:</b>
+            <span>{{shardService.currentWorkload.workload.workload.metadata.uid}}</span>
+          </li>
+          <li>
+            <b>Name:</b>
+            <span>{{shardService.currentWorkload.workload.workload.metadata.name}}</span>
+          </li>
+          <li>
+            <b>Namespace:</b>
+            <span>{{shardService.currentWorkload.namespace}}</span>
+          </li>
+          <li>
+            <b>Type:</b>
+            <span>{{shardService.currentWorkload.workload.workload.metadata.kind}}</span>
+          </li>
+          <li>
+            <b>Version:</b>
+            <span>
+              {{shardService.currentWorkload.workload.workload.metadata.apiVersion}}
+            </span>
+          </li>
+          <li>
+            <b>Passed:</b>
+            <span>
+              <clr-icon *ngIf="!shardService.currentWorkload.workload.passed" shape="times-circle" style="color: red;" class="is-solid"></clr-icon>
+              <clr-icon *ngIf="shardService.currentWorkload.workload.passed" shape="success-standard" style="color: green;" class="is-solid"></clr-icon>
+              {{shardService.currentWorkload.workload.passed}}
+            </span>
+          </li>
+        </ul>
+      </clr-accordion-content>
+    </clr-accordion-panel>
+  
+    <clr-accordion-panel *ngIf="shardService.currentWorkload.workload.failures">
+      <clr-accordion-title>{{'Report_Detail.failures'|translate}}</clr-accordion-title>
+      <clr-accordion-content *clrIfExpanded>
+          <ul class="list warp-1 " *ngFor="let item of shardService.currentWorkload.workload.failures">
+            <li>
+              <b>{{'Report_Detail.cause'|translate}}:</b>
+              <span>{{item.assessmentError.cause}}</span>
+            </li>
+            <li>
+              <b>{{'Report_Detail.error_message'|translate}}:</b>
+              <span>{{item.assessmentError.error}}</span>
+            </li>
+            <li *ngIf="item.baseline">
+              <b>{{'Report_Detail.baselines'|translate}}: </b>
+              <div class="warp-2">
+                <b>{{'Report_Detail.baseline'|translate}}:</b>
+                <span>{{item.baseline.baseline}}</span>
+              </div>
+              <div class="warp-2">
+                <b>{{'Report_Detail.kind'|translate}}:</b>
+                <span>{{item.baseline.kind}}</span>
+              </div>
+              <div class="warp-2">
+                <b>{{'Report_Detail.scheme'|translate}}:</b>
+                <span>{{item.baseline.scheme}}</span>
+              </div>
+              <div class="warp-2">
+                <b>Version:</b>
+                <span>{{item.baseline.version}}</span>
+              </div>
+            </li>
+            <li>
+              <b>Container: </b>
+              <div class="warp-2">
+                <b>Name:</b>
+                <span>{{item.container.name}}</span>
+              </div>
+              <div class="warp-2">
+                <b>ID:</b>
+                <span>{{item.container.id}}</span>
+              </div>
+            </li>
+          </ul>
+      </clr-accordion-content>
+    </clr-accordion-panel>
+  
+    <clr-accordion-panel *ngIf="shardService.currentWorkload.workload.workload">
+      <clr-accordion-title>Pods</clr-accordion-title>
+      <clr-accordion-content *clrIfExpanded>
+        <ul class="list warp-1" *ngFor="let item of shardService.currentWorkload.workload.workload.pods">
+          <li>
+            <b>PodName: </b>
+            <span>
+              {{item.metadata.name}}
+            </span>
+          </li>
+          <li>
+            <b>Pod Uid: </b>
+            <span>
+              {{item.metadata.uid}}
+            </span>
+          </li>
+          <li>
+            <b>PodNamespace: </b>
+            <span>
+              {{item.metadata.namespace}}
+            </span>
+          </li>
+          <li>
+            <b>Pod{{'Report_Detail.resource_version'|translate}} : </b>
+            <span>
+              {{item.metadata.resourceVersion}}
+            </span>
+          </li>
+          <li>
+            <b>Containers: </b>
+            <ul class="list warp-2" *ngFor="let container of item.containers">
+              <li>
+                <b>Name:</b>
+                <span>{{container.name}}</span>
+              </li>
+              <li>
+                <b>ID:</b>
+                <span>{{container.id}}</span>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </clr-accordion-content>
+    </clr-accordion-panel>
+  </clr-accordion>
+
+</div>

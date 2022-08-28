@@ -1,0 +1,42 @@
+domain: goharbor.io
+layout:
+- go.kubebuilder.io/v3
+projectName: cloud-native-security-inspector
+repo: goharbor.io/cloud-native-security-inspector
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: goharbor.io
+  group: goharbor
+  kind: InspectionPolicy
+  path: goharbor.io/cloud-native-security-inspector/api/v1alpha1
+  version: v1alpha1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: goharbor.io
+  group: goharbor
+  kind: Inspection
+  path: goharbor.io/cloud-native-security-inspector/api/v1alpha1
+  version: v1alpha1
+- api:
+    crdVersion: v1
+    namespaced: true
+  domain: goharbor.io
+  group: goharbor
+  kind: Assessment
+  path: goharbor.io/cloud-native-security-inspector/api/v1alpha1
+  version: v1alpha1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: goharbor.io
+  group: goharbor
+  kind: AssessmentReport
+  path: goharbor.io/cloud-native-security-inspector/api/v1alpha1
+  version: v1alpha1
+version: "3"

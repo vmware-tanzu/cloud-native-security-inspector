@@ -1,0 +1,89 @@
+/*
+ * Copyright 2022 VMware, Inc.
+ * SSPDX-License-Identifier: Apache-2.0
+ */
+.setting-page {
+  height: auto;
+  min-height: 100vh;
+}
+.setting-page clr-tabs::ng-deep .btn.create {
+  margin: 20px 10px;
+}
+.setting-page clr-tabs::ng-deep ul li button.active {
+  color: #fff;
+}
+.setting-page clr-tabs::ng-deep .schedule {
+  display: flex;
+  align-items: center;
+  color: #fff;
+}
+.setting-page clr-tabs::ng-deep .schedule h4 {
+  width: 200px;
+  font-size: 0.65rem;
+  font-weight: bold;
+  color: #fff;
+}
+.setting-page clr-tabs::ng-deep .schedule div {
+  margin-top: 24px;
+}
+.setting-page clr-tabs::ng-deep .schedule span {
+  display: inline-block;
+  border-bottom: 1px solid #666;
+  margin-right: 20px;
+}
+.setting-page clr-tabs::ng-deep .schedule button {
+  border-color: #666;
+  width: 30px;
+  height: 30px;
+}
+.setting-page clr-tabs::ng-deep .schedule button clr-icon {
+  position: relative;
+  top: -3px;
+  left: -5px;
+}
+.setting-page clr-tabs::ng-deep .endpoint-container {
+  display: flex;
+  align-items: center;
+  margin-top: 24px;
+}
+.setting-page clr-tabs::ng-deep .endpoint-container .clr-form-control {
+  margin-top: 0px;
+}
+.setting-page clr-tabs::ng-deep .endpoint-container label {
+  width: 200px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.65rem;
+}
+.setting-page clr-tabs::ng-deep .endpoint-container clr-select-container {
+  margin-right: 10px;
+}
+.setting-page clr-tabs::ng-deep .submit-btns {
+  display: flex;
+  justify-content: end;
+  margin-top: 50px;
+}
+.setting-page clr-tabs::ng-deep .actions {
+  margin-left: 0px;
+}
+.setting-page clr-tabs::ng-deep .actions h4 {
+  margin: none;
+}
+.setting-page clr-tabs::ng-deep .clr-accordion-panel-inactive .clr-accordion-content .clr-form-control label {
+  color: #fff;
+}
+.setting-page clr-tabs::ng-deep .clr-accordion-panel-inactive .clr-accordion-content .clr-form-control input {
+  color: #fff;
+}
+.setting-page clr-tabs::ng-deep .clr-accordion-header .clr-accordion-title {
+  color: #fff;
+}
+.setting-page clr-tabs::ng-deep .clr-accordion-header .clr-accordion-angle {
+  color: #fff;
+}
+.setting-page clr-tabs::ng-deep form::ng-deep .clr-form-control {
+  flex-direction: row;
+}
+.setting-page clr-tabs::ng-deep form::ng-deep .clr-form-control .clr-control-label {
+  width: 200px !important;
+}

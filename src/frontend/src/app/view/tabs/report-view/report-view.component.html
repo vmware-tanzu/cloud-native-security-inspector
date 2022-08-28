@@ -1,0 +1,40 @@
+<!--
+    Copyright 2022 VMware, Inc.
+    SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="report">
+  <h2>{{'Report_View.title'|translate}}</h2>
+  <app-line #reportline [chartOptions]="shardService.reportLineChartOption" [updateFlag]='true'></app-line>
+
+  <clr-datagrid>
+    <clr-dg-column [clrDgField]="'attributes.pool'">{{'CommonlyUse.name'|translate}}</clr-dg-column>
+    <clr-dg-column [clrDgField]="'attributes.business_unit'">{{'CommonlyUse.namespace'|translate}}</clr-dg-column>
+    <clr-dg-column [clrDgField]="'attributes.business_unit'">{{'CommonlyUse.create_time'|translate}}</clr-dg-column>
+    <clr-dg-column [clrDgField]="'updated_by'">{{'CommonlyUse.action'|translate}}</clr-dg-column>
+
+    <clr-dg-row *ngFor="let report of shardService.reportslist">
+      <clr-dg-cell>
+        {{report.metadata.name}}
+      </clr-dg-cell>
+      <clr-dg-cell>{{report.metadata.namespace}}</clr-dg-cell>
+      <clr-dg-cell>{{report.metadata.creationTimestamp}}</clr-dg-cell>
+      <clr-dg-cell>
+        <clr-icon (click)="toReport(report)" style="color: skyblue" shape="pop-out"></clr-icon>
+      </clr-dg-cell>
+
+    </clr-dg-row>
+
+    <clr-dg-footer>
+      <clr-dg-pagination #poolpagination [clrDgTotalItems]="shardService.violationList.length">
+        <clr-dg-page-size [clrPageSizeOptions]="pageSizeOptions">reports per page</clr-dg-page-size>
+        {{poolpagination.firstItem + 1}} - {{poolpagination.lastItem + 1}} of {{shardService.violationList.length}} Pools
+      </clr-dg-pagination>
+    </clr-dg-footer>
+  </clr-datagrid>
+  <div class="report-detai-bg" (click)='showDetail($event)' [hidden]="!(shardService.currentReport && showDetail)">
+    <div class="report-detai" [ngClass]="{'show': showDetailFlag}" >
+      <app-report-view-detail #reportDetail></app-report-view-detail>
+    </div>
+  </div>
+</div>

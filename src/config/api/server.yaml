@@ -1,0 +1,54 @@
+# Copyright 2022 VMware, Inc.
+# SPDX-License-Identifier: Apache-2.0
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-server
+  namespace: system
+  labels:
+    control-plane: api-server
+spec:
+  selector:
+    matchLabels:
+      control-plane: api-server
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        control-plane: api-server
+    spec:
+      securityContext:
+        runAsNonRoot: true
+      containers:
+      - command:
+        - /server
+        args:
+        - --port=9090
+        image: api-server:dev
+        name: server
+        env:
+          - name: GIN_MODE
+            value: release
+        securityContext:
+          allowPrivilegeEscalation: false
+        livenessProbe:
+          httpGet:
+            path: /api/v1
+            port: 9090
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /api/v1
+            port: 9090
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources:
+          limits:
+            cpu: 100m
+            memory: 30Mi
+          requests:
+            cpu: 100m
+            memory: 20Mi
+      serviceAccountName: cnsi-controller-manager
+      terminationGracePeriodSeconds: 10

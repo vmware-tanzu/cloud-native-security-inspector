@@ -1,0 +1,16 @@
+/*
+ * Copyright 2022 VMware, Inc.
+ * SSPDX-License-Identifier: Apache-2.0
+ */
+
+header .branding {
+  line-height: 60px;
+}
+header .branding svg {
+  position: relative;
+  top: 14px;
+}
+header .header-actions svg {
+  position: relative;
+  top: 10px;
+}

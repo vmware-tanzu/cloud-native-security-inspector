@@ -1,0 +1,145 @@
+/*
+ * Copyright 2022 VMware, Inc.
+ * SSPDX-License-Identifier: Apache-2.0
+ */
+.policy-page {
+  padding: 20px;
+}
+h4,
+h2 {
+  color: #fff;
+}
+form clr-input-container,
+form clr-radio-container,
+form clr-toggle-container,
+form clr-select-container,
+form .actions {
+  margin-left: 20px;
+}
+form clr-input-container label,
+form clr-radio-container label,
+form clr-toggle-container label,
+form clr-select-container label,
+form .actions label,
+form clr-input-container h4,
+form clr-radio-container h4,
+form clr-toggle-container h4,
+form clr-select-container h4,
+form .actions h4 {
+  width: 150px;
+  min-width: 150px;
+  color: #fff;
+}
+form clr-input-container input,
+form clr-radio-container input,
+form clr-toggle-container input,
+form clr-select-container input,
+form .actions input,
+form clr-input-container select,
+form clr-radio-container select,
+form clr-toggle-container select,
+form clr-select-container select,
+form .actions select {
+  color: #fff;
+  border-bottom-color: #fff;
+}
+form clr-input-container::ng-deep .clr-control-container,
+form clr-radio-container::ng-deep .clr-control-container,
+form clr-toggle-container::ng-deep .clr-control-container,
+form clr-select-container::ng-deep .clr-control-container,
+form .actions::ng-deep .clr-control-container {
+  width: 420px;
+  max-width: 420px;
+}
+form clr-input-container::ng-deep .clr-control-container .clr-select-wrapper,
+form clr-radio-container::ng-deep .clr-control-container .clr-select-wrapper,
+form clr-toggle-container::ng-deep .clr-control-container .clr-select-wrapper,
+form clr-select-container::ng-deep .clr-control-container .clr-select-wrapper,
+form .actions::ng-deep .clr-control-container .clr-select-wrapper {
+  width: auto;
+}
+form clr-input-container.disabled-toggle::ng-deep .clr-toggle-wrapper input[type=checkbox]:checked:disabled + label::before,
+form clr-radio-container.disabled-toggle::ng-deep .clr-toggle-wrapper input[type=checkbox]:checked:disabled + label::before,
+form clr-toggle-container.disabled-toggle::ng-deep .clr-toggle-wrapper input[type=checkbox]:checked:disabled + label::before,
+form clr-select-container.disabled-toggle::ng-deep .clr-toggle-wrapper input[type=checkbox]:checked:disabled + label::before,
+form .actions.disabled-toggle::ng-deep .clr-toggle-wrapper input[type=checkbox]:checked:disabled + label::before {
+  background-color: #5aaaaa;
+  border-color: #5aaaaa;
+}
+form::ng-deep .clr-form-control {
+  flex-direction: row;
+}
+form::ng-deep .clr-form-control .clr-control-label {
+  width: 200px !important;
+}
+form .content {
+  display: flex;
+  flex-wrap: nowrap;
+  margin-bottom: 50px;
+}
+form .content div {
+  width: 45%;
+}
+form .port {
+  display: flex;
+}
+form .port clr-select-container,
+form .port clr-input-container {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+form .port clr-select-container .clr-input-container .clr-select-wrapper,
+form .port clr-input-container .clr-input-container .clr-select-wrapper {
+  width: auto;
+}
+form .schedule {
+  display: flex;
+  align-items: center;
+  color: #fff;
+}
+form .schedule h4 {
+  width: 200px;
+  font-size: 0.65rem;
+  font-weight: bold;
+  margin-left: 20px;
+}
+form .schedule div {
+  margin-top: 24px;
+}
+form .schedule span {
+  display: inline-block;
+  border-bottom: 1px solid #ddd;
+  margin-right: 20px;
+}
+form .schedule button {
+  border-color: #fff;
+  width: 30px;
+  height: 30px;
+}
+form .schedule button clr-icon {
+  position: relative;
+  top: -3px;
+  left: -5px;
+}
+form .submit-btns {
+  display: flex;
+  justify-content: end;
+}
+form .actions {
+  margin-left: 0px;
+}
+form .actions h4.action-title {
+  display: flex;
+  align-items: center;
+}
+form .actions h4.action-title div:first-of-type {
+  width: 200px;
+  min-width: 200px;
+}
+form .actions h4.action-title clr-toggle-container {
+  margin-top: 0px;
+}
+form .actions.w-auto h4 {
+  width: auto;
+}

@@ -1,0 +1,148 @@
+/*
+ * Copyright 2022 VMware, Inc.
+ * SSPDX-License-Identifier: Apache-2.0
+ */
+
+.cluster-page {
+  padding: 20px;
+  height: auto;
+  min-height: 100vh;
+    clr-tabs::ng-deep {
+    ul {
+      li {
+          button {
+          &.active {
+            color: #fff;
+          }
+        }
+      }
+    }
+    .report {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      background-color: #22343C;
+      .scan-time {
+        color: #fff;
+        position: absolute;
+        left: 5px;
+        top: 5px;
+        span:first-of-type {
+          font-size: 18px;
+        }
+      }
+      .data {
+        display: flex;
+        flex: 1;
+        justify-content: space-evenly;
+        align-items: center;
+        div {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          span {
+            color: #fff;
+            &.value {
+              margin-bottom: 12px;
+              font-size: 32px;
+              font-weight: 700;
+              clr-icon {
+                width: 30px;
+                height: 30px;
+              }
+            }
+          }
+          &.normal {
+            clr-icon {
+              color: green;
+            }
+          }
+          &.abnormal-but-compliant {
+            clr-icon {
+              color: yellow;
+            }
+          }
+          &.abnormal {
+            clr-icon {
+              color: red;
+            }
+          }
+        }
+      }
+    }
+    &::ng-deep {
+
+      clr-dg-column {
+        background-color: #22343C;
+        &::ng-deep {
+          button {
+            color: #fff;
+          }
+        }
+      }
+      .datagrid-placeholder {
+          background-color: #22343C;
+      }
+      clr-dg-cell {
+        background-color: #22343C;
+        color: #fff;
+      }
+      clr-dg-footer {
+        background-color: #22343C;
+        color: #fff;
+      }
+    }
+    h4,h2 {
+      color: #fff;
+    }
+    .clickable {
+      width: 242px;
+      .card-block {
+        background-color: #22343C;
+        width: 240px;
+        p {
+          color: #fff;
+        }
+        &:nth-of-type(2) {
+          height: 120px;
+          padding: 0px;
+          p {
+            margin: 0px;
+            line-height: 120px;
+            font-size: 50px;
+          }
+        }
+        &:first-of-type {
+          flex-direction: row;
+          color: #fff;
+          img {
+            margin-right: 20px;
+          }
+        }
+        &:last-of-type {
+          height: 96px;
+        }
+        &.normal, &.abnormal {
+          .pre {
+            width: 100px;
+            height: 10px;
+            background-color: #fff;
+            position: relative;
+            margin: 0 15px;
+            .pro {
+              height: 10px;
+              position: absolute;
+              left: 0px;
+              background-color: green;
+            }
+          }
+        }
+        &.abnormal {
+          .pro {
+            background-color: red !important;
+          }
+        }
+      }
+    }
+}
+}

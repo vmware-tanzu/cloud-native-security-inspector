@@ -1,0 +1,116 @@
+/*
+ * Copyright 2022 VMware, Inc.
+ * SSPDX-License-Identifier: Apache-2.0
+ */
+
+.card {
+    min-height: 100vh;
+    overflow: auto;
+  clr-accordion ::ng-deep {
+    .clr-accordion-panel-inactive {
+      .clr-accordion-content {
+       
+        .clr-form-control {
+          label {
+            color: #fff;
+          }
+          input {
+            color: #fff;
+          }
+        }
+        h4 {
+          color: #fff;
+        }
+        clr-datagrid {
+          .datagrid-outer-wrapper {
+           
+            .datagrid {
+              .datagrid-table-wrapper {
+                background-color: gray;
+                .datagrid-header {
+                }
+                .datagrid-column,.datagrid-column {
+                  background-color: #1C2A32 !important;
+                  .datagrid-column-flex {
+                    button, span {
+                      color: #fff !important;
+                      cds-icon {
+                        color: #fff !important;
+                        position: relative;
+                        top: -3px;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          clr-dg-footer {
+            background-color: #1C2A32 !important;
+            clr-dg-page-size {
+              color: #fff !important;
+              .clr-select-wrapper {
+                select {
+                  color: #fff !important;
+                }
+              }
+            }
+            .pagination-description {
+              color: #fff !important;
+            }
+          }
+
+          .datagrid-placeholder {
+            background-color: #1C2A32 !important;
+          }
+          .datagrid-row  {
+            .datagrid-row-sticky {
+              background-color: #1C2A32 ;
+              .datagrid-detail-caret-icon {
+                color: #fff;
+              }
+            }
+            clr-dg-cell {
+              background-color: #1C2A32 !important;
+              color: #fff !important;
+            }
+          }
+          clr-dg-detail {
+            background-color: #1C2A32 !important;
+            color: #fff;
+            h5 {
+              color: #fff;
+            }
+          }
+        }
+      }
+    }
+    .clr-accordion-header {
+     
+      .clr-accordion-title {
+        color: #fff;
+      }
+      .clr-accordion-angle {
+        color: #fff;
+      }
+    }
+    .list {
+      &.warp-1 {
+        padding: 20px 10px;
+        li {
+          margin: 10px;
+          color: #fff;
+          b {
+            font-size: 14px;
+            margin-right: 10px;
+          }
+          span {
+            font-size: 12px;
+          }
+    
+        }
+      }
+    }
+    
+  }
+}

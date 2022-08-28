@@ -1,0 +1,363 @@
+<!--
+    Copyright 2022 VMware, Inc.
+    SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="policy-page">
+
+<div class="sddc-header">
+  <h2 class="sddc-title">{{'Policy.title'|translate}}</h2>
+</div>
+
+<form class="create-sddc-form" clrStepper [formGroup]="policyForm">
+  <clr-stepper-panel formGroupName="inspectionSetting">
+    <clr-step-title>{{'Setting.inspectionSetting'|translate}}</clr-step-title>
+    <clr-step-description>{{'Setting.inspectionDesc'|translate}}</clr-step-description>
+    <clr-step-content *clrIfExpanded>
+      <clr-input-container>
+        <label>{{'Policy.name'|translate}}: </label>
+        <input [disabled]='true' clrInput placeholder="" name="name" formControlName="name"/>
+      </clr-input-container>
+
+      <clr-input-container>
+        <label>{{'CommonlyUse.inspectionNamespace'|translate}}: </label>
+        <input clrInput placeholder="" name="namespace" formControlName="namespace"/>
+      </clr-input-container>
+
+      <!-- <clr-select-container>
+        <label class="w-200">{{'Policy.type'|translate}}</label>
+        <select clrSelect name="format" formControlName="type">
+          <option value="network">Network</option>
+          <option value="OPA gatekeeper">{{'Policy.opa'|translate}}</option>
+        </select>
+      </clr-select-container>
+      <div class="port" *ngIf="policyForm.get('type')?.value==='OPA gatekeeper'">
+        <clr-select-container>
+          <label class="w-200">{{'Policy.ingress'|translate}}</label>
+          <select clrSelect name="gatekeeper" formControlName="gatekeeper">
+            <option value="IPBlock">{{'Policy.block'|translate}}</option>
+            <option value="Protocol">{{'Policy.protocol'|translate}}</option>
+            <option value="Port">{{'Policy.port'|translate}}</option>
+          </select>      
+        </clr-select-container>
+        <clr-input-container>
+          <label>{{policyForm.get('gatekeeper')?.value}}: </label>
+          <input clrInput placeholder="" name="port" formControlName="port"/>
+        </clr-input-container>
+        <clr-input-container *ngIf="policyForm.get('gatekeeper')?.value==='Port'">
+          <label>{{'Policy.endPort'|translate}}: </label>
+          <input clrInput placeholder="" name="endPort" formControlName="endPort"/>
+        </clr-input-container>
+      </div>
+      <div class="port" *ngIf="policyForm.get('type')?.value==='OPA gatekeeper'">
+        <clr-select-container>
+          <label class="w-200">{{'Policy.egress'|translate}}</label>
+          <select clrSelect name="gatekeeper" formControlName="e_gatekeeper">
+            <option value="IPBlock">{{'Policy.block'|translate}}</option>
+            <option value="Protocol">{{'Policy.protocol'|translate}}</option>
+            <option value="Port">{{'Policy.port'|translate}}</option>
+          </select>      
+        </clr-select-container>
+        <clr-input-container>
+          <label>{{policyForm.get('e_gatekeeper')?.value}}: </label>
+          <input clrInput placeholder="" name="port" formControlName="e_port"/>
+        </clr-input-container>
+        <clr-input-container *ngIf="policyForm.get('e_gatekeeper')?.value==='Port'">
+          <label>{{'Policy.endPort'|translate}}: </label>
+          <input clrInput placeholder="" name="endPort" formControlName="e_endPort"/>
+        </clr-input-container>
+      </div> -->
+      <div class="schedule">
+        <h4>{{'Policy.schedule'|translate}}:</h4>
+        <div>
+          <span>{{schedule}}</span>
+          <button (click)="isCornUpdateModal=true" type="button" class="btn btn-icon btn-primary" aria-label="home">
+            <clr-icon  shape="pencil"></clr-icon>
+        </button>
+        </div>
+      </div>
+      <clr-input-container>
+        <label>{{'Policy.historyLimit'|translate}}:  </label>
+        <input clrInput placeholder="" name="historyLimit" formControlName="historyLimit"/>
+      </clr-input-container>
+
+      <clr-toggle-container class="clr-inline">
+        <label class="w-200">{{'Policy.suspend'|translate}}:</label>
+        <clr-toggle-wrapper>
+          <input type="checkbox" clrToggle name="enabled" formControlName="suspend" />
+        </clr-toggle-wrapper>
+      </clr-toggle-container>
+
+      <clr-select-container>
+        <label class="w-200">{{'Policy.concurrencyRule'|translate}}</label>
+        <select clrSelect name="concurrencyRule" formControlName="concurrencyRule">
+          <option value="Allow">Allow</option>
+          <option value="Forbid">Forbid</option>
+        </select>
+      </clr-select-container>
+
+      <clr-input-container>
+        <label>{{'CommonlyUse.image'|translate}}:  </label>
+        <input clrInput placeholder="" name="image" formControlName="image"/>
+      </clr-input-container>
+
+      <clr-select-container>
+        <label class="w-200">{{'Policy.imagePullPolicy'|translate}}</label>
+        <select clrSelect name="imagePullPolicy" formControlName="imagePullPolicy">
+          <option value="IfNotPresent">IfNotPresent</option>
+          <option value="Always">Always</option>
+          <option value="Never">Never</option>
+        </select>
+      </clr-select-container>
+
+      <!-- <clr-toggle-container class="disabled-toggle clr-inline">
+        <label class="w-200">{{'Policy.enabled'|translate}}:</label>
+        <clr-toggle-wrapper>
+          <input  type="checkbox" clrToggle name="enabled" [(ngModel)]="enabledSettings" disabled [ngModelOptions]="{standalone: true}"/>
+        </clr-toggle-wrapper>
+      </clr-toggle-container>  -->
+      
+      <clr-select-container>
+        <label class="w-200">{{'Policy.settingsName'|translate}}</label>
+        <select clrSelect name="settingsName" formControlName="settingsName">
+          <option *ngFor="let item of settingList" [value]="item.metadata.name">{{item.metadata.name}}</option>
+        </select>
+      </clr-select-container>
+
+      <!-- <h4>{{'Policy.information'|translate}}</h4>
+      <clr-input-container>
+        <label>{{'Report_Detail.provider'|translate}}:  </label>
+        <input clrInput placeholder="" name="provider" value="Harbor" disabled/>
+      </clr-input-container>
+      <clr-input-container>
+        <label>{{'Report_Detail.endpoint'|translate}}:  </label>
+        <input clrInput placeholder="" name="endpoint" formControlName="endpoint"/>
+      </clr-input-container>
+      <clr-input-container>
+        <label>{{'Policy.username'|translate}}:  </label>
+        <input clrInput placeholder="" name="username" formControlName="username"/>
+      </clr-input-container>
+      <clr-input-container>
+        <label>{{'Policy.password'|translate}}:  </label>
+        <input clrInput placeholder="" name="password" formControlName="password"/>
+      </clr-input-container>
+      <clr-toggle-container class="clr-inline">
+        <label class="w-200">{{'Policy.insecure'|translate}}:</label>
+        <clr-toggle-wrapper>
+          <input  type="checkbox" clrToggle name="insecure" formControlName="insecure" />
+        </clr-toggle-wrapper>
+      </clr-toggle-container>
+ -->
+      <button clrStepButton="next" [disabled]="inspectionSettingValid">next</button>
+    </clr-step-content>
+  </clr-stepper-panel>
+
+  <clr-stepper-panel formGroupName="inspectionStandard">
+    <clr-step-title>{{'Setting.InspectionStandard'|translate}}</clr-step-title>
+    <clr-step-description>{{'Setting.InspectionStandardDesc'|translate}}</clr-step-description>
+    <clr-step-content *clrIfExpanded>
+      <div class="baselines">
+        <h4>{{'Policy.baselines'|translate}}
+          <clr-icon (click)="policySettingAddItem('baseline')" style="color:hsl(198, 80%, 46%)" shape="plus-circle" class="is-solid"></clr-icon>
+        </h4>
+        <ul class="list">
+          <li *ngFor="let item of baselines, let i = index">
+            <clr-input-container>
+              <label>{{'Policy.kind'|translate}}:   
+                <clr-icon (click)="policySettingremoveItem('baseline', i)" style="color: hsl(9, 100%, 43%);" *ngIf="i!==0" shape="minus-circle" class="is-solid"></clr-icon>
+              </label>
+              <input style="color: #999;" clrInput placeholder="" name="kind" disabled [(ngModel)]="item.kind" [ngModelOptions]="{standalone: true}" disabled/>
+            </clr-input-container>
+            <clr-select-container *ngIf="policyForm.get('inspectionResult')?.get('generate')?.value">
+              <label class="w-200">{{'Policy.baseline'|translate}}</label>
+              <select clrSelect name="baseline" [(ngModel)]="item.baseline" [ngModelOptions]="{standalone: true}">
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+                <option value="Critical">Critical</option>
+              </select>
+            </clr-select-container>
+
+            <clr-input-container>
+              <label>{{'CommonlyUse.version'|translate}}:   </label>
+              <input clrInput placeholder="" name="version" [(ngModel)]="item.version" [ngModelOptions]="{standalone: true}"/>
+            </clr-input-container>
+            <clr-input-container>
+              <label>{{'Policy.scheme'|translate}}:   </label>
+              <input clrInput placeholder="" name="scheme" [(ngModel)]="item.scheme" [ngModelOptions]="{standalone: true}"/>
+            </clr-input-container>
+          </li>
+        </ul>
+      </div>
+
+      <div class="actions w-auto">
+        <h4>{{'Policy.namespace'|translate}}
+          <clr-icon (click)="policySettingAddItem('namespacelabels')" style="color:hsl(198, 80%, 46%)" shape="plus-circle" class="is-solid"></clr-icon>
+        </h4>
+        <ul class="list">
+          <li *ngFor="let item of namespacelabels,let i = index;">
+            <clr-input-container>
+              <label>{{'Policy.key'| translate}}:   
+                <clr-icon (click)="policySettingremoveItem('namespacelabels', i)" style="color: hsl(9, 100%, 43%);"shape="minus-circle" class="is-solid"></clr-icon>
+              </label>
+              <input clrInput placeholder="" name="liveTime" [(ngModel)]="item.key" [ngModelOptions]="{standalone: true}"/>
+            </clr-input-container>
+            <clr-input-container>
+              <label>{{'Policy.value'| translate}}:   
+              </label>
+              <input clrInput placeholder="" name="liveTime" [(ngModel)]="item.value" [ngModelOptions]="{standalone: true}"/>
+            </clr-input-container>
+    
+          </li>
+        </ul>
+      </div>
+
+      <div class="actions w-auto">
+        <h4>{{'Policy.workload'|translate}}
+          <clr-icon (click)="policySettingAddItem('workloadlabels')" style="color:hsl(198, 80%, 46%)" shape="plus-circle" class="is-solid"></clr-icon>
+        </h4>
+        <ul class="list">
+          <li *ngFor="let item of workloadlabels,let i = index;">
+            <clr-input-container>
+              <label>{{'Policy.key'| translate}}:   
+                <clr-icon (click)="policySettingremoveItem('workloadlabels', i)" style="color: hsl(9, 100%, 43%);"shape="minus-circle" class="is-solid"></clr-icon>
+              </label>
+              <input clrInput placeholder="" name="liveTime" [(ngModel)]="item.key" [ngModelOptions]="{standalone: true}"/>
+            </clr-input-container>
+            <clr-input-container>
+              <label>{{'Policy.value'| translate}}:   
+              </label>
+              <input clrInput placeholder="" name="liveTime" [(ngModel)]="item.value" [ngModelOptions]="{standalone: true}"/>
+            </clr-input-container>
+
+          </li>
+        </ul>
+      </div>
+
+      <button clrStepButton="next" [disabled]="inspectionStandardValid">Next</button>
+    </clr-step-content>
+  </clr-stepper-panel>
+
+  <clr-stepper-panel formGroupName="inspectionResult">
+    <clr-step-title>{{'Setting.InspectionResult'| translate}}</clr-step-title>
+    <clr-step-description>{{'Setting.InspectionResultDesc'| translate}}</clr-step-description>
+    <clr-step-content *clrIfExpanded>
+      <h4>{{'Policy.setting'|translate}}</h4>
+      <clr-toggle-container class="clr-inline">
+        <label class="w-200">{{'Policy.generate'|translate}}:</label>
+        <clr-toggle-wrapper>
+          <input  type="checkbox" clrToggle name="generate" formControlName="generate" />
+        </clr-toggle-wrapper>
+      </clr-toggle-container>              
+      
+      <clr-select-container *ngIf="policyForm.get('inspectionResult')?.get('generate')?.value">
+        <label class="w-200">{{'Policy.format'|translate}}</label>
+        <select clrSelect name="format" formControlName="format">
+          <option value="YAML">YAML</option>
+          <option value="JSON">JSON</option>
+        </select>
+      </clr-select-container>
+      
+      <clr-input-container *ngIf="policyForm.get('inspectionResult')?.get('generate')?.value">
+        <label>{{'Policy.live_time'|translate}}:   </label>
+        <input clrInput placeholder="" name="liveTime" formControlName="liveTime"/>
+      </clr-input-container>
+
+      <clr-toggle-container *ngIf="policyForm.get('inspectionResult')?.get('generate')?.value" class="clr-inline">
+        <label class="w-200">{{'Policy.managedBy'|translate}}:</label>
+        <clr-toggle-wrapper>
+          <input  type="checkbox" clrToggle name="managedBy" formControlName="managedBy" />
+        </clr-toggle-wrapper>
+      </clr-toggle-container> 
+
+      <div class="actions" >
+        <h4 class="action-title">
+          <div>
+            {{'Policy.actions'|translate}}
+          </div>
+          <clr-toggle-container class="clr-inline">
+            <!-- <label class="w-200">{{'Policy.actions'|translate}}:</label> -->
+            <clr-toggle-wrapper>
+              <input  type="checkbox" clrToggle name="actions" formControlName="actions" />
+            </clr-toggle-wrapper>
+          </clr-toggle-container> 
+          <!-- <clr-icon (click)="policySettingAddItem('action')" style="color:hsl(198, 80%, 46%)" shape="plus-circle" class="is-solid"></clr-icon> -->
+        </h4>
+        <ul class="list" *ngIf="policyForm.get('inspectionResult')?.get('actions')?.value">
+          <li *ngFor="let item of actions,let i = index;">
+            <clr-input-container>
+              <label>{{'Policy.kind'|translate}}:   
+                <clr-icon (click)="policySettingremoveItem('action', i)" style="color: hsl(9, 100%, 43%);" *ngIf="i!==0" shape="minus-circle" class="is-solid"></clr-icon>
+              </label>
+              <input style="color: #999;" clrInput placeholder="" name="liveTime" [(ngModel)]="item.kind" [ngModelOptions]="{standalone: true}" disabled/>
+            </clr-input-container>
+
+          </li>
+        </ul>
+      </div>
+      <div class="submit-btns">
+        <button clrStepButton class="btn" type="button" (click)="deletePolicy()">{{'CommonlyUse.delete'|translate}}</button>
+        <button clrStepButton class="btn btn-primary" [disabled]="inspectionResultValid" *ngIf="!createButtonFlag" type="submit" (click)="modifyPolicy()">{{'CommonlyUse.update'|translate}}</button>
+        <button clrStepButton class="btn btn-primary" [disabled]="inspectionResultValid" *ngIf="createButtonFlag" type="submit" (click)="createPolicy()">{{'CommonlyUse.create'|translate}}</button>    
+      </div>
+    </clr-step-content>
+  </clr-stepper-panel>
+
+  <div class="alert alert-danger" role="alert" *ngIf="messageFlag === 'fail'">
+    <div class="alert-items">
+        <div class="alert-item static">
+          
+            <div class="alert-icon-wrapper">
+                <clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
+            </div>
+            <span class="alert-text">
+                {{messageContent}}
+            </span>
+            <button (click)="messageFlag =''" type="button" class="close" aria-label="Close">
+              <clr-icon aria-hidden="true" shape="close"></clr-icon>
+          </button>
+        </div>
+    </div>
+</div>
+<div class="alert alert-success" role="alert" *ngIf="messageFlag === 'success'">
+  <div class="alert-items">
+      <div class="alert-item static">
+          <div class="alert-icon-wrapper">
+              <clr-icon class="alert-icon" shape="check-circle"></clr-icon>
+          </div>
+          <span class="alert-text">
+            {{messageContent}}
+          </span>
+          <button type="button" (click)="messageFlag =''" class="close" aria-label="Close">
+            <clr-icon aria-hidden="true" shape="close"></clr-icon>
+        </button>
+      </div>
+  </div>
+</div>
+
+
+</form>
+<div [hidden]="!isCornUpdateModal" class="modal" style="width: 1000px; margin: 0 auto;">
+  <div class="modal-dialog" role="dialog" aria-hidden="true" style="width: 1000px;">
+      <div class="modal-content">
+          <div class="modal-header">
+              <button aria-label="Close" class="close" type="button">
+                  <!-- <clr-icon aria-hidden="true" shape="close"></clr-icon> -->
+              </button>
+              <h3 class="modal-title">{{'Policy.schedule_settings'|translate}}
+              </h3>
+          </div>
+          <div class="modal-body">
+              <!-- <app-corn (setSchedule)='setSchedule($event)' #corn></app-corn> -->
+              <app-corn-schedule  (saveSchedule)="saveSchedule($event)" (cancelSchedule)="cancelSchedule($event)"></app-corn-schedule>
+          </div>
+          <!-- <div class="modal-footer">
+              <button class="btn btn-outline" (click)='isCornUpdateModal=false' type="button">Cancel</button>
+              <button class="btn btn-primary" (click)='isCornUpdateModal=false' type="button">Ok</button>
+          </div>assessments -->
+      </div>
+  </div>
+</div>
+<div *ngIf="isCornUpdateModal" class="modal-backdrop" aria-hidden="true"></div>
+
+</div>

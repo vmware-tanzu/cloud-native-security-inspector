@@ -1,0 +1,42 @@
+<!--
+    Copyright 2022 VMware, Inc.
+    SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="workload">
+  <h2>{{'Workload.list'| translate}}</h2>
+  <clr-datagrid>
+    <clr-dg-column [clrDgField]="'attributes.pool'">{{'CommonlyUse.name'|translate}}</clr-dg-column>
+    <clr-dg-column [clrDgField]="'attributes.business_unit'">{{'CommonlyUse.namespace'|translate}}</clr-dg-column>
+    <clr-dg-column [clrDgField]="'attributes.business_unit'">{{'CommonlyUse.type'|translate}}</clr-dg-column>
+    <clr-dg-column [clrDgField]="'attributes.business_unit'">{{'Workload.passed'|translate}}</clr-dg-column>
+    <clr-dg-column [clrDgField]="'updated_by'"> {{'CommonlyUse.containers_total'|translate}} </clr-dg-column>
+    <clr-dg-column [clrDgSortBy]="'created_at'">{{'CommonlyUse.api_version'|translate}}</clr-dg-column>
+  
+    <clr-dg-row *ngFor="let violation of shardService.allWorkloadList">
+      <clr-dg-cell>
+        <a href="javascript:;" (click)="toWorkload(violation)" >
+          {{violation.workload.workload.metadata.name}}
+          <clr-icon shape="pop-out"></clr-icon>
+        </a>
+      </clr-dg-cell>
+      <clr-dg-cell>{{violation.namespace}}</clr-dg-cell>
+      <clr-dg-cell>{{violation.workload.workload.metadata.kind}}</clr-dg-cell>
+      <clr-dg-cell>{{violation.workload.passed}}</clr-dg-cell>
+      <clr-dg-cell>{{violation.workload.workload.pods.length}}</clr-dg-cell>
+      <clr-dg-cell>{{violation.workload.workload.metadata.apiVersion}}</clr-dg-cell>
+    </clr-dg-row>
+  
+    <clr-dg-footer>
+      <clr-dg-pagination #poolpagination [clrDgTotalItems]="shardService.allWorkloadList.length">
+        <clr-dg-page-size [clrPageSizeOptions]="pageSizeOptions">Workloads per page</clr-dg-page-size>
+        {{poolpagination.firstItem + 1}} - {{poolpagination.lastItem + 1}} of {{shardService.allWorkloadList.length}} workloads
+      </clr-dg-pagination>
+    </clr-dg-footer>
+  </clr-datagrid>
+  <div class="report-detai-bg" (click)='showDetail($event)' *ngIf="shardService.currentWorkload && shardService.showWorkloadDetailFlag">
+    <div class="report-detai" [ngClass]="{'show': shardService.showWorkloadDetailFlag}" style="height: 100%;">
+      <app-workload-detail></app-workload-detail>
+    </div>
+  </div>
+</div>

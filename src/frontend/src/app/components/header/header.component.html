@@ -1,0 +1,61 @@
+<!--
+    Copyright 2022 VMware, Inc.
+    SPDX-License-Identifier: Apache-2.0
+-->
+
+<header class="header-8">
+  <div class="branding">
+    <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M29.5724 19.8527L22.4399 28.8002L21.8549 27.5777L28.2599 19.5527L29.5724 19.8527ZM8.14492 27.5777L1.73992 19.5527L0.419922 19.8527L7.55992 28.8002L8.14492 27.5777Z" fill="#65A11B"/>
+      <path d="M0 17.9925L2.55 6.83252L3.6075 7.67252L1.32 17.685L0 17.9925ZM30 17.9925L27.45 6.83252L26.3925 7.67252L28.68 17.685L30 17.9925Z" fill="#1D428A"/>
+      <path d="M20.1374 28.4025H9.86236L9.27736 29.625H20.7224L20.1374 28.4025ZM25.1999 6.1875L15.9524 1.7325V0.375L26.2649 5.34L25.1999 6.1875ZM14.0474 0.375L3.73486 5.34L4.79986 6.1875L14.0474 1.7325V0.375Z" fill="#00A1B3"/>
+      <path d="M20.0851 26.0776H9.91514L3.57764 18.1276L5.84264 8.21256L15.0001 3.81006L24.1576 8.22006L26.4226 18.1351L20.0851 26.0776ZM10.4926 24.8776H19.5001L25.1176 17.8351L23.1151 9.05256L15.0001 5.13756L6.88514 9.05256L4.87514 17.8351L10.4926 24.8776Z" fill="#0091DA"/>
+      <g style="transform: translateX(11px) translateY(11px);">
+        <path d="M4 10L3.74636 9.74965C3.62546 9.63024 3.33364 9.46565 3.02455 9.29138C1.89318 8.65376 0 7.58552 0 5.29138V1.77639L4 0L8 1.77639V5.29138C8 7.58691 6.10682 8.65376 4.97545 9.29138C4.66636 9.46565 4.37455 9.63024 4.25364 9.74965L4 10ZM0.727273 2.25864V5.29138C0.727273 7.15307 2.25909 8.01614 3.37773 8.64684C3.62 8.78515 3.83 8.9018 4 9.01798C4.17 8.9018 4.38 8.78331 4.62227 8.64684C5.74091 8.01614 7.27273 7.15307 7.27273 5.29138V2.25864L4 0.80498L0.727273 2.25864Z" fill="#FF8142"/>
+      </g>
+      </svg>
+      <svg width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+      </svg>
+              
+      {{'Header.title'|translate}}
+  </div>
+  <div class="header-actions">
+    <svg width="2" height="42" viewBox="0 0 2 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path opacity="0.15" d="M1 1V41" stroke="white" stroke-linecap="square"/>
+    </svg>  
+    <div [ngClass]="['language-dropdown', 'dropdown', 'right', langFlag ? 'open' : 'closed']" (click)="languageDropdown()">
+      <clr-icon shape="world" style="color: #fff; margin-right: 6px; width: 24px; height: 24px;"></clr-icon>
+      <a class="dropdown-toggle" style="color: #fff; font-size: 15px">{{i18.lang | translate}}
+        <cds-icon class="angleicon" shape="angle" direction="down" size="sm"></cds-icon>
+      </a>
+      <div class="dropdown-menu">
+        <div class="dropdown-item" style="font-size: 14px" *ngFor="let lang of i18.langList"
+          (click)="i18.changeLanguage(lang)">{{lang | translate}}</div>
+      </div>
+    </div>
+    <svg width="2" height="42" viewBox="0 0 2 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path opacity="0.15" d="M1 1V41" stroke="white" stroke-linecap="square"/>
+    </svg>  
+    <a href="javascript://" class="nav-link nav-icon line" aria-label="settings">
+      <clr-icon shape="search"></clr-icon>
+    </a>
+    <svg width="2" height="42" viewBox="0 0 2 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path opacity="0.15" d="M1 1V41" stroke="white" stroke-linecap="square"/>
+    </svg>  
+    <a href="javascript://" class="nav-link nav-icon line" aria-label="settings">
+      <clr-icon shape="bell"></clr-icon>
+    </a>
+    <svg width="2" height="42" viewBox="0 0 2 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path opacity="0.15" d="M1 1V41" stroke="white" stroke-linecap="square"/>
+    </svg>  
+    <a href="javascript://" class="nav-link nav-icon line" aria-label="settings">
+      <clr-icon shape="help"></clr-icon>
+    </a>
+    <svg width="2" height="42" viewBox="0 0 2 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path opacity="0.15" d="M1 1V41" stroke="white" stroke-linecap="square"/>
+    </svg>  
+    <a href="javascript://" class="nav-link nav-icon" aria-label="settings">
+      <clr-icon shape="user"></clr-icon>
+    </a>
+</div>
+</header>
