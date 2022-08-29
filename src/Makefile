@@ -109,17 +109,6 @@ deploy-without-portal: manifests kustomize namespace ## Deploy controller to the
 
 undeploy: ## Undeploy controller from the K8s cluster specified in ~/.kube/config.
 	$(KUSTOMIZE) build config/default | kubectl delete -f -
-	$(KUBECTLCMD) delete -f frontend/scripts/cloud-native-security-inspector-portal-serviceaccount.yaml
-	$(KUBECTLCMD) delete -f frontend/scripts/cloud-native-security-inspector-portal-role.yaml
-	$(KUBECTLCMD) delete -f frontend/scripts/cloud-native-security-inspector-portal-rolebinding.yaml
-	$(KUBECTLCMD) delete -f frontend/scripts/cloud-native-security-inspector-portal.yaml
-	$(KUBECTLCMD) delete -f frontend/scripts/cloud-native-security-inspector-portal-service.yaml
-
-	$(KUBECTLCMD) delete -f frontend/scripts/cloud-native-security-inspector-portal-serviceaccount.yaml
-	$(KUBECTLCMD) delete -f frontend/scripts/cloud-native-security-inspector-portal-role.yaml
-	$(KUBECTLCMD) delete -f frontend/scripts/cloud-native-security-inspector-portal-rolebinding.yaml
-	$(KUBECTLCMD) delete -f frontend/scripts/cloud-native-security-inspector-portal.yaml
-	$(KUBECTLCMD) delete -f frontend/scripts/cloud-native-security-inspector-portal-service.yaml
 
 	
 portal: namespace
