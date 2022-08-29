@@ -40,7 +40,7 @@ There are two deployment options:
 ### Option 1: Using pre-built images (recommended)
 Using the following command to clone the source code:
 ```shell
-$ git clone https://github.com/vmware/cloud-native-security-inspector.git
+$ git clone https://github.com/vmware-tanzu/cloud-native-security-inspector.git
 ```
 Use the following commands to deploy the **Cloud Native Security Inspector** and other related components, and make sure the Kubernetes cluster has an Internet connection.
 
