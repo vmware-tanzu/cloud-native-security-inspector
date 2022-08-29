@@ -268,7 +268,7 @@ export class PolicyComponent implements OnInit {
         settingsName: this.policyForm.get('inspectionSetting')?.get('settingsName')?.value,
         strategy: {
           concurrencyRule: this.policyForm.get('inspectionSetting')?.get('concurrencyRule')?.value,
-          historyLimit: this.policyForm.get('inspectionSetting')?.get('historyLimit')?.value,
+          historyLimit: +this.policyForm.get('inspectionSetting')?.get('historyLimit')?.value,
           suspend: this.policyForm.get('inspectionSetting')?.get('suspend')?.value
         },
         workNamespace: this.policyForm.get('inspectionSetting')?.get('namespace')?.value
@@ -318,7 +318,7 @@ export class PolicyComponent implements OnInit {
     this.policyInfo.spec.schedule = this.schedule
     this.policyInfo.spec.settingsName = this.policyForm.get('inspectionSetting')?.get('settingsName')?.value
     this.policyInfo.spec.strategy.concurrencyRule = this.policyForm.get('inspectionSetting')?.get('concurrencyRule')?.value
-    this.policyInfo.spec.strategy.historyLimit = this.policyForm.get('inspectionSetting')?.get('historyLimit')?.value
+    this.policyInfo.spec.strategy.historyLimit = +this.policyForm.get('inspectionSetting')?.get('historyLimit')?.value
     this.policyInfo.spec.strategy.suspend = this.policyForm.get('inspectionSetting')?.get('suspend')?.value
     this.policyInfo.spec.workNamespace = this.policyForm.get('inspectionSetting')?.get('namespace')?.value
     if(this.policyForm.get('inspectionResult')?.get('actions')?.value){
