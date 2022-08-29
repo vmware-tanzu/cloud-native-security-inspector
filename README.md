@@ -69,12 +69,13 @@ $ ./deploy.sh install --build-source
 After the installation is completed either via Option 1 or Option 2, use the following command to see if all the components have been started successfully in Kubernetes.
 
 ```shell
-# Verify the manager
+# Verify the manager and portal
 kubectl get deployment -n cnsi-system
-NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
-cnsi-controller-manager   1/1     1            1           16m
+NAME                                     READY   UP-TO-DATE   AVAILABLE   AGE
+cloud-native-security-inspector-portal   1/1     1            1           93m
+cnsi-controller-manager                  1/1     1            1           93m
 
-# Verify portal deployment
+# Verify other resource of portal deployment
 $ kubectl get serviceaccount -n cnsi-system cloud-native-security-inspector-portal-serviceaccount
 NAME                                                    SECRETS   AGE
 cloud-native-security-inspector-portal-serviceaccount   0         166m
@@ -87,14 +88,9 @@ $ kubectl get clusterrolebinding -n cnsi-system cloud-native-security-inspector-
 NAME                                                 ROLE                                                      AGE
 cloud-native-security-inspector-portal-rolebinding   ClusterRole/cloud-native-security-inspector-portal-role   130m
 
-$ kubectl get pods -n cnsi-system cloud-native-security-inspector-portal
-NAME                                     READY   STATUS    RESTARTS   AGE
-cloud-native-security-inspector-portal   1/1     Running   0          142m
-
 $ kubectl get svc -n cnsi-system cloud-native-security-inspector-portal-service
 NAME                                             TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
 cloud-native-security-inspector-portal-service   NodePort   10.98.232.35   <none>        3800:32541/TCP   44h
-
 ```
 
 If you are using KIND to deploy Kubernetes, in order to visit the portal successfully, please make the NodePort (by default: 30150) of the portal has been exposed to the host machine correctly.  For more details please refer to [KIND documentation](https://kind.sigs.k8s.io/docs/user/quick-start/#mapping-ports-to-the-host-machine).
