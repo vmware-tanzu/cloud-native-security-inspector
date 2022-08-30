@@ -22,11 +22,11 @@ import (
 
 // Store for storing vulnerability data.
 type Store struct {
-	artifactID core.ArtifactID
+	ArtifactID core.ArtifactID
 	// Refer the harbor vulnerability data model.
-	data models.NativeReportSummary
+	Data models.NativeReportSummary
 	// Error object if any error occurred.
-	err error
+	Err error
 }
 
 // Metadata implements types.Store.
@@ -40,48 +40,48 @@ func (s *Store) Metadata() core.Metadata {
 
 // Validate implements types.Store.
 func (s *Store) Validate() error {
-	return s.err
+	return s.Err
 }
 
 // SetError implements types.Store.
 func (s *Store) SetError(err error) {
-	s.err = err
+	s.Err = err
 }
 
 // FillIn implements types.Store.
 func (s *Store) FillIn(artifactID core.ArtifactID, data interface{}) {
 	if len(artifactID.String()) == 0 {
-		s.err = errors.New("empty artifact ID")
+		s.Err = errors.New("empty artifact ID")
 		return
 	}
 
 	if data == nil {
-		s.err = errors.New("nil data to fill in")
+		s.Err = errors.New("nil data to fill in")
 		return
 	}
 
 	vulSummary, ok := data.(models.NativeReportSummary)
 	if !ok {
-		s.err = errors.Errorf("invalid data model: require models.NativeReportSummary")
+		s.Err = errors.Errorf("invalid data model: require models.NativeReportSummary")
 		return
 	}
 
-	s.data = vulSummary
+	s.Data = vulSummary
 }
 
 // ForArtifact implements types.Store.
 func (s *Store) ForArtifact() core.ArtifactID {
-	return s.artifactID
+	return s.ArtifactID
 }
 
 // Assess implements types.Store.
 func (s *Store) Assess(baseline v1alpha1.ComplianceBaseline) error {
-	if s.err != nil {
-		return errors.Wrap(s.err, "assess")
+	if s.Err != nil {
+		return errors.Wrap(s.Err, "assess")
 	}
 
 	expectedSev := vuln.ParseSeverityVersion3(baseline.Baseline)
-	currentSev := vuln.ParseSeverityVersion3(s.data.Severity)
+	currentSev := vuln.ParseSeverityVersion3(s.Data.Severity)
 	if currentSev.Code() > expectedSev.Code() {
 		return errors.Errorf("expect vulnerability severity <= %s but got %s", expectedSev, currentSev)
 	}
@@ -92,11 +92,11 @@ func (s *Store) Assess(baseline v1alpha1.ComplianceBaseline) error {
 // FromJSON implements types.Store.
 func (s *Store) FromJSON(str string) {
 	if len(str) == 0 {
-		s.err = errors.New("empty JSON data for filling in")
+		s.Err = errors.New("empty JSON data for filling in")
 	}
 
 	if e := json.Unmarshal([]byte(str), s); e != nil {
-		s.err = e
+		s.Err = e
 	}
 }
 

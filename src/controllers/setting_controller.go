@@ -70,7 +70,7 @@ func (r *SettingReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 		settingCopy.Status.Status = goharborv1alpha1.SettingStatusUnknown
 	}
 	// get data source provider
-	provider, err := providers.NewProvider(ctx, r.Client, &setting.Spec.DataSource)
+	provider, err := providers.NewProvider(ctx, r.Client, setting)
 	if err != nil {
 		logger.Error(err, "failed to create provider")
 		return ctrl.Result{}, errors.Wrap(err, "new provider error")

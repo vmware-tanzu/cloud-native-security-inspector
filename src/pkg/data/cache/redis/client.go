@@ -56,6 +56,8 @@ func (c *Client) Read(ctx context.Context, id core.ArtifactID, options ...data.R
 		if err := store.Validate(); err != nil {
 			return nil, errors.Wrap(err, "parse data from JSON")
 		}
+
+		stores = append(stores, store)
 	}
 
 	return stores, nil
@@ -79,9 +81,9 @@ func (c *Client) Write(ctx context.Context, id core.ArtifactID, data []types.Sto
 	for _, d := range data {
 		args := redis.Args{}.
 			Add(key(id, d.Metadata())).
+			Add(d.ToJSON()).
 			Add("EX").
-			Add(c.LivingTime).
-			Add(d.ToJSON())
+			Add(c.LivingTime)
 
 		if err := conn.Send("SET", args...); err != nil {
 			return errors.Wrap(err, "write cache data")
