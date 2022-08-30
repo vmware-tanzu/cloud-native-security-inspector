@@ -16,7 +16,7 @@
     <clr-step-content *clrIfExpanded>
       <clr-input-container>
         <label>{{'Policy.name'|translate}}: </label>
-        <input [disabled]='true' clrInput placeholder="" name="name" formControlName="name"/>
+        <input clrInput placeholder="" name="name" formControlName="name"/>
       </clr-input-container>
 
       <clr-input-container>
@@ -110,12 +110,6 @@
         </select>
       </clr-select-container>
 
-      <!-- <clr-toggle-container class="disabled-toggle clr-inline">
-        <label class="w-200">{{'Policy.enabled'|translate}}:</label>
-        <clr-toggle-wrapper>
-          <input  type="checkbox" clrToggle name="enabled" [(ngModel)]="enabledSettings" disabled [ngModelOptions]="{standalone: true}"/>
-        </clr-toggle-wrapper>
-      </clr-toggle-container>  -->
       
       <clr-select-container>
         <label class="w-200">{{'Policy.settingsName'|translate}}</label>
@@ -124,30 +118,6 @@
         </select>
       </clr-select-container>
 
-      <!-- <h4>{{'Policy.information'|translate}}</h4>
-      <clr-input-container>
-        <label>{{'Report_Detail.provider'|translate}}:  </label>
-        <input clrInput placeholder="" name="provider" value="Harbor" disabled/>
-      </clr-input-container>
-      <clr-input-container>
-        <label>{{'Report_Detail.endpoint'|translate}}:  </label>
-        <input clrInput placeholder="" name="endpoint" formControlName="endpoint"/>
-      </clr-input-container>
-      <clr-input-container>
-        <label>{{'Policy.username'|translate}}:  </label>
-        <input clrInput placeholder="" name="username" formControlName="username"/>
-      </clr-input-container>
-      <clr-input-container>
-        <label>{{'Policy.password'|translate}}:  </label>
-        <input clrInput placeholder="" name="password" formControlName="password"/>
-      </clr-input-container>
-      <clr-toggle-container class="clr-inline">
-        <label class="w-200">{{'Policy.insecure'|translate}}:</label>
-        <clr-toggle-wrapper>
-          <input  type="checkbox" clrToggle name="insecure" formControlName="insecure" />
-        </clr-toggle-wrapper>
-      </clr-toggle-container>
- -->
       <button clrStepButton="next" [disabled]="inspectionSettingValid">next</button>
     </clr-step-content>
   </clr-stepper-panel>
@@ -166,7 +136,7 @@
               <label>{{'Policy.kind'|translate}}:   
                 <clr-icon (click)="policySettingremoveItem('baseline', i)" style="color: hsl(9, 100%, 43%);" *ngIf="i!==0" shape="minus-circle" class="is-solid"></clr-icon>
               </label>
-              <input style="color: #999;" clrInput placeholder="" name="kind" disabled [(ngModel)]="item.kind" [ngModelOptions]="{standalone: true}" disabled/>
+              <input style="color: #999;" clrInput placeholder="" name="kind" disabled [(ngModel)]="item.kind" [ngModelOptions]="{standalone: true}" />
             </clr-input-container>
             <clr-select-container *ngIf="policyForm.get('inspectionResult')?.get('generate')?.value">
               <label class="w-200">{{'Policy.baseline'|translate}}</label>
