@@ -1,6 +1,6 @@
 {
   "/proxy": {
-      "target": "http://10.186.230.88:8081",
+      "target": "http://127.0.0.1:8081",
       "logLevel": "debug", 
       "secure": false,
       "changeOrigin": true,
