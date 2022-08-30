@@ -81,10 +81,10 @@ export class ShardService {
         label: 'violation amount',
         data: [],
         backgroundColor: [
-          '#37A2EB'
+          'red'
         ],
         borderColor: [
-          '#37A2EB'
+          'red'
       ],
         borderWidth: 3
       },

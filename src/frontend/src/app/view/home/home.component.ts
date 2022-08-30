@@ -44,8 +44,9 @@ export class HomeComponent implements OnInit {
         const workloadNamespance:any = {}
         this.shardService.namespaceList.forEach(el => {
           // get namespaces report xAxis data
-          this.shardService.clusterChartBarOptions.xAxis.push(el.name)
           this.shardService.namespacChartLineOption.xAxis.push(el.name)
+          this.shardService.clusterChartBarOptions.xAxis.push(el.name)
+          this.shardService.namespacChartLineOption.series[0].data.push(0)
           workloadNamespance[el.name] = {
             workloads: [
               {
@@ -98,8 +99,9 @@ export class HomeComponent implements OnInit {
         //
         this.shardService.violationList = []
         this.shardService.allWorkloadList = []
-
         this.shardService.newReport?.spec.namespaceAssessments.forEach(el => {
+          const index = this.shardService.namespacChartLineOption.xAxis.findIndex((ns: string)=> ns === el.namespace.name)
+          this.shardService.namespacChartLineOption.series[0].data[index] = el.workloadAssessments.length
           if (workloadNamespance[el.namespace.name]) {
             el.workloadAssessments.forEach(workload => {
               const newWorkload = {

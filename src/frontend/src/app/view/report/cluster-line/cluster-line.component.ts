@@ -1,9 +1,4 @@
-/*
- * Copyright 2022 VMware, Inc.
- * SSPDX-License-Identifier: Apache-2.0
- */
-
-import { Component, Input, OnInit, Output, ViewChild, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import {
   Chart,
   ArcElement,
@@ -60,21 +55,18 @@ Chart.register(
 );
 
 @Component({
-  selector: 'app-histogram',
-  templateUrl: './histogram.component.html',
-  styleUrls: ['./histogram.component.less']
+  selector: 'app-cluster-line',
+  templateUrl: './cluster-line.component.html',
+  styleUrls: ['./cluster-line.component.less']
 })
-export class HistogramComponent implements OnInit {
-  @Input('chartOptions') chartOptions!:any
-  @Input('updateFlag') updateFlag:boolean = false
-  @Input('width') width:string = '100%'
-  @Input('height') height:string = '400px'
-  @ViewChild('charts')charts!:any
+export class ClusterLineComponent implements OnInit {
+
+  @Input('chartOptions')chartOptions!:any
+  @Input('updateFlag')updateFlag!:any
+  constructor() { }
   public myChart: any;
-  constructor() {
-  }
-  ngOnInit() {
-    this.newReport('bar')
+  ngOnInit(): void {
+    this.newReport('cluster-line')
   }
   render ():any {
     this.myChart.data.datasets = this.chartOptions.series
@@ -86,7 +78,7 @@ export class HistogramComponent implements OnInit {
     const canvas: HTMLCanvasElement = document.getElementById(DomID) as HTMLCanvasElement;
     const ctx: any = canvas.getContext('2d');
     this.myChart = new Chart(ctx, {
-      type: 'bar',
+      type: 'line',
       data: {
           labels: [],
           datasets: []
@@ -107,7 +99,8 @@ export class HistogramComponent implements OnInit {
             ticks: {
               color: '#fff'
             }
-          }          },
+          }
+          },
       }
     });    
   }

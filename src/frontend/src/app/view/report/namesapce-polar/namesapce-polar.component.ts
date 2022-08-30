@@ -1,9 +1,4 @@
-/*
- * Copyright 2022 VMware, Inc.
- * SSPDX-License-Identifier: Apache-2.0
- */
-
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   Chart,
   ArcElement,
@@ -59,18 +54,19 @@ Chart.register(
   SubTitle
 );
 @Component({
-  selector: 'app-packedbubble',
-  templateUrl: './packedbubble.component.html',
-  styleUrls: ['./packedbubble.component.less']
+  selector: 'app-namesapce-polar',
+  templateUrl: './namesapce-polar.component.html',
+  styleUrls: ['./namesapce-polar.component.less']
 })
-export class PackedbubbleComponent implements OnInit {
+export class NamesapcePolarComponent implements OnInit {
+
   normal = 0
   abnormal = 0
   compliant = 0
   myChart:any
   constructor() { }
   ngOnInit(): void {
-    this.newReport('polarArea')
+    this.newReport('namespace-polarArea')
   }
   newReport(DomID: string) {
     const canvas: HTMLCanvasElement = document.getElementById(DomID) as HTMLCanvasElement;
@@ -107,8 +103,9 @@ export class PackedbubbleComponent implements OnInit {
    getSeries (normal=0, abnormal=0, compliant=0):any {
     this.normal = normal
     this.abnormal = abnormal
-    this.compliant = compliant    
+    this.compliant = compliant
     this.myChart.data.datasets[0].data = [this.abnormal, this.normal]
     this.myChart.update()    
    }
+
 }

@@ -6,14 +6,14 @@
 <div class="workload">
   <h2>{{'Workload.list'| translate}}</h2>
   <clr-datagrid>
-    <clr-dg-column [clrDgField]="'attributes.pool'">{{'CommonlyUse.name'|translate}}</clr-dg-column>
-    <clr-dg-column [clrDgField]="'attributes.business_unit'">{{'CommonlyUse.namespace'|translate}}</clr-dg-column>
-    <clr-dg-column [clrDgField]="'attributes.business_unit'">{{'CommonlyUse.type'|translate}}</clr-dg-column>
-    <clr-dg-column [clrDgField]="'attributes.business_unit'">{{'Workload.passed'|translate}}</clr-dg-column>
-    <clr-dg-column [clrDgField]="'updated_by'"> {{'CommonlyUse.containers_total'|translate}} </clr-dg-column>
-    <clr-dg-column [clrDgSortBy]="'created_at'">{{'CommonlyUse.api_version'|translate}}</clr-dg-column>
+    <clr-dg-column [clrDgField]="'workload.workload.metadata.name'">{{'CommonlyUse.name'|translate}}</clr-dg-column>
+    <clr-dg-column [clrDgField]="'namespace'">{{'CommonlyUse.namespace'|translate}}</clr-dg-column>
+    <clr-dg-column [clrDgField]="'workload.workload.metadata.kind'">{{'CommonlyUse.type'|translate}}</clr-dg-column>
+    <clr-dg-column [clrDgField]="'workload.passed'" >{{'Workload.passed'|translate}}</clr-dg-column>
+    <clr-dg-column [clrDgField]="'workload.workload.pods.length'" > {{'CommonlyUse.containers_total'|translate}} </clr-dg-column>
+    <clr-dg-column [clrDgField]="'workload.workload.metadata.apiVersion'" >{{'CommonlyUse.api_version'|translate}}</clr-dg-column>
   
-    <clr-dg-row *ngFor="let violation of shardService.allWorkloadList">
+    <clr-dg-row *clrDgItems="let violation of shardService.allWorkloadList">
       <clr-dg-cell>
         <a href="javascript:;" (click)="toWorkload(violation)" >
           {{violation.workload.workload.metadata.name}}

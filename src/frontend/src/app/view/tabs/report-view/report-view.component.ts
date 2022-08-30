@@ -3,7 +3,8 @@
  * SSPDX-License-Identifier: Apache-2.0
  */
 
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ShardService } from 'src/app/service/shard.service'
 import { LineComponent } from '../../report/line/line.component';
 import { ReportViewDetailComponent } from '../report-view-detail/report-view-detail.component'
@@ -12,14 +13,15 @@ import { ReportViewDetailComponent } from '../report-view-detail/report-view-det
   templateUrl: './report-view.component.html',
   styleUrls: ['./report-view.component.less']
 })
-export class ReportViewComponent implements OnInit {
-  @ViewChild('reportline')reportline!: LineComponent
+export class ReportViewComponent implements OnInit, OnDestroy {
+  @ViewChild('reportline')reportline!: LineComponent|null
   @ViewChild('reportDetail')reportDetail!:ReportViewDetailComponent
   public pageSizeOptions = [10, 20, 50, 100, 500];
   public showDetailFlag = false
   private timer:any
   constructor(
-    public shardService:ShardService
+    public shardService:ShardService,
+    public router:Router
   ) { }
 
   ngOnInit(): void {
@@ -33,6 +35,9 @@ export class ReportViewComponent implements OnInit {
     },100)    
   }
 
+  ngOnDestroy(): void {
+    
+  }
     
   toReport(report: any) {
     this.showDetailFlag = true

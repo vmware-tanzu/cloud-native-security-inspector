@@ -33,7 +33,10 @@ import { PolicyComponent } from './view/policy/policy.component';
 import { CornScheduleComponent } from './components/corn-schedule/corn-schedule.component';
 import { TimePickerComponent } from './components/time-picker/time-picker.component';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { AppService, createTranslateLoader } from './app.service'
+import { AppService, createTranslateLoader } from './app.service';
+import { ClusterLineComponent } from './view/report/cluster-line/cluster-line.component';
+import { NamesapcePolarComponent } from './view/report/namesapce-polar/namesapce-polar.component';
+import { NamesapceHistogramComponent } from './view/report/namesapce-histogram/namesapce-histogram.component'
 @NgModule({
   declarations: [
     AppComponent,
@@ -57,7 +60,10 @@ import { AppService, createTranslateLoader } from './app.service'
     WorkloadDetailComponent,
     PolicyComponent,
     CornScheduleComponent,
-    TimePickerComponent
+    TimePickerComponent,
+    ClusterLineComponent,
+    NamesapcePolarComponent,
+    NamesapceHistogramComponent
   ],
   imports: [
     BrowserModule,

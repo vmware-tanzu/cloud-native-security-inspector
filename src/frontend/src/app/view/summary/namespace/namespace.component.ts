@@ -34,7 +34,11 @@ export class NamespaceComponent implements OnInit {
         this.shardService.workloadChartbarOption.series[0].data = []
         obj.workloads.workloads.forEach(workload => {
           this.shardService.workloadChartbarOption.series[0].data.push(workload.violationList.length)
+          // this.shardService.workloadChartbarOption.xAxis.push(workload.name)
         });
+        this.shardService.showNormal = obj.workloads.normal,
+        this.shardService.showAbnormal = obj.workloads.abnormal,
+        this.shardService.showCompliant = obj.workloads.compliant
         this.setNamespaceHistogramChart.emit()
       }
     } else {
