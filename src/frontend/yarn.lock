@@ -2414,6 +2414,11 @@ chardet@^0.7.0:
   resolved "https://build-artifactory.eng.vmware.com/artifactory/api/npm/npm/chardet/-/chardet-0.7.0.tgz#90094849f0937f2eedc2425d0d28a9e5f0cbad9e"
   integrity sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==
 
+chart.js@^3.9.1:
+  version "3.9.1"
+  resolved "https://registry.npmmirror.com/chart.js/-/chart.js-3.9.1.tgz#3abf2c775169c4c71217a107163ac708515924b8"
+  integrity sha512-Ro2JbLmvg83gXF5F4sniaQ+lTbSv18E+TIf2cOeiH1Iqd2PGFOtem+DUufMZsCJwFE7ywPOpfXFBwRTGq7dh6w==
+
 "chokidar@>=3.0.0 <4.0.0", chokidar@^3.0.0, chokidar@^3.5.1, chokidar@^3.5.3:
   version "3.5.3"
   resolved "https://build-artifactory.eng.vmware.com/artifactory/api/npm/npm/chokidar/-/chokidar-3.5.3.tgz#1cf37c8707b932bd1af1ae22c0432e2acd1903bd"
@@ -3582,18 +3587,6 @@ hdr-histogram-percentiles-obj@^3.0.0:
   resolved "https://build-artifactory.eng.vmware.com/artifactory/api/npm/npm/hdr-histogram-percentiles-obj/-/hdr-histogram-percentiles-obj-3.0.0.tgz#9409f4de0c2dda78e61de2d9d78b1e9f3cba283c"
   integrity sha512-7kIufnBqdsBGcSZLPJwqHT3yhk1QTsSlFsVD3kx5ixH/AlgBs9yM1q6DPhXZ8f8gtdqgh7N7/5btRLpQsS2gHw==
 
-highcharts-angular@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.npmmirror.com/highcharts-angular/-/highcharts-angular-3.0.0.tgz#d86caa6e79e4acc44d10f6a199a6b864fcb5d019"
-  integrity sha512-v2jMlvmzmLqqKVQdsARBewmYaQOL44lmioF9WEseuIF2KyTeZIeUtYbrEqG9uz+/dl0bsDZL6WtUrgCa42D3DQ==
-  dependencies:
-    tslib "^2.0.0"
-
-highcharts@^10.1.0:
-  version "10.1.0"
-  resolved "https://registry.npmmirror.com/highcharts/-/highcharts-10.1.0.tgz#561872ae8ea819131d78949136d05bcaaa99108b"
-  integrity sha512-gW/pzy/Qy/hiYeCflYHpwgsP2nqQavwuRUswRf+papmbutZ3I7K7AIZJ/yZ9NL5yzpF7X7r2dX7/nzZGN4A1rg==
-
 hosted-git-info@^4.0.1:
   version "4.1.0"
   resolved "https://build-artifactory.eng.vmware.com/artifactory/api/npm/npm/hosted-git-info/-/hosted-git-info-4.1.0.tgz#827b82867e9ff1c8d0c4d9d53880397d2c86d224"
@@ -4542,10 +4535,10 @@ modern-normalize@1.1.0:
   resolved "https://build-artifactory.eng.vmware.com/artifactory/api/npm/npm/modern-normalize/-/modern-normalize-1.1.0.tgz#da8e80140d9221426bd4f725c6e11283d34f90b7"
   integrity sha512-2lMlY1Yc1+CUy0gw4H95uNN7vjbpoED7NNRSBHE25nWfLBdmMzFCsPshlzbxHz+gYMcBEUN8V4pU16prcdPSgA==
 
-moment@^2.29.3:
-  version "2.29.3"
-  resolved "https://registry.npmmirror.com/moment/-/moment-2.29.3.tgz#edd47411c322413999f7a5940d526de183c031f3"
-  integrity sha512-c6YRvhEo//6T2Jz/vVtYzqBzwvPT95JBQ+smCytzf7c50oMZRsR/a4w88aD34I+/QVSfnoAnSBFPJHItlOMJVw==
+moment@2.29.4:
+  version "2.29.4"
+  resolved "https://registry.npmmirror.com/moment/-/moment-2.29.4.tgz#3dbe052889fe7c1b2ed966fcb3a77328964ef108"
+  integrity sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==
 
 ms@2.0.0:
   version "2.0.0"
@@ -6202,7 +6195,7 @@ tree-kill@1.2.2:
   resolved "https://build-artifactory.eng.vmware.com/artifactory/api/npm/npm/tree-kill/-/tree-kill-1.2.2.tgz#4ca09a9092c88b73a7cdc5e8a01b507b0790a0cc"
   integrity sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==
 
-tslib@2.4.0, tslib@^2.0.0, tslib@^2.1.0, tslib@^2.2.0, tslib@^2.3.0, tslib@^2.3.1:
+tslib@2.4.0, tslib@^2.1.0, tslib@^2.2.0, tslib@^2.3.0, tslib@^2.3.1:
   version "2.4.0"
   resolved "https://build-artifactory.eng.vmware.com/artifactory/api/npm/npm/tslib/-/tslib-2.4.0.tgz#7cecaa7f073ce680a05847aa77be941098f36dc3"
   integrity sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==

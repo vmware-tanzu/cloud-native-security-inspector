@@ -26,7 +26,7 @@
     "@ngx-translate/http-loader": "^7.0.0",
     "@webcomponents/webcomponentsjs": "^2.6.0",
     "chart.js": "^3.9.1",
-    "moment": "^2.29.3",
+    "moment": "2.29.4",
     "rxjs": "~6.6.0",
     "tslib": "^2.3.0",
     "yarm": "^0.4.0",
