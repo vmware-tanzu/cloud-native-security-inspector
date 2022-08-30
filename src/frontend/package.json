@@ -27,7 +27,7 @@
     "@webcomponents/webcomponentsjs": "^2.6.0",
     "highcharts": "^10.1.0",
     "highcharts-angular": "^3.0.0",
-    "moment": "^2.29.3",
+    "moment": "^2.29.4",
     "rxjs": "~6.6.0",
     "tslib": "^2.3.0",
     "yarm": "^0.4.0",
