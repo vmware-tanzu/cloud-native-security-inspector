@@ -1,4 +1,4 @@
-FROM launcher.gcr.io/google/nodejs as builder
+FROM node:14.15 as builder
 
 WORKDIR /protal
 COPY frontend/ .

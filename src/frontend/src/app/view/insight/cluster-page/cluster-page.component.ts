@@ -9,6 +9,61 @@ import { PolicyService } from 'src/app/service/policy.service';
 import { ShardService } from 'src/app/service/shard.service'
 import { PackedbubbleComponent } from 'src/app/view/report/packedbubble/packedbubble.component'
 import { LineComponent } from '../../report/line/line.component';
+import { HistogramComponent } from '../../report/histogram/histogram.component';
+import {
+  Chart,
+  ArcElement,
+  LineElement,
+  BarElement,
+  PointElement,
+  BarController,
+  BubbleController,
+  DoughnutController,
+  LineController,
+  PieController,
+  PolarAreaController,
+  RadarController,
+  ScatterController,
+  CategoryScale,
+  LinearScale,
+  LogarithmicScale,
+  RadialLinearScale,
+  TimeScale,
+  TimeSeriesScale,
+  Decimation,
+  Filler,
+  Legend,
+  Title,
+  Tooltip,
+  SubTitle
+} from 'chart.js';
+
+Chart.register(
+  ArcElement,
+  LineElement,
+  BarElement,
+  PointElement,
+  BarController,
+  BubbleController,
+  DoughnutController,
+  LineController,
+  PieController,
+  PolarAreaController,
+  RadarController,
+  ScatterController,
+  CategoryScale,
+  LinearScale,
+  LogarithmicScale,
+  RadialLinearScale,
+  TimeScale,
+  TimeSeriesScale,
+  Decimation,
+  Filler,
+  Legend,
+  Title,
+  Tooltip,
+  SubTitle
+);
 
 @Component({
   selector: 'app-cluster-page',
@@ -17,11 +72,13 @@ import { LineComponent } from '../../report/line/line.component';
 })
 export class ClusterPageComponent implements OnInit {
   @ViewChild('packedbubble')packedbubble!: PackedbubbleComponent
-  @ViewChild('reportline')reportline!: LineComponent
+  @ViewChild('reportline2')reportline!: LineComponent
+  @ViewChild('histogram') histogram!: HistogramComponent
   public summary = true
   public violations = false
   public pageSizeOptions = [10, 20, 50, 100, 500];
   timer:any
+  timer2:any
   get summaryFlag () {
     return this.summary
   }
@@ -33,7 +90,13 @@ export class ClusterPageComponent implements OnInit {
         abnormal: this.shardService.allAbnormal,
         compliant: this.shardService.allCompliant,
       }      
-      this.packedbubbleRender(data)
+      // this.packedbubbleRender(data)
+      setTimeout(() => {
+        if (this.packedbubble) {
+          this.packedbubble.getSeries(data.normal, data.abnormal, data.compliant)
+        }
+      });
+      this.lineRender()
       this.summary = value
 
     } else {
@@ -48,14 +111,11 @@ export class ClusterPageComponent implements OnInit {
 
   set violationsFlag (value) {
     const obj = this.shardService.namespaceList.find(el => el.name === this.shardService.namespaceDefault)
-    this.shardService.updateFlag = false
-    if (obj) {
-      this.shardService.workloadChartbarOption.series[0].data = []
-      obj.workloads.workloads.forEach(workload => {
-        this.shardService.workloadChartbarOption.series[0].data.push(workload.workloadList.length)
-      });
-      this.shardService.updateFlag = true
-    }    
+    setTimeout(() => {
+      if (this.histogram) {
+        this.histogram.render()
+      }
+    });   
     this.violations = value
   }
   constructor(
@@ -72,24 +132,29 @@ export class ClusterPageComponent implements OnInit {
             abnormal: this.shardService.allAbnormal,
             compliant: this.shardService.allCompliant,
           }
-          this.packedbubbleRender(newData)
+          if (this.packedbubble) {
+            this.packedbubble.getSeries(newData.normal, newData.abnormal, newData.compliant)
+          }
       }
     )
+    this.lineRender()
+  }
+  lineRender() {
     this.timer = setInterval(() => {
       if (this.shardService.reportLineChartOption.series[0].data.length > 0) {
         clearInterval(this.timer)
-      }
-      if (this.reportline) {
-        this.reportline.render()
+        if (this.reportline) {
+          this.reportline.render()
+        }
       }
     },100) 
   }
 
   packedbubbleRender(data:{normal:number, abnormal:number, compliant:number}) {
-    const timer = setInterval(() => {
+    this.timer2 = setInterval(() => {      
       if (this.packedbubble) {
         this.packedbubble.getSeries(data.normal, data.abnormal, data.compliant)
-        clearInterval(timer)
+        clearInterval(this.timer)
       }
     }, 100);
   }
@@ -98,4 +163,5 @@ export class ClusterPageComponent implements OnInit {
     this.shardService.showWorkloadDetailFlag = true
     this.router.navigate(['/insight/workload'])
   }
+
 }

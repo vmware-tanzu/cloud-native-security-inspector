@@ -7,7 +7,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ShardService } from 'src/app/service/shard.service'
 import { PackedbubbleComponent } from 'src/app/view/report/packedbubble/packedbubble.component'
-import { HistogramComponent } from '../../report/histogram/histogram.component';
+import { NamesapceHistogramComponent } from '../../report/namesapce-histogram/namesapce-histogram.component';
 
 @Component({
   selector: 'app-namespace-page',
@@ -15,11 +15,12 @@ import { HistogramComponent } from '../../report/histogram/histogram.component';
   styleUrls: ['./namespace-page.component.less']
 })
 export class NamespacePageComponent implements OnInit {
-  @ViewChild('namespaceHistogram')namespaceHistogram!: HistogramComponent
+  @ViewChild('namespaceHistogram')namespaceHistogram!: NamesapceHistogramComponent
   @ViewChild('packedbubble')packedbubble!: PackedbubbleComponent
   public summary = true
   public violations = false
   public pageSizeOptions = [10, 20, 50, 100, 500];
+  public timer!:any
   get summaryFlag () {
     return this.summary
   }
@@ -46,14 +47,19 @@ export class NamespacePageComponent implements OnInit {
 
   set violationsFlag (value) {
     const obj = this.shardService.namespaceList.find(el => el.name === this.shardService.namespaceDefault)
-    this.shardService.updateFlag = false
     if (obj) {
       this.shardService.workloadChartbarOption.series[0].data = []
+      this.shardService.workloadChartbarOption.xAxis = []
       obj.workloads.workloads.forEach(workload => {
+        this.shardService.workloadChartbarOption.xAxis.push(workload.name)
         this.shardService.workloadChartbarOption.series[0].data.push(workload.workloadList.length)
       });
-      this.shardService.updateFlag = true
     }    
+    setTimeout(() => {      
+      if (this.namespaceHistogram) {
+        this.namespaceHistogram.render()
+      }
+    });
     this.violations = value
   }
   constructor(
@@ -65,7 +71,14 @@ export class NamespacePageComponent implements OnInit {
   ngOnInit(): void {
     if (!this.shardService.currentNamespaceInfo) {
       this.shardService.currentNamespaceInfo = this.shardService.namespaceList[0]
-    }        
+    }
+    this.setNamespaceHistogramChart()
+    const data = {
+      normal: this.shardService.showNormal,
+      abnormal: this.shardService.showAbnormal,
+      compliant: this.shardService.showCompliant,
+    }  
+    this.packedbubbleRender(data)  
   }
   packedbubbleRender(data:{normal:number, abnormal:number, compliant:number}) {
     setTimeout(() => {
@@ -74,9 +87,14 @@ export class NamespacePageComponent implements OnInit {
   }
 
   setNamespaceHistogramChart (){
-    setTimeout(() => {
-      this.namespaceHistogram.render()
-    });
+    this.timer = setInterval(() => {
+      if (this.shardService.workloadChartbarOption.series[0].data.length > 0) {
+        if (this.namespaceHistogram) {
+          this.namespaceHistogram.render()
+          clearInterval(this.timer)
+        }
+      }
+    },100) 
   }
 
   toWorkload(item:{namespace:string, workload:any}) {

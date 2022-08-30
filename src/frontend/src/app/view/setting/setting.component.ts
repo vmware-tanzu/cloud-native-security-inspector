@@ -4,7 +4,7 @@
  */
 
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, RequiredValidator, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, RequiredValidator, Validators } from '@angular/forms';
 import { CornComponent } from '../corn/corn.component';
 import { HarborService } from '../../service/harbor.service'
 import { ShardService } from '../../service/shard.service'
@@ -26,9 +26,9 @@ export class SettingComponent implements OnInit {
   isCornUpdateModal = false
   secretModalFlag = false
   knownRegistriesProviderList = ["li-acr","artifact-hub","aws-ecr","azure-acr","docker-hub","docker-registry","dtr","github-ghcr","gitlab","google-gcr","harbor","helm-hub","huawei-SWR","jfrog-artifactory","quay","tencent-tcr"]
-  harborForm!: FormGroup;
-  policyForm!: FormGroup;
-  secretForm!: FormGroup;
+  harborForm!: UntypedFormGroup;
+  policyForm!: UntypedFormGroup;
+  secretForm!: UntypedFormGroup;
   secretsList: SecretModel[] = []
   createTimer!: any
   updateDisabled = false
@@ -75,7 +75,7 @@ export class SettingComponent implements OnInit {
   }
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private harborService: HarborService,
     public shardService: ShardService,
     private router: Router

@@ -6,7 +6,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ShardService } from 'src/app/service/shard.service'
 import { ActivatedRoute } from '@angular/router'
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { PolicyService } from 'src/app/service/policy.service';
 import { HarborService } from 'src/app/service/harbor.service';
 
@@ -16,7 +16,7 @@ import { HarborService } from 'src/app/service/harbor.service';
   styleUrls: ['./policy.component.less']
 })
 export class PolicyComponent implements OnInit {
-  policyForm!: FormGroup;
+  policyForm!: UntypedFormGroup;
   private isDisabled = false
   public schedule = '3/* * * * *'
   public isCornUpdateModal = false
@@ -103,7 +103,7 @@ export class PolicyComponent implements OnInit {
 
   constructor(
     public shardService:ShardService,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private harborService: HarborService,
     private policyService: PolicyService
   ) {
@@ -268,7 +268,7 @@ export class PolicyComponent implements OnInit {
         settingsName: this.policyForm.get('inspectionSetting')?.get('settingsName')?.value,
         strategy: {
           concurrencyRule: this.policyForm.get('inspectionSetting')?.get('concurrencyRule')?.value,
-          historyLimit: this.policyForm.get('inspectionSetting')?.get('historyLimit')?.value,
+          historyLimit: +this.policyForm.get('inspectionSetting')?.get('historyLimit')?.value,
           suspend: this.policyForm.get('inspectionSetting')?.get('suspend')?.value
         },
         workNamespace: this.policyForm.get('inspectionSetting')?.get('namespace')?.value
@@ -318,7 +318,7 @@ export class PolicyComponent implements OnInit {
     this.policyInfo.spec.schedule = this.schedule
     this.policyInfo.spec.settingsName = this.policyForm.get('inspectionSetting')?.get('settingsName')?.value
     this.policyInfo.spec.strategy.concurrencyRule = this.policyForm.get('inspectionSetting')?.get('concurrencyRule')?.value
-    this.policyInfo.spec.strategy.historyLimit = this.policyForm.get('inspectionSetting')?.get('historyLimit')?.value
+    this.policyInfo.spec.strategy.historyLimit = +this.policyForm.get('inspectionSetting')?.get('historyLimit')?.value
     this.policyInfo.spec.strategy.suspend = this.policyForm.get('inspectionSetting')?.get('suspend')?.value
     this.policyInfo.spec.workNamespace = this.policyForm.get('inspectionSetting')?.get('namespace')?.value
     if(this.policyForm.get('inspectionResult')?.get('actions')?.value){

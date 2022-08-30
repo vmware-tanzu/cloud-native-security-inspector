@@ -4,58 +4,6 @@
 -->
 
 <clr-tabs>
-  <!-- <clr-tab>
-      <button clrTabLink>Seconds</button>
-      <ng-template [(clrIfActive)]="seconds">
-          <clr-tab-content>
-              <clr-radio-wrapper>
-                <input type="radio" clrRadio name="per_second" value="per_second" [(ngModel)]="secondInfoCorn" />
-                <label>per second</label>
-              </clr-radio-wrapper>
-
-              
-              <div class="period">
-                <clr-radio-wrapper>
-                  <input type="radio" clrRadio name="period" value="period" [(ngModel)]="secondInfoCorn" />
-                  <label>period</label>
-                </clr-radio-wrapper>
-
-                <div class="content">
-                  from
-                  <input class="width-30" (change)="numericalCheck('secondInfo', 'from', 1, 58)" [(ngModel)]="secondInfo.from" [disabled]='secondInfo.type !=="period"' type="text">
-                  to
-                  <input class="width-30" [(ngModel)]="secondInfo.to" (change)="numericalCheck('secondInfo', 'to', 2, 59)" [disabled]='secondInfo.type !=="period"' type="text">
-                  seconds
-                </div>
-              </div>
-              <div class="cycle">
-                <clr-radio-wrapper>
-                  <input type="radio" clrRadio name="cycle" value="cycle" [(ngModel)]="secondInfoCorn" />
-                  <label>cycle</label>
-                </clr-radio-wrapper>
-                <div class="content">
-                  Starts at
-                  <input class="width-30" [(ngModel)]="secondInfo.start" (change)="numericalCheck('secondInfo', 'start', 0, 59)" [disabled]='secondInfo.type !=="cycle"' type="text">
-                  and executes every
-                  <input class="width-30" [(ngModel)]="secondInfo.every" (change)="numericalCheck('secondInfo', 'every', 1, 59)" [disabled]='secondInfo.type !=="cycle"' type="text">
-                  seconds
-                </div>
-              </div>
-
-              <clr-radio-wrapper>
-                <input type="radio" clrRadio name="specify" value="specify" [(ngModel)]="secondInfoCorn" />
-                <label>specify</label>
-              </clr-radio-wrapper>
-              <div class="specify-content" *ngIf="secondInfo.type === 'specify'">
-                  <clr-checkbox-wrapper *ngFor="let item of secondInfo.list">
-                    <input type="checkbox" clrCheckbox name="options1" required [value]="item" (change)="sharedChangeHandle($event,'secondInfo',item)"/>
-                    <label>{{item}}</label>
-                  </clr-checkbox-wrapper>
-              </div>
-          </clr-tab-content>
-      </ng-template>
-  </clr-tab> -->
-
   <clr-tab>
       <button clrTabLink>Minutes</button>
       <ng-template [(clrIfActive)]="minutes">

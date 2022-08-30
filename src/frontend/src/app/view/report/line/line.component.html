@@ -3,8 +3,6 @@
     SPDX-License-Identifier: Apache-2.0
 -->
 
-<highcharts-chart #chart
-  [Highcharts]="Highcharts"
-  [(update)]="updateFlag"
-  [options]="chartOptions"
-  style="width: 100%; height: 400px; display: block; margin-top: 30px;"></highcharts-chart>
+  <div class="chart-wrapper" style="position: relative; height:400px; width:1400px">
+    <canvas height="400px" width="1400" id="line"></canvas>
+</div>

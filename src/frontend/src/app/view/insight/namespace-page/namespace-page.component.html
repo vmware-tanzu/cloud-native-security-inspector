@@ -26,7 +26,7 @@
                 <div class="card-block normal">
                   <clr-icon style="width: 25px; height: 25px;" shape="check-circle" class="is-solid"></clr-icon>
                   <div class="pre">
-                    <div class="pro" [style]="{width: shardService.showNormal/(shardService.showAbnormal + shardService.showNormal)*100 + 'px'}"></div>
+                    <div class="pro" *ngIf="shardService.showAbnormal + shardService.showNormal !== 0" [style]="{width: shardService.showNormal/(shardService.showAbnormal + shardService.showNormal)*100 + 'px'}"></div>
                   </div>
                   <span *ngIf="shardService.showNormal">{{(shardService.showNormal/(shardService.showAbnormal + shardService.showNormal)*100).toFixed(2)}}%</span>
                   <span *ngIf="!shardService.showNormal">0%</span>
@@ -45,7 +45,7 @@
                 <div class="card-block abnormal">
                   <clr-icon style="width: 25px; height: 25px;" shape="exclamation-circle" class="is-solid"></clr-icon>
                     <div class="pre">
-                      <div class="pro" [style]="{width: shardService.showAbnormal/(shardService.showAbnormal + shardService.showNormal)*100 + 'px'}"></div>
+                      <div class="pro" *ngIf="shardService.showAbnormal + shardService.showNormal !== 0" [style]="{width: shardService.showAbnormal/(shardService.showAbnormal + shardService.showNormal)*100 + 'px'}"></div>
                     </div>
                     <span *ngIf="shardService.showAbnormal">{{(shardService.showAbnormal/(shardService.showAbnormal + shardService.showNormal)*100).toFixed(2)}}%</span>
                     <span *ngIf="!shardService.showAbnormal">0%</span>
@@ -76,7 +76,7 @@
                 </div>
               </a>
             </div>
-            <app-packedbubble #packedbubble></app-packedbubble> 
+            <app-namesapce-polar #packedbubble></app-namesapce-polar> 
             </div>
           </clr-tab-content>
         </ng-template>
@@ -87,15 +87,15 @@
             <clr-tab-content>
               <app-namespace (setNamespaceHistogramChart)="setNamespaceHistogramChart()" [all]='true' #summary></app-namespace>
               <!-- <app-histogram [chartOptions]="shardService.namespacChartLineOption"></app-histogram> -->
-              <app-histogram #namespaceHistogram [chartOptions]="shardService.workloadChartbarOption"></app-histogram>
+              <app-namesapce-histogram #namespaceHistogram [chartOptions]="shardService.workloadChartbarOption"></app-namesapce-histogram>
               <clr-datagrid>
-                <clr-dg-column [clrDgField]="'attributes.pool'">{{'CommonlyUse.name'|translate}}</clr-dg-column>
-                <clr-dg-column [clrDgField]="'attributes.business_unit'">{{'CommonlyUse.namespace'|translate}}</clr-dg-column>
-                <clr-dg-column [clrDgField]="'attributes.business_unit'">{{'CommonlyUse.type'|translate}}</clr-dg-column>
-                <clr-dg-column [clrDgField]="'updated_by'">{{'CommonlyUse.containers_total'|translate}}  </clr-dg-column>
+                <clr-dg-column [clrDgField]="'workload.workload.metadata.name'">{{'CommonlyUse.name'|translate}}</clr-dg-column>
+                <clr-dg-column [clrDgField]="'workload.workload.metadata.namespace'">{{'CommonlyUse.namespace'|translate}}</clr-dg-column>
+                <clr-dg-column [clrDgField]="'workload.workload.pods.length'">{{'CommonlyUse.type'|translate}}</clr-dg-column>
+                <clr-dg-column [clrDgField]="'workload.workload.metadata.apiVersion'">{{'CommonlyUse.containers_total'|translate}}  </clr-dg-column>
                 <clr-dg-column [clrDgSortBy]="'created_at'">{{'CommonlyUse.api_version'|translate}}</clr-dg-column>
               
-                <clr-dg-row *ngFor="let violation of shardService.currentNamespaceviolationList">
+                <clr-dg-row *clrDgItems="let violation of shardService.currentNamespaceviolationList">
                   <clr-dg-cell>
                     <a href="javascript:;" (click)="toWorkload(violation)" >
                       {{violation.workload.workload.metadata.name}}

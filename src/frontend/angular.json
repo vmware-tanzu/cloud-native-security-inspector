@@ -113,5 +113,7 @@
       }
     }
   },
-  "defaultProject": "cloud-native-security-inspector"
+  "cli": {
+    "analytics": "03a7dc3d-c600-438c-95f4-e56c9f928110"
+  }
 }

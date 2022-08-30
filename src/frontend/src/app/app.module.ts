@@ -12,7 +12,6 @@ import { HomeComponent } from './view/home/home.component';
 import { HeaderComponent } from './components/header/header.component';
 import { NavComponent } from './components/nav/nav.component';
 import { ClusterComponent } from './view/summary/cluster/cluster.component'
-import { HighchartsChartModule } from 'highcharts-angular';
 import { PackedbubbleComponent } from './view/report/packedbubble/packedbubble.component';
 import { SettingComponent } from './view/setting/setting.component';
 import { LoginComponent } from './view/login/login.component';
@@ -34,7 +33,10 @@ import { PolicyComponent } from './view/policy/policy.component';
 import { CornScheduleComponent } from './components/corn-schedule/corn-schedule.component';
 import { TimePickerComponent } from './components/time-picker/time-picker.component';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { AppService, createTranslateLoader } from './app.service'
+import { AppService, createTranslateLoader } from './app.service';
+import { ClusterLineComponent } from './view/report/cluster-line/cluster-line.component';
+import { NamesapcePolarComponent } from './view/report/namesapce-polar/namesapce-polar.component';
+import { NamesapceHistogramComponent } from './view/report/namesapce-histogram/namesapce-histogram.component'
 @NgModule({
   declarations: [
     AppComponent,
@@ -58,13 +60,15 @@ import { AppService, createTranslateLoader } from './app.service'
     WorkloadDetailComponent,
     PolicyComponent,
     CornScheduleComponent,
-    TimePickerComponent
+    TimePickerComponent,
+    ClusterLineComponent,
+    NamesapcePolarComponent,
+    NamesapceHistogramComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     ClarityModule,
-    HighchartsChartModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,

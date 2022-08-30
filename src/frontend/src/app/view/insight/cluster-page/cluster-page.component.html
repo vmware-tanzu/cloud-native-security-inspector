@@ -78,7 +78,7 @@
               </div>
               <app-packedbubble #packedbubble></app-packedbubble> 
               </div>
-              <app-line #reportline [chartOptions]="shardService.clusterLineChartOption" [updateFlag]='true'></app-line>
+              <app-cluster-line #reportline2 [chartOptions]="shardService.clusterLineChartOption" [updateFlag]='true'></app-cluster-line>
           </clr-tab-content>
         </ng-template>
       </clr-tab>
@@ -86,15 +86,15 @@
         <button clrTabLink>{{'CommonlyUse.violations'|translate}}</button>
         <ng-template [(clrIfActive)]="violationsFlag">
             <clr-tab-content>
-              <app-histogram [chartOptions]="shardService.namespacChartLineOption"></app-histogram>
+              <app-histogram #histogram [chartOptions]="shardService.namespacChartLineOption"></app-histogram>
               <clr-datagrid>
-                <clr-dg-column [clrDgField]="'attributes.pool'">{{'CommonlyUse.name'|translate}}</clr-dg-column>
-                <clr-dg-column [clrDgField]="'attributes.business_unit'">{{'CommonlyUse.namespace'|translate}}</clr-dg-column>
-                <clr-dg-column [clrDgField]="'attributes.business_unit'">{{'CommonlyUse.type'|translate}}</clr-dg-column>
-                <clr-dg-column [clrDgField]="'updated_by'">{{'CommonlyUse.containers_total'|translate}}  </clr-dg-column>
-                <clr-dg-column [clrDgSortBy]="'created_at'">{{'CommonlyUse.api_version'|translate}}</clr-dg-column>
+                <clr-dg-column [clrDgField]="'workload.workload.metadata.name'">{{'CommonlyUse.name'|translate}}</clr-dg-column>
+                <clr-dg-column [clrDgField]="'namespace'">{{'CommonlyUse.namespace'|translate}}</clr-dg-column>
+                <clr-dg-column [clrDgField]="'workload.workload.metadata.kind'">{{'CommonlyUse.type'|translate}}</clr-dg-column>
+                <clr-dg-column [clrDgField]="'workload.workload.pods.length'">{{'CommonlyUse.containers_total'|translate}}  </clr-dg-column>
+                <clr-dg-column [clrDgSortBy]="'workload.workload.metadata.apiVersion'">{{'CommonlyUse.api_version'|translate}}</clr-dg-column>
               
-                <clr-dg-row *ngFor="let violation of shardService.violationList">
+                <clr-dg-row *clrDgItems="let violation of shardService.violationList">
                   <clr-dg-cell>
                     <a href="javascript:;" (click)="toWorkload(violation)" >
                       {{violation.workload.workload.metadata.name}}

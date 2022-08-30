@@ -19,3 +19,8 @@
 
 # Except this file
 !.gitignore
+
+#portal 
+dist/
+node_modules/
+.angular/

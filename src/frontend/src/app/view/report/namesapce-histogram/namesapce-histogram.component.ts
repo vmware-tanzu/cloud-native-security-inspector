@@ -1,7 +1,3 @@
-/*
- * Copyright 2022 VMware, Inc.
- * SSPDX-License-Identifier: Apache-2.0
- */
 
 import { Component, Input, OnInit, Output, ViewChild, EventEmitter } from '@angular/core';
 import {
@@ -60,11 +56,11 @@ Chart.register(
 );
 
 @Component({
-  selector: 'app-histogram',
-  templateUrl: './histogram.component.html',
-  styleUrls: ['./histogram.component.less']
+  selector: 'app-namesapce-histogram',
+  templateUrl: './namesapce-histogram.component.html',
+  styleUrls: ['./namesapce-histogram.component.less']
 })
-export class HistogramComponent implements OnInit {
+export class NamesapceHistogramComponent implements OnInit {
   @Input('chartOptions') chartOptions!:any
   @Input('updateFlag') updateFlag:boolean = false
   @Input('width') width:string = '100%'
@@ -74,12 +70,14 @@ export class HistogramComponent implements OnInit {
   constructor() {
   }
   ngOnInit() {
-    this.newReport('bar')
+    this.newReport('namespace-bar')
   }
   render ():any {
-    this.myChart.data.datasets = this.chartOptions.series
-    this.myChart.data.labels = this.chartOptions.xAxis 
-    this.myChart.update()
+    setTimeout(() => {
+      this.myChart.data.datasets = this.chartOptions.series
+      this.myChart.data.labels = this.chartOptions.xAxis 
+      this.myChart.update()
+    });
   }
 
   newReport(DomID: string) {
@@ -111,4 +109,5 @@ export class HistogramComponent implements OnInit {
       }
     });    
   }
+
 }
