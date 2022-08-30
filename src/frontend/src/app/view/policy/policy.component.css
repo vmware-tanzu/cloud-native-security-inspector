@@ -124,7 +124,7 @@ form .schedule button clr-icon {
 }
 form .submit-btns {
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
 }
 form .actions {
   margin-left: 0px;

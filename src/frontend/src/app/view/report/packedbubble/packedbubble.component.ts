@@ -109,8 +109,6 @@ export class PackedbubbleComponent implements OnInit {
     this.abnormal = abnormal
     this.compliant = compliant
     this.myChart.data.datasets[0].data = [this.abnormal, this.normal]
-    this.myChart.update()
-    console.log(this.myChart);
-    
+    this.myChart.update()    
    }
 }

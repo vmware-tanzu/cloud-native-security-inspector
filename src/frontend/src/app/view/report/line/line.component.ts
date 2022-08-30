@@ -90,7 +90,6 @@ export class LineComponent implements OnInit {
       options: {
           responsive: false,
           onResize: (chart, style) => {
-            console.log(chart);
           },
           scales: {
             y: {

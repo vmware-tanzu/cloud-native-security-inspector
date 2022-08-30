@@ -12,7 +12,6 @@ const SERVICEACCOUNT='/var/run/secrets/kubernetes.io/serviceaccount'
 // const NAMESPACE= fs.readFile(`${SERVICEACCOUNT}/namespace`)
 // const CACERT=fs.readFile(`${SERVICEACCOUNT}/ca.crt`)
 let token = fs.readFileSync(`${SERVICEACCOUNT}/token`, 'utf8')
-console.log('token', token)
 let app = express()
 app.use(history())
 // static resource address
@@ -40,7 +39,6 @@ app.use('/proxy', createProxyMiddleware({
 // Set the folder where the front-end project is located as a static resource
 app.get('/', (req, res) => {
   res.render(data, {})
-  console.log('render success')
 })
 
 app.listen(port)
