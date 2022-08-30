@@ -21,10 +21,10 @@ import (
 const EnforcerName = "quarantine_vulnerable_workload"
 
 const (
-	networkPolicyNamePrefix = "tsi-networkpolicy-"
+	networkPolicyNamePrefix = "cnsi-networkpolicy-"
 	annotationPolicyVendor  = "goharbor.io/vendor"
 	annotationPolicyRole    = "goharbor.io/role"
-	tsiVendor               = "TSI"
+	cnsiVendor               = "CNSI"
 	denyAllRole             = "deny-all"
 	matchPodLabelCtrl       = "goharbor.io/controller"
 	matchPodLabelRisk       = "goharbor.io/inspection"
@@ -81,7 +81,7 @@ func (e *Enforcer) Enforce(ctx context.Context, workload *v1alpha1.Workload, opt
 		updateCounter := 0
 		// Add labels.
 		if _, ok := pod.Labels[matchPodLabelCtrl]; !ok {
-			pod.Labels[matchPodLabelCtrl] = tsiVendor
+			pod.Labels[matchPodLabelCtrl] = cnsiVendor
 			updateCounter++
 		}
 
@@ -199,7 +199,7 @@ func (e *Enforcer) removeNetworkPolicy(ctx context.Context, ns string) error {
 	// List all the pods under the namespace.
 	pol := &corev1.PodList{}
 	if err := e.kc.List(ctx, pol, client.InNamespace(ns), client.MatchingLabels{
-		matchPodLabelCtrl: tsiVendor,
+		matchPodLabelCtrl: cnsiVendor,
 		matchPodLabelRisk: risky,
 	}); err != nil {
 		return errors.Wrapf(err, "list pods under namespace: %s", ns)
@@ -232,7 +232,7 @@ func generateNetworkPolicyCR(name string, ns string) *netv1.NetworkPolicy {
 			Namespace: ns,
 			Annotations: map[string]string{
 				annotationPolicyRole:   denyAllRole,
-				annotationPolicyVendor: tsiVendor,
+				annotationPolicyVendor: cnsiVendor,
 			},
 		},
 		Spec: netv1.NetworkPolicySpec{
@@ -242,7 +242,7 @@ func generateNetworkPolicyCR(name string, ns string) *netv1.NetworkPolicy {
 			},
 			PodSelector: metav1.LabelSelector{
 				MatchLabels: map[string]string{
-					matchPodLabelCtrl: tsiVendor,
+					matchPodLabelCtrl: cnsiVendor,
 					matchPodLabelRisk: risky,
 				},
 			},

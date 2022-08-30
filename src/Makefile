@@ -148,7 +148,7 @@ gen-harbor-api:
 	@$(SWAGGER) generate client -f ${HARBOR_SPEC} --target=$(HARBOR_CLIENT_DIR) --template=stratoscale --additional-initialism=CVE --additional-initialism=GC --additional-initialism=OIDC
 
 # Generate cnsi API client
-KSI_SPEC =./assets/ksi-api/v1alpha1/API.yaml
-KSI_CLIENT_DIR = ./pkg/rest
-gen-ksi-api:
-	@$(SWAGGER) generate client -f ${KSI_SPEC} --target=$(KSI_CLIENT_DIR) --template=stratoscale --additional-initialism=CVE --additional-initialism=GC --additional-initialism=OIDC
+CNSI_SPEC =./assets/cnsi-api/v1alpha1/API.yaml
+CNSI_CLIENT_DIR = ./pkg/rest
+gen-cnsi-api:
+	@$(SWAGGER) generate client -f ${CNSI_SPEC} --target=$(CNSI_CLIENT_DIR) --template=stratoscale --additional-initialism=CVE --additional-initialism=GC --additional-initialism=OIDC
