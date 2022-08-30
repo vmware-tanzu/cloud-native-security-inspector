@@ -12,7 +12,6 @@ import { HomeComponent } from './view/home/home.component';
 import { HeaderComponent } from './components/header/header.component';
 import { NavComponent } from './components/nav/nav.component';
 import { ClusterComponent } from './view/summary/cluster/cluster.component'
-import { HighchartsChartModule } from 'highcharts-angular';
 import { PackedbubbleComponent } from './view/report/packedbubble/packedbubble.component';
 import { SettingComponent } from './view/setting/setting.component';
 import { LoginComponent } from './view/login/login.component';
@@ -64,7 +63,6 @@ import { AppService, createTranslateLoader } from './app.service'
     BrowserModule,
     AppRoutingModule,
     ClarityModule,
-    HighchartsChartModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,

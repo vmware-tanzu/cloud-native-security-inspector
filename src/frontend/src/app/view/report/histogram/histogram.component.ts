@@ -4,8 +4,61 @@
  */
 
 import { Component, Input, OnInit, Output, ViewChild, EventEmitter } from '@angular/core';
-import * as Highcharts from "highcharts";
-import * as moment from 'moment'
+import {
+  Chart,
+  ArcElement,
+  LineElement,
+  BarElement,
+  PointElement,
+  BarController,
+  BubbleController,
+  DoughnutController,
+  LineController,
+  PieController,
+  PolarAreaController,
+  RadarController,
+  ScatterController,
+  CategoryScale,
+  LinearScale,
+  LogarithmicScale,
+  RadialLinearScale,
+  TimeScale,
+  TimeSeriesScale,
+  Decimation,
+  Filler,
+  Legend,
+  Title,
+  Tooltip,
+  SubTitle
+} from 'chart.js';
+
+Chart.register(
+  ArcElement,
+  LineElement,
+  BarElement,
+  PointElement,
+  BarController,
+  BubbleController,
+  DoughnutController,
+  LineController,
+  PieController,
+  PolarAreaController,
+  RadarController,
+  ScatterController,
+  CategoryScale,
+  LinearScale,
+  LogarithmicScale,
+  RadialLinearScale,
+  TimeScale,
+  TimeSeriesScale,
+  Decimation,
+  Filler,
+  Legend,
+  Title,
+  Tooltip,
+  SubTitle
+);
+
 @Component({
   selector: 'app-histogram',
   templateUrl: './histogram.component.html',
@@ -17,12 +70,46 @@ export class HistogramComponent implements OnInit {
   @Input('width') width:string = '100%'
   @Input('height') height:string = '400px'
   @ViewChild('charts')charts!:any
+  public myChart: any;
   constructor() {
   }
   ngOnInit() {
+    this.newReport('bar')
   }
-  Highcharts: typeof Highcharts = Highcharts;
   render ():any {
-    this.updateFlag = true
+    this.myChart.data.datasets = this.chartOptions.series
+    this.myChart.data.labels = this.chartOptions.xAxis 
+    debugger
+    this.myChart.update()
+  }
+
+  newReport(DomID: string) {
+    const canvas: HTMLCanvasElement = document.getElementById(DomID) as HTMLCanvasElement;
+    const ctx: any = canvas.getContext('2d');
+    this.myChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+          labels: [],
+          datasets: []
+      },
+      options: {
+          responsive: false,
+          onResize: (chart, style) => {
+            console.log(chart);
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                color: '#fff'
+              }
+            },
+          x: {
+            ticks: {
+              color: '#fff'
+            }
+          }          },
+      }
+    });    
   }
 }

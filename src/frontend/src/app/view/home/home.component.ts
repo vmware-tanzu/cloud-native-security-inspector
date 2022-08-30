@@ -26,7 +26,6 @@ export class HomeComponent implements OnInit {
     setInterval(() => {
       this.getAssessmentreports()
     }, 60000)
-    
     this.shardService.getApiservice().subscribe()
     this.getSummaryInfo()
   }
@@ -34,18 +33,19 @@ export class HomeComponent implements OnInit {
   getAssessmentreports() {
     this.policyService.getAssessmentreports().subscribe(
       data => {
-        this.shardService.clusterChartBarOptions.xAxis.categories = []
-        this.shardService.namespacChartLineOption.xAxis.categories = []
+        this.shardService.clusterChartBarOptions.xAxis = []
+        this.shardService.namespacChartLineOption.xAxis = []
         this.shardService.namespacChartLineOption.series[0].data = []
         this.shardService.clusterChartBarOptions.series[0] = [{
           name: 'workload amount',
+          color: 'skyblue',
           data: []
         }]
         const workloadNamespance:any = {}
         this.shardService.namespaceList.forEach(el => {
           // get namespaces report xAxis data
-          this.shardService.clusterChartBarOptions.xAxis.categories.push(el.name)
-          this.shardService.namespacChartLineOption.xAxis.categories.push(el.name)
+          this.shardService.clusterChartBarOptions.xAxis.push(el.name)
+          this.shardService.namespacChartLineOption.xAxis.push(el.name)
           workloadNamespance[el.name] = {
             workloads: [
               {
@@ -201,8 +201,8 @@ export class HomeComponent implements OnInit {
         const lineDate1 = JSON.parse(JSON.stringify(lineDate))        
         const lineDate2 = JSON.parse(JSON.stringify(lineDate))        
 
-        this.shardService.reportLineChartOption.xAxis.categories = lineDate1.splice(lineDate.length-9, lineDate.length)
-        this.shardService.clusterLineChartOption.xAxis.categories = lineDate2.splice(lineDate.length-9, lineDate.length)
+        this.shardService.reportLineChartOption.xAxis = lineDate1.splice(lineDate.length-9, lineDate.length)
+        this.shardService.clusterLineChartOption.xAxis = lineDate2.splice(lineDate.length-9, lineDate.length)
         this.shardService.reportLineChartOption.series[0].data = abnormalLineData.splice(abnormalLineData.length-9, abnormalLineData.length)
         this.shardService.clusterLineChartOption.series[0].data = normal.splice(normal.length-10, normal.length)
         this.shardService.clusterLineChartOption.series[1].data = abnormal.splice(abnormal.length-10, abnormal.length)

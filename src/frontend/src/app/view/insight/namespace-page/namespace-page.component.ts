@@ -20,6 +20,7 @@ export class NamespacePageComponent implements OnInit {
   public summary = true
   public violations = false
   public pageSizeOptions = [10, 20, 50, 100, 500];
+  public timer!:any
   get summaryFlag () {
     return this.summary
   }
@@ -65,7 +66,8 @@ export class NamespacePageComponent implements OnInit {
   ngOnInit(): void {
     if (!this.shardService.currentNamespaceInfo) {
       this.shardService.currentNamespaceInfo = this.shardService.namespaceList[0]
-    }        
+    }
+    this.setNamespaceHistogramChart()    
   }
   packedbubbleRender(data:{normal:number, abnormal:number, compliant:number}) {
     setTimeout(() => {
@@ -74,9 +76,14 @@ export class NamespacePageComponent implements OnInit {
   }
 
   setNamespaceHistogramChart (){
-    setTimeout(() => {
-      this.namespaceHistogram.render()
-    });
+    this.timer = setInterval(() => {
+      if (this.shardService.workloadChartbarOption.series[0].data.length > 0) {
+        if (this.namespaceHistogram) {
+          this.namespaceHistogram.render()
+          clearInterval(this.timer)
+        }
+      }
+    },100) 
   }
 
   toWorkload(item:{namespace:string, workload:any}) {

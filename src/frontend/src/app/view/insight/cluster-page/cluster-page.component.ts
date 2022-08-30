@@ -86,10 +86,10 @@ export class ClusterPageComponent implements OnInit {
   }
 
   packedbubbleRender(data:{normal:number, abnormal:number, compliant:number}) {
-    const timer = setInterval(() => {
+    this.timer = setInterval(() => {
       if (this.packedbubble) {
         this.packedbubble.getSeries(data.normal, data.abnormal, data.compliant)
-        clearInterval(timer)
+        clearInterval(this.timer)
       }
     }, 100);
   }

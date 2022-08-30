@@ -46,48 +46,26 @@ export class ShardService {
   // namespace summary select value
   public namespaceDefault = ''
   public clusterChartBarOptions:any = {
-    chart: {
-      backgroundColor: '#1C2A32',
-      style: {
-        color: '#FFFFFF'
-      },
-      type: 'bar'
-    },
     title: {
       style: {
         color: '#FFFFFF'
       },
       text: 'namespace workloads histogram'
     },
-    xAxis: {
-      labels: {
-        style: {
-          color: '#FFFFFF'
-        }
+    xAxis: [],
+    series: [
+      {
+        label: 'workload amount',
+        data: [],
+        backgroundColor: [
+          '#37A2EB'
+        ],
+        borderColor: [
+          '#37A2EB'
+      ],
+        borderWidth: 3
       },
-      categories: [],
-    },
-    yAxis: {
-      labels: {
-        style: {
-          color: '#FFFFFF'
-        }
-      },
-      allowDecimals:false
-    },
-    legend: {
-      layout: 'vertical',
-      backgroundColor: '#FFFFFF',
-      floating: true,
-      align: 'top',
-      x: 100,
-      verticalAlign: 'top',
-      y: 70
-    },
-    series: [{
-      name: 'workload amount',
-      data: []
-    }]
+    ]
   }
 
   public namespacChartLineOption:any = {
@@ -97,48 +75,19 @@ export class ShardService {
       },
       text: 'namespace violations histogram'
     },
-    chart: {
-      style: {
-        color: '#FFFFFF'
-      },
-      backgroundColor: '#1C2A32',
-      type: 'bar'
-    },
-    xAxis: {
-      labels: {
-        style: {
-          color: '#FFFFFF'
-        }
-      },
-      categories: []
-    },
-    yAxis: {
-      labels: {
-        style: {
-          color: '#FFFFFF'
-        }
-      },
-      allowDecimals:false
-    },
-    legend: {
-      layout: 'vertical',
-      backgroundColor: '#FFFFFF',
-      floating: true,
-      align: 'left',
-      x: 100,
-      verticalAlign: 'top',
-      y: 70
-    },
-    tooltip: {
-      headerFormat: '<b>{series.name}</b><br/>',
-      pointFormat: '{point.category}: {point.y}'
-    },
+    xAxis: [],
     series: [
       {
-        name: 'violation amount',
-        color: 'red',
-        data: []
-      }
+        label: 'violation amount',
+        data: [],
+        backgroundColor: [
+          '#37A2EB'
+        ],
+        borderColor: [
+          '#37A2EB'
+      ],
+        borderWidth: 3
+      },
     ]
   }
 
@@ -149,112 +98,49 @@ export class ShardService {
         color: '#FFFFFF'
       },
     },
-    chart: {
-      backgroundColor: '#1C2A32',
-      style: {
-        color: '#FFFFFF'
-      },
-      type: 'bar'
-    },
-    xAxis: {
-      labels: {
-        style: {
-          color: '#FFFFFF'
-        }
-      },
-      categories: ['Deployment', 'ReplicaSet', 'StatefulSet', 'DaemonSet', 'CronJob', 'Job']
-    },
-    yAxis: {
-      labels: {
-        style: {
-          color: '#FFFFFF'
-        }
-      },
-      allowDecimals:false
-    },
-    legend: {
-      layout: 'vertical',
-      backgroundColor: '#FFFFFF',
-      floating: true,
-      align: 'left',
-      x: 100,
-      verticalAlign: 'top',
-      y: 70
-    },
-    tooltip: {
-      headerFormat: '<b>{series.name}</b><br/>',
-      pointFormat: '{point.category}: {point.y}'
-    },
+    xAxis: [],
     series: [
       {
-        name: 'violation amount',
-        color: 'red',
-        data: []
+        label: 'violation amount',
+        data: [65, 59, 80, 81, 56, 55, 40],
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+          'rgba(255, 205, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(201, 203, 207, 0.2)'
+        ],
+        borderColor: [
+          'rgb(255, 99, 132)',
+          'rgb(255, 159, 64)',
+          'rgb(255, 205, 86)',
+          'rgb(75, 192, 192)',
+          'rgb(54, 162, 235)',
+          'rgb(153, 102, 255)',
+          'rgb(201, 203, 207)'
+        ],
+        borderWidth: 1
       }
     ]
   }
 
   public reportLineChartOption:any = {
-    title: {
-      text: 'The number of containers in last 10 assessment reports',
-      style: {
-        color: '#FFFFFF'
-      }
-    },
-    chart: {
-      backgroundColor: '#1C2A32',
-      style: {
-        color: '#FFFFFF'
+    xAxis: [],
+    series: [
+      {
+        label: 'numbers of containers',
+        data: [],
+        backgroundColor: [
+          'red'
+        ],
+        borderColor: [
+          'red'
+      ],
+        borderWidth: 3
       },
-      borderWidth: 2,
-      type: 'line'
-    },
-    xAxis: {
-      categories: [],
-      labels: {
-        style: {
-          color: '#FFFFFF'
-        }
-      },
-      gridLineWidth: 1,
-      gridLineColor: '#ECECEE',
-      gridLineDashStyle: 'Dash'
-    },
-    yAxis: {
-      title: {
-        style: {
-          color: '#FFFFFF'
-        }
-      },
-      labels: {
-        style: {
-          color: '#FFFFFF'
-        }
-      },
-      gridLineColor: '#ECECEE',
-      gridLineDashStyle: 'Dash'
-    },
-    legend: {
-      layout: 'vertical',
-      backgroundColor: '#FFFFFF',
-      floating: true,
-      style: {
-        color: '#FFFFFF'
-      },
-      align: 'left',
-      x: 100,
-      verticalAlign: 'top',
-      y: 70
-    },
-    tooltip: {
-      headerFormat: '<b>{series.name}</b><br/>',
-      pointFormat: '{point.category}: {point.y}'
-    },
-    series: [{
-      name: 'numbers of containers',
-      color: 'red',
-      data: []
-    }]
+    ]
   }
 
   public clusterLineChartOption:any = {
@@ -264,72 +150,43 @@ export class ShardService {
         color: '#FFFFFF'
       }
     },
-    chart: {
-      backgroundColor: '#1C2A32',
-      style: {
-        color: '#FFFFFF'
-      },
-      borderWidth: 2,
-      type: 'line'
-    },
-    xAxis: {
-      categories: [],
-      labels: {
-        style: {
-          color: '#FFFFFF'
-        }
-      },
-      gridLineWidth: 1,
-      gridLineColor: '#ECECEE',
-      gridLineDashStyle: 'Dash'
-    },
-    yAxis: {
-      title: {
-        style: {
-          color: '#FFFFFF'
-        }
-      },
-      labels: {
-        style: {
-          color: '#FFFFFF'
-        }
-      },
-      gridLineColor: '#ECECEE',
-      gridLineDashStyle: 'Dash'
-    },
-    legend: {
-      layout: 'vertical',
-      backgroundColor: '#FFFFFF',
-      floating: true,
-      style: {
-        color: '#FFFFFF'
-      },
-      align: 'left',
-      x: 100,
-      verticalAlign: 'top',
-      y: 70
-    },
-    tooltip: {
-      headerFormat: '<b>{series.name}</b><br/>',
-      pointFormat: '{point.category}: {point.y}'
-    },
+    xAxis: [],
     series: [
       {
-        name: 'normal',
-        color: 'green',
-        data: []
+        label: 'normal',
+        data: [],
+        backgroundColor: [
+          'green'
+        ],
+        borderColor: [
+          'green'
+      ],
+        borderWidth: 3
       },
       {
-        name: 'abnormal',
-        color: '#FF6484',
-        data: []
+        label: 'abnormal',
+        data: [],
+        backgroundColor: [
+          '#FF6484'
+        ],
+        borderColor: [
+          '#FF6484'
+      ],
+        borderWidth: 3
       },
       {
-        name: 'total',
-        color: '#37A2EB',
-        data: []
+        label: 'total',
+        data: [],
+        backgroundColor: [
+          '#37A2EB'
+        ],
+        borderColor: [
+          '#37A2EB'
+      ],
+        borderWidth: 3
       }
     ]
+    
   }
 
   public clusterChartBarUpdateFlag = true
