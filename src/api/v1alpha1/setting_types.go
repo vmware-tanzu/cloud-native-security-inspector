@@ -63,7 +63,8 @@ type Cache struct {
 	// +kubebuilder:validation:Optional
 	Database *int `json:"database,omitempty"`
 	// Settings of cache.
-	Settings CacheSettings `json:"settings"`
+	// +kubebuilder:validation:Optional
+	Settings CacheSettings `json:"settings,omitempty"`
 }
 
 // CacheSettings defines settings for the cache.

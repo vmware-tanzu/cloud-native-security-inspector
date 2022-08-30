@@ -61,7 +61,7 @@ func (a *Adapter) Read(ctx context.Context, id core.ArtifactID, options ...data.
 	// First check if cache is inited.
 	if a.cache != nil {
 		// Read data from cache first.
-		stores, err := a.Read(ctx, id, options...)
+		stores, err := a.cache.Read(ctx, id, options...)
 		if err == nil {
 			return stores, nil
 		}
@@ -133,6 +133,16 @@ func (a *Adapter) Read(ctx context.Context, id core.ArtifactID, options ...data.
 		}
 
 		stores = append(stores, vs)
+	}
+
+	// write cache if needed
+	if a.cache != nil {
+		err = a.cache.Write(ctx, id, stores)
+		if err != nil {
+			// just need to log error
+			logger := log.FromContext(ctx)
+			logger.Error(err, "write data to cache")
+		}
 	}
 
 	return stores, nil

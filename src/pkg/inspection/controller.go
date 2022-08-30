@@ -5,10 +5,11 @@ package inspection
 import (
 	"context"
 	"fmt"
+	"time"
+
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/log"
-	"time"
 
 	"goharbor.io/k8s-security-inspector/pkg/policy/enforcement"
 
@@ -85,7 +86,7 @@ func (c *controller) CTRL() Controller {
 	return c
 }
 
-func (c *controller) EnsureSettings(ctx context.Context, policy *v1alpha1.InspectionPolicy) (*v1alpha1.DataSource, error) {
+func (c *controller) EnsureSettings(ctx context.Context, policy *v1alpha1.InspectionPolicy) (*v1alpha1.Setting, error) {
 	settingsName := policy.Spec.SettingsName
 	if settingsName == "" {
 		return nil, errors.New("Invalid settings name")
@@ -106,7 +107,7 @@ func (c *controller) EnsureSettings(ctx context.Context, policy *v1alpha1.Inspec
 		return nil, errors.New("Data source in settings is disabled!")
 	}
 
-	return &setting.Spec.DataSource, nil
+	return setting, nil
 
 }
 
@@ -123,14 +124,14 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 
 	// Get related security data first.
 	//adapter, err := providers.NewProvider(ctx, c.kc, nil)
-	datasource, err := c.EnsureSettings(ctx, policy)
+	setting, err := c.EnsureSettings(ctx, policy)
 
 	if err != nil {
 		logFromContext.Error(err, "unable to ensure the settings in inspection policy")
 		return err
 	}
 
-	adapter, err := providers.NewProvider(ctx, c.kc, datasource)
+	adapter, err := providers.NewProvider(ctx, c.kc, setting)
 	if err != nil {
 		return errors.Wrap(err, "get data provider adapter")
 	}
