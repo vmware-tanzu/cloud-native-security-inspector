@@ -6,7 +6,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ShardService } from 'src/app/service/shard.service'
 import { ActivatedRoute } from '@angular/router'
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { PolicyService } from 'src/app/service/policy.service';
 import { HarborService } from 'src/app/service/harbor.service';
 
@@ -16,7 +16,7 @@ import { HarborService } from 'src/app/service/harbor.service';
   styleUrls: ['./policy.component.less']
 })
 export class PolicyComponent implements OnInit {
-  policyForm!: FormGroup;
+  policyForm!: UntypedFormGroup;
   private isDisabled = false
   public schedule = '3/* * * * *'
   public isCornUpdateModal = false
@@ -103,7 +103,7 @@ export class PolicyComponent implements OnInit {
 
   constructor(
     public shardService:ShardService,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private harborService: HarborService,
     private policyService: PolicyService
   ) {
