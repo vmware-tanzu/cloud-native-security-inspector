@@ -9,7 +9,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	goharborv1 "goharbor.io/k8s-security-inspector/api/v1alpha1"
+	goharborv1 "goharbor.io/cloud-native-security-inspector/api/v1alpha1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"

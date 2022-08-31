@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	goharborv1 "goharbor.io/k8s-security-inspector/api/v1alpha1"
+	goharborv1 "goharbor.io/cloud-native-security-inspector/api/v1alpha1"
 	"k8s.io/apimachinery/pkg/util/json"
 )
 

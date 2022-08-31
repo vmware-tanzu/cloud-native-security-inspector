@@ -10,7 +10,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	goharborv1alpha1 "goharbor.io/k8s-security-inspector/api/v1alpha1"
+	goharborv1alpha1 "goharbor.io/cloud-native-security-inspector/api/v1alpha1"
 )
 
 // InspectionReconciler reconciles a Inspection object

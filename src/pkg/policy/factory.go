@@ -8,7 +8,7 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/go-logr/logr"
-	"goharbor.io/k8s-security-inspector/pkg/policy/network"
+	"goharbor.io/cloud-native-security-inspector/pkg/policy/network"
 	"k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )

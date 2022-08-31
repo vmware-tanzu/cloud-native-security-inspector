@@ -7,8 +7,8 @@ import (
 	"flag"
 	"os"
 
-	"goharbor.io/k8s-security-inspector/api/v1alpha1"
-	"goharbor.io/k8s-security-inspector/pkg/inspection"
+	"goharbor.io/cloud-native-security-inspector/api/v1alpha1"
+	"goharbor.io/cloud-native-security-inspector/pkg/inspection"
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"

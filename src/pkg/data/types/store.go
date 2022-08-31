@@ -3,8 +3,8 @@
 package types
 
 import (
-	"goharbor.io/k8s-security-inspector/api/v1alpha1"
-	"goharbor.io/k8s-security-inspector/pkg/data/core"
+	"goharbor.io/cloud-native-security-inspector/api/v1alpha1"
+	"goharbor.io/cloud-native-security-inspector/pkg/data/core"
 )
 
 // Store for holding the security data read from the upstream data provider.

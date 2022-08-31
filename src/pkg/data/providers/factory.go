@@ -7,9 +7,9 @@ import (
 
 	harborclient "github.com/goharbor/go-client/pkg/harbor"
 	"github.com/pkg/errors"
-	"goharbor.io/k8s-security-inspector/api/v1alpha1"
-	"goharbor.io/k8s-security-inspector/pkg/data/cache"
-	"goharbor.io/k8s-security-inspector/pkg/data/providers/harbor"
+	"goharbor.io/cloud-native-security-inspector/api/v1alpha1"
+	"goharbor.io/cloud-native-security-inspector/pkg/data/cache"
+	"goharbor.io/cloud-native-security-inspector/pkg/data/providers/harbor"
 	v1 "k8s.io/api/core/v1"
 	k8client "sigs.k8s.io/controller-runtime/pkg/client"
 )

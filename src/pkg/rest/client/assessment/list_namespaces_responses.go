@@ -14,7 +14,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 
-	"goharbor.io/k8s-security-inspector/pkg/rest/models"
+	"goharbor.io/cloud-native-security-inspector/pkg/rest/models"
 )
 
 // ListNamespacesReader is a Reader for the ListNamespaces structure.

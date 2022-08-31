@@ -1,4 +1,4 @@
-module goharbor.io/k8s-security-inspector
+module goharbor.io/cloud-native-security-inspector
 
 go 1.16
 

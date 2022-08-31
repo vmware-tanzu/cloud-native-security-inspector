@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 package providers
 
-import "goharbor.io/k8s-security-inspector/pkg/data"
+import "goharbor.io/cloud-native-security-inspector/pkg/data"
 
 // Adapter for handing data from the upstream data provider.
 type Adapter interface {
