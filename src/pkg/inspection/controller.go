@@ -11,19 +11,19 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	"goharbor.io/cloud-native-security-inspector/pkg/policy/enforcement"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/policy/enforcement"
 
-	"goharbor.io/cloud-native-security-inspector/pkg/policy"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/policy"
 
 	ctrl "sigs.k8s.io/controller-runtime"
 
 	"github.com/go-logr/logr"
 	"github.com/pkg/errors"
-	"goharbor.io/cloud-native-security-inspector/api/v1alpha1"
-	"goharbor.io/cloud-native-security-inspector/pkg/data"
-	"goharbor.io/cloud-native-security-inspector/pkg/data/core"
-	"goharbor.io/cloud-native-security-inspector/pkg/data/providers"
-	"goharbor.io/cloud-native-security-inspector/pkg/runtime/grpool"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/api/v1alpha1"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/core"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/providers"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/runtime/grpool"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"

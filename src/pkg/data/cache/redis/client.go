@@ -8,9 +8,9 @@ import (
 
 	"github.com/gomodule/redigo/redis"
 	"github.com/pkg/errors"
-	"goharbor.io/cloud-native-security-inspector/pkg/data"
-	"goharbor.io/cloud-native-security-inspector/pkg/data/core"
-	"goharbor.io/cloud-native-security-inspector/pkg/data/types"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/core"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/types"
 )
 
 // Client for handing data in cache.

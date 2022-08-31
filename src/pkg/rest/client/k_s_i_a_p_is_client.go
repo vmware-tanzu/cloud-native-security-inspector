@@ -15,8 +15,8 @@ import (
 	rtclient "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 
-	"goharbor.io/cloud-native-security-inspector/pkg/rest/client/assessment"
-	"goharbor.io/cloud-native-security-inspector/pkg/rest/client/operations"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/rest/client/assessment"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/rest/client/operations"
 )
 
 const (

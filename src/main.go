@@ -17,8 +17,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	goharborv1alpha1 "goharbor.io/cloud-native-security-inspector/api/v1alpha1"
-	"goharbor.io/cloud-native-security-inspector/controllers"
+	goharborv1alpha1 "github.com/vmware-tanzu/cloud-native-security-inspector/api/v1alpha1"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/controllers"
 	//+kubebuilder:scaffold:imports
 )
 

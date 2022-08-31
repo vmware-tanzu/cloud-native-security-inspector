@@ -6,8 +6,8 @@ import (
 	"github.com/goharbor/go-client/pkg/sdk/v2.0/models"
 	"github.com/goharbor/harbor/src/pkg/scan/vuln"
 	"github.com/pkg/errors"
-	"goharbor.io/cloud-native-security-inspector/api/v1alpha1"
-	"goharbor.io/cloud-native-security-inspector/pkg/data/core"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/api/v1alpha1"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/core"
 	"k8s.io/apimachinery/pkg/util/json"
 )
 

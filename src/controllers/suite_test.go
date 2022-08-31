@@ -16,7 +16,7 @@ import (
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	goharborv1alpha1 "goharbor.io/cloud-native-security-inspector/api/v1alpha1"
+	goharborv1alpha1 "github.com/vmware-tanzu/cloud-native-security-inspector/api/v1alpha1"
 	//+kubebuilder:scaffold:imports
 )
 
