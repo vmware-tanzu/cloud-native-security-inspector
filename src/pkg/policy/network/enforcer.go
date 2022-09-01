@@ -24,7 +24,7 @@ const (
 	networkPolicyNamePrefix = "cnsi-networkpolicy-"
 	annotationPolicyVendor  = "goharbor.io/vendor"
 	annotationPolicyRole    = "goharbor.io/role"
-	cnsiVendor               = "CNSI"
+	cnsiVendor              = "CNSI"
 	denyAllRole             = "deny-all"
 	matchPodLabelCtrl       = "goharbor.io/controller"
 	matchPodLabelRisk       = "goharbor.io/inspection"
@@ -183,6 +183,7 @@ func (e *Enforcer) ensureNetworkPolicy(ctx context.Context, ns string) error {
 			if err := e.kc.Create(ctx, pl); err != nil {
 				return errors.Wrapf(err, "create network policy: %s", pname)
 			}
+			return nil
 		}
 
 		return errors.Wrapf(err, "get network policy: %s", pname)
