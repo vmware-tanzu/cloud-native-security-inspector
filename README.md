@@ -1,7 +1,6 @@
 # Cloud Native Security Inspector 
 
 
-
 Cloud Native Security Inspector is an open source cloud native runtime security tool that works with Harbor. It allows end users to assess the security posture of Kubernetes clusters at runtime. This project will add dynamic scanning giving Security Auditors greater awareness and control of running workloads.
 
 ## Features 
