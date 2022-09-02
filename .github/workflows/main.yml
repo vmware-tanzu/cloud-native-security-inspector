@@ -37,9 +37,12 @@ jobs:
         run: |
           cd ${{ github.repository }}/src
           make test
-
-      - name: Codecov For BackEnd
-        uses: codecov/codecov-action@v1
+      
+      - uses: codecov/codecov-action@v3
         with:
-          file: ${{ github.repository }}/src/cover.out
-          flags: unittests
+          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+          files: ${{ github.repository }}/src/cover.out
+          flags: unittests # optional
+          name: codecov-umbrella # optional
+          fail_ci_if_error: true # optional (default = false)
+          verbose: true # optional (default = false)
