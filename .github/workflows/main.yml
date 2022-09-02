@@ -43,3 +43,4 @@ jobs:
         with:
           file: ${{ github.repository }}/src/cover.out
           flags: unittests
+          verbose: true
