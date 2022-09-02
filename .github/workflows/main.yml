@@ -37,10 +37,24 @@ jobs:
         run: |
           cd ${{ github.repository }}/src
           make test
+          curl -Os https://uploader.codecov.io/latest/linux/codecov
+          chmod +x codecov
+          ./codecov
 
-      - name: Codecov For BackEnd
-        uses: codecov/codecov-action@v3
+      - uses: codecov/codecov-action@v3
         with:
-          file: ${{ github.repository }}/src/cover.out
-          flags: unittests
-          verbose: true
+          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+          files: ${{ github.repository }}/src/cover.out
+          flags: unittests # optional
+          name: codecov-umbrella # optional
+          fail_ci_if_error: true # optional (default = false)
+          verbose: true # optional (default = false)
+
+
+
+#       - name: Codecov For BackEnd
+#         uses: codecov/codecov-action@v3
+#         with:
+#           file: ${{ github.repository }}/src/cover.out
+#           flags: unittests
+#           verbose: true
