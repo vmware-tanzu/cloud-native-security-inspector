@@ -22,8 +22,8 @@ import { CornComponent } from './view/corn/corn.component'
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { NamespaceComponent } from './view/summary/namespace/namespace.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ReportViewDetailComponent } from './view/tabs/report-view-detail/report-view-detail.component';
-import { ReportViewComponent } from './view/tabs/report-view/report-view.component';
+import { ReportViewDetailComponent } from './view/assements/report-view-detail/report-view-detail.component';
+import { ReportViewComponent } from './view/assements/report-view/report-view.component';
 import { InsightComponent } from './view/insight/insight.component';
 import { ClusterPageComponent } from './view/insight/cluster-page/cluster-page.component';
 import { NamespacePageComponent } from './view/insight/namespace-page/namespace-page.component';
