@@ -37,9 +37,9 @@ jobs:
         run: |
           cd ${{ github.repository }}/src
           make test
-          curl -Os https://uploader.codecov.io/latest/linux/codecov
-          chmod +x codecov
-          ./codecov
+#          curl -Os https://uploader.codecov.io/latest/linux/codecov
+#          chmod +x codecov
+#          ./codecov
 
       - uses: codecov/codecov-action@v3
         with:
