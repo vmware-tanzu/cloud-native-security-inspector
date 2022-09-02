@@ -1,4 +1,4 @@
-name: UNIT TEST
+name: UNIT_TEST
 
 on:
   workflow_dispatch:
