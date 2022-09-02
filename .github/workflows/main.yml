@@ -37,7 +37,7 @@ jobs:
         run: |
           cd ${{ github.repository }}/src
           make test
-      
+
       - uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
@@ -46,3 +46,4 @@ jobs:
           name: codecov-umbrella # optional
           fail_ci_if_error: true # optional (default = false)
           verbose: true # optional (default = false)
+
