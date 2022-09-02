@@ -37,3 +37,9 @@ jobs:
         run: |
           cd ${{ github.repository }}/src
           make test
+
+      - name: Codecov For BackEnd
+        uses: codecov/codecov-action@v1
+        with:
+          file: ${{ github.repository }}/src/cover.out
+          flags: unittests
