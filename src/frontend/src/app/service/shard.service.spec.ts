@@ -6,19 +6,23 @@
 import { TestBed, inject } from '@angular/core/testing';
 import { ShardTestModule } from 'src/app/shard/shard/shard.module';
 import { ShardService } from './shard.service';
-
 describe('ShardService', () => {
   let service: ShardService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ShardTestModule],
-      providers: [ShardService],
+      providers: [
+        ShardService,
+      ],
     });
     service = TestBed.inject(ShardService);
   });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+  it('should be created', inject(
+    [ShardService],
+    (service: ShardService) => {
+      expect(service).toBeTruthy();
+    }
+  ));
 });

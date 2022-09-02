@@ -8,7 +8,7 @@ import { ClusterPageComponent } from './cluster-page.component';
 import { ShardTestModule } from 'src/app/shard/shard/shard.module'
 import { PolicyService } from 'src/app/service/policy.service';
 import { ShardService } from 'src/app/service/shard.service'
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('ClusterPageComponent', () => {
   let component: ClusterPageComponent;
@@ -19,7 +19,7 @@ describe('ClusterPageComponent', () => {
       declarations: [ ClusterPageComponent ],
       imports: [ShardTestModule],
       providers: [PolicyService, ShardService],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
     })
     .compileComponents();
   });

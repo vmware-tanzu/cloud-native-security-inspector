@@ -2,10 +2,10 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ClarityModule } from '@clr/angular';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { TranslateStore, TranslateModule } from '@ngx-translate/core';
+import { TranslateStore, TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [],
@@ -21,7 +21,7 @@ import { TranslateStore, TranslateModule } from '@ngx-translate/core';
       extend: true,
     }),
   ],
-  providers: [TranslateStore],
-  exports: []
+  providers: [TranslateStore, TranslateService],
+  exports: [TranslateModule, HttpClientModule, HttpClientTestingModule, RouterTestingModule]
 })
 export class ShardTestModule { }

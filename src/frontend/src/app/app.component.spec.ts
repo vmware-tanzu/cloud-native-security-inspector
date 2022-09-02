@@ -28,7 +28,7 @@ describe('AppComponent', () => {
   it(`should have as title 'cloud-native-security-inspector'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    // expect(app).toEqual('cloud-native-security-inspector');
+    expect(app.title).toEqual('cloud-native-security-inspector');
   });
 
   it('should render title', () => {

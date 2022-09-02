@@ -3,7 +3,7 @@
  * SSPDX-License-Identifier: Apache-2.0
  */
 
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PolicyService } from 'src/app/service/policy.service';
 import { ShardService } from 'src/app/service/shard.service'
@@ -19,7 +19,7 @@ describe('ClusterComponent', () => {
       declarations: [ ClusterComponent ],
       imports: [ShardTestModule],
       providers: [PolicyService, ShardService],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
 
     })
     .compileComponents();

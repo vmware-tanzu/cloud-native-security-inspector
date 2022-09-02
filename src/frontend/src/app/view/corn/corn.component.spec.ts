@@ -3,7 +3,7 @@
  * SSPDX-License-Identifier: Apache-2.0
  */
 
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CornComponent } from './corn.component';
@@ -15,7 +15,7 @@ describe('CornComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ CornComponent ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
     })
     .compileComponents();
   });

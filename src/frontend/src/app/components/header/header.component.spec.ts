@@ -8,7 +8,7 @@ import { ShardTestModule } from 'src/app/shard/shard/shard.module'
 import { AppService } from 'src/app/app.service';
 
 import { HeaderComponent } from './header.component';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { PolicyService } from 'src/app/service/policy.service';
 import { ShardService } from 'src/app/service/shard.service';
 
@@ -21,7 +21,7 @@ describe('HeaderComponent', () => {
       declarations: [ HeaderComponent ],
       imports: [ShardTestModule],
       providers: [PolicyService, ShardService, AppService],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
 
     })
     .compileComponents();
