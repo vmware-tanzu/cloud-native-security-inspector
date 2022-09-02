@@ -3,7 +3,10 @@
  * SSPDX-License-Identifier: Apache-2.0
  */
 
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ShardService } from 'src/app/service/shard.service'
+import { ShardTestModule } from 'src/app/shard/shard/shard.module'
 
 import { HistogramComponent } from './histogram.component';
 
@@ -13,7 +16,11 @@ describe('HistogramComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ HistogramComponent ]
+      declarations: [ HistogramComponent ],
+      imports: [ShardTestModule],
+      providers: [ShardService],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+
     })
     .compileComponents();
   });

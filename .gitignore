@@ -23,4 +23,5 @@
 #portal 
 dist/
 node_modules/
+coverage/
 .angular/
