@@ -17,7 +17,5 @@ export class WorkloadDetailComponent implements OnInit {
     public shardService:ShardService
   ) { }
 
-  ngOnInit(): void {
-  }
-
+    ngOnInit(): void { }
 }

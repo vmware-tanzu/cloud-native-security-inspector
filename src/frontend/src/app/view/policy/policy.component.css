@@ -127,7 +127,7 @@ form .submit-btns {
   justify-content: flex-end;
 }
 form .actions {
-  margin-left: 0px;
+  margin-left: 0;
 }
 form .actions h4.action-title {
   display: flex;
@@ -138,7 +138,7 @@ form .actions h4.action-title div:first-of-type {
   min-width: 200px;
 }
 form .actions h4.action-title clr-toggle-container {
-  margin-top: 0px;
+  margin-top: 0;
 }
 form .actions.w-auto h4 {
   width: auto;

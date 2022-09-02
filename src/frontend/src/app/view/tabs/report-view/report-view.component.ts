@@ -35,9 +35,7 @@ export class ReportViewComponent implements OnInit, OnDestroy {
     },100)    
   }
 
-  ngOnDestroy(): void {
-    
-  }
+  ngOnDestroy(): void {}
     
   toReport(report: any) {
     this.showDetailFlag = true

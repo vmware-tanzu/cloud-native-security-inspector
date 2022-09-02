@@ -17,9 +17,7 @@ export class WorkloadPageComponent implements OnInit {
     public shardService:ShardService
   ) { }
 
-  ngOnInit(): void {
-  }
-
+    ngOnInit(): void { }
   toWorkload(item:{namespace:string, workload:any}) {
     this.shardService.showWorkloadDetailFlag = true
     this.shardService.navVariable = 'Workload'

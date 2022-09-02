@@ -23,9 +23,7 @@ export class NamespaceComponent implements OnInit {
     private policyService: PolicyService
   ) { }
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void { }
   switchNamespace (value:string) {
     const obj = this.shardService.namespaceList.find(el => el.name === value)
     this.shardService.currentNamespaceviolationList = obj?.workloads.violationList

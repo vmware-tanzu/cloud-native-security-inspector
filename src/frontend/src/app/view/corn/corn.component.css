@@ -2,7 +2,6 @@
  * Copyright 2022 VMware, Inc.
  * SSPDX-License-Identifier: Apache-2.0
  */
-
 clr-tabs::ng-deep .tab-content clr-radio-wrapper {
   position: relative;
   left: 20px;
@@ -19,7 +18,7 @@ clr-tabs::ng-deep .tab-content .period {
   top: 50px;
 }
 clr-tabs::ng-deep .tab-content .period clr-radio-wrapper {
-  top: 0px;
+  top: 0;
 }
 clr-tabs::ng-deep .tab-content .period .content input {
   text-align: center;
@@ -46,7 +45,7 @@ clr-tabs::ng-deep .tab-content .cycle {
   top: 80px;
 }
 clr-tabs::ng-deep .tab-content .cycle clr-radio-wrapper {
-  top: 0px;
+  top: 0;
 }
 clr-tabs::ng-deep .tab-content .cycle.specify-week {
   top: 95px;

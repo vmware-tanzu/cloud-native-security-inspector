@@ -158,8 +158,7 @@ export class CornComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
 
   sharedChangeHandle (event:any,info:'secondInfo'|'minuteInfo'|'hourInfo'|'dayInfo'|'monthInfo'|'weekInfo', num:string|number) {
