@@ -1,40 +1,67 @@
-/*
- * Copyright 2022 VMware, Inc.
- * SSPDX-License-Identifier: Apache-2.0
- */
-
-import { TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { TestBed, ComponentFixture } from '@angular/core/testing';
+import { Title } from '@angular/platform-browser';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { AppComponent } from './app.component';
+import { APP_BASE_HREF } from '@angular/common';
+import { ShardTestModule } from 'src/app/shard/shard/shard.module';
 
 describe('AppComponent', () => {
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule
-      ],
-      declarations: [
-        AppComponent
-      ],
-    }).compileComponents();
-  });
+    let fixture: ComponentFixture<any>;
+    let compiled: any;
+    const fakeCookieService = null;
+    let fakeSessionService = {
+        getCurrentUser: function () {
+            return { has_admin_role: true };
+        },
+    };
+    let fakeAppConfigService = {
+        isIntegrationMode: function () {
+            return true;
+        },
+    };
+    let fakeTitle = {
+        setTitle: function () {},
+    };
+    const fakeSkinableConfig = {
+        getSkinConfig() {
+            return {
+                headerBgColor: {
+                    darkMode: '',
+                    lightMode: '',
+                },
+                loginBgImg: '',
+                loginTitle: '',
+                product: {
+                    name: 'test',
+                    logo: '',
+                    introduction: '',
+                },
+            };
+        },
+        setTitleIcon() {},
+    };
 
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
-  });
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            declarations: [AppComponent],
+            imports: [ShardTestModule],
+            providers: [
+                { provide: APP_BASE_HREF, useValue: '/' },
+                { provide: Title, useValue: fakeTitle },
+            ],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        });
 
-  it(`should have as title 'cloud-native-security-inspector'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('cloud-native-security-inspector');
-  });
+        fixture = TestBed.createComponent(AppComponent);
+        fixture.detectChanges();
+        compiled = fixture.nativeElement;
+    });
 
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('cloud-native-security-inspector app is running!');
-  });
+    afterEach(() => {
+        fixture.destroy();
+    });
+
+    it('should create the app', () => {
+        expect(compiled).toBeTruthy();
+    });
 });
