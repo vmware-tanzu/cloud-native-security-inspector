@@ -56,7 +56,7 @@ Instead of using the pre-built images, users can also choose to build the images
 ```shell
 $ git clone https://github.com/vmware/cloud-native-security-inspector.git
 ```
-Before building the images, please ensure you have installed and configured the golang SDK correctly. To install the golang SDK, please familiarize yourself with the [Golang documentation](https://go.dev/doc/install). 
+Before building the images, please ensure you have installed and configured the golang SDK correctly. To install the golang SDK, please familiarize yourself with the [Golang documentation](https://go.dev/doc/install). And also need to be correct Install node.js v14.15 or above. To install node.js, please go to the node.js official website https://nodejs.org/en/. 
 
 Use the following commands to compile the source code and build the docker images. After that, the images are generated and pushed to registry, then deployed. 
 ```shell
