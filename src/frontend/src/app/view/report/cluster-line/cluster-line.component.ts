@@ -60,9 +60,8 @@ Chart.register(
   styleUrls: ['./cluster-line.component.less']
 })
 export class ClusterLineComponent implements OnInit {
-
-  @Input('chartOptions')chartOptions!:any
-  @Input('updateFlag')updateFlag!:any
+  @Input('chartOptions')chartOptions:any
+  @Input('updateFlag')updateFlag:any
   constructor() { }
   public myChart: any;
   ngOnInit(): void {

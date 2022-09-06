@@ -8,7 +8,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './view/home/home.component'
 import { LoginComponent } from './view/login/login.component';
 import { SettingComponent } from './view/setting/setting.component';
-import { ReportViewComponent } from './view/tabs/report-view/report-view.component'
+import { ReportViewComponent } from './view/assements/report-view/report-view.component'
 import { InsightComponent } from './view/insight/insight.component'
 import { ClusterPageComponent } from './view/insight/cluster-page/cluster-page.component'
 import { NamespacePageComponent } from './view/insight/namespace-page/namespace-page.component'

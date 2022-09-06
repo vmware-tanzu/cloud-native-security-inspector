@@ -5,11 +5,8 @@
 
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ShardService } from 'src/app/service/shard.service'
-import { CornComponent } from 'src/app/view/corn/corn.component'
-import { PackedbubbleComponent } from 'src/app/view/report/packedbubble/packedbubble.component'
 import { PolicyService } from 'src/app/service/policy.service'
 import * as moment from 'moment';
-import { HistogramComponent } from '../report/histogram/histogram.component';
  @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',

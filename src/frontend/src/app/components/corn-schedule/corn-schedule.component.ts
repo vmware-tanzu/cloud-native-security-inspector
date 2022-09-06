@@ -65,10 +65,7 @@ export class CornScheduleComponent implements OnInit {
     this.multipleType = value
   }
   constructor() { }
-
-  ngOnInit(): void {  
-  }
-
+  ngOnInit(): void {}
   setTimePicker(timePicker:any) {
     this.timePicker = timePicker.hour.value+':'+timePicker.minute.value
   }

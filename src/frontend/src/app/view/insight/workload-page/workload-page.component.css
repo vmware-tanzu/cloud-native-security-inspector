@@ -2,7 +2,6 @@
  * Copyright 2022 VMware, Inc.
  * SSPDX-License-Identifier: Apache-2.0
  */
-
 .workload {
   height: auto;
   min-height: 100vh;
@@ -15,11 +14,11 @@
 .workload .report-detai-bg {
   position: absolute;
   z-index: 99999;
-  right: 0px;
-  top: 0px;
+  right: 0;
+  top: 0;
   overflow: auto;
   background-color: rgba(0, 0, 0, 0);
-  transition: background-color 2;
+  transition: background-color 2s;
   width: 100%;
   height: 100%;
 }
@@ -30,7 +29,7 @@
 .workload .report-detai-bg .report-detai {
   position: absolute;
   right: -700px;
-  top: 0px;
+  top: 0;
   width: 700px;
   height: auto;
   min-height: 100vh;
@@ -38,7 +37,7 @@
   transition: right 5s, opacity 2s;
 }
 .workload .report-detai-bg .report-detai.show {
-  right: 0px;
+  right: 0;
   opacity: 1;
   transition: right 5s, opacity 2s;
 }

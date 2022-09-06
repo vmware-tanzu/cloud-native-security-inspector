@@ -2,7 +2,6 @@
  * Copyright 2022 VMware, Inc.
  * SSPDX-License-Identifier: Apache-2.0
  */
-
 .detail-bg {
   height: 100vh;
   overflow: auto;
@@ -22,7 +21,7 @@
   font-size: 12px;
 }
 .list .warp-2 {
-  padding: 0px;
+  padding: 0;
   padding-left: 15px;
 }
 .list .warp-2 b {

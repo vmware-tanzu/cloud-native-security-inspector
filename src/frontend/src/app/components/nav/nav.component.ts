@@ -10,9 +10,6 @@ import { Component, OnInit, Output } from '@angular/core';
   styleUrls: ['./nav.component.less']
 })
 export class NavComponent implements OnInit {
-  constructor(
-    ) { }
-  ngOnInit(): void {
-    
-  }
+  constructor() {}
+  ngOnInit(): void{}
 }

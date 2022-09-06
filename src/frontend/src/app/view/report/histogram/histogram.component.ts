@@ -65,11 +65,11 @@ Chart.register(
   styleUrls: ['./histogram.component.less']
 })
 export class HistogramComponent implements OnInit {
-  @Input('chartOptions') chartOptions!:any
+  @Input('chartOptions') chartOptions:any
   @Input('updateFlag') updateFlag:boolean = false
   @Input('width') width:string = '100%'
   @Input('height') height:string = '400px'
-  @ViewChild('charts')charts!:any
+  @ViewChild('charts')charts:any
   public myChart: any;
   constructor() {
   }

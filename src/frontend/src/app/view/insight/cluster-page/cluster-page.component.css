@@ -2,7 +2,6 @@
  * Copyright 2022 VMware, Inc.
  * SSPDX-License-Identifier: Apache-2.0
  */
-
 .cluster-page {
   padding: 20px;
   height: auto;
@@ -91,10 +90,10 @@
 }
 .cluster-page clr-tabs::ng-deep .clickable .card-block:nth-of-type(2) {
   height: 120px;
-  padding: 0px;
+  padding: 0;
 }
 .cluster-page clr-tabs::ng-deep .clickable .card-block:nth-of-type(2) p {
-  margin: 0px;
+  margin: 0;
   line-height: 120px;
   font-size: 50px;
 }
@@ -120,7 +119,7 @@
 .cluster-page clr-tabs::ng-deep .clickable .card-block.abnormal .pre .pro {
   height: 10px;
   position: absolute;
-  left: 0px;
+  left: 0;
   background-color: green;
 }
 .cluster-page clr-tabs::ng-deep .clickable .card-block.abnormal .pro {
