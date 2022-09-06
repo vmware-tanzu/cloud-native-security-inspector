@@ -28,8 +28,9 @@ export class HomeComponent implements OnInit {
   }
 
   getAssessmentreports() {
-    this.policyService.getAssessmentreports().subscribe(
+    this.policyService.getAssessmentreports(10).subscribe(
       data => {
+        this.shardService.continues = data.metadata.continue
         this.shardService.clusterChartBarOptions.xAxis = []
         this.shardService.namespacChartLineOption.xAxis = []
         this.shardService.namespacChartLineOption.series[0].data = []

@@ -28,11 +28,12 @@
     </clr-dg-row>
   
     <clr-dg-footer>
-      <clr-dg-pagination #poolpagination [clrDgTotalItems]="shardService.allWorkloadList.length">
-        <clr-dg-page-size [clrPageSizeOptions]="pageSizeOptions">Workloads per page</clr-dg-page-size>
-        {{poolpagination.firstItem + 1}} - {{poolpagination.lastItem + 1}} of {{shardService.allWorkloadList.length}} workloads
+      <clr-dg-pagination #pagination [clrDgPageSize]="10">
+          <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Workloads per page</clr-dg-page-size>
+          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+          of {{pagination.totalItems}} workloads
       </clr-dg-pagination>
-    </clr-dg-footer>
+  </clr-dg-footer>
   </clr-datagrid>
   <div class="report-detai-bg" (click)='showDetail($event)' *ngIf="shardService.currentWorkload && shardService.showWorkloadDetailFlag">
     <div class="report-detai" [ngClass]="{'show': shardService.showWorkloadDetailFlag}" style="height: 100%;">

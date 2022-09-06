@@ -16,6 +16,7 @@ import { ReportViewDetailComponent } from '../report-view-detail/report-view-det
 export class ReportViewComponent implements OnInit, OnDestroy {
   @ViewChild('reportline')reportline!: LineComponent|null
   @ViewChild('reportDetail')reportDetail!:ReportViewDetailComponent
+  @ViewChild('pagination') pagination!:any
   public pageSizeOptions = [10, 20, 50, 100, 500];
   public showDetailFlag = false
   private timer:any
@@ -30,7 +31,7 @@ export class ReportViewComponent implements OnInit, OnDestroy {
         clearInterval(this.timer)
       }
       if (this.reportline) {
-        this.reportline.render()
+        this.reportline.render()        
       }
     },100)    
   }
@@ -61,6 +62,13 @@ export class ReportViewComponent implements OnInit, OnDestroy {
     this.shardService.currentReport = report
     this.reportDetail.currentReport = report.spec.namespaceAssessments[0]
     // this.resetWorkload('reportDetailFlag')
+  }
+
+  sizeChange(size: any) {
+    
+  }
+  pageChange(page: any) {
+    
   }
 
   showDetail(event:any) {

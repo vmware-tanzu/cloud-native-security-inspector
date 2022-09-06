@@ -128,7 +128,7 @@ export class ClusterPageComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.policyService.getAssessmentreports().subscribe(
+    this.policyService.getAssessmentreports(10).subscribe(
       data => {
           const newData = {
             normal: this.shardService.allNormal,
