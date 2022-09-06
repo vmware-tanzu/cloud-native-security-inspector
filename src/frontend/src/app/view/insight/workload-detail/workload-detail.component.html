@@ -4,11 +4,11 @@
 -->
 
 <div class='card' style="height: 100%;">
-  <clr-accordion clrAccordionMultiPanel="true" *ngIf="shardService.currentWorkload.workload.workload">
+  <clr-accordion clrAccordionMultiPanel="true" *ngIf="shardService.currentWorkload && shardService.currentWorkload.workload">
     <clr-accordion-panel >
       <clr-accordion-title>{{'Workload.view'| translate}}</clr-accordion-title>
       <clr-accordion-content *clrIfExpanded>
-        <ul class="list warp-1">
+        <ul class="list warp-1" *ngIf="shardService.currentWorkload && shardService.currentWorkload.workload">
           <li>
             <b>UID:</b>
             <span>{{shardService.currentWorkload.workload.workload.metadata.uid}}</span>
@@ -43,7 +43,7 @@
       </clr-accordion-content>
     </clr-accordion-panel>
   
-    <clr-accordion-panel *ngIf="shardService.currentWorkload.workload.failures">
+    <clr-accordion-panel *ngIf="shardService.currentWorkload && shardService.currentWorkload.workload.failures">
       <clr-accordion-title>{{'Report_Detail.failures'|translate}}</clr-accordion-title>
       <clr-accordion-content *clrIfExpanded>
           <ul class="list warp-1 " *ngFor="let item of shardService.currentWorkload.workload.failures">
@@ -89,7 +89,7 @@
       </clr-accordion-content>
     </clr-accordion-panel>
   
-    <clr-accordion-panel *ngIf="shardService.currentWorkload.workload.workload">
+    <clr-accordion-panel *ngIf="shardService.currentWorkload && shardService.currentWorkload.workload">
       <clr-accordion-title>Pods</clr-accordion-title>
       <clr-accordion-content *clrIfExpanded>
         <ul class="list warp-1" *ngFor="let item of shardService.currentWorkload.workload.workload.pods">

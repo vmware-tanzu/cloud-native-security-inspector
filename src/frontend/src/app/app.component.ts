@@ -12,6 +12,7 @@ import { ShardService } from './service/shard.service';
   styleUrls: ['./app.component.less']
 })
 export class AppComponent implements OnInit{
+  title='';
   constructor(private shardService:ShardService, private i18: AppService) {
     const lang = localStorage.getItem('tsi-language')
     if (lang) {

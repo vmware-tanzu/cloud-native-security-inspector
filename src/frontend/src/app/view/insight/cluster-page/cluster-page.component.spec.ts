@@ -3,9 +3,12 @@
  * SSPDX-License-Identifier: Apache-2.0
  */
 
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { ComponentFixture, TestBed, inject } from '@angular/core/testing';
 import { ClusterPageComponent } from './cluster-page.component';
+import { ShardTestModule } from 'src/app/shard/shard/shard.module'
+import { PolicyService } from 'src/app/service/policy.service';
+import { ShardService } from 'src/app/service/shard.service'
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('ClusterPageComponent', () => {
   let component: ClusterPageComponent;
@@ -13,7 +16,10 @@ describe('ClusterPageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ClusterPageComponent ]
+      declarations: [ ClusterPageComponent ],
+      imports: [ShardTestModule],
+      providers: [PolicyService, ShardService],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
     })
     .compileComponents();
   });

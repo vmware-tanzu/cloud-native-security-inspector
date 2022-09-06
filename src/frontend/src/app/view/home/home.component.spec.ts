@@ -3,8 +3,11 @@
  * SSPDX-License-Identifier: Apache-2.0
  */
 
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { PolicyService } from 'src/app/service/policy.service';
+import { ShardService } from 'src/app/service/shard.service'
+import { ShardTestModule } from 'src/app/shard/shard/shard.module'
 import { HomeComponent } from './home.component';
 
 describe('HomeComponent', () => {
@@ -13,7 +16,11 @@ describe('HomeComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ HomeComponent ]
+      declarations: [ HomeComponent ],
+      imports: [ShardTestModule],
+      providers: [PolicyService, ShardService],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
+
     })
     .compileComponents();
   });
