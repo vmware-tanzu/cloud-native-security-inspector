@@ -33,6 +33,11 @@ jobs:
           echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
         shell: bash
         
+      - name: Set up node.js 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          
       - name: Unit test
         run: |
           cd ${{ github.repository }}/src
