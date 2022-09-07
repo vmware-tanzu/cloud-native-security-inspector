@@ -30,7 +30,6 @@ export class HomeComponent implements OnInit {
   getAssessmentreports() {
     this.policyService.getAssessmentreports(10).subscribe(
       data => {
-        this.shardService.continues = data.metadata.continue
         this.shardService.clusterChartBarOptions.xAxis = []
         this.shardService.namespacChartLineOption.xAxis = []
         this.shardService.namespacChartLineOption.series[0].data = []
@@ -207,8 +206,7 @@ export class HomeComponent implements OnInit {
         this.shardService.clusterLineChartOption.series[0].data = normal.splice(normal.length-10, normal.length)
         this.shardService.clusterLineChartOption.series[1].data = abnormal.splice(abnormal.length-10, abnormal.length)
         this.shardService.clusterLineChartOption.series[2].data = sumworkload.splice(sumworkload.length-10, sumworkload.length)
-        this.shardService.reportslist = reportslist  
-         
+        // this.shardService.reportslist = reportslist  
       },
       err => {
         console.log('err', err);

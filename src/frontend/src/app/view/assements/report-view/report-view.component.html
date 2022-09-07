@@ -7,7 +7,7 @@
   <h2>{{'Report_View.title'|translate}}</h2>
   <app-line id='report-line' #reportline [chartOptions]="shardService.reportLineChartOption"></app-line>
 
-  <clr-datagrid>
+  <clr-datagrid [clrDgLoading]="dgLoading" (clrDgRefresh)="pageChange($event)">
     <clr-dg-column [clrDgField]="'metadata.name'">{{'CommonlyUse.name'|translate}}</clr-dg-column>
     <clr-dg-column [clrDgField]="'metadata.namespace'">{{'CommonlyUse.namespace'|translate}}</clr-dg-column>
     <clr-dg-column [clrDgField]="'metadata.creationTimestamp'">{{'CommonlyUse.create_time'|translate}}</clr-dg-column>
@@ -25,8 +25,8 @@
 
     </clr-dg-row>
     <clr-dg-footer>
-      <clr-dg-pagination #pagination [clrDgPageSize]="10" (change)="sizeChange(pagination.pageSize)">
-          <clr-dg-page-size (change)="pageChange(pagination.currentPage)" [clrPageSizeOptions]="[10,20,50,100]">Reports per page</clr-dg-page-size>
+      <clr-dg-pagination #pagination [clrDgPageSize]="defaultSize" [clrDgLastPage]="pageMaxCount">
+          <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Reports per page</clr-dg-page-size>
           {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
           of {{pagination.totalItems}} reports
       </clr-dg-pagination>

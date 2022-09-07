@@ -21,7 +21,6 @@ export class ShardService {
   public showCompliant = 0
   public showAbnormal = 0
   public updateFlag = false
-  public continues = ''
   public nodesInfo:any = {
     version: '',
     cpu: {

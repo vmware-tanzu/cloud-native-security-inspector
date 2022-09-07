@@ -5,6 +5,7 @@
 
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { PolicyService } from 'src/app/service/policy.service';
 import { ShardService } from 'src/app/service/shard.service'
 import { LineComponent } from '../../report/line/line.component';
 import { ReportViewDetailComponent } from '../report-view-detail/report-view-detail.component'
@@ -20,8 +21,13 @@ export class ReportViewComponent implements OnInit, OnDestroy {
   public pageSizeOptions = [10, 20, 50, 100, 500];
   public showDetailFlag = false
   private timer:any
+  public pageMaxCount = 1
+  public continues = ''
+  public defaultSize = 10
+  public dgLoading = false
   constructor(
     public shardService:ShardService,
+    public policyService:PolicyService,
     public router:Router
   ) { }
 
@@ -64,11 +70,27 @@ export class ReportViewComponent implements OnInit, OnDestroy {
     // this.resetWorkload('reportDetailFlag')
   }
 
-  sizeChange(size: any) {
-    
-  }
-  pageChange(page: any) {
-    
+  pageChange(event: any) {
+    this.dgLoading = true
+    if (event.page.current <= 1) {
+      this.continues = ''
+    }
+    if (event.page.size !== this.defaultSize) {
+      this.defaultSize = event.page.size
+      this.continues = ''
+    }
+    this.policyService.getAssessmentreports(event.page.size, this.continues).subscribe(
+      data => {
+        if (this.continues) {
+          this.shardService.reportslist = [...this.shardService.reportslist , ...data.items]
+        } else {
+          this.shardService.reportslist = data.items
+        }
+        this.continues = data.metadata.continue
+        this.pageMaxCount = (data.metadata.remainingItemCount + this.shardService.reportslist.length) / this.defaultSize
+        this.dgLoading = false
+      }
+    )
   }
 
   showDetail(event:any) {
