@@ -33,10 +33,10 @@ jobs:
           echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
         shell: bash
         
-      - name: Set up node.js 16
+      - name: Set up node.js 14.15
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+           node-version: 14.15
           
       - name: Unit test
         run: |
