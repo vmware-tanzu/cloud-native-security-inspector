@@ -16,8 +16,8 @@ export class PolicyService {
   constructor(private http: HttpClient) { }
 
   getAssessmentreports(limit:number = 10, continues:string='', fieldSelector: string='') :Observable<AssessmentReportType>{
-    return this.http.get<AssessmentReportType>(this.environment.api.goharbor + `/assessmentreports`)
-    // return this.http.get<AssessmentReportType>(this.environment.api.goharbor + `/assessmentreports?limit=${limit}&continue=${continues}&fieldSelector=${fieldSelector}`)
+    // return this.http.get<AssessmentReportType>(this.environment.api.goharbor + `/assessmentreports`)
+    return this.http.get<AssessmentReportType>(this.environment.api.goharbor + `/assessmentreports?limit=${limit}&continue=${continues}&fieldSelector=${fieldSelector}`)
   }
 
   getNamespaceAssessmentreports(namespace: string ='default') :Observable<AssessmentReportType>{
