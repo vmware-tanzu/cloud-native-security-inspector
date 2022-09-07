@@ -46,7 +46,7 @@ jobs:
       - uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-          files: ${{ github.repository }}/src/cover.out,${{ github.repository }}/src/frontend/coverage/lcov.info
+          files: ${{ github.repository }}/src/cover.out
           
           flags: unittests # optional
           name: codecov-umbrella # optional
