@@ -32,11 +32,6 @@ jobs:
           echo "GOPATH=$(go env GOPATH):$GITHUB_WORKSPACE" >> $GITHUB_ENV
           echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
         shell: bash
-        
-      - name: Set up node.js 14.15
-        uses: actions/setup-node@v3
-        with:
-           node-version: 14.15
           
       - name: Unit test
         run: |
