@@ -1,8 +1,8 @@
-name: UNIT_TEST
+name: UNIT TEST
 
 on:
   workflow_dispatch:
-  pull_request:
+#   pull_request:
 #   push:
 #     paths-ignore:
 #     - 'docs/**'
@@ -32,7 +32,7 @@ jobs:
           echo "GOPATH=$(go env GOPATH):$GITHUB_WORKSPACE" >> $GITHUB_ENV
           echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
         shell: bash
-          
+        
       - name: Unit test
         run: |
           cd ${{ github.repository }}/src
@@ -42,7 +42,6 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
           files: ${{ github.repository }}/src/cover.out
-          
           flags: unittests # optional
           name: codecov-umbrella # optional
           fail_ci_if_error: true # optional (default = false)
