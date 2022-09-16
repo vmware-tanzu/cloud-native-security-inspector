@@ -5,9 +5,9 @@ package data
 import (
 	"context"
 
-	"goharbor.io/k8s-security-inspector/api/v1alpha1"
-	"goharbor.io/k8s-security-inspector/pkg/data/core"
-	"goharbor.io/k8s-security-inspector/pkg/data/types"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/api/v1alpha1"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/core"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/types"
 )
 
 // ReadOptions contains options for client reading.

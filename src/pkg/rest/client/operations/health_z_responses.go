@@ -14,7 +14,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 
-	"goharbor.io/k8s-security-inspector/pkg/rest/models"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/rest/models"
 )
 
 // HealthZReader is a Reader for the HealthZ structure.
