@@ -14,24 +14,24 @@ Cloud Native Security Inspector is an open source cloud native runtime security 
 - View notifications about flagged pods 
 
 
-## 1. Architecture
+## Architecture
   <img src="./docs/architecture.png">  
 
-**Project Cloud-Native-Security-Inspector** consists of the following 3 components:
-- 1.Controller Manager
-- 2.Inspector
-- 3.Portal
+**Cloud Native Security Inspector** consists of the following 3 components:
+1. Controller Manager
+1. Inspector
+1. Portal
 
-## 2. Demo
-[Video Demo](https://youtu.be/IMxU0UWo-DU) - Demo for Cloud-Native-Security-Inspector features
+## Demo
+[Video Demo](https://youtu.be/IMxU0UWo-DU) - Demo for Cloud Native Security Inspector features
 
-## 3. Prerequisites
+## Prerequisites
 - Ubuntu Linux as the operating system of the installation machine
 - [Kubernetes](https://kubernetes.io/) 1.24
 - [Harbor](https://goharbor.io/) 2.5.0+ is deployed and [vulnerability scanning in Harbor](https://goharbor.io/docs/main/administration/vulnerability-scanning/) is configured properly.
 - [kubectl](https://kubernetes.io/docs/reference/kubectl/) and docker commands are ready to use.
 
-## 4. Deployment & Run
+## Deployment & Run
 Follow the instructions below to deploy Cloud Native Security Inspector.   
 Refer to the [documentation](USER-GUIDE.md) for more details on how to use Cloud Native Security Inspector.  
 There are two deployment options:
@@ -97,14 +97,14 @@ cloud-native-security-inspector-portal-service   NodePort   10.98.232.35   <none
 If you are using KIND to deploy Kubernetes, in order to visit the portal successfully, please make the NodePort (by default: 30150) of the portal has been exposed to the host machine correctly.  For more details please refer to [KIND documentation](https://kind.sigs.k8s.io/docs/user/quick-start/#mapping-ports-to-the-host-machine).
 
 ### Uninstalling
-To uninstall Cloud-Native-Security-Inspector, use the following command:
+To uninstall Cloud Native Security Inspector, use the following command:
 ```shell
 $ ./deploy.sh uninstall 
 ```
 For more details, please refer to the [user guide](USER-GUIDE.md).
-## 5. Contact us
+## Contact us
 Email: narrows @ vmware.com  
 
 
-## 6. License
+## License
 Cloud Native Security Inspector is available under the [Apache 2 license](LICENSE)

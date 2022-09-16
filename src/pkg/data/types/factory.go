@@ -4,8 +4,8 @@ package types
 
 import (
 	"github.com/pkg/errors"
-	"goharbor.io/k8s-security-inspector/pkg/data/core"
-	"goharbor.io/k8s-security-inspector/pkg/data/types/vuln"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/core"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/types/vuln"
 )
 
 var _ Store = &vuln.Store{}

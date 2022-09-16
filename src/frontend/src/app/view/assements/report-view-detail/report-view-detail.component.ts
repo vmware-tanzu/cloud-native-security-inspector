@@ -17,9 +17,7 @@ export class ReportViewDetailComponent implements OnInit {
   public workloadInfo!:any
   constructor(public shardService:ShardService) { }
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void { }
   setCurrentReport(data:any) {
     this.currentReport = data
   }

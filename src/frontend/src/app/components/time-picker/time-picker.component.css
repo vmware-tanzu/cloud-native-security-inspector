@@ -56,7 +56,7 @@
   color: #fff;
 }
 .time-container .drow-content .time-list .list-sc::-webkit-scrollbar {
-  width: 0px;
+  width: 0;
   background: transparent;
 }
 .time-container .drow-content .btns {

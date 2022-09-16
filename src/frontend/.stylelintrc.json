@@ -1,0 +1,14 @@
+{
+  "extends": ["stylelint-config-standard", "stylelint-config-prettier"],
+  "rules": {
+    "no-empty-source": null,
+    "rule-empty-line-before": null,
+    "selector-pseudo-element-no-unknown": null,
+    "alpha-value-notation": null,
+    "color-function-notation": null,
+    "no-descending-specificity": null,
+    "function-no-unknown": null,
+    "hue-degree-notation": null,
+    "no-duplicate-selectors": null
+  }
+}

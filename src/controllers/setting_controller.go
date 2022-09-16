@@ -15,8 +15,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	goharborv1alpha1 "goharbor.io/k8s-security-inspector/api/v1alpha1"
-	"goharbor.io/k8s-security-inspector/pkg/data/providers"
+	goharborv1alpha1 "github.com/vmware-tanzu/cloud-native-security-inspector/api/v1alpha1"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/providers"
 )
 
 // SettingReconciler reconciles a Setting object

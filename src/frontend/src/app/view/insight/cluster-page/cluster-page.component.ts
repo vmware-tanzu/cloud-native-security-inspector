@@ -71,9 +71,12 @@ Chart.register(
   styleUrls: ['./cluster-page.component.less']
 })
 export class ClusterPageComponent implements OnInit {
-  @ViewChild('packedbubble')packedbubble!: PackedbubbleComponent
-  @ViewChild('reportline2')reportline!: LineComponent
-  @ViewChild('histogram') histogram!: HistogramComponent
+  @ViewChild('packedbubble')
+  packedbubble!: PackedbubbleComponent;
+  @ViewChild('reportline2')
+  reportline!: LineComponent
+  @ViewChild('histogram')
+  histogram!: HistogramComponent
   public summary = true
   public violations = false
   public pageSizeOptions = [10, 20, 50, 100, 500];

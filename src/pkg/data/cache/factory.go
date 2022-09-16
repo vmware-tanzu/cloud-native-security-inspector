@@ -7,8 +7,8 @@ import (
 
 	"github.com/gomodule/redigo/redis"
 	"github.com/pkg/errors"
-	"goharbor.io/k8s-security-inspector/api/v1alpha1"
-	myredis "goharbor.io/k8s-security-inspector/pkg/data/cache/redis"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/api/v1alpha1"
+	myredis "github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/cache/redis"
 )
 
 const (

@@ -64,9 +64,9 @@ Chart.register(
   styleUrls: ['./line.component.less']
 })
 export class LineComponent implements OnInit {
-  @Input('chartOptions')chartOptions!:any
-  @Input('updateFlag')updateFlag!:any
-  @ViewChild('charts')charts!:any
+  @Input('chartOptions')chartOptions:any
+  @Input('updateFlag')updateFlag:any
+  @ViewChild('charts')charts:any
   constructor() { }
   public myChart: any;
   ngOnInit(): void {

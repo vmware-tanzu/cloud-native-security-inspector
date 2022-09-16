@@ -9,7 +9,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	goharborv1 "goharbor.io/k8s-security-inspector/api/v1alpha1"
+	cnsiv1alpha1 "github.com/vmware-tanzu/cloud-native-security-inspector/api/v1alpha1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -41,24 +41,24 @@ type AssessmentReportReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.8.3/pkg/reconcile
 func (r *AssessmentReportReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	log := log.FromContext(ctx).
+	logFromContext := log.FromContext(ctx).
 		WithName("AssessmentReportReconciler")
 
-	log.Info("Reconcile assessment report", "resource", req.NamespacedName)
+	logFromContext.Info("Reconcile assessment report", "resource", req.NamespacedName)
 
 	// First get the assessment report.
-	report := &goharborv1.AssessmentReport{}
+	report := &cnsiv1alpha1.AssessmentReport{}
 	if err := r.Client.Get(ctx, client.ObjectKey{
 		Namespace: req.Namespace,
 		Name:      req.Name,
 	}, report); err != nil {
 		// Resource has been deleted.
 		if apierrors.IsNotFound(err) {
-			log.Info("Reconcile completed.")
+			logFromContext.Info("Reconcile completed.")
 			return ctrl.Result{}, nil
 		}
 
-		log.Error(err, "get assessment report")
+		logFromContext.Error(err, "get assessment report")
 		return ctrl.Result{}, err
 	}
 
@@ -71,22 +71,22 @@ func (r *AssessmentReportReconciler) Reconcile(ctx context.Context, req ctrl.Req
 	// Get owner reference.
 	// If no owner reference existing, treat it as invalid one.
 	skipped := true
-	policy := &goharborv1.InspectionPolicy{}
-	if owner, ok := report.Annotations[goharborv1.OwnerReferenceAnnotation]; ok {
+	policy := &cnsiv1alpha1.InspectionPolicy{}
+	if owner, ok := report.Annotations[cnsiv1alpha1.OwnerReferenceAnnotation]; ok {
 		// Get inspection policy here.
 		if err := r.Client.Get(ctx, client.ObjectKey{Name: owner}, policy); err != nil {
-			log.Error(err, "get inspection policy owner")
+			logFromContext.Error(err, "get inspection policy owner")
 			return ctrl.Result{}, err
 		}
 
 		// Check creation timestamp.
-		if timestamp, ok := report.Annotations[goharborv1.CreationTimestampAnnotation]; ok {
+		if timestamp, ok := report.Annotations[cnsiv1alpha1.CreationTimestampAnnotation]; ok {
 			// All the related annotations are existing.
 			skipped = false
 
 			unixT, err := strconv.ParseInt(timestamp, 10, 64)
 			if err != nil {
-				log.Error(err, "parse creation timestamp")
+				logFromContext.Error(err, "parse creation timestamp")
 				return ctrl.Result{}, errors.Wrap(err, "parse creation timestamp")
 			}
 
@@ -94,7 +94,7 @@ func (r *AssessmentReportReconciler) Reconcile(ctx context.Context, req ctrl.Req
 			if time.Unix(unixT, 0).UTC().Add(liveTime).Before(time.Now().UTC()) {
 				// Discard dirty report.
 				if err := r.Client.Delete(ctx, report); err != nil {
-					log.Error(err, "delete dirty assessment report")
+					logFromContext.Error(err, "delete dirty assessment report")
 					return ctrl.Result{}, err
 				}
 
@@ -105,7 +105,7 @@ func (r *AssessmentReportReconciler) Reconcile(ctx context.Context, req ctrl.Req
 	}
 
 	if skipped {
-		log.Info("Skip assessment report because of missing required annotations")
+		logFromContext.Info("Skip assessment report because of missing required annotations")
 		return ctrl.Result{}, nil
 	}
 
@@ -115,7 +115,7 @@ func (r *AssessmentReportReconciler) Reconcile(ctx context.Context, req ctrl.Req
 		nextSlot = lv
 	}
 
-	log.Info("Reconcile later again", "next time", time.Now().UTC().Add(nextSlot))
+	logFromContext.Info("Reconcile later again", "next time", time.Now().UTC().Add(nextSlot))
 	return ctrl.Result{
 		RequeueAfter: nextSlot,
 	}, nil
@@ -124,6 +124,6 @@ func (r *AssessmentReportReconciler) Reconcile(ctx context.Context, req ctrl.Req
 // SetupWithManager sets up the controller with the Manager.
 func (r *AssessmentReportReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&goharborv1.AssessmentReport{}).
+		For(&cnsiv1alpha1.AssessmentReport{}).
 		Complete(r)
 }

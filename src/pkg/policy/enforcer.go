@@ -5,8 +5,8 @@ package policy
 import (
 	"context"
 
-	"goharbor.io/k8s-security-inspector/api/v1alpha1"
-	"goharbor.io/k8s-security-inspector/pkg/policy/enforcement"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/api/v1alpha1"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/policy/enforcement"
 )
 
 // Enforcer to enforce policy.
