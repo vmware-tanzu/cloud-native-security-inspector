@@ -108,10 +108,14 @@ deploy-without-portal: manifests kustomize ## Deploy controller to the K8s clust
 	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
 	$(KUSTOMIZE) build config/default | kubectl apply -f -
 
-undeploy: ## Undeploy controller from the K8s cluster specified in ~/.kube/config.
+remove_clusterrolebinding:
+    clean = $(shell kubectl delete clusterrolebinding cnsi-inspector-rolebinding)
+    clean = $(shell kubectl delete clusterrolebinding cnsi-manager-rolebinding)
+    clean = $(shell kubectl delete clusterrolebinding cnsi-proxy-rolebinding)
+
+undeploy: remove_clusterrolebinding ## Undeploy controller from the K8s cluster specified in ~/.kube/config.
 	$(KUSTOMIZE) build config/default | kubectl delete -f -
 
-	
 portal:
 	$(KUBECTLCMD) apply -f frontend/scripts/cloud-native-security-inspector-portal-serviceaccount.yaml
 	$(KUBECTLCMD) apply -f frontend/scripts/cloud-native-security-inspector-portal-role.yaml

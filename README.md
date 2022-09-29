@@ -1,4 +1,4 @@
-# Cloud Native Security Inspector 
+# Cloud Native Security Inspector (Project Narrows)
 
  [![codecov](https://codecov.io/gh/vmware-tanzu/cloud-native-security-inspector/branch/main/graph/badge.svg?token=hJYkZfvTmJ)](https://codecov.io/gh/vmware-tanzu/cloud-native-security-inspector)
 
