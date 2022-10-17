@@ -347,6 +347,8 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 		}
 	}
 
+	//TODO:Save to ES
+
 	return nil
 }
 
