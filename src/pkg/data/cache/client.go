@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 package cache
 
-import "goharbor.io/k8s-security-inspector/pkg/data"
+import "github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data"
 
 // Client for caching data.
 type Client interface {

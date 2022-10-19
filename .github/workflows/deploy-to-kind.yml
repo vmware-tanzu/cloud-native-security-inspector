@@ -1,0 +1,46 @@
+name: DEPLOY_TO_KIND
+on:
+  workflow_dispatch:
+
+  
+jobs:        
+  deploy_CNSI_to_KIND:
+    name: Deployment tests
+    runs-on: ubuntu-18.04
+    timeout-minutes: 100
+    steps:
+    
+      - uses: actions/checkout@v3
+        with:
+         path: ${{ github.repository }}
+
+      - name: Setup Go 1.16
+        uses: actions/setup-go@v1
+        with:
+           go-version: 1.16.15
+        id: go
+      - name: Config Go env
+        run: |
+          cd ${{ github.repository }}
+          pwd
+          go env
+          echo "GOPATH=$(go env GOPATH):$GITHUB_WORKSPACE" >> $GITHUB_ENV
+          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+        shell: bash
+        
+      - name: Setup KIND  
+        uses: engineerd/setup-kind@v0.5.0
+        with:
+          config: ${{ github.repository }}/.github/KIND-config.yaml
+          version: "v0.14.0"
+
+      - name: Deploy CNSI to KIND
+        run: |
+          set -x
+          cd ${{ github.repository }}
+          pwd
+          env
+          chmod +x deploy.sh
+          ./deploy.sh install
+          kubectl get po -A
+          bash .github/status.sh

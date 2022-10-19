@@ -91,7 +91,8 @@ docker-push: ## Push docker images with the manager.
 
 ##@ Deployment
 namespace:
-	$(KUBECTLCMD) create ns cnsi-system
+	$(KUBECTLCMD) create namespace cnsi-system --dry-run=client -o yaml | $(KUBECTLCMD) apply -f -
+
 
 install: manifests kustomize ## Install CRDs into the K8s cluster specified in ~/.kube/config.
 	$(KUSTOMIZE) build config/crd | kubectl apply -f -
@@ -99,11 +100,11 @@ install: manifests kustomize ## Install CRDs into the K8s cluster specified in ~
 uninstall: manifests kustomize ## Uninstall CRDs from the K8s cluster specified in ~/.kube/config.
 	$(KUSTOMIZE) build config/crd | kubectl delete -f -
 
-deploy: manifests kustomize portal ## Deploy controller to the K8s cluster specified in ~/.kube/config.
+deploy: namespace portal manifests kustomize  ## Deploy controller to the K8s cluster specified in ~/.kube/config.
 	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
 	$(KUSTOMIZE) build config/default | kubectl apply -f -
 
-deploy-without-portal: manifests kustomize namespace ## Deploy controller to the K8s cluster specified in ~/.kube/config.
+deploy-without-portal: manifests kustomize ## Deploy controller to the K8s cluster specified in ~/.kube/config.
 	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
 	$(KUSTOMIZE) build config/default | kubectl apply -f -
 
@@ -111,7 +112,7 @@ undeploy: ## Undeploy controller from the K8s cluster specified in ~/.kube/confi
 	$(KUSTOMIZE) build config/default | kubectl delete -f -
 
 	
-portal: namespace
+portal:
 	$(KUBECTLCMD) apply -f frontend/scripts/cloud-native-security-inspector-portal-serviceaccount.yaml
 	$(KUBECTLCMD) apply -f frontend/scripts/cloud-native-security-inspector-portal-role.yaml
 	$(KUBECTLCMD) apply -f frontend/scripts/cloud-native-security-inspector-portal-rolebinding.yaml
@@ -136,7 +137,7 @@ TMP_DIR=$$(mktemp -d) ;\
 cd $$TMP_DIR ;\
 go mod init tmp ;\
 echo "Downloading $(2)" ;\
-GOBIN=$(PROJECT_DIR)/bin go install $(2) ;\
+GOBIN=$(PROJECT_DIR)/bin go get $(2) ;\
 rm -rf $$TMP_DIR ;\
 }
 endef
@@ -147,8 +148,3 @@ HARBOR_CLIENT_DIR =./pkg/harbor
 gen-harbor-api:
 	@$(SWAGGER) generate client -f ${HARBOR_SPEC} --target=$(HARBOR_CLIENT_DIR) --template=stratoscale --additional-initialism=CVE --additional-initialism=GC --additional-initialism=OIDC
 
-# Generate cnsi API client
-CNSI_SPEC =./assets/cnsi-api/v1alpha1/API.yaml
-CNSI_CLIENT_DIR = ./pkg/rest
-gen-cnsi-api:
-	@$(SWAGGER) generate client -f ${CNSI_SPEC} --target=$(CNSI_CLIENT_DIR) --template=stratoscale --additional-initialism=CVE --additional-initialism=GC --additional-initialism=OIDC
