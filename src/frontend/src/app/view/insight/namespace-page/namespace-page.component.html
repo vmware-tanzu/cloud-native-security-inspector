@@ -107,13 +107,14 @@
                   <clr-dg-cell>{{violation.workload.workload.pods.length}}</clr-dg-cell>
                   <clr-dg-cell>{{violation.workload.workload.metadata.apiVersion}}</clr-dg-cell>
                 </clr-dg-row>
-              
+
                 <clr-dg-footer>
-                  <clr-dg-pagination #poolpagination [clrDgTotalItems]="shardService.violationList.length">
-                    <clr-dg-page-size [clrPageSizeOptions]="pageSizeOptions">violations per page</clr-dg-page-size>
-                    {{poolpagination.firstItem + 1}} - {{poolpagination.lastItem + 1}} of {{shardService.violationList.length}} Pools
+                  <clr-dg-pagination #pagination [clrDgPageSize]="10">
+                      <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Workloads per page</clr-dg-page-size>
+                      {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                      of {{pagination.totalItems}} workloads
                   </clr-dg-pagination>
-                </clr-dg-footer>
+              </clr-dg-footer>
               </clr-datagrid>
             </clr-tab-content>
         </ng-template> 

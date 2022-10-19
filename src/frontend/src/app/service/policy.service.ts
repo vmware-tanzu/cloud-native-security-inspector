@@ -15,12 +15,13 @@ export class PolicyService {
   public environment:any = environment
   constructor(private http: HttpClient) { }
 
-  getAssessmentreports() :Observable<AssessmentReportType>{
-    return this.http.get<AssessmentReportType>(this.environment.api.goharbor + '/assessmentreports')
+  getAssessmentreports(limit:number = 10, continues:string='') :Observable<AssessmentReportType>{
+    // return this.http.get<AssessmentReportType>(this.environment.api.goharbor + `/assessmentreports`)
+    return this.http.get<AssessmentReportType>(this.environment.api.goharbor + `/assessmentreports?limit=${limit}&continue=${continues}`)
   }
 
-  getNamespaceAssessmentreports(namespace: string ='default') :Observable<AssessmentReportType>{
-    return this.http.get<AssessmentReportType>(this.environment.api.goharbor + `/namespace/${namespace}/assessmentreports`)
+  getNamespaceAssessmentreports(namespace: string ='default', limit:number = 10, continues:string='') :Observable<AssessmentReportType>{
+    return this.http.get<AssessmentReportType>(this.environment.api.goharbor + `/namespaces/${namespace}/assessmentreports?limit=${limit}&continue=${continues}`)
   }
 
   getAssessmentreportStatus (namespace:string, name:string) {

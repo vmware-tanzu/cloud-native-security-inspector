@@ -12,6 +12,23 @@
         margin: 20px 10px;
       }
     }
+    .status {
+      color: #fff;
+      font-weight: 600;
+      margin-top: 20px;
+      label {
+        display: inline-block;
+        width: 200px;
+      }
+      span {
+        &.healthy {
+          color: green;
+        }
+        &.unhealthy {
+          color: red;
+        }
+      }
+    }
     ul {
       li {
           button {

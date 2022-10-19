@@ -37,7 +37,8 @@ import { AppService, createTranslateLoader } from './app.service';
 import { ClusterLineComponent } from './view/report/cluster-line/cluster-line.component';
 import { NamesapcePolarComponent } from './view/report/namesapce-polar/namesapce-polar.component';
 import { NamesapceHistogramComponent } from './view/report/namesapce-histogram/namesapce-histogram.component'
-import { ShardTestModule } from 'src/app/shard/shard/shard.module'
+import { ShardTestModule } from 'src/app/shard/shard/shard.module';
+import { DgFilterComponent } from './components/dg-filter/dg-filter.component'
 @NgModule({
   declarations: [
     AppComponent,
@@ -64,7 +65,8 @@ import { ShardTestModule } from 'src/app/shard/shard/shard.module'
     TimePickerComponent,
     ClusterLineComponent,
     NamesapcePolarComponent,
-    NamesapceHistogramComponent
+    NamesapceHistogramComponent,
+    DgFilterComponent
   ],
   imports: [
     BrowserModule,

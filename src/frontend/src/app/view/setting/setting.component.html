@@ -33,6 +33,7 @@
                   <clr-select-container>
                     <label class="w-200">{{'Setting.credential_name'|translate}}</label>
                     <select clrSelect name="data_credential_name" formControlName="data_credential_name">
+                      <option value=""></option>
                       <option *ngFor="let item of secretsList" [value]="item.metadata.name">{{item.metadata.name}}</option>
                     </select>
                   </clr-select-container>
@@ -74,7 +75,13 @@
                     <clr-toggle-wrapper>
                       <input  type="checkbox" clrToggle name="skipTLSVerify" formControlName="data_skipTLSVerify" />
                     </clr-toggle-wrapper>
-                  </clr-toggle-container>   
+                  </clr-toggle-container>
+
+                  <div *ngIf="settingStatus" class="status">
+                    <label class="w-200">Status:</label>
+                    <span class="healthy" *ngIf="settingStatus === 'Healthy'"><clr-icon shape="success-standard" class="is-solid"></clr-icon> {{settingStatus}}</span>
+                    <span class="unhealthy" *ngIf="settingStatus === 'Unhealthy'"><clr-icon shape="error-standard" class="is-solid"></clr-icon> {{settingStatus}}</span>
+                  </div>
 
                   <button clrStepButton="next" [disabled]="requiredFieldsValid">next</button>
                 </clr-step-content>
