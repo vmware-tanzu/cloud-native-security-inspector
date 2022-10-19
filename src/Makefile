@@ -52,6 +52,9 @@ manifests: controller-gen ## Generate WebhookConfiguration, ClusterRole and Cust
 generate: controller-gen ## Generate code containing DeepCopy, DeepCopyInto, and DeepCopyObject method implementations.
 	$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./..."
 
+tidy: ## Run go mod tidy
+	go mod tidy
+
 fmt: ## Run go fmt against code.
 	go fmt ./...
 
@@ -121,7 +124,7 @@ portal:
 
 
 CONTROLLER_GEN = $(shell pwd)/bin/controller-gen
-controller-gen: ## Download controller-gen locally if necessary.
+controller-gen: tidy ## Download controller-gen locally if necessary.
 	$(call go-get-tool,$(CONTROLLER_GEN),sigs.k8s.io/controller-tools/cmd/controller-gen@v0.4.1)
 
 KUSTOMIZE = $(shell pwd)/bin/kustomize
