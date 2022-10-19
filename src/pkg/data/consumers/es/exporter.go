@@ -21,22 +21,6 @@ var (
 	indexName = "assessment_report"
 )
 
-type Exporter interface {
-	Save(doc api.AssessmentReport) error
-	Delete(doc api.AssessmentReport) error
-	Search(query string, after ...string) ([]AssessmentReportDoc, error)
-	List() (api.AssessmentReportList, error)
-}
-
-// ElasticSearchExporter ElasticSearch exporter implements output_datasource.Exporter
-type ElasticSearchExporter struct {
-	Client *elasticsearch.Client
-}
-
-func NewExporter() *ElasticSearchExporter {
-	return &ElasticSearchExporter{}
-}
-
 const searchAll = `
 	"query" : { "match_all" : {} }`
 
@@ -58,6 +42,75 @@ const searchMatch = `
 	},
 	"size" : 25,
 	"sort" : [ { "_score" : "desc" }, { "_doc" : "asc" } ]`
+
+type Exporter interface {
+	Save(doc api.AssessmentReport) error
+	Delete(doc api.AssessmentReport) error
+	Search(query string, after ...string) ([]AssessmentReportDoc, error)
+	List() (api.AssessmentReportList, error)
+}
+
+type ElasticSearchIndex struct {
+	IndexName string
+	Health    string
+	DocCount  string
+}
+
+type SearchResults struct {
+	Total int    `json:"total"`
+	Hits  []*Hit `json:"hits"`
+}
+type Hit struct {
+	AssessmentReportDoc
+	URL        string        `json:"url"`
+	Sort       []interface{} `json:"sort"`
+	Highlights *struct {
+		Title      []string `json:"title"`
+		Alt        []string `json:"alt"`
+		Transcript []string `json:"transcript"`
+	} `json:"highlights,omitempty"`
+}
+
+// ElasticSearchExporter ElasticSearch exporter implements output_datasource.Exporter
+type ElasticSearchExporter struct {
+	Client *elasticsearch.Client
+}
+
+func NewExporter(client *elasticsearch.Client) (*ElasticSearchExporter, error) {
+	exporter := &ElasticSearchExporter{client}
+	if result, err := exporter.indexExists(indexName); err != nil {
+		if !result {
+			// No index for CNSI has been detected. A new index will be created.
+			if err := exporter.setupIndex(); err != nil {
+				return nil, err
+			}
+		} else {
+			// Other error
+			return nil, err
+		}
+	}
+
+	return exporter, nil
+}
+
+func buildQuery(query string, after ...string) io.Reader {
+	var b strings.Builder
+	b.WriteString("{\n")
+
+	if query == "" {
+		b.WriteString(searchAll)
+	} else {
+		b.WriteString(fmt.Sprintf(searchMatch, query))
+	}
+
+	if len(after) > 0 && after[0] != "" && after[0] != "null" {
+		b.WriteString(",\n")
+		b.WriteString(fmt.Sprintf(`	"search_after": %s`, after))
+	}
+
+	b.WriteString("\n}")
+	return strings.NewReader(b.String())
+}
 
 func (e *ElasticSearchExporter) setupIndex() error {
 	mapping := `{
@@ -91,6 +144,79 @@ func (e *ElasticSearchExporter) setupIndex() error {
 	return nil
 }
 
+// Check if the index has already been created.
+func (e *ElasticSearchExporter) indexExists(name string) (bool, error) {
+	result, err := e.listIndex(name)
+	if err != nil {
+		return false, err
+	} else {
+		for _, item := range result {
+			if item.IndexName == name {
+				return true, nil
+			}
+		}
+		return false, nil
+	}
+}
+
+func (e *ElasticSearchExporter) listIndex(name string) ([]ElasticSearchIndex, error) {
+	//res, err := esapi.CatIndicesRequest{
+	//	Index:                   []string{name},
+	//	Bytes:                   "",
+	//	ExpandWildcards:         "",
+	//	Format:                  "JSON",
+	//	H:                       nil,
+	//	Health:                  "",
+	//	Help:                    nil,
+	//	IncludeUnloadedSegments: nil,
+	//	MasterTimeout:           0,
+	//	Pri:                     nil,
+	//	S:                       nil,
+	//	Time:                    "",
+	//	V:                       nil,
+	//	Pretty:                  false,
+	//	Human:                   false,
+	//	ErrorTrace:              false,
+	//	FilterPath:              nil,
+	//	Header:                  nil,
+	//}.Do(context.Background(), e.Client)
+
+	res, err := esapi.CatIndicesRequest{
+		Index:  []string{name},
+		Format: "JSON",
+	}.Do(context.Background(), e.Client)
+
+	if err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+	var r map[string]interface{}
+	var esIndices []ElasticSearchIndex
+	if res.IsError() {
+		//ctrlLog.Info("Error listing the index: %s", string(res.StatusCode))
+		if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
+			ctrlLog.Info("Error parsing the response body: %s", err)
+		} else {
+			errRes := r["error"]
+			r = errRes.(map[string]interface{})
+		}
+		return nil, errors.New(fmt.Sprint("http error, code ", res.StatusCode, "  Root cause:", r["root_cause"]))
+	} else {
+		// Deserialize the response into a map.
+		var r []map[string]interface{}
+		if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
+			ctrlLog.Info("Error parsing the response body: %s", err)
+		} else {
+			// Print the response status.
+			for _, i := range r {
+				esIndices = append(esIndices, ElasticSearchIndex{i["index"].(string), i["health"].(string),
+					i["docs.count"].(string)})
+			}
+		}
+	}
+	return esIndices, nil
+}
+
 func (e *ElasticSearchExporter) deleteIndex(index []string) error {
 	res, err := e.Client.Indices.Delete(index)
 	if err != nil {
@@ -102,38 +228,19 @@ func (e *ElasticSearchExporter) deleteIndex(index []string) error {
 	return nil
 }
 
-//func (e *ElasticSearchExporter) Index(doc api.AssessmentReport) error {
-//	response, error := e.Client.Index(
-//		indexName,
-//		esutil.NewJSONReader(&doc),
-//		e.Client.Index.WithDocumentID("docID-001"),
-//	)
-//	if error != nil {
-//		return error
-//	}
-//	var r map[string]interface{}
-//	if err := json.NewDecoder(response.Body).Decode(&r); err != nil {
-//		return err
-//	} else {
-//		ctrlLog.Info("[%s] %s; version=%d", response.Status(), r["result"], int(r["_version"].(float64)))
-//	}
-//	return nil
-//}
-
 func (e ElasticSearchExporter) Save(doc api.AssessmentReport) error {
 	fmt.Println("Save")
-	b, err := json.Marshal(doc)
-	if err != nil {
-		return err
-	}
-	fmt.Printf("String: %s", b)
+	//b, err := json.Marshal(doc)
+	//if err != nil {
+	//	return err
+	//}
 
 	for _, nsa := range doc.Spec.NamespaceAssessments {
 		for _, workloadAssessment := range nsa.WorkloadAssessments {
 			for _, pod := range workloadAssessment.Workload.Pods {
 				for _, container := range pod.Containers {
 					var esDoc AssessmentReportDoc
-					esDoc.DocId = container.Name + "_" + container.ID + "_" + doc.Name
+					esDoc.DocId = container.Name + "_" + strings.Replace(container.ID, "/", "-", -1) + "_" + doc.Name
 					esDoc.UID = string(doc.UID)
 					esDoc.Namespace = pod.Namespace
 					b, err := json.Marshal(workloadAssessment.ActionEnforcements)
@@ -146,7 +253,7 @@ func (e ElasticSearchExporter) Save(doc api.AssessmentReport) error {
 						esDoc.Failures = string(b)
 					}
 					esDoc.UID = string(doc.UID)
-					esDoc.CreateTimestamp = doc.CreationTimestamp.Format(time.ANSIC)
+					esDoc.CreateTimestamp = doc.CreationTimestamp.Format(time.RFC3339)
 					b, err = json.Marshal(doc.Spec.InspectionConfiguration)
 					if err == nil {
 						esDoc.InspectionConfiguration = string(b)
@@ -157,16 +264,22 @@ func (e ElasticSearchExporter) Save(doc api.AssessmentReport) error {
 					esDoc.ContainerImage = container.Image
 					esDoc.ContainerImageId = container.ImageID
 					esDoc.IsInit = strconv.FormatBool(container.IsInit)
-
 					esDocument, err := json.Marshal(esDoc)
 					if err != nil {
 						return err
 					}
 					fmt.Println(esDocument)
 
+					//res, err := esapi.UpdateRequest{
+					//	Index:      indexName,
+					//	DocumentID: esDoc.DocId,
+					//	Body:       strings.NewReader(string(esDocument)),
+					//	Refresh:    "true",
+					//}.Do(context.Background(), e.Client)
+
 					res, err := esapi.IndexRequest{
 						Index:      indexName,
-						DocumentID: "test-doc-test",
+						DocumentID: esDoc.DocId,
 						Body:       strings.NewReader(string(esDocument)),
 						Refresh:    "true",
 					}.Do(context.Background(), e.Client)
@@ -201,43 +314,6 @@ func (e ElasticSearchExporter) Save(doc api.AssessmentReport) error {
 
 func (e ElasticSearchExporter) Delete(doc api.AssessmentReport) error {
 	return nil
-}
-
-type SearchResults struct {
-	Total int    `json:"total"`
-	Hits  []*Hit `json:"hits"`
-}
-type Hit struct {
-	AssessmentReportDoc
-	URL        string        `json:"url"`
-	Sort       []interface{} `json:"sort"`
-	Highlights *struct {
-		Title      []string `json:"title"`
-		Alt        []string `json:"alt"`
-		Transcript []string `json:"transcript"`
-	} `json:"highlights,omitempty"`
-}
-
-func buildQuery(query string, after ...string) io.Reader {
-	var b strings.Builder
-
-	b.WriteString("{\n")
-
-	if query == "" {
-		b.WriteString(searchAll)
-	} else {
-		b.WriteString(fmt.Sprintf(searchMatch, query))
-	}
-
-	if len(after) > 0 && after[0] != "" && after[0] != "null" {
-		b.WriteString(",\n")
-		b.WriteString(fmt.Sprintf(`	"search_after": %s`, after))
-	}
-
-	b.WriteString("\n}")
-
-	// fmt.Printf("%s\n", b.String())
-	return strings.NewReader(b.String())
 }
 
 func (e ElasticSearchExporter) Search(query string, after ...string) ([]AssessmentReportDoc, error) {

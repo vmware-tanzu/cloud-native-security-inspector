@@ -28,14 +28,6 @@ func NewClient(cert []byte, addr string, username string, passwd string) *elasti
 		if err != nil {
 			log.Fatalf("Error creating the Client: %s", err)
 		}
-
-		//res, err := es.Info()
-		//if err != nil {
-		//	log.Fatalf("Error getting response: %s", err)
-		//}
-
-		//defer res.Body.Close()
-		//log.Println(res)
 	}
 	return client
 

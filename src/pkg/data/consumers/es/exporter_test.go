@@ -9,21 +9,22 @@ import (
 	"testing"
 )
 
-func TestEsExporter_Delete(t *testing.T) {
-	type fields struct {
-		client   *elasticsearch.Client
-		exporter Exporter
-	}
+type args struct {
+	cert     []byte
+	addr     string
+	username string
+	passwd   string
+}
+
+type fields struct {
+	Client *elasticsearch.Client
+}
+
+func TestElasticSearchExporter_Delete(t *testing.T) {
 
 }
 
-func TestEsExporter_Index(t *testing.T) {
-	type args struct {
-		cert     []byte
-		addr     string
-		username string
-		passwd   string
-	}
+func TestElasticSearchExporter_Index(t *testing.T) {
 	cert, _ := ioutil.ReadFile("/Users/zsimon/Projects/cnsi/github/elasticsearch/http_ca.crt")
 	tests := args{
 		cert,
@@ -36,7 +37,6 @@ func TestEsExporter_Index(t *testing.T) {
 	//doc := v1alpha1.AssessmentReport{"", metav1.ObjectMeta{"TestReport", "GenNanme"}}
 	doc := v1alpha1.AssessmentReport{}
 	file, _ := ioutil.ReadFile("/Users/zsimon/Projects/github/cnsi/cloud-native-security-inspector/src/testdata/assessment_report.json")
-	//fmt.Printf("%s", string(file))
 	json.Unmarshal(file, &doc)
 
 	t.Run("test-name-01", func(t *testing.T) {
@@ -47,21 +47,7 @@ func TestEsExporter_Index(t *testing.T) {
 	})
 }
 
-func TestEsExporter_Save(t *testing.T) {
-	type args struct {
-		cert     []byte
-		addr     string
-		username string
-		passwd   string
-	}
-	//cert, _ := ioutil.ReadFile("/Users/zsimon/Projects/cnsi/github/elasticsearch/http_ca.crt")
-	//tests := args{
-	//	cert,
-	//	"https://localhost:9201",
-	//	"elastic",
-	//	"vVPqNKbG-WjjukoIN4X5",
-	//}
-
+func TestElasticSearchExporter_Save(t *testing.T) {
 	cert, _ := ioutil.ReadFile("/Users/zsimon/Projects/cnsi/github/elasticsearch/operator_es.crt")
 	tests := args{
 		cert,
@@ -91,20 +77,7 @@ func TestEsExporter_Save(t *testing.T) {
 
 }
 
-func TestEsExporter_Search(t *testing.T) {
-	type args struct {
-		cert     []byte
-		addr     string
-		username string
-		passwd   string
-	}
-	//cert, _ := ioutil.ReadFile("/Users/zsimon/Projects/cnsi/github/elasticsearch/http_ca.crt")
-	//testClient := args{
-	//	cert,
-	//	"https://localhost:9201",
-	//	"elastic",
-	//	"vVPqNKbG-WjjukoIN4X5",
-	//}
+func TestElasticSearchExporter_Search(t *testing.T) {
 	cert, _ := ioutil.ReadFile("/Users/zsimon/Projects/cnsi/github/elasticsearch/operator_es.crt")
 	testClient := args{
 		cert,
@@ -115,13 +88,10 @@ func TestEsExporter_Search(t *testing.T) {
 	client := NewClient(testClient.cert, testClient.addr, testClient.username, testClient.passwd)
 	esExporter := ElasticSearchExporter{Client: client}
 
-	doc := v1alpha1.AssessmentReport{}
-	doc.Name = "Test"
-	doc.GenerateName = "GenerateName"
-	doc.UID = "abcd-efgh-hijk-uuid"
-
-	file, _ := ioutil.ReadFile("/Users/zsimon/Projects/github/cnsi/cloud-native-security-inspector/src/testdata/assessment_report.json")
-	json.Unmarshal(file, &doc)
+	//doc := v1alpha1.AssessmentReport{}
+	//
+	//file, _ := ioutil.ReadFile("/Users/zsimon/Projects/github/cnsi/cloud-native-security-inspector/src/testdata/assessment_report.json")
+	//json.Unmarshal(file, &doc)
 
 	tests := []struct {
 		name    string
@@ -159,38 +129,7 @@ func TestEsExporter_Search(t *testing.T) {
 	}
 }
 
-func TestNewExporter(t *testing.T) {
-	type args struct {
-		cert     []byte
-		addr     string
-		username string
-		passwd   string
-	}
-	var cert []byte
-	cert, _ = ioutil.ReadFile("/Users/zsimon/Projects/cnsi/github/elasticsearch/http_ca.crt")
-	tests := args{
-		cert,
-		"https://localhost:9201",
-		"elastic",
-		"vVPqNKbG-WjjukoIN4X5",
-	}
-	client := NewClient(tests.cert, tests.addr, tests.username, tests.passwd)
-
-	doc := v1alpha1.AssessmentReport{}
-	doc.Name = "Test"
-	doc.GenerateName = "GenerateName"
-	doc.UID = "abcd-efgh-hijk-uuid"
-
-	t.Run("test-name", func(t *testing.T) {
-		e := &ElasticSearchExporter{
-			Client: client,
-		}
-		e.Search("")
-	})
-
-}
-
-func TestEsExporter_setupIndex(t *testing.T) {
+func TestElasticSearchExporter_setupIndex(t *testing.T) {
 	type fields struct {
 		client *elasticsearch.Client
 	}
@@ -213,19 +152,13 @@ func TestEsExporter_setupIndex(t *testing.T) {
 	}
 }
 
-func TestEsExporter_deleteIndex(t *testing.T) {
-	type clientArgs struct {
-		cert     []byte
-		addr     string
-		username string
-		passwd   string
-	}
-	cert, _ := ioutil.ReadFile("/Users/zsimon/Projects/cnsi/github/elasticsearch/http_ca.crt")
-	clientArg := clientArgs{
+func TestElasticSearchExporter_deleteIndex(t *testing.T) {
+	cert, _ := ioutil.ReadFile("/Users/zsimon/Projects/cnsi/github/elasticsearch/operator_es.crt")
+	clientArg := args{
 		cert,
-		"https://localhost:9201",
+		"https://quickstart-es-http:9200",
 		"elastic",
-		"vVPqNKbG-WjjukoIN4X5",
+		"2NR422RahwP5NQXG971v74JY",
 	}
 	client := NewClient(clientArg.cert, clientArg.addr, clientArg.username, clientArg.passwd)
 	type fields struct {
@@ -241,7 +174,7 @@ func TestEsExporter_deleteIndex(t *testing.T) {
 		wantErr bool
 	}{
 		{name: "test", fields: fields{nil}, args: args{[]string{
-			"assessment_report_01", "assessment_report_02", "assessment_report_03", "assessment_report_04"}}},
+			"assessment_report"}}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -253,4 +186,28 @@ func TestEsExporter_deleteIndex(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestElasticSearchExporter_listIndex(t *testing.T) {
+	cert, _ := ioutil.ReadFile("/Users/zsimon/Projects/cnsi/github/elasticsearch/operator_es.crt")
+	tests := args{
+		cert,
+		"https://quickstart-es-http:9200",
+		"elastic",
+		"2NR422RahwP5NQXG971v74JY",
+	}
+	client := NewClient(tests.cert, tests.addr, tests.username, tests.passwd)
+	esExporter, _ := NewExporter(client)
+	t.Run("test-listIndex", func(t *testing.T) {
+		if result, err := esExporter.listIndex(""); (err != nil) != false {
+			t.Errorf("listIndex() error = %v, wantErr %v", err, false)
+		} else {
+			for _, item := range result {
+				fmt.Printf("Index name: %v \n", item.IndexName)
+				fmt.Printf("Index health: %v \n", item.Health)
+				fmt.Printf("Index doc count: %v \n", item.DocCount)
+			}
+		}
+	})
+
 }

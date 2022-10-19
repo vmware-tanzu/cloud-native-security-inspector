@@ -126,7 +126,6 @@ spec:
                         description: ElasticSearch password for the client
                         type: string
                       elasticSearchUser:
-                        default: elastic
                         description: ElasticSearch username for the client
                         type: string
                       format:
@@ -154,7 +153,6 @@ spec:
                         type: boolean
                     required:
                     - elasticSearchEnabled
-                    - elasticSearchUser
                     - format
                     - generate
                     - liveTime
