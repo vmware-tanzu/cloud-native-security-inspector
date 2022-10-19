@@ -52,6 +52,9 @@ manifests: controller-gen ## Generate WebhookConfiguration, ClusterRole and Cust
 generate: controller-gen ## Generate code containing DeepCopy, DeepCopyInto, and DeepCopyObject method implementations.
 	$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./..."
 
+tidy: ## Run go mod tidy
+	go mod tidy
+
 fmt: ## Run go fmt against code.
 	go fmt ./...
 
@@ -66,10 +69,10 @@ test: manifests generate fmt vet ## Run tests.
 
 ##@ Build
 
-build-manager: generate fmt vet ## Build manager binary.
+build-manager: tidy generate fmt vet ## Build manager binary.
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o bin/manager main.go
 
-build-inspector: generate fmt vet ## Build inspector command.
+build-inspector: tidy generate fmt vet ## Build inspector command.
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/inspector cmd/inspector/main.go
 
 run: manifests generate fmt vet ## Run a controller from your host.
