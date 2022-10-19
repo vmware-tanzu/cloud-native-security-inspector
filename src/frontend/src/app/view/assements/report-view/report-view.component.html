@@ -7,11 +7,19 @@
   <h2>{{'Report_View.title'|translate}}</h2>
   <app-line id='report-line' #reportline [chartOptions]="shardService.reportLineChartOption"></app-line>
 
-  <clr-datagrid [clrDgLoading]="dgLoading" (clrDgRefresh)="pageChange($event)">
-    <clr-dg-column [clrDgField]="'metadata.name'">{{'CommonlyUse.name'|translate}}</clr-dg-column>
-    <clr-dg-column [clrDgField]="'metadata.namespace'">{{'CommonlyUse.namespace'|translate}}</clr-dg-column>
-    <clr-dg-column [clrDgField]="'metadata.creationTimestamp'">{{'CommonlyUse.create_time'|translate}}</clr-dg-column>
-    <clr-dg-column [clrDgField]="'updated_by'">{{'CommonlyUse.action'|translate}}</clr-dg-column>
+  <clr-datagrid (clrDgRefresh)="pageChange($event)">
+    <clr-dg-column [clrDgField]="'metadata.namespace'">{{'CommonlyUse.name'|translate}}</clr-dg-column>
+    <clr-dg-column class="namespace-filter">
+      {{'CommonlyUse.namespace'|translate}}
+      <clr-icon shape="filter-grid" class="is-solid" (click)="namespaceFilterFlag = !namespaceFilterFlag"></clr-icon>
+      <div class="filter-warp" *ngIf="namespaceFilterFlag">
+        <clr-icon style="position: absolute; right: 10px; top: 10px;" shape="window-close" (click)="namespaceFilterFlag=false"></clr-icon>
+        <app-dg-filter [pageSize]="defaultSize" [continues]="continues">
+        </app-dg-filter>
+      </div>
+    </clr-dg-column>
+    <clr-dg-column >{{'CommonlyUse.create_time'|translate}}</clr-dg-column>
+    <clr-dg-column >{{'CommonlyUse.action'|translate}}</clr-dg-column>
 
     <clr-dg-row *clrDgItems="let report of shardService.reportslist">
       <clr-dg-cell>

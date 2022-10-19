@@ -9,6 +9,21 @@
 .setting-page clr-tabs::ng-deep .btn.create {
   margin: 20px 10px;
 }
+.setting-page clr-tabs::ng-deep .status {
+  color: #fff;
+  font-weight: 600;
+  margin-top: 20px;
+}
+.setting-page clr-tabs::ng-deep .status label {
+  display: inline-block;
+  width: 200px;
+}
+.setting-page clr-tabs::ng-deep .status span.healthy {
+  color: green;
+}
+.setting-page clr-tabs::ng-deep .status span.unhealthy {
+  color: red;
+}
 .setting-page clr-tabs::ng-deep ul li button.active {
   color: #fff;
 }

@@ -25,6 +25,7 @@ export class ReportViewComponent implements OnInit, OnDestroy {
   public continues = ''
   public defaultSize = 10
   public dgLoading = false
+  namespaceFilterFlag = false
   constructor(
     public shardService:ShardService,
     public policyService:PolicyService,
@@ -39,7 +40,7 @@ export class ReportViewComponent implements OnInit, OnDestroy {
       if (this.reportline) {
         this.reportline.render()        
       }
-    },100)    
+    },100)   
   }
 
   ngOnDestroy(): void {}
@@ -79,6 +80,7 @@ export class ReportViewComponent implements OnInit, OnDestroy {
       this.defaultSize = event.page.size
       this.continues = ''
     }
+    this.defaultSize = event.page.size;
     this.policyService.getAssessmentreports(event.page.size, this.continues).subscribe(
       data => {
         if (this.continues) {
