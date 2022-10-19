@@ -2,7 +2,7 @@ package es
 
 type ContainerInfo struct {
 	ContainerId      string `json:"containerId"`
-	ContainerName    string `json:"containerName""`
+	ContainerName    string `json:"containerName"`
 	ContainerImage   string `json:"containerImage"`
 	ContainerImageId string `json:"containerImageId"`
 	IsInit           string `json:"isInit"`
@@ -33,16 +33,3 @@ type AssessmentReportDoc struct {
 	// Report is the info of the assessment report which contains the scanning result of this container
 	ReportInfo
 }
-
-//type AssessmentReportDoc struct {
-//	ID string `json:"id"`
-//
-//	ImageURL  string `json:"image_url"`
-//	Published string `json:"published"`
-//
-//	Title      string `json:"title"`
-//	Alt        string `json:"alt"`
-//	Transcript string `json:"transcript"`
-//	Link       string `json:"link,omitempty"`
-//	News       string `json:"news,omitempty"`
-//}

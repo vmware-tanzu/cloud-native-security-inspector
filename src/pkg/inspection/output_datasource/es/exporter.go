@@ -16,21 +16,25 @@ import (
 )
 
 var (
-	ctrlLog   = ctrl.Log.WithName("esExporter")
+	ctrlLog   = ctrl.Log.WithName("ElasticSearchExporter")
 	r         map[string]interface{}
-	indexName = "assessment_report_04"
+	indexName = "assessment_report"
 )
 
 type Exporter interface {
 	Save(doc api.AssessmentReport) error
 	Delete(doc api.AssessmentReport) error
-	Search() (api.AssessmentReport, error)
+	Search(query string, after ...string) ([]AssessmentReportDoc, error)
 	List() (api.AssessmentReportList, error)
 }
 
-// EsExporter ElasticSearch exporter implements output_datasource.Exporter
-type EsExporter struct {
-	client *elasticsearch.Client
+// ElasticSearchExporter ElasticSearch exporter implements output_datasource.Exporter
+type ElasticSearchExporter struct {
+	Client *elasticsearch.Client
+}
+
+func NewExporter() *ElasticSearchExporter {
+	return &ElasticSearchExporter{}
 }
 
 const searchAll = `
@@ -55,7 +59,7 @@ const searchMatch = `
 	"size" : 25,
 	"sort" : [ { "_score" : "desc" }, { "_doc" : "asc" } ]`
 
-func (e *EsExporter) setupIndex() error {
+func (e *ElasticSearchExporter) setupIndex() error {
 	mapping := `{
     "mappings": {
         "properties": {
@@ -77,7 +81,7 @@ func (e *EsExporter) setupIndex() error {
         }
     }
 }`
-	res, err := e.client.Indices.Create(indexName, e.client.Indices.Create.WithBody(strings.NewReader(mapping)))
+	res, err := e.Client.Indices.Create(indexName, e.Client.Indices.Create.WithBody(strings.NewReader(mapping)))
 	if err != nil {
 		return err
 	}
@@ -87,8 +91,8 @@ func (e *EsExporter) setupIndex() error {
 	return nil
 }
 
-func (e *EsExporter) deleteIndex(index []string) error {
-	res, err := e.client.Indices.Delete(index)
+func (e *ElasticSearchExporter) deleteIndex(index []string) error {
+	res, err := e.Client.Indices.Delete(index)
 	if err != nil {
 		return err
 	}
@@ -98,11 +102,11 @@ func (e *EsExporter) deleteIndex(index []string) error {
 	return nil
 }
 
-//func (e *EsExporter) Index(doc api.AssessmentReport) error {
-//	response, error := e.client.Index(
+//func (e *ElasticSearchExporter) Index(doc api.AssessmentReport) error {
+//	response, error := e.Client.Index(
 //		indexName,
 //		esutil.NewJSONReader(&doc),
-//		e.client.Index.WithDocumentID("docID-001"),
+//		e.Client.Index.WithDocumentID("docID-001"),
 //	)
 //	if error != nil {
 //		return error
@@ -116,7 +120,7 @@ func (e *EsExporter) deleteIndex(index []string) error {
 //	return nil
 //}
 
-func (e *EsExporter) Save(doc api.AssessmentReport) error {
+func (e ElasticSearchExporter) Save(doc api.AssessmentReport) error {
 	fmt.Println("Save")
 	b, err := json.Marshal(doc)
 	if err != nil {
@@ -162,10 +166,10 @@ func (e *EsExporter) Save(doc api.AssessmentReport) error {
 
 					res, err := esapi.IndexRequest{
 						Index:      indexName,
-						DocumentID: "id111",
+						DocumentID: "test-doc-test",
 						Body:       strings.NewReader(string(esDocument)),
 						Refresh:    "true",
-					}.Do(context.Background(), e.client)
+					}.Do(context.Background(), e.Client)
 					if err != nil {
 						ctrlLog.Error(err, "Error getting response")
 						return err
@@ -174,7 +178,7 @@ func (e *EsExporter) Save(doc api.AssessmentReport) error {
 
 					if res.IsError() {
 						ctrlLog.Info("[%s] Error indexing document ID=%v", res.Status(), doc.GenerateName)
-						fmt.Println(res.StatusCode)
+						//fmt.Println(res.StatusCode)
 						return errors.New(fmt.Sprint("http error, code ", res.StatusCode))
 					} else {
 						// Deserialize the response into a map.
@@ -183,7 +187,8 @@ func (e *EsExporter) Save(doc api.AssessmentReport) error {
 							ctrlLog.Info("Error parsing the response body: %s", err)
 						} else {
 							// Print the response status and indexed document version.
-							ctrlLog.Info("[%s] %s; version=%d", res.Status(), r["result"], int(r["_version"].(float64)))
+							//ctrlLog.Info("[%s] %s; version=%d", res.Status(), r["result"], int(r["_version"].(float64)))
+							fmt.Println("OK")
 						}
 					}
 				}
@@ -194,7 +199,7 @@ func (e *EsExporter) Save(doc api.AssessmentReport) error {
 	return nil
 }
 
-func (e *EsExporter) Delete(doc api.AssessmentReport) error {
+func (e ElasticSearchExporter) Delete(doc api.AssessmentReport) error {
 	return nil
 }
 
@@ -235,7 +240,7 @@ func buildQuery(query string, after ...string) io.Reader {
 	return strings.NewReader(b.String())
 }
 
-func (e *EsExporter) Search(query string, after ...string) ([]AssessmentReportDoc, error) {
+func (e ElasticSearchExporter) Search(query string, after ...string) ([]AssessmentReportDoc, error) {
 	type envelopeResponse struct {
 		Took int
 		Hits struct {
@@ -254,9 +259,9 @@ func (e *EsExporter) Search(query string, after ...string) ([]AssessmentReportDo
 	var r envelopeResponse
 	var results SearchResults
 
-	res, err := e.client.Search(
-		e.client.Search.WithIndex(indexName),
-		e.client.Search.WithBody(buildQuery(query, after...)),
+	res, err := e.Client.Search(
+		e.Client.Search.WithIndex(indexName),
+		e.Client.Search.WithBody(buildQuery(query, after...)),
 	)
 	if err != nil {
 		return []AssessmentReportDoc{}, err
@@ -306,4 +311,8 @@ func (e *EsExporter) Search(query string, after ...string) ([]AssessmentReportDo
 		reportList = append(reportList, ret.AssessmentReportDoc)
 	}
 	return reportList, nil
+}
+
+func (e ElasticSearchExporter) List() (api.AssessmentReportList, error) {
+	return api.AssessmentReportList{}, nil
 }

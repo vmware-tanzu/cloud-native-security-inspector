@@ -75,6 +75,21 @@ type Assessment struct {
 	// If it is set to true, then the assessment report is owned by the policy.
 	// +kubebuilder:default:=false
 	ManagedBy bool `json:"managedBy"`
+	// Indicate whether to store the reports to elasticsearch
+	// +kubebuilder:default:=false
+	ElasticSearchEnabled bool `json:"elasticSearchEnabled"`
+	// ElasticSearch endpoint
+	// +kubebuilder:validation:Optional
+	ElasticSearchAddr string `json:"elasticSearchAddr"`
+	// ElasticSearch username for the client
+	// +kubebuilder:validation:Optional
+	ElasticSearchUser string `json:"elasticSearchUser"`
+	// ElasticSearch password for the client
+	// +kubebuilder:validation:Optional
+	ElasticSearchPasswd string `json:"elasticSearchPasswd"`
+	// ElasticSearch certificate for the client
+	// +kubebuilder:validation:Optional
+	ElasticSearchCert string `json:"elasticSearchCert"`
 }
 
 // FollowupAction defines what actions should be applied when security expectations are matched.

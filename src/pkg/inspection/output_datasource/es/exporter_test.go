@@ -32,7 +32,7 @@ func TestEsExporter_Index(t *testing.T) {
 		"vVPqNKbG-WjjukoIN4X5",
 	}
 	client := NewClient(tests.cert, tests.addr, tests.username, tests.passwd)
-	esExporter := EsExporter{client: client}
+	esExporter := ElasticSearchExporter{Client: client}
 	//doc := v1alpha1.AssessmentReport{"", metav1.ObjectMeta{"TestReport", "GenNanme"}}
 	doc := v1alpha1.AssessmentReport{}
 	file, _ := ioutil.ReadFile("/Users/zsimon/Projects/github/cnsi/cloud-native-security-inspector/src/testdata/assessment_report.json")
@@ -54,15 +54,26 @@ func TestEsExporter_Save(t *testing.T) {
 		username string
 		passwd   string
 	}
-	cert, _ := ioutil.ReadFile("/Users/zsimon/Projects/cnsi/github/elasticsearch/http_ca.crt")
+	//cert, _ := ioutil.ReadFile("/Users/zsimon/Projects/cnsi/github/elasticsearch/http_ca.crt")
+	//tests := args{
+	//	cert,
+	//	"https://localhost:9201",
+	//	"elastic",
+	//	"vVPqNKbG-WjjukoIN4X5",
+	//}
+
+	cert, _ := ioutil.ReadFile("/Users/zsimon/Projects/cnsi/github/elasticsearch/operator_es.crt")
 	tests := args{
 		cert,
-		"https://localhost:9201",
+		"https://quickstart-es-http:9200",
 		"elastic",
-		"vVPqNKbG-WjjukoIN4X5",
+		"2NR422RahwP5NQXG971v74JY",
 	}
 	client := NewClient(tests.cert, tests.addr, tests.username, tests.passwd)
-	esExporter := EsExporter{client: client}
+	var esExporter Exporter
+	esExporter = ElasticSearchExporter{Client: client}
+
+	//esExporter := ElasticSearchExporter{Client: client}
 	//doc := v1alpha1.AssessmentReport{"", metav1.ObjectMeta{"TestReport", "GenNanme"}}
 	doc := v1alpha1.AssessmentReport{}
 	file, _ := ioutil.ReadFile("/Users/zsimon/Projects/github/cnsi/cloud-native-security-inspector/src/testdata/assessment_report.json")
@@ -87,15 +98,22 @@ func TestEsExporter_Search(t *testing.T) {
 		username string
 		passwd   string
 	}
-	cert, _ := ioutil.ReadFile("/Users/zsimon/Projects/cnsi/github/elasticsearch/http_ca.crt")
+	//cert, _ := ioutil.ReadFile("/Users/zsimon/Projects/cnsi/github/elasticsearch/http_ca.crt")
+	//testClient := args{
+	//	cert,
+	//	"https://localhost:9201",
+	//	"elastic",
+	//	"vVPqNKbG-WjjukoIN4X5",
+	//}
+	cert, _ := ioutil.ReadFile("/Users/zsimon/Projects/cnsi/github/elasticsearch/operator_es.crt")
 	testClient := args{
 		cert,
-		"https://localhost:9201",
+		"https://quickstart-es-http:9200",
 		"elastic",
-		"vVPqNKbG-WjjukoIN4X5",
+		"2NR422RahwP5NQXG971v74JY",
 	}
 	client := NewClient(testClient.cert, testClient.addr, testClient.username, testClient.passwd)
-	esExporter := EsExporter{client: client}
+	esExporter := ElasticSearchExporter{Client: client}
 
 	doc := v1alpha1.AssessmentReport{}
 	doc.Name = "Test"
@@ -117,6 +135,7 @@ func TestEsExporter_Search(t *testing.T) {
 		{name: "test-06", keyword: "false"},
 		{name: "test-07", keyword: "Deployment"},
 		{name: "test-08", keyword: "quarantine_vulnerable_workload"},
+		{name: "test-09", keyword: "test"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -163,8 +182,8 @@ func TestNewExporter(t *testing.T) {
 	doc.UID = "abcd-efgh-hijk-uuid"
 
 	t.Run("test-name", func(t *testing.T) {
-		e := &EsExporter{
-			client: client,
+		e := &ElasticSearchExporter{
+			Client: client,
 		}
 		e.Search("")
 	})
@@ -184,8 +203,8 @@ func TestEsExporter_setupIndex(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			e := &EsExporter{
-				client: tt.fields.client,
+			e := &ElasticSearchExporter{
+				Client: tt.fields.client,
 			}
 			if err := e.setupIndex(); (err != nil) != tt.wantErr {
 				t.Errorf("setupIndex() error = %v, wantErr %v", err, tt.wantErr)
@@ -226,8 +245,8 @@ func TestEsExporter_deleteIndex(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			e := &EsExporter{
-				client: client,
+			e := &ElasticSearchExporter{
+				Client: client,
 			}
 			if err := e.deleteIndex(tt.args.index); (err != nil) != tt.wantErr {
 				t.Errorf("deleteIndex() error = %v, wantErr %v", err, tt.wantErr)

@@ -9,7 +9,7 @@ package es
 //		wg sync.WaitGroup
 //	)
 //
-//	// Initialize a client with the default settings.
+//	// Initialize a Client with the default settings.
 //	//
 //	// An `ELASTICSEARCH_URL` environment variable will be used when exported.
 //	//
@@ -24,7 +24,7 @@ package es
 //
 //	es, err := elasticsearch.NewClient(cfg)
 //	if err != nil {
-//		ctrlLog.Fatalf("Error creating the client: %s", err)
+//		ctrlLog.Fatalf("Error creating the Client: %s", err)
 //	}
 //
 //	// 1. Get cluster info
@@ -42,7 +42,7 @@ package es
 //	if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
 //		ctrlLog.Fatalf("Error parsing the response body: %s", err)
 //	}
-//	// Print client and server version numbers.
+//	// Print Client and server version numbers.
 //	ctrlLog.Printf("Client: %s", elasticsearch.Version)
 //	ctrlLog.Printf("Server: %s", r["version"].(map[string]interface{})["number"])
 //	ctrlLog.Println(strings.Repeat("~", 37))
@@ -75,7 +75,7 @@ package es
 //				Refresh: "true",
 //			}
 //
-//			// Perform the request with the client.
+//			// Perform the request with the Client.
 //			res, err := req.Do(context.Background(), es)
 //			if err != nil {
 //				ctrlLog.Fatalf("Error getting response: %s", err)
