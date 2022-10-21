@@ -21,7 +21,9 @@ export interface HarborModel {
     dataSource: DataSourceType,
     knownRegistries?: knownRegistrieType[],
   },
-  status: {}
+  status: {
+    status?: string
+  }
 }
 
 export interface HarborModelResponse {

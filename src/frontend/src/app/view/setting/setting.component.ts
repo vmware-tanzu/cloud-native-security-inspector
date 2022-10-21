@@ -47,7 +47,7 @@ export class SettingComponent implements OnInit {
   public messageHarborFlag = ''
   public messageSecretFlag = ''
   public messageContent = ''
-
+  public settingStatus = ''
   get dataSourceName() {
     return this.harborForm.get('requiredFields')?.get('name')?.value + '-' + this.harborForm.get('requiredFields')?.get('data_endpoint')?.value
   }
@@ -133,6 +133,9 @@ export class SettingComponent implements OnInit {
             this.knownRegistries = this.harborResponse.spec.knownRegistries
           }
           this.schedule = this.harborResponse.spec.dataSource.scanSchedule.slice(1)
+          if (this.harborResponse.status) {
+            this.settingStatus = this.harborResponse.status.status || ''
+          }
         } else {
           this.createButtonFlag = true
           this.harborForm.get('requiredFields')?.get('name')?.setValue('')
@@ -249,8 +252,6 @@ export class SettingComponent implements OnInit {
             })  
           
         }, 500)
-        setTimeout(() => {   
-        }, 10000);
       },
       err => {
         this.messageHarborFlag = 'fail'
