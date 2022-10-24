@@ -134,7 +134,12 @@
     "key": "键",
     "value": "值",
     "settingsName": "配置名称",
-    "enabled": "启用设置"
+    "enabled": "启用设置",
+    "elasticSearchEnabled": "弹性搜索",
+    "elasticSearchAddr": "地址",
+    "elasticSearchUser": "账户",
+    "elasticSearchPasswd": "密码",
+    "elasticSearchCert": "证书"
 
   },
   "Setting": {

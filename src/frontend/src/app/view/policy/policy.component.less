@@ -10,7 +10,7 @@ h4,h2 {
   color: #fff;
 }
 form {
-  clr-input-container, clr-radio-container,clr-toggle-container,clr-select-container,.actions {
+  clr-input-container,clr-textarea-container, clr-radio-container,clr-toggle-container,clr-select-container,.actions {
     margin-left: 20px;
     label,h4 {
       width: 150px;
@@ -44,6 +44,24 @@ form {
         width: 200px !important;
       }
     }
+    .endpoint-container {
+      display: flex;
+      align-items: center;
+      margin-top: 24px;
+      margin-left: 20px;
+      .clr-form-control {
+        margin-top: 0;
+      }
+      label {
+        width: 200px;
+        color: #fff;
+        font-weight: 600;
+        font-size: .65rem;
+      }
+      clr-select-container {
+        margin-right: 10px;
+      }
+    }
   }
   .content {
     display: flex;
@@ -55,7 +73,7 @@ form {
   }
   .port {
     display: flex;
-    clr-select-container,clr-input-container {
+    clr-select-container,clr-input-container, clr-textarea-container{
       display: flex;
       flex-wrap: nowrap;
       justify-content: space-between;

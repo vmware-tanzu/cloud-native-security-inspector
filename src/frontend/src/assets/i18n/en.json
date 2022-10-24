@@ -135,7 +135,12 @@
     "key": "key",
     "value": "value",
     "settingsName": "Settings Name",
-    "enabled": "Enabled Settings"
+    "enabled": "Enabled Settings",
+    "elasticSearchEnabled": "Elastic Search",
+    "elasticSearchAddr": "Address",
+    "elasticSearchUser": "User",
+    "elasticSearchPasswd": "Password",
+    "elasticSearchCert": "Certificate"
   },
   "Setting": {
     "policy": "Policy Config",
