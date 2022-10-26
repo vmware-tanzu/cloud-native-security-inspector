@@ -48,6 +48,13 @@ export class PolicyComponent implements OnInit {
     if (this.schedule) {
       result = false
     }
+
+    if (!data.elasticSearchEnabled) {      
+      delete data.elasticSearchAddr
+      delete data.elasticSearchUser
+      delete data.elasticSearchPasswd
+      delete data.elasticSearchCert
+    }
     for (const key in data) {
       if (data[key] === '') {
         result = true
@@ -117,6 +124,12 @@ export class PolicyComponent implements OnInit {
         image:['projects.registry.vmware.com/cnsi/inspector:0.1'],
         imagePullPolicy: ['IfNotPresent'],
         settingsName: [''],
+        elasticSearchEnabled: [false],
+        elasticSearchAddrHeader: ['https://'],
+        elasticSearchAddr: [''],
+        elasticSearchUser: [''],
+        elasticSearchPasswd: [''],
+        elasticSearchCert: [''],
       }),
       inspectionStandard: this.formBuilder.group({
       }),
@@ -223,7 +236,8 @@ export class PolicyComponent implements OnInit {
             format: this.policyForm.get('inspectionResult')?.get('format')?.value,
             generate: this.policyForm.get('inspectionResult')?.get('generate')?.value,
             liveTime: +this.policyForm.get('inspectionResult')?.get('liveTime')?.value,
-            managedBy: this.policyForm.get('inspectionResult')?.get('managedBy')?.value
+            managedBy: this.policyForm.get('inspectionResult')?.get('managedBy')?.value,
+            elasticSearchEnabled: this.policyForm.get('inspectionSetting')?.get('elasticSearchEnabled')?.value
           },
           baselines: this.baselines,
           // dataProvider: {
@@ -286,6 +300,12 @@ export class PolicyComponent implements OnInit {
         }
       ]
     }
+    if (this.policyForm.get('inspectionSetting')?.get('elasticSearchEnabled')?.value) {
+      data.spec.inspection.assessment.elasticSearchAddr = this.policyForm.get('inspectionSetting')?.get('elasticSearchAddrHeader')?.value + this.policyForm.get('inspectionSetting')?.get('elasticSearchAddr')?.value
+      data.spec.inspection.assessment.elasticSearchUser = this.policyForm.get('inspectionSetting')?.get('elasticSearchUser')?.value
+      data.spec.inspection.assessment.elasticSearchPasswd = this.policyForm.get('inspectionSetting')?.get('elasticSearchPasswd')?.value
+      data.spec.inspection.assessment.elasticSearchCert = this.policyForm.get('inspectionSetting')?.get('elasticSearchCert')?.value
+    }
 
     if (this.namespacelabels.length > 0) {
       this.namespacelabels.forEach(el => {
@@ -297,7 +317,6 @@ export class PolicyComponent implements OnInit {
         data.spec.inspection.workloadSelector.matchLabels[el.key] = el.value
       })
     }
-
 
     this.policyService.createPolicy(data).subscribe(
       data => {
@@ -312,6 +331,7 @@ export class PolicyComponent implements OnInit {
     )
   }
   modifyPolicy () {
+    const elasticSearchEnabled =this.policyForm.get('inspectionSetting')?.get('elasticSearchEnabled')?.value
     // this.policyInfo.metadata.name = this.policyForm.get('name')?.value
     this.policyInfo.spec.inspector.image = this.policyForm.get('inspectionSetting')?.get('image')?.value
     this.policyInfo.spec.inspector.imagePullPolicy = this.policyForm.get('inspectionSetting')?.get('imagePullPolicy')?.value
@@ -321,6 +341,7 @@ export class PolicyComponent implements OnInit {
     this.policyInfo.spec.strategy.historyLimit = +this.policyForm.get('inspectionSetting')?.get('historyLimit')?.value
     this.policyInfo.spec.strategy.suspend = this.policyForm.get('inspectionSetting')?.get('suspend')?.value
     this.policyInfo.spec.workNamespace = this.policyForm.get('inspectionSetting')?.get('namespace')?.value
+    
     if(this.policyForm.get('inspectionResult')?.get('actions')?.value){
       this.policyInfo.spec.inspection.actions = []
       this.actions.forEach(el => {
@@ -340,6 +361,7 @@ export class PolicyComponent implements OnInit {
     this.policyInfo.spec.inspection.assessment.generate = this.policyForm.get('inspectionResult')?.get('generate')?.value
     this.policyInfo.spec.inspection.assessment.liveTime = +this.policyForm.get('inspectionResult')?.get('liveTime')?.value
     this.policyInfo.spec.inspection.assessment.managedBy = this.policyForm.get('inspectionResult')?.get('managedBy')?.value
+    this.policyInfo.spec.inspection.assessment.elasticSearchEnabled = elasticSearchEnabled
     this.policyInfo.spec.inspection.baselines = this.baselines
     if (this.policyInfo.spec.inspection.namespaceSelector) {
       this.policyInfo.spec.inspection.namespaceSelector.matchLabels = {}
@@ -357,7 +379,20 @@ export class PolicyComponent implements OnInit {
         this.policyInfo.spec.inspection.workloadSelector.matchLabels[el.key] = el.value
       })
     }
-
+    if (elasticSearchEnabled) {
+      this.policyInfo.spec.inspection.assessment.elasticSearchAddr = this.policyForm.get('inspectionSetting')?.get('elasticSearchAddrHeader')?.value + this.policyForm.get('inspectionSetting')?.get('elasticSearchAddr')?.value
+      this.policyInfo.spec.inspection.assessment.elasticSearchUser = this.policyForm.get('inspectionSetting')?.get('elasticSearchUser')?.value
+      this.policyInfo.spec.inspection.assessment.elasticSearchPasswd = this.policyForm.get('inspectionSetting')?.get('elasticSearchPasswd')?.value
+      this.policyInfo.spec.inspection.assessment.elasticSearchCert = this.policyForm.get('inspectionSetting')?.get('elasticSearchCert')?.value
+    } else {
+      delete this.policyInfo.spec.inspection.assessment.elasticSearchAddr
+      delete this.policyInfo.spec.inspection.assessment.elasticSearchUser
+      delete this.policyInfo.spec.inspection.assessment.elasticSearchPasswd
+      delete this.policyInfo.spec.inspection.assessment.elasticSearchCert
+      
+    }
+    console.log(this.policyInfo);
+    
     this.policyService.modifyPolicy(this.policyForm.get('inspectionSetting')?.get('name')?.value, this.policyInfo).subscribe(
       data => {
         this.messageFlag = 'success'
@@ -418,6 +453,18 @@ export class PolicyComponent implements OnInit {
           this.policyForm.get('inspectionResult')?.get('format')?.setValue(policyList[0].spec.inspection.assessment.format)
           this.policyForm.get('inspectionResult')?.get('liveTime')?.setValue(policyList[0].spec.inspection.assessment.liveTime)
           this.policyForm.get('inspectionResult')?.get('managedBy')?.setValue(policyList[0].spec.inspection.assessment.managedBy)
+          this.policyForm.get('inspectionSetting')?.get('elasticSearchEnabled')?.setValue(policyList[0].spec.inspection.assessment.elasticSearchEnabled ? true : false)
+          if (policyList[0].spec.inspection.assessment.elasticSearchEnabled) {
+            const addr = policyList[0].spec.inspection.assessment.elasticSearchAddr.split('//')
+
+            this.policyForm.get('inspectionSetting')?.get('elasticSearchAddrHeader')?.setValue(addr[0]+'//')
+            this.policyForm.get('inspectionSetting')?.get('elasticSearchAddr')?.setValue(addr[1])
+
+            this.policyForm.get('inspectionSetting')?.get('elasticSearchUser')?.setValue(policyList[0].spec.inspection.assessment.elasticSearchUser)
+            this.policyForm.get('inspectionSetting')?.get('elasticSearchPasswd')?.setValue(policyList[0].spec.inspection.assessment.elasticSearchPasswd)
+            this.policyForm.get('inspectionSetting')?.get('elasticSearchCert')?.setValue(policyList[0].spec.inspection.assessment.elasticSearchCert)
+
+          }
           this.baselines = policyList[0].spec.inspection.baselines
           this.schedule = policyList[0].spec.schedule
           if(policyList[0].spec.inspection.actions && policyList[0].spec.inspection.actions.length > 0){
