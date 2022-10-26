@@ -17,7 +17,6 @@ import (
 
 var (
 	ctrlLog   = ctrl.Log.WithName("ElasticSearchExporter")
-	r         map[string]interface{}
 	indexName = "assessment_report"
 )
 
@@ -28,7 +27,7 @@ const searchMatch = `
 	"query" : {
 		"multi_match" : {
 			"query" : %q,
-			"fields" : ["kind^10", "containerName^10", "containerImage^10", "workloadNamespace^10", 
+			"fields" : ["kind^10", "containerName^10", "containerImage^10", "containerImageId^10", "workloadNamespace^10", 
 				"passed^10", "isInit^10", "actionEnforcement"],
 			"operator" : "and"
 		}
@@ -112,6 +111,7 @@ func buildQuery(query string, after ...string) io.Reader {
 	return strings.NewReader(b.String())
 }
 
+// setupIndex is to create an index with predefine mapping in ElasticSearch for CNSI
 func (e *ElasticSearchExporter) setupIndex() error {
 	mapping := `{
     "mappings": {
@@ -120,7 +120,7 @@ func (e *ElasticSearchExporter) setupIndex() error {
           "containerId":  { "type": "text" },
           "containerName":      { "type": "text", "analyzer": "english" },
           "containerImage":        { "type": "text", "analyzer": "english" },
-          "ContainerImageId": { "type": "text", "analyzer": "english" },
+          "containerImageId": { "type": "text", "analyzer": "english" },
           "isInit":  { "type": "text" },
           "kind":       { "type": "text" },
           "workloadName":       { "type": "text", "analyzer": "english" },
@@ -159,28 +159,8 @@ func (e *ElasticSearchExporter) indexExists(name string) (bool, error) {
 	}
 }
 
+// List the index in ElasticSearch by name
 func (e *ElasticSearchExporter) listIndex(name string) ([]ElasticSearchIndex, error) {
-	//res, err := esapi.CatIndicesRequest{
-	//	Index:                   []string{name},
-	//	Bytes:                   "",
-	//	ExpandWildcards:         "",
-	//	Format:                  "JSON",
-	//	H:                       nil,
-	//	Health:                  "",
-	//	Help:                    nil,
-	//	IncludeUnloadedSegments: nil,
-	//	MasterTimeout:           0,
-	//	Pri:                     nil,
-	//	S:                       nil,
-	//	Time:                    "",
-	//	V:                       nil,
-	//	Pretty:                  false,
-	//	Human:                   false,
-	//	ErrorTrace:              false,
-	//	FilterPath:              nil,
-	//	Header:                  nil,
-	//}.Do(context.Background(), e.Client)
-
 	res, err := esapi.CatIndicesRequest{
 		Index:  []string{name},
 		Format: "JSON",
@@ -193,7 +173,6 @@ func (e *ElasticSearchExporter) listIndex(name string) ([]ElasticSearchIndex, er
 	var r map[string]interface{}
 	var esIndices []ElasticSearchIndex
 	if res.IsError() {
-		//ctrlLog.Info("Error listing the index: %s", string(res.StatusCode))
 		if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
 			ctrlLog.Info("Error parsing the response body: %s", err)
 		} else {
@@ -217,6 +196,7 @@ func (e *ElasticSearchExporter) listIndex(name string) ([]ElasticSearchIndex, er
 	return esIndices, nil
 }
 
+// Delete index
 func (e *ElasticSearchExporter) deleteIndex(index []string) error {
 	res, err := e.Client.Indices.Delete(index)
 	if err != nil {
@@ -228,12 +208,9 @@ func (e *ElasticSearchExporter) deleteIndex(index []string) error {
 	return nil
 }
 
+// Save an AssessmentReport to this index
 func (e ElasticSearchExporter) Save(doc api.AssessmentReport) error {
-	fmt.Println("Save")
-	//b, err := json.Marshal(doc)
-	//if err != nil {
-	//	return err
-	//}
+	var res *esapi.Response
 
 	for _, nsa := range doc.Spec.NamespaceAssessments {
 		for _, workloadAssessment := range nsa.WorkloadAssessments {
@@ -268,16 +245,8 @@ func (e ElasticSearchExporter) Save(doc api.AssessmentReport) error {
 					if err != nil {
 						return err
 					}
-					fmt.Println(esDocument)
 
-					//res, err := esapi.UpdateRequest{
-					//	Index:      indexName,
-					//	DocumentID: esDoc.DocId,
-					//	Body:       strings.NewReader(string(esDocument)),
-					//	Refresh:    "true",
-					//}.Do(context.Background(), e.Client)
-
-					res, err := esapi.IndexRequest{
+					res, err = esapi.IndexRequest{
 						Index:      indexName,
 						DocumentID: esDoc.DocId,
 						Body:       strings.NewReader(string(esDocument)),
@@ -287,11 +256,9 @@ func (e ElasticSearchExporter) Save(doc api.AssessmentReport) error {
 						ctrlLog.Error(err, "Error getting response")
 						return err
 					}
-					defer res.Body.Close()
 
 					if res.IsError() {
 						ctrlLog.Info("[%s] Error indexing document ID=%v", res.Status(), doc.GenerateName)
-						//fmt.Println(res.StatusCode)
 						return errors.New(fmt.Sprint("http error, code ", res.StatusCode))
 					} else {
 						// Deserialize the response into a map.
@@ -299,8 +266,6 @@ func (e ElasticSearchExporter) Save(doc api.AssessmentReport) error {
 						if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
 							ctrlLog.Info("Error parsing the response body: %s", err)
 						} else {
-							// Print the response status and indexed document version.
-							//ctrlLog.Info("[%s] %s; version=%d", res.Status(), r["result"], int(r["_version"].(float64)))
 							fmt.Println("OK")
 						}
 					}
@@ -308,10 +273,11 @@ func (e ElasticSearchExporter) Save(doc api.AssessmentReport) error {
 			}
 		}
 	}
-
+	defer res.Body.Close()
 	return nil
 }
 
+// Delete an Assessment report in the index
 func (e ElasticSearchExporter) Delete(doc api.AssessmentReport) error {
 	return nil
 }
@@ -365,9 +331,7 @@ func (e ElasticSearchExporter) Search(query string, after ...string) ([]Assessme
 
 	for _, hit := range r.Hits.Hits {
 		var h Hit
-		//h.ID = hit.ID
 		h.Sort = hit.Sort
-		//h.URL = strings.Join([]string{baseURL, h.ID, ""}, "/")
 
 		if err := json.Unmarshal(hit.Source, &h); err != nil {
 			return []AssessmentReportDoc{}, err
@@ -387,6 +351,10 @@ func (e ElasticSearchExporter) Search(query string, after ...string) ([]Assessme
 		reportList = append(reportList, ret.AssessmentReportDoc)
 	}
 	return reportList, nil
+}
+
+func (e ElasticSearchExporter) getContainerUsedMost() (api.AssessmentReportList, error) {
+	return api.AssessmentReportList{}, nil
 }
 
 func (e ElasticSearchExporter) List() (api.AssessmentReportList, error) {

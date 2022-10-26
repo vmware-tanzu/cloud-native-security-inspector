@@ -123,7 +123,6 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 	}
 
 	// Get related security data first.
-	//adapter, err := providers.NewProvider(ctx, c.kc, nil)
 	setting, err := c.EnsureSettings(ctx, policy)
 
 	if err != nil {
@@ -293,6 +292,7 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 	inspect := inspectFac()
 
 	for _, ns := range nsl {
+		c.logger.Info("Test-------", "namespace", ns)
 		c.logger.Info("Scan workloads under namespace", "namespace", ns)
 
 		// Add namespace assessment to the report.
