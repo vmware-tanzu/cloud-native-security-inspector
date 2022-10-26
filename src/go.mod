@@ -3,6 +3,7 @@ module github.com/vmware-tanzu/cloud-native-security-inspector
 go 1.16
 
 require (
+	github.com/elastic/go-elasticsearch/v8 v8.4.0
 	github.com/go-logr/logr v0.4.0
 	github.com/go-openapi/errors v0.20.1
 	github.com/go-openapi/runtime v0.21.0
@@ -12,8 +13,6 @@ require (
 	github.com/goharbor/go-client v0.25.0
 	github.com/goharbor/harbor/src v0.0.0-20211025104526-d4affc2eba6d
 	github.com/gomodule/redigo v2.0.0+incompatible
-	github.com/onsi/ginkgo v1.16.4
-	github.com/onsi/gomega v1.15.0
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.7.0
 	k8s.io/api v0.22.2
