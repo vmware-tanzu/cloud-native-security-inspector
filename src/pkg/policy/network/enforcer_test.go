@@ -8,7 +8,7 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"goharbor.io/k8s-security-inspector/api/v1alpha1"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/api/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	netv1 "k8s.io/api/networking/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
