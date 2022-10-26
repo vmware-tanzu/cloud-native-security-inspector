@@ -1,6 +1,6 @@
-# Cloud Native Security Inspector 
+# Cloud Native Security Inspector (Project Narrows)
+[![CodeQL](https://github.com/vmware-tanzu/cloud-native-security-inspector/actions/workflows/codeql.yml/badge.svg)](https://github.com/vmware-tanzu/cloud-native-security-inspector/actions/workflows/codeql.yml)
 
- [![codecov](https://codecov.io/gh/vmware-tanzu/cloud-native-security-inspector/branch/main/graph/badge.svg?token=hJYkZfvTmJ)](https://codecov.io/gh/vmware-tanzu/cloud-native-security-inspector)
 
 Cloud Native Security Inspector is an open source cloud native runtime security tool that works with Harbor. It allows end users to assess the security posture of Kubernetes clusters at runtime. This project will add dynamic scanning giving Security Auditors greater awareness and control of running workloads.
 
