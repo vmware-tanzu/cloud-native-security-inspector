@@ -5,6 +5,7 @@ package main
 import (
 	"context"
 	"flag"
+	"go.uber.org/zap/zapcore"
 	"os"
 
 	"github.com/vmware-tanzu/cloud-native-security-inspector/api/v1alpha1"
@@ -37,7 +38,9 @@ func main() {
 
 	flag.StringVar(&policy, "policy", "", "name of the inspection policy")
 	opts := zap.Options{
-		Development: true,
+		Development:     true,
+		Level:           zapcore.DebugLevel,
+		StacktraceLevel: zapcore.DebugLevel,
 	}
 	opts.BindFlags(flag.CommandLine)
 	flag.Parse()
