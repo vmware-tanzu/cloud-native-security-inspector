@@ -5,11 +5,11 @@ package inspection
 import (
 	"context"
 	"fmt"
-	"time"
-
+	es "github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/consumers/es"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/log"
+	"time"
 
 	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/policy/enforcement"
 
@@ -123,7 +123,6 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 	}
 
 	// Get related security data first.
-	//adapter, err := providers.NewProvider(ctx, c.kc, nil)
 	setting, err := c.EnsureSettings(ctx, policy)
 
 	if err != nil {
@@ -293,6 +292,7 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 	inspect := inspectFac()
 
 	for _, ns := range nsl {
+		c.logger.Info("Test-------", "namespace", ns)
 		c.logger.Info("Scan workloads under namespace", "namespace", ns)
 
 		// Add namespace assessment to the report.
@@ -347,6 +347,36 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 		}
 	}
 
+	// Read config from InspectionPolicy, save assessment reports to ES if elasticsearch enabled.
+	if policy.Spec.Inspection.Assessment.ElasticSearchEnabled {
+		if err := exportReportToES(report, policy); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func exportReportToES(report *v1alpha1.AssessmentReport, policy *v1alpha1.InspectionPolicy) error {
+	cert := []byte(policy.Spec.Inspection.Assessment.ElasticSearchCert)
+
+	type args struct {
+		cert     []byte
+		addr     string
+		username string
+		passwd   string
+	}
+	// password: kubectl get secret instanceName-es-elastic-user -o go-template='{{.data.elastic | base64decode}}'
+	clientArgs := args{
+		cert,
+		policy.Spec.Inspection.Assessment.ElasticSearchAddr,
+		policy.Spec.Inspection.Assessment.ElasticSearchUser,
+		policy.Spec.Inspection.Assessment.ElasticSearchPasswd,
+	}
+	esExporter, _ := es.NewExporter(es.NewClient(clientArgs.cert, clientArgs.addr, clientArgs.username, clientArgs.passwd))
+
+	if err := esExporter.Save(*report); err != nil {
+		return err
+	}
 	return nil
 }
 

@@ -5,6 +5,7 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"github.com/goharbor/harbor/src/jobservice/logger"
 	"strings"
 
 	"github.com/go-logr/logr"
@@ -174,6 +175,16 @@ func (r *InspectionPolicyReconciler) Reconcile(ctx context.Context, req ctrl.Req
 	}
 
 	// Update the policy status when necessary.
+	r.updatePolicyStatus(policy, statusNeedUpdate, ctx)
+	if err != nil {
+		return ctrl.Result{}, err
+	}
+	logger.Info("Reconcile completed")
+	return ctrl.Result{}, nil
+}
+
+func (r *InspectionPolicyReconciler) updatePolicyStatus(policy *goharborv1.InspectionPolicy,
+	statusNeedUpdate bool, ctx context.Context) error {
 	if statusNeedUpdate || len(policy.Status.Status) == 0 {
 		policy.Status.Status = goharborv1.PolicyStandby
 		if *policy.Spec.Strategy.Suspend {
@@ -183,12 +194,15 @@ func (r *InspectionPolicyReconciler) Reconcile(ctx context.Context, req ctrl.Req
 
 		if err := r.Status().Update(ctx, policy); err != nil {
 			logger.Error(err, "failed to update status of inspection policy")
-			return ctrl.Result{}, err
+			return err
 		}
 	}
+	return nil
+}
 
-	logger.Info("Reconcile completed")
-	return ctrl.Result{}, nil
+func (r *InspectionPolicyReconciler) doKubeBench() error {
+
+	return nil
 }
 
 // SetupWithManager sets up the controller with the Manager.
@@ -455,6 +469,11 @@ func (r *InspectionPolicyReconciler) generateCronJobCR(policy *goharborv1.Inspec
 	cj.Annotations[lastAppliedAnnotation] = string(jdata)
 
 	return cj, nil
+}
+
+func (r *InspectionPolicyReconciler) generateCronJobCR4KubeBench(policy *goharborv1.InspectionPolicy) (*batchv1beta1.CronJob, error) {
+
+	return nil, nil
 }
 
 func getImage(policy *goharborv1.InspectionPolicy) string {

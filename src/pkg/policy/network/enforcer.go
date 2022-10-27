@@ -183,6 +183,7 @@ func (e *Enforcer) ensureNetworkPolicy(ctx context.Context, ns string) error {
 			if err := e.kc.Create(ctx, pl); err != nil {
 				return errors.Wrapf(err, "create network policy: %s", pname)
 			}
+			return nil
 		}
 
 		return errors.Wrapf(err, "get network policy: %s", pname)
