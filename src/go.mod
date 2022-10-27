@@ -3,6 +3,7 @@ module github.com/vmware-tanzu/cloud-native-security-inspector
 go 1.16
 
 require (
+	github.com/elastic/go-elasticsearch/v8 v8.4.0
 	github.com/go-logr/logr v0.4.0
 	github.com/go-openapi/errors v0.20.1
 	github.com/go-openapi/runtime v0.21.0

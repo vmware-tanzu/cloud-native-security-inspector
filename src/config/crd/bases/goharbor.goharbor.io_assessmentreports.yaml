@@ -112,6 +112,22 @@ spec:
                     description: DataProvider is the data provider. DataProvider DataProvider
                       `json:"dataProvider"` Assessment is the assessment report.
                     properties:
+                      elasticSearchAddr:
+                        description: ElasticSearch endpoint
+                        type: string
+                      elasticSearchCert:
+                        description: ElasticSearch certificate for the client
+                        type: string
+                      elasticSearchEnabled:
+                        default: false
+                        description: Indicate whether to store the reports to elasticsearch
+                        type: boolean
+                      elasticSearchPasswd:
+                        description: ElasticSearch password for the client
+                        type: string
+                      elasticSearchUser:
+                        description: ElasticSearch username for the client
+                        type: string
                       format:
                         default: YAML
                         description: Format of the assessment report data.
@@ -136,6 +152,7 @@ spec:
                           report is owned by the policy.
                         type: boolean
                     required:
+                    - elasticSearchEnabled
                     - format
                     - generate
                     - liveTime

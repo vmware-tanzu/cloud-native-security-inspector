@@ -25,8 +25,6 @@ func NewProvider(ctx context.Context, kclient k8client.Client, setting *v1alpha1
 	}
 }
 
-var _ Adapter = &harbor.Adapter{}
-
 // NewHarborAdapter constructs the harbor adapter.
 func NewHarborAdapter(ctx context.Context, kclient k8client.Client, setting *v1alpha1.Setting) (Adapter, error) {
 	config := harborclient.ClientSetConfig{

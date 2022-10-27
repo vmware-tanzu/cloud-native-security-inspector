@@ -1,0 +1,320 @@
+{
+  "apiVersion": "goharbor.goharbor.io/v1alpha1",
+  "kind": "AssessmentReport",
+  "metadata": {
+    "annotations": {
+      "goharbor.io/creation-timestamp": "1665975121",
+      "goharbor.io/inspection-policy": "inspectionpolicy-sample"
+    },
+    "creationTimestamp": "2022-10-17T02:52:01Z",
+    "generation": 1,
+    "name": "assessment-report-20221017-0252-01",
+    "namespace": "cronjobs",
+    "ownerReferences": [
+      {
+        "apiVersion": "goharbor.goharbor.io/v1alpha1",
+        "blockOwnerDeletion": true,
+        "controller": true,
+        "kind": "InspectionPolicy",
+        "name": "inspectionpolicy-sample",
+        "uid": "c8cfbd2f-7343-4a67-8353-25c5ff93d303"
+      }
+    ],
+    "resourceVersion": "14610786",
+    "uid": "65ff1589-efc1-4d3c-b28b-0ee9132b0f45"
+  },
+  "spec": {
+    "inspectionConfiguration": {
+      "actions": [
+        {
+          "kind": "quarantine_vulnerable_workload"
+        }
+      ],
+      "assessment": {
+        "format": "YAML",
+        "generate": true,
+        "liveTime": 3600,
+        "managedBy": true
+      },
+      "baselines": [
+        {
+          "baseline": "Medium",
+          "kind": "vulnerability",
+          "scheme": "application/vnd.security.vulnerability.report; version=1.1",
+          "version": "v1.1"
+        }
+      ],
+      "namespaceSelector": {
+        "matchLabels": {
+          "goharbor.io/watch": "true"
+        }
+      }
+    },
+    "namespaceAssessments": [
+      {
+        "namespace": {
+          "name": "workload"
+        },
+        "workloadAssessments": [
+          {
+            "actionEnforcements": [
+              {
+                "action": {
+                  "kind": "quarantine_vulnerable_workload"
+                },
+                "result": {
+                  "status": "applied"
+                }
+              }
+            ],
+            "failures": [
+              {
+                "assessmentError": {
+                  "cause": "Compliance check failed",
+                  "error": "expect vulnerability severity \u003c= Medium but got Critical"
+                },
+                "baseline": {
+                  "baseline": "Medium",
+                  "kind": "vulnerability",
+                  "scheme": "application/vnd.security.vulnerability.report; version=1.1",
+                  "version": "v1.1"
+                },
+                "container": {
+                  "id": "containerd://c320fde90dc9c74734c34a6fabadb0d841224e10b269e9dc86523a1bf0aa92ea",
+                  "image": "tsi-harbor.com/tsi/zookeeper:3.8.0",
+                  "imageID": "tsi-harbor.com/tsi/zookeeper@sha256:7699553f4e6df82c52c246bed60970dc4a96a91fdcea8a27a638d6a8444ff0af",
+                  "isInit": false,
+                  "name": "zookeeper"
+                }
+              }
+            ],
+            "passed": false,
+            "workload": {
+              "metadata": {
+                "apiVersion": "apps/v1",
+                "kind": "Deployment",
+                "name": "zookeeper-sample",
+                "namespace": "workload",
+                "uid": "35f8518b-4b8b-4f8f-bd59-a573efd50f69"
+              },
+              "pods": [
+                {
+                  "containers": [
+                    {
+                      "id": "containerd://c320fde90dc9c74734c34a6fabadb0d841224e10b269e9dc86523a1bf0aa92ea",
+                      "image": "tsi-harbor.com/tsi/zookeeper:3.8.0",
+                      "imageID": "tsi-harbor.com/tsi/zookeeper@sha256:7699553f4e6df82c52c246bed60970dc4a96a91fdcea8a27a638d6a8444ff0af",
+                      "isInit": false,
+                      "name": "zookeeper"
+                    }
+                  ],
+                  "metadata": {
+                    "apiVersion": "v1",
+                    "kind": "Pod",
+                    "name": "zookeeper-sample-8586d648b4-v6nk5",
+                    "namespace": "workload",
+                    "resourceVersion": "2400567",
+                    "uid": "feecbb61-9632-45f4-b9e3-9da3537c35cf"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "actionEnforcements": [
+              {
+                "action": {
+                  "kind": "quarantine_vulnerable_workload"
+                },
+                "result": {
+                  "error": "enforce policy: ensure network policy: get network policy: cnsi-networkpolicy--workload: networkpolicies.networking.k8s.io \"cnsi-networkpolicy--workload\" not found",
+                  "status": "failed"
+                }
+              }
+            ],
+            "failures": [
+              {
+                "assessmentError": {
+                  "cause": "Compliance check failed",
+                  "error": "expect vulnerability severity \u003c= Medium but got High"
+                },
+                "baseline": {
+                  "baseline": "Medium",
+                  "kind": "vulnerability",
+                  "scheme": "application/vnd.security.vulnerability.report; version=1.1",
+                  "version": "v1.1"
+                },
+                "container": {
+                  "id": "containerd://3d3baffb19c7254bf7506668d32b9cfdb32601349bf30373ce305793444e26d6",
+                  "image": "10.78.177.224/tsi/mongo:4.2.8",
+                  "imageID": "10.78.177.224/tsi/mongo@sha256:14468b12f721906390c118a38c33caf218c089b751b2f205b2567f99716ae1e9",
+                  "isInit": false,
+                  "name": "mongo"
+                }
+              }
+            ],
+            "passed": false,
+            "workload": {
+              "metadata": {
+                "apiVersion": "apps/v1",
+                "kind": "Deployment",
+                "name": "mongo-sample",
+                "namespace": "workload",
+                "uid": "0969e78b-b2d1-4e0c-89fc-dafcfeb03ad3"
+              },
+              "pods": [
+                {
+                  "containers": [
+                    {
+                      "id": "containerd://3d3baffb19c7254bf7506668d32b9cfdb32601349bf30373ce305793444e26d6",
+                      "image": "10.78.177.224/tsi/mongo:4.2.8",
+                      "imageID": "10.78.177.224/tsi/mongo@sha256:14468b12f721906390c118a38c33caf218c089b751b2f205b2567f99716ae1e9",
+                      "isInit": false,
+                      "name": "mongo"
+                    }
+                  ],
+                  "metadata": {
+                    "apiVersion": "v1",
+                    "kind": "Pod",
+                    "name": "mongo-sample-5f74f65857-s78cg",
+                    "namespace": "workload",
+                    "resourceVersion": "2724874",
+                    "uid": "78db9642-6f49-416f-a5ca-77ef2d3eac51"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "actionEnforcements": [
+              {
+                "action": {
+                  "kind": "quarantine_vulnerable_workload"
+                },
+                "result": {
+                  "status": "applied"
+                }
+              }
+            ],
+            "failures": [
+              {
+                "assessmentError": {
+                  "cause": "Compliance check failed",
+                  "error": "expect vulnerability severity \u003c= Medium but got High"
+                },
+                "baseline": {
+                  "baseline": "Medium",
+                  "kind": "vulnerability",
+                  "scheme": "application/vnd.security.vulnerability.report; version=1.1",
+                  "version": "v1.1"
+                },
+                "container": {
+                  "id": "containerd://d96d753d1299d74f3a9ab615afd6c893e684eb1f1ec063953acdaa48ab3fd5cc",
+                  "image": "10.78.177.224/tsi/mongo:4.2.8",
+                  "imageID": "10.78.177.224/tsi/mongo@sha256:14468b12f721906390c118a38c33caf218c089b751b2f205b2567f99716ae1e9",
+                  "isInit": false,
+                  "name": "nginx"
+                }
+              }
+            ],
+            "passed": false,
+            "workload": {
+              "metadata": {
+                "apiVersion": "apps/v1",
+                "kind": "Deployment",
+                "name": "nginx-sample",
+                "namespace": "workload",
+                "uid": "fcdcecf6-a260-4027-bf81-c21e27e02819"
+              },
+              "pods": [
+                {
+                  "containers": [
+                    {
+                      "id": "containerd://d96d753d1299d74f3a9ab615afd6c893e684eb1f1ec063953acdaa48ab3fd5cc",
+                      "image": "10.78.177.224/tsi/mongo:4.2.8",
+                      "imageID": "10.78.177.224/tsi/mongo@sha256:14468b12f721906390c118a38c33caf218c089b751b2f205b2567f99716ae1e9",
+                      "isInit": false,
+                      "name": "nginx"
+                    }
+                  ],
+                  "metadata": {
+                    "apiVersion": "v1",
+                    "kind": "Pod",
+                    "name": "nginx-sample-7dbcf874cd-bvsl5",
+                    "namespace": "workload",
+                    "resourceVersion": "2724870",
+                    "uid": "8b698433-7afd-4206-a5ce-3c1e8b8e4bf7"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "actionEnforcements": [
+              {
+                "action": {
+                  "kind": "quarantine_vulnerable_workload"
+                },
+                "result": {
+                  "status": "applied"
+                }
+              }
+            ],
+            "failures": [
+              {
+                "assessmentError": {
+                  "cause": "Compliance check failed",
+                  "error": "expect vulnerability severity \u003c= Medium but got High"
+                },
+                "baseline": {
+                  "baseline": "Medium",
+                  "kind": "vulnerability",
+                  "scheme": "application/vnd.security.vulnerability.report; version=1.1",
+                  "version": "v1.1"
+                },
+                "container": {
+                  "id": "containerd://cb9c5bf08c2301b7f8b9a54d93a9b765548e0b5b4f296b511615d365bb2ec4f2",
+                  "image": "10.78.177.224/tsi/mongo:4.2.8",
+                  "imageID": "10.78.177.224/tsi/mongo@sha256:14468b12f721906390c118a38c33caf218c089b751b2f205b2567f99716ae1e9",
+                  "isInit": false,
+                  "name": "nginx"
+                }
+              }
+            ],
+            "passed": false,
+            "workload": {
+              "metadata": {
+                "apiVersion": "apps/v1",
+                "kind": "Deployment",
+                "name": "nginx-sample-zzzz",
+                "namespace": "workload",
+                "uid": "c57ef745-1a24-4672-b833-36490f011aa2"
+              },
+              "pods": [
+                {
+                  "containers": [
+                    {
+                      "id": "containerd://cb9c5bf08c2301b7f8b9a54d93a9b765548e0b5b4f296b511615d365bb2ec4f2",
+                      "image": "10.78.177.224/tsi/mongo:4.2.8",
+                      "imageID": "10.78.177.224/tsi/mongo@sha256:14468b12f721906390c118a38c33caf218c089b751b2f205b2567f99716ae1e9",
+                      "isInit": false,
+                      "name": "nginx"
+                    }
+                  ],
+                  "metadata": {
+                    "apiVersion": "v1",
+                    "kind": "Pod",
+                    "name": "nginx-sample-zzzz-5c9d76488c-fzqgn",
+                    "namespace": "workload",
+                    "resourceVersion": "1602942",
+                    "uid": "a438bc75-dd84-4027-b64b-f637f860b8da"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

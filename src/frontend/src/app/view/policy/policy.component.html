@@ -118,6 +118,38 @@
         </select>
       </clr-select-container>
 
+      <clr-toggle-container class="clr-inline">
+        <label class="w-200">{{'Policy.elasticSearchEnabled'|translate}}:</label>
+        <clr-toggle-wrapper>
+          <input type="checkbox" clrToggle name="elasticSearchEnabled" formControlName="elasticSearchEnabled" />
+        </clr-toggle-wrapper>
+      </clr-toggle-container>
+      <div *ngIf="policyForm.get('inspectionSetting')?.get('elasticSearchEnabled')?.value">
+        <div class="endpoint-container">
+          <label>{{'Policy.elasticSearchAddr' |translate}}: </label>
+          <select clrSelect name="elasticSearchAddrHeader" formControlName="elasticSearchAddrHeader">
+            <option value="http://">http</option>
+            <option value="https://">https</option>
+          </select>
+          <input clrInput placeholder="" name="elasticSearchAddr" formControlName="elasticSearchAddr"/>
+        </div>
+
+        <clr-input-container>
+          <label>{{'Policy.elasticSearchUser'|translate}}:  </label>
+          <input clrInput placeholder="" name="elasticSearchUser" formControlName="elasticSearchUser"/>
+        </clr-input-container>
+
+        <clr-input-container>
+          <label>{{'Policy.elasticSearchPasswd'|translate}}:  </label>
+          <input clrInput placeholder="" name="elasticSearchPasswd" formControlName="elasticSearchPasswd"/>
+        </clr-input-container>
+
+        <clr-textarea-container>
+          <label>{{'Policy.elasticSearchCert'|translate}}</label>
+          <textarea style="width: 300px; height: 150px;" clrTextarea name="elasticSearchCert" formControlName="elasticSearchCert"></textarea>
+        </clr-textarea-container>
+
+      </div>
       <button clrStepButton="next" [disabled]="inspectionSettingValid">next</button>
     </clr-step-content>
   </clr-stepper-panel>
