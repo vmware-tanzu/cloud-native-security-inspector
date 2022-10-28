@@ -2,6 +2,9 @@
  * Copyright 2022 VMware, Inc.
  * SSPDX-License-Identifier: Apache-2.0
  */
+.policy-page {
+  padding: 20px;
+}
 .setting-page {
   height: auto;
   min-height: 100vh;
@@ -101,4 +104,12 @@
 }
 .setting-page clr-tabs::ng-deep form::ng-deep .clr-form-control .clr-control-label {
   width: 200px !important;
+}
+.setting-page clr-tabs::ng-deep .icon-button clr-icon {
+  color: #fff;
+  margin-right: 15px;
+  cursor: pointer;
+}
+.setting-page clr-tabs::ng-deep .icon-button clr-icon:hover {
+  color: hsl(198, 80%, 46%);
 }

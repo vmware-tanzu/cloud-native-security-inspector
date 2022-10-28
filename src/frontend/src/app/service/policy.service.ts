@@ -5,7 +5,7 @@
 
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment'
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AssessmentReportType, AssessmentType, InspectionPolicyType, PolicyItemType, InspectionType, InspectionItemType } from './policy-model-type'
 import { Observable } from 'rxjs';
 @Injectable({
@@ -71,5 +71,16 @@ export class PolicyService {
 
   getNamespacesAssessmentreportStatus(namespace: string,name:string) :Observable<AssessmentType> {
     return this.http.get<AssessmentType>(this.environment.api.goharbor + '/namespaces/'+namespace +'/assessmentreports'+ name + '/status')
+  }
+
+  elasticSearchTest(data: any) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Accept':  'application/json',
+        'Authorization':'Basic '+window.btoa(data.username+':'+data.password)
+      }),
+      cert: data.cert
+    }    
+    return this.http.get<AssessmentType>(data.url, httpOptions);
   }
 }

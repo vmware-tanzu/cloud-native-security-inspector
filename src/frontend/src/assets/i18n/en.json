@@ -1,5 +1,7 @@
 {
   "CommonlyUse": {
+    "test": "Test",
+    "new": "New",
     "now": "Now",
     "ok": "Ok",
     "name": " Name",
@@ -98,6 +100,7 @@
     "passed": "Passed"
   },
   "Policy": {
+    "policy": "Policy",
     "title": "Policy Setting",
     "name": "Policy Name",
     "type": "Policy Type",
@@ -140,9 +143,14 @@
     "elasticSearchAddr": "Address",
     "elasticSearchUser": "User",
     "elasticSearchPasswd": "Password",
-    "elasticSearchCert": "Certificate"
+    "elasticSearchCert": "Certificate",
+    "workNamespace": "Work Namespace",
+    "image": "Image URL"
+
   },
   "Setting": {
+    "Settings": "Settings",
+    "settingView": "Setting View",
     "policy": "Policy Config",
     "harbor": "Harbor Config",
     "cache": "Cache",
@@ -163,6 +171,7 @@
     "setting_name": "Setting Name",
     "provider": "provider",
     "createSecret": "Create Secret",
+    "createSetting": "Create Setting",
     "addKnown": "Add Known Registry",
     "removeKnown": "Remove Known Registry",
     "inspectionSetting": "Inspection Setting",

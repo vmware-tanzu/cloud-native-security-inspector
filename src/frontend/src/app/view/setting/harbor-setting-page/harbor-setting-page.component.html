@@ -1,0 +1,207 @@
+<div class="sddc-header">
+  <h2 class="sddc-title">
+    <a href="javascript:;" [routerLink]='["/setting"]'>
+      <clr-icon shape="angle" class="angle-top"></clr-icon>
+    </a>
+    {{'Setting.settingView'|translate}}
+  </h2>
+</div>
+
+<form class="create-sddc-form" clrStepper [formGroup]="harborForm">
+  <clr-stepper-panel formGroupName="requiredFields">
+    <clr-step-title>{{'Setting.RequiredFields'|translate}}</clr-step-title>
+    <clr-step-description>{{'Setting.inspectionDesc'|translate}}</clr-step-description>
+    <clr-step-content *clrIfExpanded>
+      <clr-input-container style="padding-bottom: 10px;">
+        <label>{{'Setting.setting_name'|translate}}: </label>
+        <input clrInput placeholder="" name="name" formControlName="name"/>
+      </clr-input-container>
+
+      <clr-select-container>
+        <label class="w-200">{{'Setting.credential_name'|translate}}</label>
+        <select clrSelect name="data_credential_name" formControlName="data_credential_name">
+          <option value=""></option>
+          <option *ngFor="let item of secretsList" [value]="item.metadata.name">{{item.metadata.name}}</option>
+        </select>
+      </clr-select-container>
+
+      <clr-input-container>
+        <label>{{'Setting.credential_namespace'|translate}}: </label>
+        <input clrInput placeholder="" style="color: #999;" name="data_credential_namespace" formControlName="data_credential_namespace"/>
+      </clr-input-container>
+
+      <clr-input-container>
+        <label>{{'Report_Detail.provider' |translate}}: </label>
+        <input clrInput placeholder="" style="color: #999;" name="data_provider" formControlName="data_provider"/>
+      </clr-input-container>
+
+      <clr-input-container>
+        <label>{{'CommonlyUse.name'|translate}}: </label>
+        <input clrInput placeholder="" style="color: #999;" name="data_name" [value]="dataSourceName" disabled/>
+      </clr-input-container>
+
+      <div class="endpoint-container">
+        <label>{{'Report_Detail.endpoint' |translate}}: </label>
+        <select clrSelect name="protocol" formControlName="protocol">
+          <option value="http://">http</option>
+          <option value="https://">https</option>
+        </select>
+        <input clrInput placeholder="" name="data_endpoint" formControlName="data_endpoint"/>
+      </div>
+      <div class="schedule">
+        <h4>{{'Policy.schedule'|translate}}:</h4>
+        <div>
+          <span>{{schedule}}</span>
+          <button (click)="isCornUpdateModal=true" type="button" class="btn btn-icon btn-primary" aria-label="home">
+            <clr-icon  shape="pencil"></clr-icon>
+        </button>
+        </div>
+      </div>
+      <clr-toggle-container class="clr-inline">
+        <label class="w-200">{{'Setting.skipTLSVerify'|translate}}:</label>
+        <clr-toggle-wrapper>
+          <input  type="checkbox" clrToggle name="skipTLSVerify" formControlName="data_skipTLSVerify" />
+        </clr-toggle-wrapper>
+      </clr-toggle-container>      
+      <button clrStepButton="next"[disabled]="requiredFieldsValid" >next</button>
+    </clr-step-content>
+  </clr-stepper-panel>
+
+  <clr-stepper-panel formGroupName="knownRegistries">
+    <clr-step-title>{{'Setting.known_registries'|translate}}</clr-step-title>
+    <clr-step-description>{{'Setting.known_registriesDesc'|translate}}</clr-step-description>
+    <clr-step-content *clrIfExpanded>
+      <p style="color: #fff;">
+        {{'Setting.addKnown'|translate}}
+        <clr-icon (click)="knownRegistriesAddItem()" style="color:hsl(198, 80%, 46%)" shape="plus-circle" class="is-solid"></clr-icon>
+      </p>
+      <div *ngFor="let known of knownRegistries; let i = index">
+        <p *ngIf="i!==0">
+          {{'Setting.removeKnown'|translate}}
+          <clr-icon (click)="knownRegistriesremoveItem(i)" style="color: hsl(9, 100%, 43%);" *ngIf="i!==0" shape="minus-circle" class="is-solid"></clr-icon>
+        </p>
+        <clr-select-container>
+          <label class="w-200">{{'Setting.provider'|translate}}</label>
+          <select clrSelect name="provider" [(ngModel)]="known.provider" [ngModelOptions]="{standalone: true}">
+            <option *ngFor="let item of knownRegistriesProviderList" [value]="item">{{item}}</option>
+          </select>
+        </clr-select-container>
+
+        <clr-input-container>
+          <label>{{'CommonlyUse.name'|translate}}: </label>
+          <input clrInput placeholder="" name="name" [(ngModel)]="known.name" [ngModelOptions]="{standalone: true}"/>
+        </clr-input-container>
+
+        <clr-input-container>
+          <label>{{'Report_Detail.endpoint' |translate}}: </label>
+          <input clrInput placeholder="" name="endpoint" [(ngModel)]="known.endpoint" [ngModelOptions]="{standalone: true}"/>
+        </clr-input-container>
+
+
+        <clr-select-container>
+          <label class="w-200">{{'Setting.credential_name'|translate}}</label>
+          <select clrSelect name="know_credential_name" [(ngModel)]="known.credentialRef.name" [ngModelOptions]="{standalone: true}">
+            <option *ngFor="let item of secretsList" [value]="item.metadata.name">{{item.metadata.name}}</option>
+          </select>
+        </clr-select-container>
+
+        <clr-input-container>
+          <label>{{'Setting.credential_namespace'|translate}}: </label>
+          <input clrInput placeholder="" style="color: #999;" name="know_credential_namespace" disabled [(ngModel)]="known.credentialRef.namespace" [ngModelOptions]="{standalone: true}"/>
+        </clr-input-container>
+
+        <clr-toggle-container class="clr-inline">
+          <label class="w-200">{{'Setting.skipTLSVerify'|translate}}:</label>
+          <clr-toggle-wrapper>
+            <input  type="checkbox" clrToggle name="know_credential_skipTLSVerify" [(ngModel)]="known.skipTLSVerify" [ngModelOptions]="{standalone: true}"/>
+          </clr-toggle-wrapper>
+        </clr-toggle-container> 
+      </div>
+      
+      <button clrStepButton="next" [disabled]="knownRegistriesValid">Next</button>
+    </clr-step-content>
+  </clr-stepper-panel>
+
+  <clr-stepper-panel formGroupName="cache">
+    <clr-step-title>{{'Setting.cache'|translate}}</clr-step-title>
+    <clr-step-description>{{'Setting.cacheDesc'| translate}}</clr-step-description>
+    <clr-step-content *clrIfExpanded>
+      <clr-input-container>
+        <label>{{'Setting.address' |translate}}: </label>
+        <input clrInput placeholder="" name="address" formControlName="address"/>
+      </clr-input-container>
+
+      <clr-input-container>
+        <label>{{'Setting.livingTime' |translate}}: </label>
+        <input clrInput placeholder="" name="livingTime" formControlName="livingTime"/>
+      </clr-input-container>
+
+      <clr-toggle-container class="clr-inline">
+        <label class="w-200">{{'Setting.skipTLSVerify'|translate}}:</label>
+        <clr-toggle-wrapper>
+          <input  type="checkbox" clrToggle name="setting_skipTLSVerify" formControlName="setting_skipTLSVerify" />
+        </clr-toggle-wrapper>
+      </clr-toggle-container> 
+      <div class="submit-btns">
+        <button class="btn btn-primary" [disabled]="cacheValid" type="submit" (click)="harborHandler(text)">{{'CommonlyUse.' + text |translate}}</button>
+      </div>
+    </clr-step-content>
+  </clr-stepper-panel>
+
+  <div class="alert alert-danger" role="alert" *ngIf="messageHarborFlag ==='fail'">
+    <div class="alert-items">
+        <div class="alert-item static">
+          
+            <div class="alert-icon-wrapper">
+                <clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
+            </div>
+            <span class="alert-text">
+                {{messageContent}}
+            </span>
+            <button (click)="messageSecretFlag ='';messageHarborFlag=''" type="button" class="close" aria-label="Close">
+              <clr-icon aria-hidden="true" shape="close"></clr-icon>
+          </button>
+        </div>
+    </div>
+</div>
+<div class="alert alert-success" role="alert" *ngIf="messageHarborFlag ==='success'">
+  <div class="alert-items">
+      <div class="alert-item static">
+          <div class="alert-icon-wrapper">
+              <clr-icon class="alert-icon" shape="check-circle"></clr-icon>
+          </div>
+          <span class="alert-text">
+            {{messageContent}}
+          </span>
+          <button type="button" (click)="messageSecretFlag ='';messageHarborFlag=''" class="close" aria-label="Close">
+            <clr-icon aria-hidden="true" shape="close"></clr-icon>
+        </button>
+      </div>
+  </div>
+</div>
+
+
+
+</form>
+
+<div [hidden]="!isCornUpdateModal" class="modal" style="width: 1000px; margin: 0 auto;">
+  <div class="modal-dialog" role="dialog" aria-hidden="true" style="width: 1000px;">
+      <div class="modal-content">
+          <div class="modal-header">
+              <button aria-label="Close" class="close" type="button">
+                  <!-- <clr-icon aria-hidden="true" shape="close"></clr-icon> -->
+              </button>
+              <h3 class="modal-title">{{'Policy.schedule_settings'|translate}}
+              </h3>
+          </div>
+          <div class="modal-body">
+              <!-- <app-corn (setSchedule)='setSchedule($event)' #corn></app-corn> -->
+              <app-corn-schedule  (saveSchedule)="saveSchedule($event)" (cancelSchedule)="cancelSchedule($event)"></app-corn-schedule>
+          </div>
+          <!-- <div class="modal-footer">
+              <button class="btn btn-outline" (click)='isCornUpdateModal=false' type="button">Cancel</button>
+              <button class="btn btn-primary" (click)='isCornUpdateModal=false' type="button">Ok</button>
+          </div>assessments -->
+      </div>
+  </div>
+</div>

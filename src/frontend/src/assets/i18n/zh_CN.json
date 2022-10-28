@@ -1,5 +1,7 @@
 {
   "CommonlyUse": {
+    "test": "测试",
+    "new": "新建",
     "now": "当前",
     "ok": "确定",
     "name": "名称",
@@ -97,6 +99,7 @@
     "passed": "是否通过"
   },
   "Policy": {
+    "policy": "Policy",
     "title": "策略配置",
     "name": "策略名称",
     "type": "策略类型",
@@ -139,10 +142,13 @@
     "elasticSearchAddr": "地址",
     "elasticSearchUser": "账户",
     "elasticSearchPasswd": "密码",
-    "elasticSearchCert": "证书"
-
+    "elasticSearchCert": "证书",
+    "workNamespace": "工作命名空间",
+    "image": "镜像地址"
   },
   "Setting": {
+    "Settings": "设置",
+    "settingPage": "设置详情",
     "policy": "策略配置",
     "harbor": "Harbor配置",
     "cache": "缓存",
@@ -163,6 +169,7 @@
     "setting_name": "配置名称",
     "provider": "提供者",
     "createSecret": "创建Secret",
+    "createSetting": "创建配置",
     "addKnown": "添加注册表",
     "removeKnown": "删除注册表",
     "inspectionSetting": "检查设置",
