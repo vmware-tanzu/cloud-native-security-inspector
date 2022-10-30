@@ -292,7 +292,6 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 	inspect := inspectFac()
 
 	for _, ns := range nsl {
-		c.logger.Info("Test-------", "namespace", ns)
 		c.logger.Info("Scan workloads under namespace", "namespace", ns)
 
 		// Add namespace assessment to the report.
@@ -354,6 +353,9 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 			return err
 		}
 	}
+
+	// Check the Kubernetes using kubebench
+
 	return nil
 }
 
@@ -384,7 +386,11 @@ func exportReportToES(report *v1alpha1.AssessmentReport, policy *v1alpha1.Inspec
 		logger.Info("client test error", nil, nil)
 		return err
 	}
-	esExporter := es.ElasticSearchExporter{Client: client, Logger: logger}
+	exporter := es.ElasticSearchExporter{Client: client, Logger: logger}
+	esExporter, err := exporter.NewExporter(client, "assessment_report")
+	if err != nil {
+		return err
+	}
 
 	if err := esExporter.Save(*report); err != nil {
 		return err
