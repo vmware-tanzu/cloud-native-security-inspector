@@ -349,14 +349,15 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 
 	// Read config from InspectionPolicy, save assessment reports to ES if elasticsearch enabled.
 	if policy.Spec.Inspection.Assessment.ElasticSearchEnabled {
-		if err := exportReportToES(report, policy); err != nil {
+		c.logger.Info("Start saving to ES ", "namespace", nil)
+		if err := exportReportToES(report, policy, c.logger); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func exportReportToES(report *v1alpha1.AssessmentReport, policy *v1alpha1.InspectionPolicy) error {
+func exportReportToES(report *v1alpha1.AssessmentReport, policy *v1alpha1.InspectionPolicy, logger logr.Logger) error {
 	cert := []byte(policy.Spec.Inspection.Assessment.ElasticSearchCert)
 
 	type args struct {
@@ -372,7 +373,18 @@ func exportReportToES(report *v1alpha1.AssessmentReport, policy *v1alpha1.Inspec
 		policy.Spec.Inspection.Assessment.ElasticSearchUser,
 		policy.Spec.Inspection.Assessment.ElasticSearchPasswd,
 	}
-	esExporter, _ := es.NewExporter(es.NewClient(clientArgs.cert, clientArgs.addr, clientArgs.username, clientArgs.passwd))
+	logger.Info("ES config: ", "addr", clientArgs.addr)
+	logger.Info("ES config: ", "clientArgs.username", clientArgs.username)
+	client := es.NewClient(clientArgs.cert, clientArgs.addr, clientArgs.username, clientArgs.passwd)
+	if client == nil {
+		logger.Info("ES client is nil", nil, nil)
+	}
+
+	if err := es.TestClient(); err != nil {
+		logger.Info("client test error", nil, nil)
+		return err
+	}
+	esExporter := es.ElasticSearchExporter{Client: client, Logger: logger}
 
 	if err := esExporter.Save(*report); err != nil {
 		return err
