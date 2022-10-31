@@ -15,7 +15,7 @@ spec:
     concurrencyRule: "Forbid"
   inspector:
     image: projects.registry.vmware.com/cnsi/inspector:0.1
-    imagePullPolicy: IfNotPresent
+    imagePullPolicy: Always
   inspection:
     namespaceSelector:
       matchLabels:
@@ -26,33 +26,34 @@ spec:
       liveTime: 3600
       managedBy: true
       elasticSearchEnabled: true
-      elasticSearchAddr: "https://quickstart-es-http:9200"
+      elasticSearchAddr: "https://quickstart-es-http.default:9200"
       elasticSearchUser: "elastic" 
-      elasticSearchPasswd: "2NR422RahwP5NQXG971v74JY"
+      elasticSearchPasswd: "QB44q12nv9dN8O0RAf84l9QT"
       elasticSearchCert: |
         -----BEGIN CERTIFICATE-----
-        MIID+DCCAuCgAwIBAgIQe0U9GLEJCE5uOkN8VItdWjANBgkqhkiG9w0BAQsFADAv
-        MRMwEQYDVQQLEwpxdWlja3N0YXJ0MRgwFgYDVQQDEw9xdWlja3N0YXJ0LWh0dHAw
-        HhcNMjIxMDE3MTQ1NDUzWhcNMjMxMDE3MTUwNDUzWjBDMRMwEQYDVQQLEwpxdWlj
-        a3N0YXJ0MSwwKgYDVQQDEyNxdWlja3N0YXJ0LWVzLWh0dHAuZGVmYXVsdC5lcy5s
-        b2NhbDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANrvvxft94rHYUd0
-        SYbyAXYfUbZL5RyWZlEiwWSbmWx2nd8+lfbZmaqjgUkffc7WbLbyVPAit2fBZDWj
-        J8SUawYNPYK3C46f9TWN5at4pPzwu9aq8/8FAXDF/aIPK7C2/nEc+x74rzUlDSwl
-        HdJ8ZPBu1GA8wV5buZTKYsfnN/rlWU3CYyzCLPZudYj6ED8DAqp2I3Mw7mbbs+t9
-        LgRqoEtVg9eo2rx0MBXcpWR2Ny/vQtK1KMVyYq8fwtA+phcVnTkjv1pW0SSGC2Sf
-        HabBBeZjIGcnQgoUssNRavqobTMhKwniDfI1MRSoUynx1AFgUOGKofDBLLarF+dk
-        iY8QwX0CAwEAAaOB+zCB+DAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYwFAYIKwYB
-        BQUHAwEGCCsGAQUFBwMCMB8GA1UdIwQYMBaAFHon0jDD/dvUcBhBtaZP5NvTlmnV
-        MIGlBgNVHREEgZ0wgZqCI3F1aWNrc3RhcnQtZXMtaHR0cC5kZWZhdWx0LmVzLmxv
-        Y2FsghJxdWlja3N0YXJ0LWVzLWh0dHCCHnF1aWNrc3RhcnQtZXMtaHR0cC5kZWZh
-        dWx0LnN2Y4IacXVpY2tzdGFydC1lcy1odHRwLmRlZmF1bHSCIyoucXVpY2tzdGFy
-        dC1lcy1kZWZhdWx0LmRlZmF1bHQuc3ZjMA0GCSqGSIb3DQEBCwUAA4IBAQBc2knb
-        OON5PBHVEVYCfGFRHHqEXHuSAZSvQmkkq3BFr1CPajAR4OujYm69qZoQs8B0PFRp
-        /MJC128N/BVreUj6E1NVe+AFU4tywUf/pmiWkQABKybPJHnKFVGt38IU51WYgXDP
-        7euaSOdoIY/fnZ7jCAT4Smcz9jGtbOWeiQQIM/Vbg1eznT8ZRj/MQ8isguAp7CPi
-        YHOmHMCxIIFBpugwbveWtq9Xf0I8iGJAwQArtLxi7UPn41qUY13RHqQWzYunU+q4
-        ng/XwELdHIyJNtBfMoQ9nbmW0Qhtqkwi6sKJikj0h6qwPWm5k9eCaDLzM9Xhmv9A
-        cMLCda4m/ySymHLt
+        MIIESTCCAzGgAwIBAgIRANiiu2kPjeKjeOUuKRFkKgQwDQYJKoZIhvcNAQELBQAw
+        LzETMBEGA1UECxMKcXVpY2tzdGFydDEYMBYGA1UEAxMPcXVpY2tzdGFydC1odHRw
+        MB4XDTIyMTAyNjA4MTgxN1oXDTIzMTAyNjA4MjgxN1owQzETMBEGA1UECxMKcXVp
+        Y2tzdGFydDEsMCoGA1UEAxMjcXVpY2tzdGFydC1lcy1odHRwLmRlZmF1bHQuZXMu
+        bG9jYWwwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC5tZm0IzqAGK6o
+        C0any9oXMrB/DCzSMRgVPij/cfnHFYLqlKJmR/8Wshzo74wuK0pmKhqYUu4Af1tO
+        ZBY7TMCqeLBuxp9UmrmIB6QwrcMWuGKHFwMa5V/l6BbrEOKctjwgw6D9qeKqGdY8
+        1ZuTrHFnv1wXZNow//27Jx4P+jsSl/IBQjnC+zpsQNYzzZsjKijNSu16P8G1G1Vk
+        asHQSpwCLuVZyjNFUarI8qEwI6gffiAzura2wecN5b16qy2rQ40GntLeCvWZ1vvd
+        Zo3dhVgC4GqZylK4r6h+6swCmSgDYmoj/RHl2wgjg0/1+BOP9zYcPwG2XqssnyqC
+        OAoJpuE9AgMBAAGjggFKMIIBRjAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYwFAYI
+        KwYBBQUHAwEGCCsGAQUFBwMCMB8GA1UdIwQYMBaAFMw0USkVpeLBvfFa8/kVihjR
+        Ub6RMIHzBgNVHREEgeswgeiCI3F1aWNrc3RhcnQtZXMtaHR0cC5kZWZhdWx0LmVz
+        LmxvY2FsghJxdWlja3N0YXJ0LWVzLWh0dHCCHnF1aWNrc3RhcnQtZXMtaHR0cC5k
+        ZWZhdWx0LnN2Y4IacXVpY2tzdGFydC1lcy1odHRwLmRlZmF1bHSCJ3F1aWNrc3Rh
+        cnQtZXMtaW50ZXJuYWwtaHR0cC5kZWZhdWx0LnN2Y4IjcXVpY2tzdGFydC1lcy1p
+        bnRlcm5hbC1odHRwLmRlZmF1bHSCIyoucXVpY2tzdGFydC1lcy1kZWZhdWx0LmRl
+        ZmF1bHQuc3ZjMA0GCSqGSIb3DQEBCwUAA4IBAQAfKbIqBu7simVOCS7SxAiSaV5t
+        l8+eTuLQRjd296/N5g8ZNmgi+hQ9N6QURH3ovzKspDzeko5kgCb42zqWr+ZpU9xV
+        MXiI7sgBneVztxDUrSYoLQP23O4UdrM9V/naV0cDxglupN5Q3tQWrbxW+sGVLTqX
+        nyTpaThRC3ppjig/sXA4sfFgZtu/U1QoGpZ+Bz58vcTXoc8XRkwr0FUqHm69rTYH
+        HlGVCqbETV/geKoQwY6Rxij9/MSW+l8RkFoV79srFjsvUA5/tW8hZzxIRMCEQK4/
+        vzjQuCy22DFCBYgiazlfT96oChazm2bDWaXFVdaecCmfOj0ovM+gYTi6Mfmb
         -----END CERTIFICATE-----
     baselines:
       - kind: "vulnerability"

@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/elastic/go-elasticsearch/v8/esapi"
+	"github.com/go-logr/logr"
 	"github.com/pkg/errors"
 	api "github.com/vmware-tanzu/cloud-native-security-inspector/api/v1alpha1"
 	"io"
+	"log"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"strconv"
 	"strings"
@@ -73,14 +75,18 @@ type Hit struct {
 // ElasticSearchExporter ElasticSearch exporter implements output_datasource.Exporter
 type ElasticSearchExporter struct {
 	Client *elasticsearch.Client
+	Logger logr.Logger
 }
 
-func NewExporter(client *elasticsearch.Client) (*ElasticSearchExporter, error) {
-	exporter := &ElasticSearchExporter{client}
-	if result, err := exporter.indexExists(indexName); err != nil {
+func (e *ElasticSearchExporter) NewExporter(client *elasticsearch.Client) (*ElasticSearchExporter, error) {
+	if client == nil {
+		e.log("ElasticSearch client error", errors.New("Invalid ElasticSearch client"), nil)
+		return nil, errors.Errorf("ElasticSearch client error: %s", errors.New("Invalid ElasticSearch client"))
+	}
+	if result, err := e.indexExists(indexName); err != nil {
 		if !result {
 			// No index for CNSI has been detected. A new index will be created.
-			if err := exporter.setupIndex(); err != nil {
+			if err := e.setupIndex(); err != nil {
 				return nil, err
 			}
 		} else {
@@ -89,7 +95,7 @@ func NewExporter(client *elasticsearch.Client) (*ElasticSearchExporter, error) {
 		}
 	}
 
-	return exporter, nil
+	return e, nil
 }
 
 func buildQuery(query string, after ...string) io.Reader {
@@ -359,4 +365,29 @@ func (e ElasticSearchExporter) getContainerUsedMost() (api.AssessmentReportList,
 
 func (e ElasticSearchExporter) List() (api.AssessmentReportList, error) {
 	return api.AssessmentReportList{}, nil
+}
+func (e ElasticSearchExporter) log(message string, err error, keysAndValues ...interface{}) {
+	if e.Logger != nil {
+		if err != nil {
+			e.Logger.Error(err, message, keysAndValues...)
+			return
+		}
+
+		e.Logger.Info(message, keysAndValues...)
+		return
+	}
+
+	// Use default logger.
+	if err != nil {
+		log.Printf("%s:%s\n", message, err)
+	} else {
+		log.Println(message)
+	}
+}
+func (e *ElasticSearchExporter) WithLogger(logger logr.Logger) *ElasticSearchExporter {
+	if logger != nil {
+		e.Logger = logger.WithName("exporter")
+	}
+
+	return e
 }
