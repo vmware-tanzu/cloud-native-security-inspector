@@ -14,6 +14,9 @@ import { ClusterPageComponent } from './view/insight/cluster-page/cluster-page.c
 import { NamespacePageComponent } from './view/insight/namespace-page/namespace-page.component'
 import { WorkloadPageComponent } from './view/insight/workload-page/workload-page.component'
 import { PolicyComponent } from './view/policy/policy.component'
+import { HarborSettingPageComponent } from './view/setting/harbor-setting-page/harbor-setting-page.component'
+import { PolicySettingPageComponent } from './view/policy/policy-setting-page/policy-setting-page.component'
+
 const routes: Routes = [
   {
     path: '',
@@ -46,9 +49,18 @@ const routes: Routes = [
         component: PolicyComponent
       },
       {
+        path: 'modify-policy/:id',
+        component: PolicySettingPageComponent
+      },
+      {
         path: 'setting',
         component: SettingComponent
       },
+      {
+        path: 'modify-setting/:id',
+        component: HarborSettingPageComponent
+      },
+      
       {
         path: '',
         pathMatch: 'full',
