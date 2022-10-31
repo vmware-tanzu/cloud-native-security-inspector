@@ -60,7 +60,8 @@ app.post('/es-test', (req, res) => {
   const options = {
     url: body.url,
     ca: body.cert,
-    rejectUnauthorized : false,
+    // rejectUnauthorized : false,
+    strictSSL: false,
     headers: {
       'Accept':  'application/json',
       'Authorization':'Basic '+ body.basic
