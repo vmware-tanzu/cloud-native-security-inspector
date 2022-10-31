@@ -81,6 +81,11 @@ export class PolicyService {
       }),
       cert: data.cert
     }    
-    return this.http.get<AssessmentType>(data.url, httpOptions);
+    // return this.http.get<AssessmentType>('local', httpOptions);
+    return this.http.post<AssessmentType>('/es-test', {
+      url: data.url,
+      basic: window.btoa(data.username+':'+data.password),
+      cert: data.cert
+    });
   }
 }

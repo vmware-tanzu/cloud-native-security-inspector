@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { tap, filter } from 'rxjs/operators';
 import { HarborService } from 'src/app/service/harbor.service';
 import { PolicyService } from 'src/app/service/policy.service';
 import { ShardService } from 'src/app/service/shard.service';
@@ -13,6 +14,7 @@ import { ShardService } from 'src/app/service/shard.service';
 export class PolicySettingPageComponent implements OnInit {
   policyForm!: UntypedFormGroup;
   private isDisabled = false
+  public checkES = ''
   public schedule = '3/* * * * *'
   public text = ''
   public isCornUpdateModal = false
@@ -226,11 +228,16 @@ export class PolicySettingPageComponent implements OnInit {
       cert: this.policyForm.get('inspectionSetting')?.get('elasticSearchCert')?.value
     }    
     this.policyService.elasticSearchTest(testData).subscribe(
-      data => {
-
+      data => {        
+        this.checkES = 'passed'
       },
-      err => {}
-    )
+      err => {
+        if (err.status === 200) {
+          this.checkES = 'passed'
+        } else {
+          this.checkES = 'not passed'
+        }
+      }    )
   }
 
   // policy 
@@ -357,7 +364,8 @@ export class PolicySettingPageComponent implements OnInit {
       this.modifyPolicy()
     }
   }
-  createPolicy () {    
+  createPolicy () {   
+    this.checkES = ''
     const data:any = {
       apiVersion: "goharbor.goharbor.io/v1alpha1",
       kind: "InspectionPolicy",
@@ -477,6 +485,7 @@ export class PolicySettingPageComponent implements OnInit {
     )
   }
   modifyPolicy () {
+    this.checkES = ''
     const elasticSearchEnabled =this.policyForm.get('inspectionSetting')?.get('elasticSearchEnabled')?.value
     // this.policyInfo.metadata.name = this.policyForm.get('name')?.value
     this.policyInfo.spec.inspector.image = this.policyForm.get('inspectionSetting')?.get('image')?.value

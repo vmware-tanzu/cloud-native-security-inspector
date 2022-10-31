@@ -101,6 +101,23 @@ form::ng-deep .endpoint-container label {
 form::ng-deep .endpoint-container clr-select-container {
   margin-right: 10px;
 }
+form::ng-deep .test-icon {
+  display: block;
+}
+form::ng-deep .test-icon span {
+  color: green;
+}
+form::ng-deep .test-icon span.not-passed {
+  color: red;
+}
+form::ng-deep .test-icon clr-icon {
+  width: 20px;
+  height: 20px;
+  color: green;
+}
+form::ng-deep .test-icon clr-icon.not-passed {
+  color: red;
+}
 form .content {
   display: flex;
   flex-wrap: nowrap;
@@ -173,4 +190,11 @@ form .actions h4.action-title clr-toggle-container {
 }
 form .actions.w-auto h4 {
   width: auto;
+}
+form .passwd-test {
+  display: flex;
+  align-items: flex-end;
+}
+form .passwd-test::ng-deep .clr-form-control .clr-control-container {
+  width: 200px;
 }

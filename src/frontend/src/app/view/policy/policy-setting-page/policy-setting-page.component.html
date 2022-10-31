@@ -137,17 +137,31 @@
             <input clrInput placeholder="" name="elasticSearchUser" formControlName="elasticSearchUser"/>
           </clr-input-container>
   
-          <clr-input-container>
-            <label>{{'Policy.elasticSearchPasswd'|translate}}:  </label>
-            <input clrInput placeholder="" name="elasticSearchPasswd" formControlName="elasticSearchPasswd"/>
-          </clr-input-container>
-  
+          <div class="passwd-test">
+            <clr-input-container>
+              <label>{{'Policy.elasticSearchPasswd'|translate}}:  </label>
+              <input clrInput placeholder="" name="elasticSearchPasswd" formControlName="elasticSearchPasswd"/>
+            </clr-input-container>
+    
+              
+            <div class="test-icon">
+              <button class="btn btn-info btn-sm" (click)="testElasticSearch()">
+                {{'CommonlyUse.test'| translate}}
+              </button>
+              <span  *ngIf="checkES === 'passed'">
+                <clr-icon class="passed" shape="check-circle" ></clr-icon> Successful
+              </span>
+              <span  *ngIf="checkES === 'not passed'" class="not-passed" >
+                <clr-icon  shape="times" class="not-passed"></clr-icon> Failed
+              </span>
+            </div>
+          </div>
+
           <clr-textarea-container>
             <label>{{'Policy.elasticSearchCert'|translate}}</label>
             <textarea style="width: 300px; height: 150px;" clrTextarea name="elasticSearchCert" formControlName="elasticSearchCert"></textarea>
           </clr-textarea-container>
-  
-          <button style="margin-left: 220px;" class="btn btn-info btn-sm" (click)="testElasticSearch()">{{'CommonlyUse.test'| translate}}</button>
+
         </div>
         <button clrStepButton="next" [disabled]="inspectionSettingValid">next</button>
       </clr-step-content>

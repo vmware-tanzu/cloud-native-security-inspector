@@ -64,6 +64,24 @@ form {
         margin-right: 10px;
       }
     }
+    .test-icon {
+      display: block;
+      span {
+        color: green;
+        &.not-passed {
+          color: red;
+        }
+      }
+      clr-icon {
+        width: 20px;
+        height: 20px;
+        color: green;
+        &.not-passed {
+          color: red;
+        }
+
+      }
+    }
   }
   .content {
     display: flex;
@@ -138,6 +156,17 @@ form {
     &.w-auto {
       h4 {
         width:auto;
+      }
+    }
+  }
+  .passwd-test {
+    display: flex;
+    align-items: flex-end;
+    &::ng-deep {
+      .clr-form-control {
+        .clr-control-container {
+          width: 200px;
+        }
       }
     }
   }
