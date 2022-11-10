@@ -11,7 +11,6 @@ import (
 	"github.com/pkg/errors"
 	api "github.com/vmware-tanzu/cloud-native-security-inspector/api/v1alpha1"
 	"io"
-	"log"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"strconv"
 	"strings"
@@ -445,7 +444,6 @@ func (e ElasticSearchExporter) List() (api.AssessmentReportList, error) {
 	return api.AssessmentReportList{}, nil
 }
 func (e ElasticSearchExporter) log(message string, err error, keysAndValues ...interface{}) {
-	//if e.Logger != nil {
 	if err != nil {
 		e.Logger.Error(err, message, keysAndValues...)
 		return
@@ -453,15 +451,8 @@ func (e ElasticSearchExporter) log(message string, err error, keysAndValues ...i
 
 	e.Logger.Info(message, keysAndValues...)
 	return
-	//}
-
-	// Use default logger.
-	if err != nil {
-		log.Printf("%s:%s\n", message, err)
-	} else {
-		log.Println(message)
-	}
 }
+
 func (e *ElasticSearchExporter) WithLogger(logger logr.Logger) *ElasticSearchExporter {
 	//if logger != nil {
 	e.Logger = logger.WithName("exporter")
