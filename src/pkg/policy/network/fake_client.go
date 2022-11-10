@@ -16,48 +16,6 @@ import (
 // If this is not the case, regenerate this file with moq.
 var _ client.Client = &ClientMock{}
 
-// ClientMock is a mock implementation of client.Client.
-//
-// 	func TestSomethingThatUsesClient(t *testing.T) {
-//
-// 		// make and configure a mocked client.Client
-// 		mockedClient := &ClientMock{
-// 			CreateFunc: func(ctx context.Context, obj client.Object, opts ...client.CreateOption) error {
-// 				panic("mock out the Create method")
-// 			},
-// 			DeleteFunc: func(ctx context.Context, obj client.Object, opts ...client.DeleteOption) error {
-// 				panic("mock out the Delete method")
-// 			},
-// 			DeleteAllOfFunc: func(ctx context.Context, obj client.Object, opts ...client.DeleteAllOfOption) error {
-// 				panic("mock out the DeleteAllOf method")
-// 			},
-// 			GetFunc: func(ctx context.Context, key types.NamespacedName, obj client.Object) error {
-// 				panic("mock out the Get method")
-// 			},
-// 			ListFunc: func(ctx context.Context, list client.ObjectList, opts ...client.ListOption) error {
-// 				panic("mock out the List method")
-// 			},
-// 			PatchFunc: func(ctx context.Context, obj client.Object, patch client.Patch, opts ...client.PatchOption) error {
-// 				panic("mock out the Patch method")
-// 			},
-// 			RESTMapperFunc: func() meta.RESTMapper {
-// 				panic("mock out the RESTMapper method")
-// 			},
-// 			SchemeFunc: func() *runtime.Scheme {
-// 				panic("mock out the Scheme method")
-// 			},
-// 			StatusFunc: func() client.StatusWriter {
-// 				panic("mock out the Status method")
-// 			},
-// 			UpdateFunc: func(ctx context.Context, obj client.Object, opts ...client.UpdateOption) error {
-// 				panic("mock out the Update method")
-// 			},
-// 		}
-//
-// 		// use mockedClient in code that requires client.Client
-// 		// and then make assertions.
-//
-// 	}
 type ClientMock struct {
 	// CreateFunc mocks the Create method.
 	CreateFunc func(ctx context.Context, obj client.Object, opts ...client.CreateOption) error
@@ -200,7 +158,8 @@ func (mock *ClientMock) Create(ctx context.Context, obj client.Object, opts ...c
 
 // CreateCalls gets all the calls that were made to Create.
 // Check the length with:
-//     len(mockedClient.CreateCalls())
+//
+//	len(mockedClient.CreateCalls())
 func (mock *ClientMock) CreateCalls() []struct {
 	Ctx  context.Context
 	Obj  client.Object
@@ -239,7 +198,8 @@ func (mock *ClientMock) Delete(ctx context.Context, obj client.Object, opts ...c
 
 // DeleteCalls gets all the calls that were made to Delete.
 // Check the length with:
-//     len(mockedClient.DeleteCalls())
+//
+//	len(mockedClient.DeleteCalls())
 func (mock *ClientMock) DeleteCalls() []struct {
 	Ctx  context.Context
 	Obj  client.Object
@@ -278,7 +238,8 @@ func (mock *ClientMock) DeleteAllOf(ctx context.Context, obj client.Object, opts
 
 // DeleteAllOfCalls gets all the calls that were made to DeleteAllOf.
 // Check the length with:
-//     len(mockedClient.DeleteAllOfCalls())
+//
+//	len(mockedClient.DeleteAllOfCalls())
 func (mock *ClientMock) DeleteAllOfCalls() []struct {
 	Ctx  context.Context
 	Obj  client.Object
@@ -295,8 +256,7 @@ func (mock *ClientMock) DeleteAllOfCalls() []struct {
 	return calls
 }
 
-// Get calls GetFunc.
-func (mock *ClientMock) Get(ctx context.Context, key types.NamespacedName, obj client.Object) error {
+func (mock *ClientMock) Get(ctx context.Context, key client.ObjectKey, obj client.Object, opts ...client.GetOption) error {
 	if mock.GetFunc == nil {
 		panic("ClientMock.GetFunc: method is nil but Client.Get was just called")
 	}
@@ -317,7 +277,8 @@ func (mock *ClientMock) Get(ctx context.Context, key types.NamespacedName, obj c
 
 // GetCalls gets all the calls that were made to Get.
 // Check the length with:
-//     len(mockedClient.GetCalls())
+//
+//	len(mockedClient.GetCalls())
 func (mock *ClientMock) GetCalls() []struct {
 	Ctx context.Context
 	Key types.NamespacedName
@@ -356,7 +317,8 @@ func (mock *ClientMock) List(ctx context.Context, list client.ObjectList, opts .
 
 // ListCalls gets all the calls that were made to List.
 // Check the length with:
-//     len(mockedClient.ListCalls())
+//
+//	len(mockedClient.ListCalls())
 func (mock *ClientMock) ListCalls() []struct {
 	Ctx  context.Context
 	List client.ObjectList
@@ -397,7 +359,8 @@ func (mock *ClientMock) Patch(ctx context.Context, obj client.Object, patch clie
 
 // PatchCalls gets all the calls that were made to Patch.
 // Check the length with:
-//     len(mockedClient.PatchCalls())
+//
+//	len(mockedClient.PatchCalls())
 func (mock *ClientMock) PatchCalls() []struct {
 	Ctx   context.Context
 	Obj   client.Object
@@ -431,7 +394,8 @@ func (mock *ClientMock) RESTMapper() meta.RESTMapper {
 
 // RESTMapperCalls gets all the calls that were made to RESTMapper.
 // Check the length with:
-//     len(mockedClient.RESTMapperCalls())
+//
+//	len(mockedClient.RESTMapperCalls())
 func (mock *ClientMock) RESTMapperCalls() []struct {
 } {
 	var calls []struct {
@@ -457,7 +421,8 @@ func (mock *ClientMock) Scheme() *runtime.Scheme {
 
 // SchemeCalls gets all the calls that were made to Scheme.
 // Check the length with:
-//     len(mockedClient.SchemeCalls())
+//
+//	len(mockedClient.SchemeCalls())
 func (mock *ClientMock) SchemeCalls() []struct {
 } {
 	var calls []struct {
@@ -483,7 +448,8 @@ func (mock *ClientMock) Status() client.StatusWriter {
 
 // StatusCalls gets all the calls that were made to Status.
 // Check the length with:
-//     len(mockedClient.StatusCalls())
+//
+//	len(mockedClient.StatusCalls())
 func (mock *ClientMock) StatusCalls() []struct {
 } {
 	var calls []struct {
@@ -516,7 +482,8 @@ func (mock *ClientMock) Update(ctx context.Context, obj client.Object, opts ...c
 
 // UpdateCalls gets all the calls that were made to Update.
 // Check the length with:
-//     len(mockedClient.UpdateCalls())
+//
+//	len(mockedClient.UpdateCalls())
 func (mock *ClientMock) UpdateCalls() []struct {
 	Ctx  context.Context
 	Obj  client.Object
