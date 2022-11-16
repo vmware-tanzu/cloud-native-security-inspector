@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	es "github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/consumers/es"
+	osearch "github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/consumers/opensearch"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/log"
@@ -353,9 +354,33 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 			return err
 		}
 	}
-
+	// Read config from InspectionPolicy, save assessment reports to OpenSearch if opensearch enabled.
+	if policy.Spec.Inspection.Assessment.OpenSearchEnabled {
+		if err := exportReportToOpenSearch(report, policy, c.logger); err != nil {
+			return err
+		}
+	}
 	// Check the Kubernetes using kubebench
 
+	return nil
+}
+
+func exportReportToOpenSearch(report *v1alpha1.AssessmentReport, policy *v1alpha1.InspectionPolicy, logger logr.Logger) error {
+	client := osearch.NewClient([]byte{},
+		policy.Spec.Inspection.Assessment.OpenSearchAddr,
+		policy.Spec.Inspection.Assessment.OpenSearchUser,
+		policy.Spec.Inspection.Assessment.OpenSearchPasswd)
+	if client == nil {
+		logger.Info("ES client is nil", nil, nil)
+	}
+	exporter := osearch.OpenSearchExporter{Client: client, Logger: logger}
+	osExporter, err := exporter.NewExporter(client, "assessment_report")
+	if err != nil {
+		return err
+	}
+	if err := osExporter.Save(*report); err != nil {
+		return err
+	}
 	return nil
 }
 
