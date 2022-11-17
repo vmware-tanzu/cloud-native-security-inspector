@@ -138,11 +138,12 @@
           </clr-input-container>
   
           <div class="passwd-test">
-            <clr-input-container>
-              <label>{{'Policy.elasticSearchPasswd'|translate}}:  </label>
-              <input clrInput placeholder="" name="elasticSearchPasswd" formControlName="elasticSearchPasswd"/>
-            </clr-input-container>
-    
+
+            <clr-password-container>
+              <label>{{'Policy.elasticSearchPasswd'|translate}}:</label>
+              <input clrPassword placeholder="Password please!" name="openSearchPasswd" formControlName="openSearchPasswd" />
+            </clr-password-container>
+
               
             <div class="test-icon">
               <button class="btn btn-info btn-sm" (click)="testElasticSearch()">
@@ -187,10 +188,10 @@
           </clr-input-container>
   
           <div class="passwd-test">
-            <clr-input-container>
-              <label>{{'Policy.elasticSearchPasswd'|translate}}:  </label>
-              <input clrInput placeholder="" name="openSearchPasswd" formControlName="openSearchPasswd"/>
-            </clr-input-container>
+            <clr-password-container>
+              <label>{{'Policy.elasticSearchPasswd'|translate}}:</label>
+              <input clrPassword placeholder="Password please!" name="openSearchPasswd" formControlName="openSearchPasswd" />
+            </clr-password-container>
     
               
             <!-- <div class="test-icon">

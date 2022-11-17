@@ -12,6 +12,7 @@ h4,
 h2 {
   color: #fff;
 }
+form clr-password-container,
 form clr-input-container,
 form clr-textarea-container,
 form clr-radio-container,
@@ -20,12 +21,14 @@ form clr-select-container,
 form .actions {
   margin-left: 20px;
 }
+form clr-password-container label,
 form clr-input-container label,
 form clr-textarea-container label,
 form clr-radio-container label,
 form clr-toggle-container label,
 form clr-select-container label,
 form .actions label,
+form clr-password-container h4,
 form clr-input-container h4,
 form clr-textarea-container h4,
 form clr-radio-container h4,
@@ -36,12 +39,14 @@ form .actions h4 {
   min-width: 150px;
   color: #fff;
 }
+form clr-password-container input,
 form clr-input-container input,
 form clr-textarea-container input,
 form clr-radio-container input,
 form clr-toggle-container input,
 form clr-select-container input,
 form .actions input,
+form clr-password-container select,
 form clr-input-container select,
 form clr-textarea-container select,
 form clr-radio-container select,
@@ -51,6 +56,7 @@ form .actions select {
   color: #fff;
   border-bottom-color: #fff;
 }
+form clr-password-container::ng-deep .clr-control-container,
 form clr-input-container::ng-deep .clr-control-container,
 form clr-textarea-container::ng-deep .clr-control-container,
 form clr-radio-container::ng-deep .clr-control-container,
@@ -60,6 +66,7 @@ form .actions::ng-deep .clr-control-container {
   width: 420px;
   max-width: 420px;
 }
+form clr-password-container::ng-deep .clr-control-container .clr-select-wrapper,
 form clr-input-container::ng-deep .clr-control-container .clr-select-wrapper,
 form clr-textarea-container::ng-deep .clr-control-container .clr-select-wrapper,
 form clr-radio-container::ng-deep .clr-control-container .clr-select-wrapper,
@@ -68,6 +75,7 @@ form clr-select-container::ng-deep .clr-control-container .clr-select-wrapper,
 form .actions::ng-deep .clr-control-container .clr-select-wrapper {
   width: auto;
 }
+form clr-password-container.disabled-toggle::ng-deep .clr-toggle-wrapper input[type=checkbox]:checked:disabled + label::before,
 form clr-input-container.disabled-toggle::ng-deep .clr-toggle-wrapper input[type=checkbox]:checked:disabled + label::before,
 form clr-textarea-container.disabled-toggle::ng-deep .clr-toggle-wrapper input[type=checkbox]:checked:disabled + label::before,
 form clr-radio-container.disabled-toggle::ng-deep .clr-toggle-wrapper input[type=checkbox]:checked:disabled + label::before,
