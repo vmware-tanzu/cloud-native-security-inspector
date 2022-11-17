@@ -36,10 +36,10 @@ type OpenSearchIndex struct {
 	DocCount  string
 }
 
-func (o *OpenSearchExporter) NewExporter(client *opensearch.Client, indexName string) (*OpenSearchExporter, error) {
+func (o *OpenSearchExporter) NewExporter(client *opensearch.Client, indexName string) error {
 	if client == nil {
 		log.Log.Info("ElasticSearch client error", errors.New("Invalid ElasticSearch client"), nil)
-		return nil, errors.Errorf("ElasticSearch client error: %s", errors.New("Invalid ElasticSearch client"))
+		return errors.Errorf("ElasticSearch client error: %s", errors.New("Invalid ElasticSearch client"))
 	}
 	o.Client = client
 	o.indexName = indexName
@@ -47,15 +47,14 @@ func (o *OpenSearchExporter) NewExporter(client *opensearch.Client, indexName st
 		if !result {
 			// No index for CNSI has been detected. A new index will be created.
 			if err := o.setupIndex(); err != nil {
-				return nil, err
+				return err
 			}
 		} else {
-			// Other error
-			return nil, err
+			// Other error or index already exists
+			return err
 		}
 	}
-
-	return o, nil
+	return nil
 }
 
 func (o *OpenSearchExporter) Save(doc api.AssessmentReport) error {

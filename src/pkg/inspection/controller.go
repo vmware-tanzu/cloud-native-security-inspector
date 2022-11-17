@@ -371,14 +371,14 @@ func exportReportToOpenSearch(report *v1alpha1.AssessmentReport, policy *v1alpha
 		policy.Spec.Inspection.Assessment.OpenSearchUser,
 		policy.Spec.Inspection.Assessment.OpenSearchPasswd)
 	if client == nil {
-		logger.Info("ES client is nil", nil, nil)
+		logger.Info("OpenSearch client is nil", nil, nil)
 	}
 	exporter := osearch.OpenSearchExporter{Client: client, Logger: logger}
-	osExporter, err := exporter.NewExporter(client, "assessment_report")
+	err := exporter.NewExporter(client, "assessment_report")
 	if err != nil {
 		return err
 	}
-	if err := osExporter.Save(*report); err != nil {
+	if err := exporter.Save(*report); err != nil {
 		return err
 	}
 	return nil
@@ -412,12 +412,12 @@ func exportReportToES(report *v1alpha1.AssessmentReport, policy *v1alpha1.Inspec
 		return err
 	}
 	exporter := es.ElasticSearchExporter{Client: client, Logger: logger}
-	esExporter, err := exporter.NewExporter(client, "assessment_report")
+	err := exporter.NewExporter(client, "assessment_report")
 	if err != nil {
 		return err
 	}
 
-	if err := esExporter.Save(*report); err != nil {
+	if err := exporter.Save(*report); err != nil {
 		return err
 	}
 	return nil

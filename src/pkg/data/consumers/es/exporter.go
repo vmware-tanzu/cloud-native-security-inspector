@@ -81,10 +81,10 @@ type ElasticSearchExporter struct {
 	indexName string
 }
 
-func (e *ElasticSearchExporter) NewExporter(client *elasticsearch.Client, indexName string) (*ElasticSearchExporter, error) {
+func (e *ElasticSearchExporter) NewExporter(client *elasticsearch.Client, indexName string) error {
 	if client == nil {
 		e.log("ElasticSearch client error", errors.New("Invalid ElasticSearch client"), nil)
-		return nil, errors.Errorf("ElasticSearch client error: %s", errors.New("Invalid ElasticSearch client"))
+		return errors.Errorf("ElasticSearch client error: %s", errors.New("Invalid ElasticSearch client"))
 	}
 	e.Client = client
 	e.indexName = indexName
@@ -92,15 +92,14 @@ func (e *ElasticSearchExporter) NewExporter(client *elasticsearch.Client, indexN
 		if !result {
 			// No index for CNSI has been detected. A new index will be created.
 			if err := e.setupIndex(); err != nil {
-				return nil, err
+				return err
 			}
 		} else {
-			// Other error
-			return nil, err
+			// Other error or index already exists
+			return err
 		}
 	}
-
-	return e, nil
+	return nil
 }
 
 func buildQuery(query string, after ...string) io.Reader {
