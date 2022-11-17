@@ -1,4 +1,4 @@
-package es
+package consumers
 
 type ContainerInfo struct {
 	ContainerId      string `json:"containerId"`

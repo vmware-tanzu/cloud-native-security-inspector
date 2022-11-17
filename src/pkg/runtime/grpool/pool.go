@@ -73,7 +73,7 @@ func (p *pool) MaxQueueSize(size uint32) *pool {
 // WithLogger sets logger for the pool.
 // If no logger is set, no logs will be output_datasource.
 func (p *pool) WithLogger(logger logr.Logger) *pool {
-	if logger != nil {
+	if logger != (logr.Logger{}) {
 		p.logger = logger.WithName("grpool")
 	}
 
@@ -187,7 +187,7 @@ func (p *pool) availableWorkers() uint32 {
 }
 
 func (p *pool) log(message string, err error, keysAndValues ...interface{}) {
-	if p.logger != nil {
+	if p.logger != (logr.Logger{}) {
 		if err != nil {
 			p.logger.Error(err, message, keysAndValues...)
 			return

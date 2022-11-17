@@ -500,6 +500,7 @@ export class PolicySettingPageComponent implements OnInit {
         data.spec.inspection.workloadSelector.matchLabels[el.key] = el.value
       })
     }    
+
     this.policyService.createPolicy(data).subscribe(
       data => {
         this.messageFlag = 'success'
@@ -585,7 +586,7 @@ export class PolicySettingPageComponent implements OnInit {
       delete this.policyInfo.spec.inspection.assessment.openSearchUser
       delete this.policyInfo.spec.inspection.assessment.openSearchPasswd
     }
-
+    
     this.policyService.modifyPolicy(this.policyForm.get('inspectionSetting')?.get('name')?.value, this.policyInfo).subscribe(
       data => {
         this.messageFlag = 'success'
