@@ -3,7 +3,6 @@ package consumers
 import (
 	"github.com/go-logr/logr"
 	"github.com/opensearch-project/opensearch-go"
-	"reflect"
 	"testing"
 )
 
@@ -39,13 +38,10 @@ func TestOpenSearchExporter_NewExporter(t *testing.T) {
 				Logger:    tt.fields.Logger,
 				indexName: tt.fields.indexName,
 			}
-			got, err := o.NewExporter(tt.args.client, tt.args.indexName)
+			err := o.NewExporter(tt.args.client, tt.args.indexName)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("NewExporter() error = %v, wantErr %v", err, tt.wantErr)
 				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewExporter() got = %v, want %v", got, tt.want)
 			}
 		})
 	}

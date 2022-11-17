@@ -53,7 +53,7 @@ func (ds *DefaultScanner) UseClient(client client.Client) *DefaultScanner {
 	return ds
 }
 
-//SetLogger sets the logger.
+// SetLogger sets the logger.
 func (ds *DefaultScanner) SetLogger(logger logr.Logger) *DefaultScanner {
 	ds.logger = logger
 	return ds
