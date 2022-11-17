@@ -143,6 +143,7 @@
     "elasticSearchUser": "账户",
     "elasticSearchPasswd": "密码",
     "elasticSearchCert": "证书",
+    "openSearchEnabled": "打开搜索",
     "workNamespace": "工作命名空间",
     "image": "镜像地址"
   },

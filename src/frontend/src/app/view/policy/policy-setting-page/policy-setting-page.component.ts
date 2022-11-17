@@ -52,6 +52,12 @@ export class PolicySettingPageComponent implements OnInit {
       delete data.elasticSearchPasswd
       delete data.elasticSearchCert
     }
+
+    if (!data.openSearchEnabled) {
+      delete data.openSearchAddr
+      delete data.openSearchUser
+      delete data.openSearchPasswd
+    }
     for (const key in data) {
       if (data[key] === '') {
         result = true
@@ -129,6 +135,11 @@ export class PolicySettingPageComponent implements OnInit {
         elasticSearchUser: [''],
         elasticSearchPasswd: [''],
         elasticSearchCert: [''],
+        openSearchEnabled: [false],
+        openSearchAddrHeader: ['https://'],
+        openSearchAddr: [''],
+        openSearchUser: [''],
+        openSearchPasswd: [''],
       }),
       inspectionStandard: this.formBuilder.group({
       }),
@@ -240,7 +251,7 @@ export class PolicySettingPageComponent implements OnInit {
       }    )
   }
 
-  // policy 
+  //get Inspectionpolicies 
   getInspectionpolicies() {
     this.policyService.getInspectionpolicies().subscribe(
       (data: any) => {
@@ -276,6 +287,17 @@ export class PolicySettingPageComponent implements OnInit {
             this.policyForm.get('inspectionSetting')?.get('elasticSearchCert')?.setValue(policyList[0].spec.inspection.assessment.elasticSearchCert)
 
           }
+          this.policyForm.get('inspectionSetting')?.get('openSearchEnabled')?.setValue(policyList[0].spec.inspection.assessment.openSearchEnabled ? true : false)
+          if (policyList[0].spec.inspection.assessment.openSearchEnabled) {
+            const addr = policyList[0].spec.inspection.assessment.openSearchAddr.split('//')
+
+            this.policyForm.get('inspectionSetting')?.get('openSearchAddrHeader')?.setValue(addr[0]+'//')
+            this.policyForm.get('inspectionSetting')?.get('openSearchAddr')?.setValue(addr[1])
+
+            this.policyForm.get('inspectionSetting')?.get('openSearchUser')?.setValue(policyList[0].spec.inspection.assessment.openSearchUser)
+            this.policyForm.get('inspectionSetting')?.get('openSearchPasswd')?.setValue(policyList[0].spec.inspection.assessment.openSearchPasswd)
+          }
+
           this.baselines = policyList[0].spec.inspection.baselines
           this.schedule = policyList[0].spec.schedule
           if(policyList[0].spec.inspection.actions && policyList[0].spec.inspection.actions.length > 0){
@@ -364,82 +386,88 @@ export class PolicySettingPageComponent implements OnInit {
       this.modifyPolicy()
     }
   }
-  createPolicy () {   
+  createPolicy (testData?: any) {   
     this.checkES = ''
-    const data:any = {
-      apiVersion: "goharbor.goharbor.io/v1alpha1",
-      kind: "InspectionPolicy",
-      metadata: {
-        annotations: {},
-        clusterName: "string",
-        deletionGracePeriodSeconds: 0,
-        finalizers: [],
-        generateName: "",
-        generation: 0,
-        labels: {},
-        managedFields: [],
-        name: this.policyForm.get('inspectionSetting')?.get('name')?.value,
-        namespace: '',
-        ownerReferences: [],
-        resourceVersion: "",
-      },
-      spec: {
-        enabled: this.enabledSettings,
-        inspection: {
-          assessment: {
-            format: this.policyForm.get('inspectionResult')?.get('format')?.value,
-            generate: this.policyForm.get('inspectionResult')?.get('generate')?.value,
-            liveTime: +this.policyForm.get('inspectionResult')?.get('liveTime')?.value,
-            managedBy: this.policyForm.get('inspectionResult')?.get('managedBy')?.value,
-            elasticSearchEnabled: this.policyForm.get('inspectionSetting')?.get('elasticSearchEnabled')?.value
+    let data:any = {}
+    if (testData) { // unit test
+      data = testData
+    } else {
+      data = {
+        apiVersion: "goharbor.goharbor.io/v1alpha1",
+        kind: "InspectionPolicy",
+        metadata: {
+          annotations: {},
+          clusterName: "string",
+          deletionGracePeriodSeconds: 0,
+          finalizers: [],
+          generateName: "",
+          generation: 0,
+          labels: {},
+          managedFields: [],
+          name: this.policyForm.get('inspectionSetting')?.get('name')?.value,
+          namespace: '',
+          ownerReferences: [],
+          resourceVersion: "",
+        },
+        spec: {
+          enabled: this.enabledSettings,
+          inspection: {
+            assessment: {
+              format: this.policyForm.get('inspectionResult')?.get('format')?.value,
+              generate: this.policyForm.get('inspectionResult')?.get('generate')?.value,
+              liveTime: +this.policyForm.get('inspectionResult')?.get('liveTime')?.value,
+              managedBy: this.policyForm.get('inspectionResult')?.get('managedBy')?.value,
+              elasticSearchEnabled: this.policyForm.get('inspectionSetting')?.get('elasticSearchEnabled')?.value,
+              openSearchEnabled: this.policyForm.get('inspectionSetting')?.get('openSearchEnabled')?.value,
+            },
+            baselines: this.baselines,
+            // dataProvider: {
+            //   cache: {
+            //     address: '',
+            //     credential: {
+            //       accessKey: this.policyForm.get('username')?.value,
+            //       accessSecret: this.policyForm.get('password')?.value
+            //     },
+            //     database: 0,
+            //     kind: "Redis",
+            //     settings: {
+            //       livingTime: 0,
+            //       skipTLSVerify: true
+            //     }
+            //   },
+            //   connection: {
+            //     insecure: this.policyForm.get('insecure')?.value
+            //   },
+            //   credential: {
+            //     accessKey: this.policyForm.get('username')?.value,
+            //     accessSecret: this.policyForm.get('password')?.value
+            //   },
+            //   endpoint: this.policyForm.get('endpoint')?.value,
+            //   provider: "Harbor"
+            // },
+            namespaceSelector: {
+              matchExpressions: [],
+              matchLabels: {}
+            },
+            workloadSelector: {
+              matchExpressions: [],
+              matchLabels: {}
+            }
           },
-          baselines: this.baselines,
-          // dataProvider: {
-          //   cache: {
-          //     address: '',
-          //     credential: {
-          //       accessKey: this.policyForm.get('username')?.value,
-          //       accessSecret: this.policyForm.get('password')?.value
-          //     },
-          //     database: 0,
-          //     kind: "Redis",
-          //     settings: {
-          //       livingTime: 0,
-          //       skipTLSVerify: true
-          //     }
-          //   },
-          //   connection: {
-          //     insecure: this.policyForm.get('insecure')?.value
-          //   },
-          //   credential: {
-          //     accessKey: this.policyForm.get('username')?.value,
-          //     accessSecret: this.policyForm.get('password')?.value
-          //   },
-          //   endpoint: this.policyForm.get('endpoint')?.value,
-          //   provider: "Harbor"
-          // },
-          namespaceSelector: {
-            matchExpressions: [],
-            matchLabels: {}
+          inspector: {
+            image: this.policyForm.get('inspectionSetting')?.get('image')?.value,
+            imagePullPolicy: this.policyForm.get('inspectionSetting')?.get('imagePullPolicy')?.value,
+            imagePullSecrets: []
           },
-          workloadSelector: {
-            matchExpressions: [],
-            matchLabels: {}
-          }
-        },
-        inspector: {
-          image: this.policyForm.get('inspectionSetting')?.get('image')?.value,
-          imagePullPolicy: this.policyForm.get('inspectionSetting')?.get('imagePullPolicy')?.value,
-          imagePullSecrets: []
-        },
-        schedule: this.schedule,
-        settingsName: this.policyForm.get('inspectionSetting')?.get('settingsName')?.value,
-        strategy: {
-          concurrencyRule: this.policyForm.get('inspectionSetting')?.get('concurrencyRule')?.value,
-          historyLimit: +this.policyForm.get('inspectionSetting')?.get('historyLimit')?.value,
-          suspend: this.policyForm.get('inspectionSetting')?.get('suspend')?.value
-        },
-        workNamespace: this.policyForm.get('inspectionSetting')?.get('namespace')?.value
+          schedule: this.schedule,
+          settingsName: this.policyForm.get('inspectionSetting')?.get('settingsName')?.value,
+          strategy: {
+            concurrencyRule: this.policyForm.get('inspectionSetting')?.get('concurrencyRule')?.value,
+            historyLimit: +this.policyForm.get('inspectionSetting')?.get('historyLimit')?.value,
+            suspend: this.policyForm.get('inspectionSetting')?.get('suspend')?.value
+          },
+          workNamespace: this.policyForm.get('inspectionSetting')?.get('namespace')?.value
+        }
       }
     }
     if(this.policyForm.get('inspectionResult')?.get('actions')?.value){
@@ -461,6 +489,12 @@ export class PolicySettingPageComponent implements OnInit {
       data.spec.inspection.assessment.elasticSearchCert = this.policyForm.get('inspectionSetting')?.get('elasticSearchCert')?.value
     }
 
+    if (this.policyForm.get('inspectionSetting')?.get('openSearchEnabled')?.value) {
+      data.spec.inspection.assessment.openSearchAddr = this.policyForm.get('inspectionSetting')?.get('openSearchAddrHeader')?.value + this.policyForm.get('inspectionSetting')?.get('openSearchAddr')?.value
+      data.spec.inspection.assessment.openSearchUser = this.policyForm.get('inspectionSetting')?.get('openSearchUser')?.value
+      data.spec.inspection.assessment.openSearchPasswd = this.policyForm.get('inspectionSetting')?.get('openSearchPasswd')?.value
+    }
+
     if (this.namespacelabels.length > 0) {
       this.namespacelabels.forEach(el => {
         data.spec.inspection.namespaceSelector.matchLabels[el.key] = el.value
@@ -470,7 +504,7 @@ export class PolicySettingPageComponent implements OnInit {
       this.workloadlabels.forEach(el => {
         data.spec.inspection.workloadSelector.matchLabels[el.key] = el.value
       })
-    }
+    }    
 
     this.policyService.createPolicy(data).subscribe(
       data => {
@@ -487,6 +521,7 @@ export class PolicySettingPageComponent implements OnInit {
   modifyPolicy () {
     this.checkES = ''
     const elasticSearchEnabled =this.policyForm.get('inspectionSetting')?.get('elasticSearchEnabled')?.value
+    const openSearchEnabled =this.policyForm.get('inspectionSetting')?.get('openSearchEnabled')?.value
     // this.policyInfo.metadata.name = this.policyForm.get('name')?.value
     this.policyInfo.spec.inspector.image = this.policyForm.get('inspectionSetting')?.get('image')?.value
     this.policyInfo.spec.inspector.imagePullPolicy = this.policyForm.get('inspectionSetting')?.get('imagePullPolicy')?.value
@@ -517,6 +552,7 @@ export class PolicySettingPageComponent implements OnInit {
     this.policyInfo.spec.inspection.assessment.liveTime = +this.policyForm.get('inspectionResult')?.get('liveTime')?.value
     this.policyInfo.spec.inspection.assessment.managedBy = this.policyForm.get('inspectionResult')?.get('managedBy')?.value
     this.policyInfo.spec.inspection.assessment.elasticSearchEnabled = elasticSearchEnabled
+    this.policyInfo.spec.inspection.assessment.openSearchEnabled = openSearchEnabled
     this.policyInfo.spec.inspection.baselines = this.baselines
     if (this.policyInfo.spec.inspection.namespaceSelector) {
       this.policyInfo.spec.inspection.namespaceSelector.matchLabels = {}
@@ -544,7 +580,16 @@ export class PolicySettingPageComponent implements OnInit {
       delete this.policyInfo.spec.inspection.assessment.elasticSearchUser
       delete this.policyInfo.spec.inspection.assessment.elasticSearchPasswd
       delete this.policyInfo.spec.inspection.assessment.elasticSearchCert
-      
+    }
+
+    if (openSearchEnabled) {
+      this.policyInfo.spec.inspection.assessment.openSearchAddr = this.policyForm.get('inspectionSetting')?.get('openSearchAddrHeader')?.value + this.policyForm.get('inspectionSetting')?.get('openSearchAddr')?.value
+      this.policyInfo.spec.inspection.assessment.openSearchUser = this.policyForm.get('inspectionSetting')?.get('openSearchUser')?.value
+      this.policyInfo.spec.inspection.assessment.openSearchPasswd = this.policyForm.get('inspectionSetting')?.get('openSearchPasswd')?.value
+    } else {
+      delete this.policyInfo.spec.inspection.assessment.openSearchAddr
+      delete this.policyInfo.spec.inspection.assessment.openSearchUser
+      delete this.policyInfo.spec.inspection.assessment.openSearchPasswd
     }
     
     this.policyService.modifyPolicy(this.policyForm.get('inspectionSetting')?.get('name')?.value, this.policyInfo).subscribe(
@@ -572,7 +617,7 @@ export class PolicySettingPageComponent implements OnInit {
     this.schedule = data
     this.isCornUpdateModal = false
   }
-  cancelSchedule(data:any) {
+  cancelSchedule() {
     this.isCornUpdateModal = false
   }
 }

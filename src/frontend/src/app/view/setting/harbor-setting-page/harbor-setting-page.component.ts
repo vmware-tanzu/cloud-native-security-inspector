@@ -108,7 +108,7 @@ export class HarborSettingPageComponent implements OnInit {
     this.schedule = data
     this.isCornUpdateModal = false
   }
-  cancelSchedule(data:any) {
+  cancelSchedule() {
     this.isCornUpdateModal = false
   }
 
