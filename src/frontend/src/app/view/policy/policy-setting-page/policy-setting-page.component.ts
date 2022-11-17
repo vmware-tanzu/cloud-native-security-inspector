@@ -52,6 +52,12 @@ export class PolicySettingPageComponent implements OnInit {
       delete data.elasticSearchPasswd
       delete data.elasticSearchCert
     }
+
+    if (!data.openSearchEnabled) {
+      delete data.openSearchAddr
+      delete data.openSearchUser
+      delete data.openSearchPasswd
+    }
     for (const key in data) {
       if (data[key] === '') {
         result = true
@@ -129,6 +135,11 @@ export class PolicySettingPageComponent implements OnInit {
         elasticSearchUser: [''],
         elasticSearchPasswd: [''],
         elasticSearchCert: [''],
+        openSearchEnabled: [false],
+        openSearchAddrHeader: ['https://'],
+        openSearchAddr: [''],
+        openSearchUser: [''],
+        openSearchPasswd: [''],
       }),
       inspectionStandard: this.formBuilder.group({
       }),
@@ -276,6 +287,17 @@ export class PolicySettingPageComponent implements OnInit {
             this.policyForm.get('inspectionSetting')?.get('elasticSearchCert')?.setValue(policyList[0].spec.inspection.assessment.elasticSearchCert)
 
           }
+          this.policyForm.get('inspectionSetting')?.get('openSearchEnabled')?.setValue(policyList[0].spec.inspection.assessment.openSearchEnabled ? true : false)
+          if (policyList[0].spec.inspection.assessment.openSearchEnabled) {
+            const addr = policyList[0].spec.inspection.assessment.openSearchAddr.split('//')
+
+            this.policyForm.get('inspectionSetting')?.get('openSearchAddrHeader')?.setValue(addr[0]+'//')
+            this.policyForm.get('inspectionSetting')?.get('openSearchAddr')?.setValue(addr[1])
+
+            this.policyForm.get('inspectionSetting')?.get('openSearchUser')?.setValue(policyList[0].spec.inspection.assessment.openSearchUser)
+            this.policyForm.get('inspectionSetting')?.get('openSearchPasswd')?.setValue(policyList[0].spec.inspection.assessment.openSearchPasswd)
+          }
+
           this.baselines = policyList[0].spec.inspection.baselines
           this.schedule = policyList[0].spec.schedule
           if(policyList[0].spec.inspection.actions && policyList[0].spec.inspection.actions.length > 0){
@@ -391,7 +413,8 @@ export class PolicySettingPageComponent implements OnInit {
             generate: this.policyForm.get('inspectionResult')?.get('generate')?.value,
             liveTime: +this.policyForm.get('inspectionResult')?.get('liveTime')?.value,
             managedBy: this.policyForm.get('inspectionResult')?.get('managedBy')?.value,
-            elasticSearchEnabled: this.policyForm.get('inspectionSetting')?.get('elasticSearchEnabled')?.value
+            elasticSearchEnabled: this.policyForm.get('inspectionSetting')?.get('elasticSearchEnabled')?.value,
+            openSearchEnabled: this.policyForm.get('inspectionSetting')?.get('openSearchEnabled')?.value,
           },
           baselines: this.baselines,
           // dataProvider: {
@@ -461,6 +484,12 @@ export class PolicySettingPageComponent implements OnInit {
       data.spec.inspection.assessment.elasticSearchCert = this.policyForm.get('inspectionSetting')?.get('elasticSearchCert')?.value
     }
 
+    if (this.policyForm.get('inspectionSetting')?.get('openSearchEnabled')?.value) {
+      data.spec.inspection.assessment.openSearchAddr = this.policyForm.get('inspectionSetting')?.get('openSearchAddrHeader')?.value + this.policyForm.get('inspectionSetting')?.get('openSearchAddr')?.value
+      data.spec.inspection.assessment.openSearchUser = this.policyForm.get('inspectionSetting')?.get('openSearchUser')?.value
+      data.spec.inspection.assessment.openSearchPasswd = this.policyForm.get('inspectionSetting')?.get('openSearchPasswd')?.value
+    }
+
     if (this.namespacelabels.length > 0) {
       this.namespacelabels.forEach(el => {
         data.spec.inspection.namespaceSelector.matchLabels[el.key] = el.value
@@ -470,8 +499,7 @@ export class PolicySettingPageComponent implements OnInit {
       this.workloadlabels.forEach(el => {
         data.spec.inspection.workloadSelector.matchLabels[el.key] = el.value
       })
-    }
-
+    }    
     this.policyService.createPolicy(data).subscribe(
       data => {
         this.messageFlag = 'success'
@@ -487,6 +515,7 @@ export class PolicySettingPageComponent implements OnInit {
   modifyPolicy () {
     this.checkES = ''
     const elasticSearchEnabled =this.policyForm.get('inspectionSetting')?.get('elasticSearchEnabled')?.value
+    const openSearchEnabled =this.policyForm.get('inspectionSetting')?.get('openSearchEnabled')?.value
     // this.policyInfo.metadata.name = this.policyForm.get('name')?.value
     this.policyInfo.spec.inspector.image = this.policyForm.get('inspectionSetting')?.get('image')?.value
     this.policyInfo.spec.inspector.imagePullPolicy = this.policyForm.get('inspectionSetting')?.get('imagePullPolicy')?.value
@@ -517,6 +546,7 @@ export class PolicySettingPageComponent implements OnInit {
     this.policyInfo.spec.inspection.assessment.liveTime = +this.policyForm.get('inspectionResult')?.get('liveTime')?.value
     this.policyInfo.spec.inspection.assessment.managedBy = this.policyForm.get('inspectionResult')?.get('managedBy')?.value
     this.policyInfo.spec.inspection.assessment.elasticSearchEnabled = elasticSearchEnabled
+    this.policyInfo.spec.inspection.assessment.openSearchEnabled = openSearchEnabled
     this.policyInfo.spec.inspection.baselines = this.baselines
     if (this.policyInfo.spec.inspection.namespaceSelector) {
       this.policyInfo.spec.inspection.namespaceSelector.matchLabels = {}
@@ -544,9 +574,18 @@ export class PolicySettingPageComponent implements OnInit {
       delete this.policyInfo.spec.inspection.assessment.elasticSearchUser
       delete this.policyInfo.spec.inspection.assessment.elasticSearchPasswd
       delete this.policyInfo.spec.inspection.assessment.elasticSearchCert
-      
     }
-    
+
+    if (openSearchEnabled) {
+      this.policyInfo.spec.inspection.assessment.openSearchAddr = this.policyForm.get('inspectionSetting')?.get('openSearchAddrHeader')?.value + this.policyForm.get('inspectionSetting')?.get('openSearchAddr')?.value
+      this.policyInfo.spec.inspection.assessment.openSearchUser = this.policyForm.get('inspectionSetting')?.get('openSearchUser')?.value
+      this.policyInfo.spec.inspection.assessment.openSearchPasswd = this.policyForm.get('inspectionSetting')?.get('openSearchPasswd')?.value
+    } else {
+      delete this.policyInfo.spec.inspection.assessment.openSearchAddr
+      delete this.policyInfo.spec.inspection.assessment.openSearchUser
+      delete this.policyInfo.spec.inspection.assessment.openSearchPasswd
+    }
+
     this.policyService.modifyPolicy(this.policyForm.get('inspectionSetting')?.get('name')?.value, this.policyInfo).subscribe(
       data => {
         this.messageFlag = 'success'

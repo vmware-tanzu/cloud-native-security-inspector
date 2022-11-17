@@ -163,6 +163,51 @@
           </clr-textarea-container>
 
         </div>
+
+        <!-- openSearchEnabled -->
+        <clr-toggle-container class="clr-inline">
+          <label class="w-200">{{'Policy.openSearchEnabled'|translate}}:</label>
+          <clr-toggle-wrapper>
+            <input type="checkbox" clrToggle name="openSearchEnabled" formControlName="openSearchEnabled" />
+          </clr-toggle-wrapper>
+        </clr-toggle-container>
+        <div *ngIf="policyForm.get('inspectionSetting')?.get('openSearchEnabled')?.value">
+          <div class="endpoint-container">
+            <label>{{'Policy.elasticSearchAddr' |translate}}: </label>
+            <select clrSelect name="openSearchAddrHeader" formControlName="openSearchAddrHeader">
+              <option value="http://">http</option>
+              <option value="https://">https</option>
+            </select>
+            <input clrInput placeholder="" name="openSearchAddr" formControlName="openSearchAddr"/>
+          </div>
+  
+          <clr-input-container>
+            <label>{{'Policy.elasticSearchUser'|translate}}:  </label>
+            <input clrInput placeholder="" name="openSearchUser" formControlName="openSearchUser"/>
+          </clr-input-container>
+  
+          <div class="passwd-test">
+            <clr-input-container>
+              <label>{{'Policy.elasticSearchPasswd'|translate}}:  </label>
+              <input clrInput placeholder="" name="openSearchPasswd" formControlName="openSearchPasswd"/>
+            </clr-input-container>
+    
+              
+            <!-- <div class="test-icon">
+              <button class="btn btn-info btn-sm" (click)="testElasticSearch()">
+                {{'CommonlyUse.test'| translate}}
+              </button>
+              <span  *ngIf="checkES === 'passed'">
+                <clr-icon class="passed" shape="check-circle" ></clr-icon> Successful
+              </span>
+              <span  *ngIf="checkES === 'not passed'" class="not-passed" >
+                <clr-icon  shape="times" class="not-passed"></clr-icon> Failed
+              </span>
+            </div> -->
+          </div>
+
+        </div>
+
         <button clrStepButton="next" [disabled]="inspectionSettingValid">next</button>
       </clr-step-content>
     </clr-stepper-panel>
