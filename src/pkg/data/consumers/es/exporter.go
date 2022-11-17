@@ -1,16 +1,17 @@
-package es
+package consumers
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/aquasecurity/kube-bench/check"
 	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/elastic/go-elasticsearch/v8/esapi"
 	"github.com/go-logr/logr"
 	"github.com/pkg/errors"
 	api "github.com/vmware-tanzu/cloud-native-security-inspector/api/v1alpha1"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/consumers"
 	"io"
-	"log"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"strconv"
 	"strings"
@@ -46,8 +47,9 @@ const searchMatch = `
 
 type Exporter interface {
 	Save(doc api.AssessmentReport) error
+	SaveCIS(controlsCollection []*check.Controls) error
 	Delete(doc api.AssessmentReport) error
-	Search(query string, after ...string) ([]AssessmentReportDoc, error)
+	Search(query string, after ...string) ([]consumers.AssessmentReportDoc, error)
 	List() (api.AssessmentReportList, error)
 }
 
@@ -62,7 +64,7 @@ type SearchResults struct {
 	Hits  []*Hit `json:"hits"`
 }
 type Hit struct {
-	AssessmentReportDoc
+	consumers.AssessmentReportDoc
 	URL        string        `json:"url"`
 	Sort       []interface{} `json:"sort"`
 	Highlights *struct {
@@ -74,28 +76,30 @@ type Hit struct {
 
 // ElasticSearchExporter ElasticSearch exporter implements output_datasource.Exporter
 type ElasticSearchExporter struct {
-	Client *elasticsearch.Client
-	Logger logr.Logger
+	Client    *elasticsearch.Client
+	Logger    logr.Logger
+	indexName string
 }
 
-func (e *ElasticSearchExporter) NewExporter(client *elasticsearch.Client) (*ElasticSearchExporter, error) {
+func (e *ElasticSearchExporter) NewExporter(client *elasticsearch.Client, indexName string) error {
 	if client == nil {
 		e.log("ElasticSearch client error", errors.New("Invalid ElasticSearch client"), nil)
-		return nil, errors.Errorf("ElasticSearch client error: %s", errors.New("Invalid ElasticSearch client"))
+		return errors.Errorf("ElasticSearch client error: %s", errors.New("Invalid ElasticSearch client"))
 	}
+	e.Client = client
+	e.indexName = indexName
 	if result, err := e.indexExists(indexName); err != nil {
 		if !result {
 			// No index for CNSI has been detected. A new index will be created.
 			if err := e.setupIndex(); err != nil {
-				return nil, err
+				return err
 			}
 		} else {
-			// Other error
-			return nil, err
+			// Other error or index already exists
+			return err
 		}
 	}
-
-	return e, nil
+	return nil
 }
 
 func buildQuery(query string, after ...string) io.Reader {
@@ -119,28 +123,64 @@ func buildQuery(query string, after ...string) io.Reader {
 
 // setupIndex is to create an index with predefine mapping in ElasticSearch for CNSI
 func (e *ElasticSearchExporter) setupIndex() error {
-	mapping := `{
-    "mappings": {
-        "properties": {
-          "docId":         { "type": "keyword" },
-          "containerId":  { "type": "text" },
-          "containerName":      { "type": "text", "analyzer": "english" },
-          "containerImage":        { "type": "text", "analyzer": "english" },
-          "containerImageId": { "type": "text", "analyzer": "english" },
-          "isInit":  { "type": "text" },
-          "kind":       { "type": "text" },
-          "workloadName":       { "type": "text", "analyzer": "english" },
-          "workloadNamespace":       { "type": "text", "analyzer": "english" },
-          "actionEnforcement":       { "type": "text", "analyzer": "english" },
-          "passed":       { "type": "text", "analyzer": "english" },
-          "Failures":       { "type": "text", "analyzer": "english" },
-          "reportUID":       { "type": "text", "analyzer": "english" },
-          "createTime":       { "type": "date" },
-          "inspectionConfiguration":       { "type": "text", "analyzer": "english" }
-        }
-    }
-}`
-	res, err := e.Client.Indices.Create(indexName, e.Client.Indices.Create.WithBody(strings.NewReader(mapping)))
+	var mapping string
+	if e.indexName == "cis_report" {
+		mapping = `{
+		"mappings": {
+			"properties": {
+			  "docId":         { "type": "keyword" },
+			  "id":  { "type": "text" },
+			  "version":      { "type": "text", "analyzer": "english" },
+			  "detected_version":        { "type": "text", "analyzer": "english" },
+			  "text": { "type": "text", "analyzer": "english" },
+			  "node_type":  { "type": "text" },
+			  "section":       { "type": "text" },
+			  "type":       { "type": "text" },
+			  "pass":       { "type": "text" },
+			  "fail":       { "type": "text" },
+			  "warn":       { "type": "text" },
+			  "info":       { "type": "text" },
+			  "desc":       { "type": "text" },
+			  "test_number":       { "type": "text" },
+			  "test_desc":       { "type": "text" },
+			  "audit":       { "type": "text" },
+			  "audit_env":       { "type": "text" },
+			  "audit_config":       { "type": "text" },
+			  "remediation":       { "type": "text" },
+			  "test_info":       { "type": "text" },
+			  "status":       { "type": "text" },
+			  "actual_value":       { "type": "text" },
+			  "scored":       { "type": "text" },
+			  "expected_result":       { "type": "text" },
+			  "reason":       { "type": "text" }
+				}
+			}
+		}`
+	} else if e.indexName == "assessment_report" {
+		mapping = `{
+		"mappings": {
+			"properties": {
+			  "docId":         { "type": "keyword" },
+			  "containerId":  { "type": "text" },
+			  "containerName":      { "type": "text", "analyzer": "english" },
+			  "containerImage":        { "type": "text", "analyzer": "english" },
+			  "containerImageId": { "type": "text", "analyzer": "english" },
+			  "isInit":  { "type": "text" },
+			  "kind":       { "type": "text" },
+			  "workloadName":       { "type": "text", "analyzer": "english" },
+			  "workloadNamespace":       { "type": "text", "analyzer": "english" },
+			  "actionEnforcement":       { "type": "text", "analyzer": "english" },
+			  "passed":       { "type": "text", "analyzer": "english" },
+			  "Failures":       { "type": "text", "analyzer": "english" },
+			  "reportUID":       { "type": "text", "analyzer": "english" },
+			  "createTime":       { "type": "date" },
+			  "inspectionConfiguration":       { "type": "text", "analyzer": "english" }
+				}
+			}
+		}`
+	}
+
+	res, err := e.Client.Indices.Create(e.indexName, e.Client.Indices.Create.WithBody(strings.NewReader(mapping)))
 	if err != nil {
 		return err
 	}
@@ -214,6 +254,43 @@ func (e *ElasticSearchExporter) deleteIndex(index []string) error {
 	return nil
 }
 
+func (e ElasticSearchExporter) SaveCIS(controlsCollection []*check.Controls) error {
+	var res *esapi.Response
+	for _, control := range controlsCollection {
+		fmt.Println(control.JSON())
+		doc, err := json.Marshal(control)
+		if err != nil {
+			return err
+		}
+
+		res, err = esapi.IndexRequest{
+			Index:      e.indexName,
+			DocumentID: control.ID,
+			Body:       strings.NewReader(string(doc)),
+			Refresh:    "true",
+		}.Do(context.Background(), e.Client)
+		if err != nil {
+			ctrlLog.Error(err, "Error getting response")
+			return err
+		}
+
+		if res.IsError() {
+			ctrlLog.Info("[%s] Error indexing document ID=%v", res.Status(), "name-name")
+			return errors.New(fmt.Sprint("http error, code ", res.StatusCode))
+		} else {
+			// Deserialize the response into a map.
+			var r map[string]interface{}
+			if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
+				ctrlLog.Info("Error parsing the response body: %s", err)
+			} else {
+				fmt.Println("OK")
+			}
+		}
+
+	}
+	return nil
+}
+
 // Save an AssessmentReport to this index
 func (e ElasticSearchExporter) Save(doc api.AssessmentReport) error {
 	var res *esapi.Response
@@ -222,7 +299,7 @@ func (e ElasticSearchExporter) Save(doc api.AssessmentReport) error {
 		for _, workloadAssessment := range nsa.WorkloadAssessments {
 			for _, pod := range workloadAssessment.Workload.Pods {
 				for _, container := range pod.Containers {
-					var esDoc AssessmentReportDoc
+					var esDoc consumers.AssessmentReportDoc
 					esDoc.DocId = container.Name + "_" + strings.Replace(container.ID, "/", "-", -1) + "_" + doc.Name
 					esDoc.UID = string(doc.UID)
 					esDoc.Namespace = pod.Namespace
@@ -288,7 +365,7 @@ func (e ElasticSearchExporter) Delete(doc api.AssessmentReport) error {
 	return nil
 }
 
-func (e ElasticSearchExporter) Search(query string, after ...string) ([]AssessmentReportDoc, error) {
+func (e ElasticSearchExporter) Search(query string, after ...string) ([]consumers.AssessmentReportDoc, error) {
 	type envelopeResponse struct {
 		Took int
 		Hits struct {
@@ -312,27 +389,27 @@ func (e ElasticSearchExporter) Search(query string, after ...string) ([]Assessme
 		e.Client.Search.WithBody(buildQuery(query, after...)),
 	)
 	if err != nil {
-		return []AssessmentReportDoc{}, err
+		return []consumers.AssessmentReportDoc{}, err
 	}
 	defer res.Body.Close()
 
 	if res.IsError() {
 		var e map[string]interface{}
 		if err := json.NewDecoder(res.Body).Decode(&e); err != nil {
-			return []AssessmentReportDoc{}, err
+			return []consumers.AssessmentReportDoc{}, err
 		}
-		return []AssessmentReportDoc{}, fmt.Errorf("[%s] %s: %s", res.Status(), e["error"].(map[string]interface{})["type"], e["error"].(map[string]interface{})["reason"])
+		return []consumers.AssessmentReportDoc{}, fmt.Errorf("[%s] %s: %s", res.Status(), e["error"].(map[string]interface{})["type"], e["error"].(map[string]interface{})["reason"])
 	}
 
 	if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
-		return []AssessmentReportDoc{}, err
+		return []consumers.AssessmentReportDoc{}, err
 	}
 
 	results.Total = r.Hits.Total.Value
 
 	if len(r.Hits.Hits) < 1 {
 		results.Hits = []*Hit{}
-		return []AssessmentReportDoc{}, nil
+		return []consumers.AssessmentReportDoc{}, nil
 	}
 
 	for _, hit := range r.Hits.Hits {
@@ -340,18 +417,18 @@ func (e ElasticSearchExporter) Search(query string, after ...string) ([]Assessme
 		h.Sort = hit.Sort
 
 		if err := json.Unmarshal(hit.Source, &h); err != nil {
-			return []AssessmentReportDoc{}, err
+			return []consumers.AssessmentReportDoc{}, err
 		}
 
 		if len(hit.Highlights) > 0 {
 			if err := json.Unmarshal(hit.Highlights, &h.Highlights); err != nil {
-				return []AssessmentReportDoc{}, err
+				return []consumers.AssessmentReportDoc{}, err
 			}
 		}
 
 		results.Hits = append(results.Hits, &h)
 	}
-	var reportList []AssessmentReportDoc
+	var reportList []consumers.AssessmentReportDoc
 	fmt.Printf("Results hits: %v \n", len(results.Hits))
 	for _, ret := range results.Hits {
 		reportList = append(reportList, ret.AssessmentReportDoc)
@@ -367,27 +444,19 @@ func (e ElasticSearchExporter) List() (api.AssessmentReportList, error) {
 	return api.AssessmentReportList{}, nil
 }
 func (e ElasticSearchExporter) log(message string, err error, keysAndValues ...interface{}) {
-	if e.Logger != nil {
-		if err != nil {
-			e.Logger.Error(err, message, keysAndValues...)
-			return
-		}
-
-		e.Logger.Info(message, keysAndValues...)
+	if err != nil {
+		e.Logger.Error(err, message, keysAndValues...)
 		return
 	}
 
-	// Use default logger.
-	if err != nil {
-		log.Printf("%s:%s\n", message, err)
-	} else {
-		log.Println(message)
-	}
+	e.Logger.Info(message, keysAndValues...)
+	return
 }
+
 func (e *ElasticSearchExporter) WithLogger(logger logr.Logger) *ElasticSearchExporter {
-	if logger != nil {
-		e.Logger = logger.WithName("exporter")
-	}
+	//if logger != nil {
+	e.Logger = logger.WithName("exporter")
+	//}
 
 	return e
 }

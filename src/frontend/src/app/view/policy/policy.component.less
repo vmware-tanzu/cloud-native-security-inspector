@@ -3,140 +3,17 @@
  * SSPDX-License-Identifier: Apache-2.0
  */
 
-.policy-page {
-  padding: 20px;
+.sddc-header {
+  padding:20px
 }
-h4,h2 {
-  color: #fff;
-}
-form {
-  clr-input-container,clr-textarea-container, clr-radio-container,clr-toggle-container,clr-select-container,.actions {
-    margin-left: 20px;
-    label,h4 {
-      width: 150px;
-      min-width: 150px;
-      color: #fff;
-    }
-    input, select {
-      color: #fff;
-      border-bottom-color: #fff;
-    }
-    &::ng-deep {
-      .clr-control-container {
-        width: 420px;
-        max-width: 420px;
-        .clr-select-wrapper {
-          width: auto;
-        }
-      }
-    }
-    &.disabled-toggle::ng-deep{
-      .clr-toggle-wrapper input[type=checkbox]:checked:disabled+label::before{
-        background-color: #5aaaaa ;
-        border-color: #5aaaaa;
-      }
-    }
-  }
-  &::ng-deep {
-    .clr-form-control {
-      flex-direction: row;
-      .clr-control-label {
-        width: 200px !important;
-      }
-    }
-    .endpoint-container {
-      display: flex;
-      align-items: center;
-      margin-top: 24px;
-      margin-left: 20px;
-      .clr-form-control {
-        margin-top: 0;
-      }
-      label {
-        width: 200px;
-        color: #fff;
-        font-weight: 600;
-        font-size: .65rem;
-      }
-      clr-select-container {
-        margin-right: 10px;
-      }
-    }
-  }
-  .content {
-    display: flex;
-    flex-wrap: nowrap;
-    margin-bottom: 50px;
-    div {
-      width: 45%;
-    }
-  }
-  .port {
-    display: flex;
-    clr-select-container,clr-input-container, clr-textarea-container{
-      display: flex;
-      flex-wrap: nowrap;
-      justify-content: space-between;
-      .clr-input-container {
-        .clr-select-wrapper {
-          width: auto;
-        }
-      }
-    }
-  }
-  .schedule {
-    display: flex;
-    align-items: center;
-    color: #fff;
-    h4 {
-      width: 200px;
-      font-size: .65rem;
-      font-weight: bold;
-      margin-left: 20px;
-    }
-    div {
-      margin-top: 24px;
-    }
-    span {
-      display: inline-block;
-      border-bottom: 1px solid #ddd;
-      margin-right: 20px;
-    }
-    button {
-      border-color: #fff;
-      width: 30px;
-      height: 30px;
-      clr-icon {
-        position: relative;
-        top: -3px;
-        left: -5px;
-      }
-    }
-  }
-  .submit-btns {
-    display: flex;
-    justify-content: flex-end;
-  }
-  .actions {
-    margin-left: 0;
 
-    h4 {
-      &.action-title {
-        display: flex;
-        align-items: center;
-        div:first-of-type {
-          width: 200px;
-          min-width: 200px;
-        }
-        clr-toggle-container {
-          margin-top: 0;
-        }
-      }
-    }
-    &.w-auto {
-      h4 {
-        width:auto;
-      }
+.icon-button {
+  clr-icon {
+    color: #fff;
+    margin-right: 15px;
+    cursor: pointer;
+    &:hover {
+      color: hsl(198, 80%, 46%);
     }
   }
 }

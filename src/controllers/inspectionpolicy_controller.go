@@ -473,7 +473,69 @@ func (r *InspectionPolicyReconciler) generateCronJobCR(policy *goharborv1.Inspec
 
 func (r *InspectionPolicyReconciler) generateCronJobCR4KubeBench(policy *goharborv1.InspectionPolicy) (*batchv1beta1.CronJob, error) {
 
-	return nil, nil
+	var fl int32 = 1
+
+	cj := &batchv1beta1.CronJob{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      randomName(policy.Name + "_kube-bench"),
+			Namespace: *policy.Spec.WorkNamespace,
+			Labels: map[string]string{
+				labelOwnerKey: policy.Name,
+			},
+			Annotations: make(map[string]string),
+		},
+		Spec: batchv1beta1.CronJobSpec{
+			Schedule:                   policy.Spec.Schedule,
+			ConcurrencyPolicy:          batchv1beta1.ConcurrencyPolicy(policy.Spec.Strategy.ConcurrencyRule),
+			Suspend:                    policy.Spec.Strategy.Suspend,
+			SuccessfulJobsHistoryLimit: policy.Spec.Strategy.HistoryLimit,
+			FailedJobsHistoryLimit:     &fl,
+			JobTemplate: batchv1beta1.JobTemplateSpec{
+				Spec: batchv1.JobSpec{
+					Template: corev1.PodTemplateSpec{
+						Spec: corev1.PodSpec{
+							Containers: []corev1.Container{
+								{
+									Name:            "kubebench",
+									Image:           getImage(policy),
+									ImagePullPolicy: getImagePullPolicy(policy),
+									Command:         []string{"/kubebench"},
+									Args: []string{
+										"--policy",
+										policy.Name,
+									},
+								},
+							},
+							RestartPolicy:      corev1.RestartPolicyOnFailure,
+							ServiceAccountName: saName,
+						},
+					},
+				},
+			},
+		},
+	}
+
+	if policy.Spec.Inspector != nil {
+		if len(policy.Spec.Inspector.ImagePullSecrets) > 0 {
+			cj.Spec.JobTemplate.Spec.Template.Spec.ImagePullSecrets = append(
+				cj.Spec.JobTemplate.Spec.Template.Spec.ImagePullSecrets,
+				policy.Spec.Inspector.ImagePullSecrets...)
+		}
+	}
+
+	// Set owner reference.
+	if err := ctrl.SetControllerReference(policy, cj, r.Scheme); err != nil {
+		return nil, err
+	}
+
+	jdata, err := json.Marshal(cj.Spec)
+	if err != nil {
+		return nil, err
+	}
+
+	cj.Annotations[lastAppliedAnnotation] = string(jdata)
+
+	return cj, nil
 }
 
 func getImage(policy *goharborv1.InspectionPolicy) string {

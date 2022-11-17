@@ -21,7 +21,7 @@ export class CornScheduleComponent implements OnInit {
   public timePicker = '00:00'
   public multipleType = 'day'
   public isDay = true
-  public cornType = 'weekly'
+  public cornType = ''
   public spacedType = 'minute'
   public preValue = ''
   showTimeListFlag = false

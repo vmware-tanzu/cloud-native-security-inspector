@@ -38,7 +38,9 @@ import { ClusterLineComponent } from './view/report/cluster-line/cluster-line.co
 import { NamesapcePolarComponent } from './view/report/namesapce-polar/namesapce-polar.component';
 import { NamesapceHistogramComponent } from './view/report/namesapce-histogram/namesapce-histogram.component'
 import { ShardTestModule } from 'src/app/shard/shard/shard.module';
-import { DgFilterComponent } from './components/dg-filter/dg-filter.component'
+import { DgFilterComponent } from './components/dg-filter/dg-filter.component';
+import { HarborSettingPageComponent } from './view/setting/harbor-setting-page/harbor-setting-page.component';
+import { PolicySettingPageComponent } from './view/policy/policy-setting-page/policy-setting-page.component'
 @NgModule({
   declarations: [
     AppComponent,
@@ -66,7 +68,9 @@ import { DgFilterComponent } from './components/dg-filter/dg-filter.component'
     ClusterLineComponent,
     NamesapcePolarComponent,
     NamesapceHistogramComponent,
-    DgFilterComponent
+    DgFilterComponent,
+    HarborSettingPageComponent,
+    PolicySettingPageComponent
   ],
   imports: [
     BrowserModule,
