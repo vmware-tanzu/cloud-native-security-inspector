@@ -8,7 +8,7 @@ import (
 	"github.com/golang/glog"
 	"github.com/spf13/viper"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/api/v1alpha1"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/consumers/es"
+	es "github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/consumers/es"
 	"k8s.io/apimachinery/pkg/runtime"
 	"os"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -152,12 +152,12 @@ func exportReportToES(controlsCollection []*check.Controls, policy *v1alpha1.Ins
 		return err
 	}
 	exporter := es.ElasticSearchExporter{}
-	esExporter, err := exporter.NewExporter(client, "cis_report")
+	err := exporter.NewExporter(client, "cis_report")
 	if err != nil {
 		return err
 	}
 
-	if err := esExporter.SaveCIS(controlsCollection); err != nil {
+	if err := exporter.SaveCIS(controlsCollection); err != nil {
 		return err
 	}
 	return nil

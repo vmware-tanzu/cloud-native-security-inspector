@@ -90,6 +90,21 @@ type Assessment struct {
 	// ElasticSearch certificate for the client
 	// +kubebuilder:validation:Optional
 	ElasticSearchCert string `json:"elasticSearchCert"`
+	// Indicate whether to store the reports to opensearch
+	// +kubebuilder:default:=false
+	OpenSearchEnabled bool `json:"openSearchEnabled"`
+	// ElasticSearch endpoint
+	// +kubebuilder:validation:Optional
+	OpenSearchAddr string `json:"openSearchAddr"`
+	// ElasticSearch username for the client
+	// +kubebuilder:validation:Optional
+	OpenSearchUser string `json:"openSearchUser"`
+	// ElasticSearch password for the client
+	// +kubebuilder:validation:Optional
+	OpenSearchPasswd string `json:"openSearchPasswd"`
+	// ElasticSearch certificate for the client
+	// +kubebuilder:validation:Optional
+	OpenSearchCert string `json:"openSearchCert"`
 }
 
 // FollowupAction defines what actions should be applied when security expectations are matched.

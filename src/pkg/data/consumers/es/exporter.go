@@ -1,4 +1,4 @@
-package es
+package consumers
 
 import (
 	"context"
@@ -10,6 +10,7 @@ import (
 	"github.com/go-logr/logr"
 	"github.com/pkg/errors"
 	api "github.com/vmware-tanzu/cloud-native-security-inspector/api/v1alpha1"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/consumers"
 	"io"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"strconv"
@@ -48,7 +49,7 @@ type Exporter interface {
 	Save(doc api.AssessmentReport) error
 	SaveCIS(controlsCollection []*check.Controls) error
 	Delete(doc api.AssessmentReport) error
-	Search(query string, after ...string) ([]AssessmentReportDoc, error)
+	Search(query string, after ...string) ([]consumers.AssessmentReportDoc, error)
 	List() (api.AssessmentReportList, error)
 }
 
@@ -63,7 +64,7 @@ type SearchResults struct {
 	Hits  []*Hit `json:"hits"`
 }
 type Hit struct {
-	AssessmentReportDoc
+	consumers.AssessmentReportDoc
 	URL        string        `json:"url"`
 	Sort       []interface{} `json:"sort"`
 	Highlights *struct {
@@ -80,10 +81,10 @@ type ElasticSearchExporter struct {
 	indexName string
 }
 
-func (e *ElasticSearchExporter) NewExporter(client *elasticsearch.Client, indexName string) (*ElasticSearchExporter, error) {
+func (e *ElasticSearchExporter) NewExporter(client *elasticsearch.Client, indexName string) error {
 	if client == nil {
 		e.log("ElasticSearch client error", errors.New("Invalid ElasticSearch client"), nil)
-		return nil, errors.Errorf("ElasticSearch client error: %s", errors.New("Invalid ElasticSearch client"))
+		return errors.Errorf("ElasticSearch client error: %s", errors.New("Invalid ElasticSearch client"))
 	}
 	e.Client = client
 	e.indexName = indexName
@@ -91,15 +92,14 @@ func (e *ElasticSearchExporter) NewExporter(client *elasticsearch.Client, indexN
 		if !result {
 			// No index for CNSI has been detected. A new index will be created.
 			if err := e.setupIndex(); err != nil {
-				return nil, err
+				return err
 			}
 		} else {
-			// Other error
-			return nil, err
+			// Other error or index already exists
+			return err
 		}
 	}
-
-	return e, nil
+	return nil
 }
 
 func buildQuery(query string, after ...string) io.Reader {
@@ -299,7 +299,7 @@ func (e ElasticSearchExporter) Save(doc api.AssessmentReport) error {
 		for _, workloadAssessment := range nsa.WorkloadAssessments {
 			for _, pod := range workloadAssessment.Workload.Pods {
 				for _, container := range pod.Containers {
-					var esDoc AssessmentReportDoc
+					var esDoc consumers.AssessmentReportDoc
 					esDoc.DocId = container.Name + "_" + strings.Replace(container.ID, "/", "-", -1) + "_" + doc.Name
 					esDoc.UID = string(doc.UID)
 					esDoc.Namespace = pod.Namespace
@@ -365,7 +365,7 @@ func (e ElasticSearchExporter) Delete(doc api.AssessmentReport) error {
 	return nil
 }
 
-func (e ElasticSearchExporter) Search(query string, after ...string) ([]AssessmentReportDoc, error) {
+func (e ElasticSearchExporter) Search(query string, after ...string) ([]consumers.AssessmentReportDoc, error) {
 	type envelopeResponse struct {
 		Took int
 		Hits struct {
@@ -389,27 +389,27 @@ func (e ElasticSearchExporter) Search(query string, after ...string) ([]Assessme
 		e.Client.Search.WithBody(buildQuery(query, after...)),
 	)
 	if err != nil {
-		return []AssessmentReportDoc{}, err
+		return []consumers.AssessmentReportDoc{}, err
 	}
 	defer res.Body.Close()
 
 	if res.IsError() {
 		var e map[string]interface{}
 		if err := json.NewDecoder(res.Body).Decode(&e); err != nil {
-			return []AssessmentReportDoc{}, err
+			return []consumers.AssessmentReportDoc{}, err
 		}
-		return []AssessmentReportDoc{}, fmt.Errorf("[%s] %s: %s", res.Status(), e["error"].(map[string]interface{})["type"], e["error"].(map[string]interface{})["reason"])
+		return []consumers.AssessmentReportDoc{}, fmt.Errorf("[%s] %s: %s", res.Status(), e["error"].(map[string]interface{})["type"], e["error"].(map[string]interface{})["reason"])
 	}
 
 	if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
-		return []AssessmentReportDoc{}, err
+		return []consumers.AssessmentReportDoc{}, err
 	}
 
 	results.Total = r.Hits.Total.Value
 
 	if len(r.Hits.Hits) < 1 {
 		results.Hits = []*Hit{}
-		return []AssessmentReportDoc{}, nil
+		return []consumers.AssessmentReportDoc{}, nil
 	}
 
 	for _, hit := range r.Hits.Hits {
@@ -417,18 +417,18 @@ func (e ElasticSearchExporter) Search(query string, after ...string) ([]Assessme
 		h.Sort = hit.Sort
 
 		if err := json.Unmarshal(hit.Source, &h); err != nil {
-			return []AssessmentReportDoc{}, err
+			return []consumers.AssessmentReportDoc{}, err
 		}
 
 		if len(hit.Highlights) > 0 {
 			if err := json.Unmarshal(hit.Highlights, &h.Highlights); err != nil {
-				return []AssessmentReportDoc{}, err
+				return []consumers.AssessmentReportDoc{}, err
 			}
 		}
 
 		results.Hits = append(results.Hits, &h)
 	}
-	var reportList []AssessmentReportDoc
+	var reportList []consumers.AssessmentReportDoc
 	fmt.Printf("Results hits: %v \n", len(results.Hits))
 	for _, ret := range results.Hits {
 		reportList = append(reportList, ret.AssessmentReportDoc)

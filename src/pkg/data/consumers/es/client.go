@@ -1,4 +1,4 @@
-package es
+package consumers
 
 import (
 	"encoding/json"
