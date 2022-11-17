@@ -31,6 +31,16 @@ describe('PolicyComponent', () => {
     fixture.detectChanges();
   });
 
+  describe('getInspectionpolicies()', () => {
+    it('get inspectionpolicies', () => {
+      component.getInspectionpolicies()
+      component.modifyPolicy()
+      component.deleteModalHandler('test')
+      component.deletePolicy()
+  
+    });
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });

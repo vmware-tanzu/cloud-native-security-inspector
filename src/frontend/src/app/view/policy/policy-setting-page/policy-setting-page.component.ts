@@ -251,7 +251,7 @@ export class PolicySettingPageComponent implements OnInit {
       }    )
   }
 
-  // policy 
+  //get Inspectionpolicies 
   getInspectionpolicies() {
     this.policyService.getInspectionpolicies().subscribe(
       (data: any) => {
@@ -386,83 +386,88 @@ export class PolicySettingPageComponent implements OnInit {
       this.modifyPolicy()
     }
   }
-  createPolicy () {   
+  createPolicy (testData?: any) {   
     this.checkES = ''
-    const data:any = {
-      apiVersion: "goharbor.goharbor.io/v1alpha1",
-      kind: "InspectionPolicy",
-      metadata: {
-        annotations: {},
-        clusterName: "string",
-        deletionGracePeriodSeconds: 0,
-        finalizers: [],
-        generateName: "",
-        generation: 0,
-        labels: {},
-        managedFields: [],
-        name: this.policyForm.get('inspectionSetting')?.get('name')?.value,
-        namespace: '',
-        ownerReferences: [],
-        resourceVersion: "",
-      },
-      spec: {
-        enabled: this.enabledSettings,
-        inspection: {
-          assessment: {
-            format: this.policyForm.get('inspectionResult')?.get('format')?.value,
-            generate: this.policyForm.get('inspectionResult')?.get('generate')?.value,
-            liveTime: +this.policyForm.get('inspectionResult')?.get('liveTime')?.value,
-            managedBy: this.policyForm.get('inspectionResult')?.get('managedBy')?.value,
-            elasticSearchEnabled: this.policyForm.get('inspectionSetting')?.get('elasticSearchEnabled')?.value,
-            openSearchEnabled: this.policyForm.get('inspectionSetting')?.get('openSearchEnabled')?.value,
+    let data:any = {}
+    if (testData) { // unit test
+      data = testData
+    } else {
+      data = {
+        apiVersion: "goharbor.goharbor.io/v1alpha1",
+        kind: "InspectionPolicy",
+        metadata: {
+          annotations: {},
+          clusterName: "string",
+          deletionGracePeriodSeconds: 0,
+          finalizers: [],
+          generateName: "",
+          generation: 0,
+          labels: {},
+          managedFields: [],
+          name: this.policyForm.get('inspectionSetting')?.get('name')?.value,
+          namespace: '',
+          ownerReferences: [],
+          resourceVersion: "",
+        },
+        spec: {
+          enabled: this.enabledSettings,
+          inspection: {
+            assessment: {
+              format: this.policyForm.get('inspectionResult')?.get('format')?.value,
+              generate: this.policyForm.get('inspectionResult')?.get('generate')?.value,
+              liveTime: +this.policyForm.get('inspectionResult')?.get('liveTime')?.value,
+              managedBy: this.policyForm.get('inspectionResult')?.get('managedBy')?.value,
+              elasticSearchEnabled: this.policyForm.get('inspectionSetting')?.get('elasticSearchEnabled')?.value,
+              openSearchEnabled: this.policyForm.get('inspectionSetting')?.get('openSearchEnabled')?.value,
+            },
+            baselines: this.baselines,
+            // dataProvider: {
+            //   cache: {
+            //     address: '',
+            //     credential: {
+            //       accessKey: this.policyForm.get('username')?.value,
+            //       accessSecret: this.policyForm.get('password')?.value
+            //     },
+            //     database: 0,
+            //     kind: "Redis",
+            //     settings: {
+            //       livingTime: 0,
+            //       skipTLSVerify: true
+            //     }
+            //   },
+            //   connection: {
+            //     insecure: this.policyForm.get('insecure')?.value
+            //   },
+            //   credential: {
+            //     accessKey: this.policyForm.get('username')?.value,
+            //     accessSecret: this.policyForm.get('password')?.value
+            //   },
+            //   endpoint: this.policyForm.get('endpoint')?.value,
+            //   provider: "Harbor"
+            // },
+            namespaceSelector: {
+              matchExpressions: [],
+              matchLabels: {}
+            },
+            workloadSelector: {
+              matchExpressions: [],
+              matchLabels: {}
+            }
           },
-          baselines: this.baselines,
-          // dataProvider: {
-          //   cache: {
-          //     address: '',
-          //     credential: {
-          //       accessKey: this.policyForm.get('username')?.value,
-          //       accessSecret: this.policyForm.get('password')?.value
-          //     },
-          //     database: 0,
-          //     kind: "Redis",
-          //     settings: {
-          //       livingTime: 0,
-          //       skipTLSVerify: true
-          //     }
-          //   },
-          //   connection: {
-          //     insecure: this.policyForm.get('insecure')?.value
-          //   },
-          //   credential: {
-          //     accessKey: this.policyForm.get('username')?.value,
-          //     accessSecret: this.policyForm.get('password')?.value
-          //   },
-          //   endpoint: this.policyForm.get('endpoint')?.value,
-          //   provider: "Harbor"
-          // },
-          namespaceSelector: {
-            matchExpressions: [],
-            matchLabels: {}
+          inspector: {
+            image: this.policyForm.get('inspectionSetting')?.get('image')?.value,
+            imagePullPolicy: this.policyForm.get('inspectionSetting')?.get('imagePullPolicy')?.value,
+            imagePullSecrets: []
           },
-          workloadSelector: {
-            matchExpressions: [],
-            matchLabels: {}
-          }
-        },
-        inspector: {
-          image: this.policyForm.get('inspectionSetting')?.get('image')?.value,
-          imagePullPolicy: this.policyForm.get('inspectionSetting')?.get('imagePullPolicy')?.value,
-          imagePullSecrets: []
-        },
-        schedule: this.schedule,
-        settingsName: this.policyForm.get('inspectionSetting')?.get('settingsName')?.value,
-        strategy: {
-          concurrencyRule: this.policyForm.get('inspectionSetting')?.get('concurrencyRule')?.value,
-          historyLimit: +this.policyForm.get('inspectionSetting')?.get('historyLimit')?.value,
-          suspend: this.policyForm.get('inspectionSetting')?.get('suspend')?.value
-        },
-        workNamespace: this.policyForm.get('inspectionSetting')?.get('namespace')?.value
+          schedule: this.schedule,
+          settingsName: this.policyForm.get('inspectionSetting')?.get('settingsName')?.value,
+          strategy: {
+            concurrencyRule: this.policyForm.get('inspectionSetting')?.get('concurrencyRule')?.value,
+            historyLimit: +this.policyForm.get('inspectionSetting')?.get('historyLimit')?.value,
+            suspend: this.policyForm.get('inspectionSetting')?.get('suspend')?.value
+          },
+          workNamespace: this.policyForm.get('inspectionSetting')?.get('namespace')?.value
+        }
       }
     }
     if(this.policyForm.get('inspectionResult')?.get('actions')?.value){
@@ -612,7 +617,7 @@ export class PolicySettingPageComponent implements OnInit {
     this.schedule = data
     this.isCornUpdateModal = false
   }
-  cancelSchedule(data:any) {
+  cancelSchedule() {
     this.isCornUpdateModal = false
   }
 }
