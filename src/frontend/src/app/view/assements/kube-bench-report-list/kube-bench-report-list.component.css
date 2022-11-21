@@ -1,0 +1,13 @@
+.report {
+  position: relative;
+  padding: 15px;
+}
+.echarts-loading {
+  position: relative;
+  width: 1400px;
+}
+.echarts-loading .spinner {
+  position: absolute;
+  left: 50%;
+  top: 150px;
+}

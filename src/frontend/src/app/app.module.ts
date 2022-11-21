@@ -40,7 +40,11 @@ import { NamesapceHistogramComponent } from './view/report/namesapce-histogram/n
 import { ShardTestModule } from 'src/app/shard/shard/shard.module';
 import { DgFilterComponent } from './components/dg-filter/dg-filter.component';
 import { HarborSettingPageComponent } from './view/setting/harbor-setting-page/harbor-setting-page.component';
-import { PolicySettingPageComponent } from './view/policy/policy-setting-page/policy-setting-page.component'
+import { PolicySettingPageComponent } from './view/policy/policy-setting-page/policy-setting-page.component';
+import { KubeBenchReportListComponent } from './view/assements/kube-bench-report-list/kube-bench-report-list.component';
+import { KubeBenchReportTestViewComponent } from './view/assements/kube-bench-report-test-view/kube-bench-report-test-view.component';
+import { KubeBenchReportTestDetailComponent } from './view/assements/kube-bench-report-test-detail/kube-bench-report-test-detail.component';
+import { KubeBenchReportComponent } from './view/assements/kube-bench-report/kube-bench-report.component'
 @NgModule({
   declarations: [
     AppComponent,
@@ -70,7 +74,11 @@ import { PolicySettingPageComponent } from './view/policy/policy-setting-page/po
     NamesapceHistogramComponent,
     DgFilterComponent,
     HarborSettingPageComponent,
-    PolicySettingPageComponent
+    PolicySettingPageComponent,
+    KubeBenchReportListComponent,
+    KubeBenchReportTestViewComponent,
+    KubeBenchReportTestDetailComponent,
+    KubeBenchReportComponent
   ],
   imports: [
     BrowserModule,

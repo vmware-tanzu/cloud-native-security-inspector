@@ -1,0 +1,76 @@
+<div class="report">
+  <h2>{{title}}</h2>
+  <div class="echarts-loading" *ngIf="echartsLoading">
+    <span class="spinner spinner-lg">
+      Loading...
+    </span>
+  </div>
+  <div id="test-view" style="width: 600px;height:400px;"></div>
+
+  <clr-datagrid>
+    <clr-dg-column [clrDgField]="'workload.workload.metadata.name'">section</clr-dg-column>
+    <clr-dg-column [clrDgField]="'namespace'">{{'CommonlyUse.name'|translate}}</clr-dg-column>
+    <clr-dg-column [clrDgField]="'workload.workload.metadata.kind'">{{'CommonlyUse.type'|translate}}</clr-dg-column>
+    <clr-dg-column [clrDgField]="'workload.passed'" >{{'Kube_bench_list.passed'|translate}}</clr-dg-column>
+    <clr-dg-column [clrDgField]="'workload.workload.pods.length'" > {{'Kube_bench_list.failed'|translate}} </clr-dg-column>
+    <clr-dg-column [clrDgField]="'workload.workload.metadata.apiVersion'" >{{'Kube_bench_list.warned'|translate}}</clr-dg-column>
+    <clr-dg-column [clrDgField]="'workload.workload.metadata.apiVersion'" >{{'Kube_bench_list.inform'|translate}}</clr-dg-column>
+  
+    <clr-dg-row *clrDgItems="let kube of kubeTestResultList">
+      <clr-dg-cell>
+        {{kube.section}}
+      </clr-dg-cell>
+      <clr-dg-cell>{{kube.desc}}</clr-dg-cell>
+      <clr-dg-cell>{{kube.type}}</clr-dg-cell>
+      <clr-dg-cell>
+        <a href="..." class="label clickable" style="border-color: #266900;">
+          {{'Kube_bench_list.passed'|translate}}
+          
+          <span class="badge" style="background-color: #266900; color: #fff;">
+            {{kube.pass}}
+          </span>
+        </a>
+      </clr-dg-cell>
+      <clr-dg-cell>
+        <a href="..." class="label clickable" style="border-color: #A32100;">
+          {{'Kube_bench_list.failed'|translate}}
+          
+          <span class="badge" style="background-color: #A32100; color: #fff;">
+            {{kube.fail}}
+          </span>
+        </a>
+
+      </clr-dg-cell>
+      <clr-dg-cell>
+        <a href="..." class="label clickable" style="border-color: #EFD603;">
+          {{'Kube_bench_list.warned'|translate}}
+          
+          <span class="badge" style="background-color: #EFD603; color: #313131;">
+            {{kube.warn}}
+          </span>
+        </a>
+
+      </clr-dg-cell>
+      <clr-dg-cell>
+        <a href="..." class="label clickable" style="border-color: #49AFd9;">
+          {{'Kube_bench_list.inform'|translate}}
+          
+          <span class="badge" style="background-color: #49AFd9; color: #fff;">
+            {{kube.info}}
+          </span>
+        </a>
+
+      </clr-dg-cell>
+    </clr-dg-row>
+  
+    <clr-dg-footer>
+      <clr-dg-pagination #pagination [clrDgPageSize]="10">
+          <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Workloads per page</clr-dg-page-size>
+          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+          of {{pagination.totalItems}} workloads
+      </clr-dg-pagination>
+  </clr-dg-footer>
+  </clr-datagrid>
+
+
+</div>

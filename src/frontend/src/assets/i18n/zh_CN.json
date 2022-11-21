@@ -41,7 +41,8 @@
   "Nav": {
     "Assessments": {
       "title": "评估报告",
-      "report_view": "报告"
+      "report_view": "报告",
+      "Kube_bench": "Kube-bench报告"
     },
     "Insight": {
       "title": "安全状态",

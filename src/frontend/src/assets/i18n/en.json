@@ -41,7 +41,8 @@
   "Nav": {
     "Assessments": {
       "title": "Assessments",
-      "report_view": "Reports"
+      "report_view": "Reports",
+      "Kube_bench": "Kube-bench reports"
     },
     "Insight": {
       "title": "Insight",
@@ -191,6 +192,14 @@
     "ExecutionType": "Execution Type",
     "execute Once": "execute once",
     "executeMultiple times": "execute multiple times"
+  },
+  "Kube_bench_list": {
+    "title": "Kube Bench Reports",
+    "node_type": "Node Type",
+    "passed": "Passed",
+    "failed": "Failed",
+    "warned": "Warned",
+    "inform": "Inform"
   },
   "en": "English",
   "zh_CN": "中文 (简体)"
