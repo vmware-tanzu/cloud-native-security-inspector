@@ -56,13 +56,13 @@ func (r *RiskCollection) merge(items []*RiskItem) {
 
 // Workloads the workloads in the cluster
 type Workloads struct {
-	items map[string]Workload
-	risks RiskCollection
+	Items map[string]Workload `json:"items"`
+	Risks RiskCollection      `json:"risks"`
 }
 
 // NewWorkloads  new workloads summary
 func NewWorkloads(risks RiskCollection, w map[string]Workload) *Workloads {
-	return &Workloads{risks: risks, items: w}
+	return &Workloads{Risks: risks, Items: w}
 }
 
 // AddResource add resource
@@ -77,22 +77,22 @@ func (w *Workloads) generateAssessReport() (a api.AssessmentReport) {
 }
 
 func (w *Workloads) getRisks() {
-	w.risks = make(map[string][]*RiskItem)
-	for _, v := range w.items {
+	w.Risks = make(map[string][]*RiskItem)
+	for _, v := range w.Items {
 		if risks, err := v.GenerateReportItems(); err == nil {
-			w.risks.merge(risks)
+			w.Risks.merge(risks)
 		}
 	}
 }
 
 // ExportAssessmentDetails export the assessment report
 func (w *Workloads) ExportAssessmentDetails(e *consumers.OpenSearchExporter) error {
-	return e.SaveRiskReport(w.risks)
+	return e.SaveRiskReport(w.Risks)
 }
 
 // ExportAssessmentReports export the assessment report
 func (w *Workloads) ExportAssessmentReports(e *consumers.OpenSearchExporter) error {
-	if w.risks == nil {
+	if w.Risks == nil {
 		w.getRisks()
 	}
 

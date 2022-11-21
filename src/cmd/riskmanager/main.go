@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/api/v1alpha1"
+	osearch "github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/consumers/opensearch"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/inspection/riskmanager"
 	"go.uber.org/zap/zapcore"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -31,6 +32,8 @@ func init() {
 
 func main() {
 	var policy string
+	var mode string
+	flag.StringVar(&mode, "mode", "", "running mode")
 
 	flag.StringVar(&policy, "policy", "", "name of the inspection policy")
 	opts := zap.Options{
@@ -61,14 +64,46 @@ func main() {
 		os.Exit(1)
 	}
 
-	runner := riskmanager.NewController().
-		WithScheme(scheme).
-		WithLogger(log).
-		WithK8sClient(k8sClient).
-		CTRL()
+	if mode == "server-only" {
+		// Get the policy CR details.
 
-	if err := runner.Run(ctx, inspectionPolicy); err != nil {
-		log.Error(err, "kubebench controller run")
-		os.Exit(1)
+		client := osearch.NewClient([]byte{},
+			inspectionPolicy.Spec.Inspection.Assessment.OpenSearchAddr,
+			inspectionPolicy.Spec.Inspection.Assessment.OpenSearchUser,
+			inspectionPolicy.Spec.Inspection.Assessment.OpenSearchPasswd)
+
+		if client == nil {
+			log.Info("OpenSearch client is nil", nil, nil)
+			os.Exit(1)
+		}
+
+		conf := riskmanager.ReadEnvConfig()
+		exporterDetail := osearch.OpenSearchExporter{Client: client, Logger: log}
+		err := exporterDetail.NewExporter(client, "assessment_report")
+		if err != nil {
+			//Error Handling
+			os.Exit(1)
+		}
+
+		exporterAccessReport := osearch.OpenSearchExporter{Client: client, Logger: log}
+		err = exporterAccessReport.NewExporter(client, conf.DetailIndex)
+		if err != nil {
+			//Error handling
+			os.Exit(1)
+		}
+
+		server := riskmanager.NewServer(&exporterDetail, &exporterAccessReport)
+		server.Run(conf.Server)
+	} else {
+		runner := riskmanager.NewController().
+			WithScheme(scheme).
+			WithLogger(log).
+			WithK8sClient(k8sClient).
+			CTRL()
+
+		if err := runner.Run(ctx, inspectionPolicy); err != nil {
+			log.Error(err, "risk manager controller run")
+			os.Exit(1)
+		}
 	}
 }

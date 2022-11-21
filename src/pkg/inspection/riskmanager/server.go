@@ -92,7 +92,7 @@ func (s *Server) Analyze(option AnalyzeOption) {
 		}
 	}
 
-	s.Workloads.risks = v
+	s.Workloads.Risks = v
 	if option.DumpAssessReport {
 		err := s.Workloads.ExportAssessmentDetails(s.DetailExporter)
 		if err != nil {
