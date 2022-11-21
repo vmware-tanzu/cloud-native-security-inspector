@@ -96,12 +96,6 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 	return nil
 }
 
-func generateReport(report *RiskCollection, policy *v1alpha1.InspectionPolicy) (r v1alpha1.AssessmentReport) {
-	//TODO
-
-	return
-}
-
 func exportReportToOpenSearch(report *RiskCollection, policy *v1alpha1.InspectionPolicy, logger logr.Logger) error {
 	client := osearch.NewClient([]byte{},
 		policy.Spec.Inspection.Assessment.OpenSearchAddr,
