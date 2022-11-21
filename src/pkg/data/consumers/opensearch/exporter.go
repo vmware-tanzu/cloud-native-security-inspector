@@ -126,6 +126,11 @@ func (o *OpenSearchExporter) Save(doc api.AssessmentReport) error {
 	return nil
 }
 
+func (o *OpenSearchExporter) SaveRiskReport(a interface{}) error {
+	//TODO
+	return nil
+}
+
 // SaveCIS implements Exporter
 func (o *OpenSearchExporter) SaveCIS(controlsCollection []*check.Controls) error {
 	currentTimeData := time.Now().Format(time.RFC3339)
