@@ -125,6 +125,11 @@ func (o *OpenSearchExporter) Save(doc api.AssessmentReport) error {
 	return nil
 }
 
+func (o *OpenSearchExporter) SaveRiskReport(a interface{}) error {
+	//TODO
+	return nil
+}
+
 func (o *OpenSearchExporter) SaveCIS(controlsCollection []*check.Controls) error {
 	return nil
 }
