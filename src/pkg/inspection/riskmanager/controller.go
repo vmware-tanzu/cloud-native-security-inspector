@@ -1,4 +1,4 @@
-package kubebench
+package riskmanager
 
 import (
 	"context"
@@ -8,6 +8,7 @@ import (
 	osearch "github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/consumers/opensearch"
 	"k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"time"
 )
 
 // Controller controls the inspection flow.
@@ -15,31 +16,6 @@ type Controller interface {
 	// Run inspection.
 	Run(ctx context.Context, policy *v1alpha1.InspectionPolicy) error
 }
-
-type HostRiskItem struct {
-
-}
-
-type VulnerabilityRiskItem struct {
-
-}
-
-type ExposureRiskItem struct {
-
-}
-
-type ComplianceRiskItem struct {
-
-}
-
-
-type RiskCollection struct {
-	Hosts 	[]HostRiskItem
-	Exposes []ExposureRiskItem
-	Comps  	[]ComplianceRiskItem
-	Vulns 	[]VulnerabilityRiskItem
-}
-
 
 type controller struct {
 	kc     client.Client
@@ -57,17 +33,72 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 	viper.SetConfigName("config") // name of config file (without extension)
 	viper.AddConfigPath(cfgDir)
 
-	r := &RiskCollection{
-
+	client := osearch.NewClient([]byte{},
+		policy.Spec.Inspection.Assessment.OpenSearchAddr,
+		policy.Spec.Inspection.Assessment.OpenSearchUser,
+		policy.Spec.Inspection.Assessment.OpenSearchPasswd)
+	if client == nil {
+		c.logger.Info("OpenSearch client is nil", nil, nil)
 	}
 
-	exportReportToOpenSearch(r, policy, c.logger)
-	//os.Exit(exitCodeSelection(controlsCollection))
+	conf := ReadEnvConfig()
+
+	if conf.StandAlone {
+		exporterDetail := osearch.OpenSearchExporter{Client: client, Logger: c.logger}
+		err := exporterDetail.NewExporter(client, "assessment_report")
+		if err != nil {
+			//Error Handling
+			return err
+		}
+
+		exporterAccessReport := osearch.OpenSearchExporter{Client: client, Logger: c.logger}
+		err = exporterAccessReport.NewExporter(client, conf.DetailIndex)
+		if err != nil {
+			//Error handling
+			return err
+		}
+
+		server := NewServer(&exporterDetail, &exporterAccessReport)
+		go func() {
+			server.Run(conf.Server)
+		}()
+	}
+
+	//TODO
+	// @jinpeng get all resources
+
+	httpClient := NewClient(conf, c.logger)
+	var allResources []ResourceItem
+
+	for _, v := range allResources {
+		err := httpClient.PostResource(v)
+		if err != nil {
+			c.logger.Error(err, "cannot post resource")
+		}
+	}
+
+	option := AnalyzeOption{DumpAssessReport: true, DumpDetails: true}
+
+	if err := httpClient.PostAnalyze(option); err == nil {
+		for {
+			if ok, err := httpClient.IsAnalyzeRunning(); err != nil {
+				c.logger.Error(err, "failed to fetch status")
+			} else if ok {
+				c.logger.Info("the analyze is running")
+				time.Sleep(30 * time.Second)
+			} else {
+				c.logger.Info("the analyze is done")
+				break
+			}
+		}
+	}
+
 	return nil
 }
 
 func generateReport(report *RiskCollection, policy *v1alpha1.InspectionPolicy) (r v1alpha1.AssessmentReport) {
 	//TODO
+
 	return
 }
 
@@ -89,7 +120,6 @@ func exportReportToOpenSearch(report *RiskCollection, policy *v1alpha1.Inspectio
 	}
 	return nil
 }
-
 
 // NewController news a controller.
 func NewController() *controller {
