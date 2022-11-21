@@ -144,6 +144,7 @@
     "elasticSearchUser": "User",
     "elasticSearchPasswd": "Password",
     "elasticSearchCert": "Certificate",
+    "openSearchEnabled": "Open Search",
     "workNamespace": "Work Namespace",
     "image": "Image URL"
 
