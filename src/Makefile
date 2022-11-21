@@ -8,7 +8,8 @@ SWAGGER := $(DOCKERCMD) run --rm -it -v $(HOME):$(HOME) -w $(shell pwd) quay.io/
 REGISTRY ?= projects.registry.vmware.com/cnsi
 # Image URL to use all building/pushing image targets
 IMG ?= $(REGISTRY)/manager:0.1
-IMG_CMD ?= $(REGISTRY)/inspector:0.1
+IMG_CMD_INSPECTOR ?= $(REGISTRY)/inspector:0.1
+IMG_CMD_KUBEBENCH ?= $(REGISTRY)/kubebench:0.1
 PORTAl ?= $(REGISTRY)/portal:0.1
 # Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
 CRD_OPTIONS ?= "crd:trivialVersions=true,preserveUnknownFields=false"
@@ -75,21 +76,30 @@ build-manager: generate fmt vet ## Build manager binary.
 build-inspector: generate fmt vet ## Build inspector command.
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/inspector cmd/inspector/main.go
 
+build-kubebench: generate fmt vet ## Build inspector command.
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/kubebench cmd/kubebench/main.go
+
 run: manifests generate fmt vet ## Run a controller from your host.
 	go run ./main.go
+
+docker-build-all: docker-build-manager docker-build-inspector docker-build-kubebench docker-build-portal
 
 docker-build-manager: test build-manager ## Build docker image with the manager.
 	$(DOCKERCMD) build -t ${IMG} .
 
 docker-build-inspector: build-inspector ## Build docker image with inspector cmd.
-	$(DOCKERCMD) build -t ${IMG_CMD} -f Dockerfile.inspection.local .
+	$(DOCKERCMD) build -t ${IMG_CMD_INSPECTOR} -f Dockerfile.inspection .
+
+docker-build-kubebench: build-kubebench ## Build docker image with kubebench cmd.
+	$(DOCKERCMD) build -t ${IMG_CMD_KUBEBENCH} -f Dockerfile.kubebench .
 
 docker-build-portal:
 	$(DOCKERCMD) build -t ${PORTAl} -f Dockerfile.portal .
 
 docker-push: ## Push docker images with the manager.
 	$(DOCKERCMD) push ${IMG}
-	$(DOCKERCMD) push ${IMG_CMD}
+	$(DOCKERCMD) push ${IMG_CMD_INSPECTOR}
+	$(DOCKERCMD) push ${IMG_CMD_KUBEBENCH}
 	$(DOCKERCMD) push ${PORTAl}
 
 ##@ Deployment

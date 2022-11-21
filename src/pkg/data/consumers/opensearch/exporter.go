@@ -57,6 +57,7 @@ func (o *OpenSearchExporter) NewExporter(client *opensearch.Client, indexName st
 	return nil
 }
 
+// Save implements Exporter
 func (o *OpenSearchExporter) Save(doc api.AssessmentReport) error {
 	var res *opensearchapi.Response
 
@@ -125,18 +126,57 @@ func (o *OpenSearchExporter) Save(doc api.AssessmentReport) error {
 	return nil
 }
 
+// SaveCIS implements Exporter
 func (o *OpenSearchExporter) SaveCIS(controlsCollection []*check.Controls) error {
+	currentTimeData := time.Date(time.Now().Year(), time.Now().Month(), time.Now().Day(), time.Now().Hour(),
+		time.Now().Minute(), time.Now().Second(), time.Now().Nanosecond(), time.Local)
+	var res *opensearchapi.Response
+	for _, control := range controlsCollection {
+		//fmt.Println(control.JSON())
+		doc, err := json.Marshal(control)
+		if err != nil {
+			return err
+		}
+
+		res, err = opensearchapi.IndexRequest{
+			Index:      o.indexName,
+			DocumentID: currentTimeData.String() + "__" + control.ID,
+			Body:       strings.NewReader(string(doc)),
+			Refresh:    "true",
+		}.Do(context.Background(), o.Client)
+		if err != nil {
+			ctrlLog.Error(err, "Error getting response")
+			return err
+		}
+
+		if res.IsError() {
+			ctrlLog.Info("[%s] Error indexing document ID=%v", res.Status(), "name-name")
+			return errors.New(fmt.Sprint("http error, code ", res.StatusCode))
+		} else {
+			// Deserialize the response into a map.
+			var r map[string]interface{}
+			if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
+				ctrlLog.Info("Error parsing the response body: %s", err)
+			} else {
+				fmt.Println("OK")
+			}
+		}
+
+	}
 	return nil
 }
 
+// Delete implements Exporter
 func (o *OpenSearchExporter) Delete(doc api.AssessmentReport) error {
 	return nil
 }
 
+// Search implements Exporter
 func (o *OpenSearchExporter) Search(query string, after ...string) ([]consumers.AssessmentReportDoc, error) {
 	return nil, nil
 }
 
+// List implements Exporter
 func (o *OpenSearchExporter) List() (api.AssessmentReportList, error) {
 	return api.AssessmentReportList{}, nil
 }

@@ -40,7 +40,7 @@ func main() {
 	opts := zap.Options{
 		Development:     true,
 		Level:           zapcore.DebugLevel,
-		StacktraceLevel: zapcore.DebugLevel,
+		StacktraceLevel: zapcore.ErrorLevel,
 	}
 	opts.BindFlags(flag.CommandLine)
 	flag.Parse()
