@@ -54,7 +54,7 @@ export class SettingComponent implements OnInit, OnDestroy {
     this.getSecrets()
     this.createTimer = setInterval(() => {
       this.getHarbor()      
-    }, 500)
+    }, 1000)
   }
 
   // setting func
@@ -63,10 +63,14 @@ export class SettingComponent implements OnInit, OnDestroy {
       data => {
         this.harborSetingList = data.items;
         this.noteIconFlag = false
+        if (data.items.length < 1) {
+          clearInterval(this.createTimer)
+        }
         if (data.items[0].status) {
           clearInterval(this.createTimer)
           this.noteIconFlag = true;
         }
+
       }
     )
   }
