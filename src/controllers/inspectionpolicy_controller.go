@@ -31,6 +31,7 @@ const (
 	defaultImage          = "projects.registry.vmware.com/cnsi/inspector"
 	defaultImageTag       = "0.1"
 	labelOwnerKey         = "goharbor.io/policy-working-for"
+	labelTypeKey          = "cnsi/inspector-type"
 	lastAppliedAnnotation = "goharbor.io/last-applied-spec"
 )
 
@@ -106,72 +107,18 @@ func (r *InspectionPolicyReconciler) Reconcile(ctx context.Context, req ctrl.Req
 		return ctrl.Result{}, err
 	}
 
-	// Check whether the underlying cronjob resource is existing or not.
-	cj, err := r.checkCronJob(ctx, policy)
-	if err != nil {
-		logger.Error(err, "unable to check underlying cron job")
-		return ctrl.Result{}, err
-	}
+	// Process the cronjob for inspection
+	var statusNeedUpdateForInspection bool
+	statusNeedUpdateForInspection, err = r.cronjobForInspection(ctx, policy, goharborv1.CronjobInpsection, logger)
 
-	if cj != nil {
-		logger.V(1).Info("Found underlying cronjob existing", "cronjob", cj)
-	}
+	// Process the cronjob for kubebench
+	var statusNeedUpdateForKubebench bool
+	statusNeedUpdateForKubebench, err = r.cronjobForInspection(ctx, policy, goharborv1.CronjobKubebench, logger)
 
-	cjCR, err := r.generateCronJobCR(policy)
-	if err != nil {
-		logger.Error(err, "unable to generate underlying cronjob CR")
-		return ctrl.Result{}, err
-	}
-
-	statusNeedUpdate := false
-	// Create new when cronjob is not existing.
-	if cj == nil {
-		logger.V(1).Info("Create underlying cronjob")
-
-		if err := r.Client.Create(ctx, cjCR); err != nil {
-			logger.Error(err, "unable to create underlying cronjob", "cronjob", cjCR)
-			return ctrl.Result{}, err
-		}
-
-		// Retrieve again for further usage?
-		var ncj batchv1beta1.CronJob
-		if err := r.Client.Get(ctx, client.ObjectKey{
-			Namespace: cjCR.Namespace,
-			Name:      cjCR.Name,
-		}, &ncj); err != nil {
-			logger.Error(err, "unable to retrieve the newly created underlying cronjob")
-			return ctrl.Result{}, err
-		}
-
-		cj = &ncj
-	} else {
-		// Any changes?
-		if r.changed(cj, cjCR) {
-			logger.V(1).Info("Update underlying cronjob")
-
-			statusNeedUpdate = *cj.Spec.Suspend != *cjCR.Spec.Suspend
-
-			cj.Spec = cjCR.DeepCopy().Spec
-			if err := r.Client.Update(ctx, cj); err != nil {
-				logger.Error(err, "unable to update underlying cronjob", "cronjob", cj)
-				return ctrl.Result{}, err
-			}
-		}
-	}
-
-	// Ensure executor reference is set.
-	if policy.Status.Executor == nil {
-		if cj != nil {
-			// Add reference.
-			ref, err := reference.GetReference(r.Scheme, cj)
-			if err != nil {
-				logger.Error(err, "unable to get reference of underlying cronjob", "cronjob", cj)
-				return ctrl.Result{}, err
-			}
-
-			policy.Status.Executor = ref
-			statusNeedUpdate = true
-		}
+	// either inspection or kubebench needs update, it should be updated
+	var statusNeedUpdate bool
+	if statusNeedUpdateForInspection || statusNeedUpdateForKubebench {
+		statusNeedUpdate = true
 	}
 
 	// Update the policy status when necessary.
@@ -181,6 +128,79 @@ func (r *InspectionPolicyReconciler) Reconcile(ctx context.Context, req ctrl.Req
 	}
 	logger.Info("Reconcile completed")
 	return ctrl.Result{}, nil
+}
+
+func (r *InspectionPolicyReconciler) cronjobForInspection(ctx context.Context, policy *goharborv1.InspectionPolicy,
+	cronjobType string, logger logr.Logger) (bool, error) {
+	statusNeedUpdate := false
+	// Check whether the underlying cronjob resource is existing or not.
+	cj, err := r.checkCronJob(ctx, policy, cronjobType)
+	if err != nil {
+		logger.Error(err, "unable to check underlying cron job")
+		return false, err
+	}
+
+	cjCR, err := r.generateCronJobCR(policy, cronjobType)
+	if err != nil {
+		logger.Error(err, "unable to generate underlying cronjob CR")
+		return false, err
+	}
+
+	if cj == nil {
+		// Create new when cronjob is not existing.
+		logger.V(1).Info("Create underlying cronjob")
+		if err := r.Client.Create(ctx, cjCR); err != nil {
+			logger.Error(err, "unable to create underlying cronjob", "cronjob", cjCR)
+			return false, err
+		}
+
+		// Retrieve again for further usage?
+		var ncj batchv1beta1.CronJob
+		if err := r.Client.Get(ctx, client.ObjectKey{
+			Namespace: cjCR.Namespace,
+			Name:      cjCR.Name,
+		}, &ncj); err != nil {
+			logger.Error(err, "unable to retrieve the newly created underlying cronjob")
+			return false, err
+		}
+
+		cj = &ncj
+	} else {
+		// If cronjob is already existed, check if the status of InspectionPolicy needs to be updated.
+		logger.V(1).Info("Found underlying cronjob existing", "cronjob", cj)
+		if r.changed(cj, cjCR) {
+			logger.V(1).Info("Update underlying cronjob")
+
+			// If .spec.suspend changes, statusNeedUpdate will be marked as true to update the status of InspectionPolicy.
+			// Executions that are suspended during their scheduled time count as missed jobs.
+			// When .spec.suspend changes from true to false on an existing cron job without a starting deadline,
+			// the missed jobs are scheduled immediately.
+			statusNeedUpdate = *cj.Spec.Suspend != *cjCR.Spec.Suspend
+
+			// TODO:Delete the update for Cronjob for now.
+			//cj.Spec = cjCR.DeepCopy().Spec
+			//if err := r.Client.Update(ctx, cj); err != nil {
+			//	logger.Error(err, "unable to update underlying cronjob", "cronjob", cj)
+			//	return false, err
+			//}
+		}
+	}
+
+	// Ensure executor reference is set.
+	if policy.Status.InspectionExecutor == nil {
+		if cj != nil {
+			// Add reference.
+			ref, err := reference.GetReference(r.Scheme, cj)
+			if err != nil {
+				logger.Error(err, "unable to get reference of underlying cronjob", "cronjob", cj)
+				return false, err
+			}
+
+			policy.Status.InspectionExecutor = ref
+			statusNeedUpdate = true
+		}
+	}
+	return statusNeedUpdate, nil
 }
 
 func (r *InspectionPolicyReconciler) updatePolicyStatus(policy *goharborv1.InspectionPolicy,
@@ -349,12 +369,33 @@ func (r *InspectionPolicyReconciler) ensureRBAC(ctx context.Context, ns string) 
 	return nil
 }
 
-func (r *InspectionPolicyReconciler) checkCronJob(ctx context.Context, policy *goharborv1.InspectionPolicy) (*batchv1beta1.CronJob, error) {
-	exec := policy.Status.Executor
-	if exec == nil {
+func (r *InspectionPolicyReconciler) checkCronJob(ctx context.Context, policy *goharborv1.InspectionPolicy,
+	cronjobType string) (*batchv1beta1.CronJob, error) {
+	var exec *corev1.ObjectReference
+	if cronjobType == goharborv1.CronjobInpsection {
+		exec = policy.Status.InspectionExecutor
+	} else if cronjobType == goharborv1.CronjobKubebench {
+		exec = policy.Status.KubebenchExecutor
+	}
+
+	if exec != nil {
+		// Cronjob already has been created. Get the cron job and check if it is still existing.
+		nsName := types.NamespacedName{
+			Namespace: exec.Namespace,
+			Name:      exec.Name,
+		}
+		var cronJob batchv1beta1.CronJob
+		if err := r.Client.Get(ctx, nsName, &cronJob); err != nil {
+			r.logger.Error(err, "unable to get the underlying cronjob", "cronjob", nsName)
+			// Ignore the NOTFOUND error.
+			return nil, client.IgnoreNotFound(err)
+		}
+
+		return &cronJob, nil
+	} else {
 		// Try to list it.
 		var jl batchv1beta1.CronJobList
-		if err := r.List(ctx, &jl, client.MatchingLabels{labelOwnerKey: policy.Name}); err != nil {
+		if err := r.List(ctx, &jl, client.MatchingLabels{labelOwnerKey: policy.Name, labelTypeKey: cronjobType}); err != nil {
 			return nil, err
 		}
 
@@ -363,7 +404,7 @@ func (r *InspectionPolicyReconciler) checkCronJob(ctx context.Context, policy *g
 			return nil, nil
 		}
 
-		// Duplicated?
+		// If duplicated cronjob of this type has been found, return the new one and delete others.
 		if len(jl.Items) > 1 {
 			// Clean up?
 			var mostRecent *batchv1beta1.CronJob
@@ -375,7 +416,6 @@ func (r *InspectionPolicyReconciler) checkCronJob(ctx context.Context, policy *g
 				// Comparison.
 				if mostRecent.CreationTimestamp.Before(&cj.CreationTimestamp) {
 					// Delete the old one first.
-					// Try best action.
 					if err := r.Delete(ctx, mostRecent); err != nil {
 						r.logger.Error(err, "unable to clean the duplicated old underlying cron job", "cronjob", mostRecent)
 					}
@@ -389,31 +429,27 @@ func (r *InspectionPolicyReconciler) checkCronJob(ctx context.Context, policy *g
 		return &jl.Items[0], nil
 	}
 
-	// Get the cron job and check if it is still existing.
-	nsName := types.NamespacedName{
-		Namespace: exec.Namespace,
-		Name:      exec.Name,
-	}
-
-	var cronJob batchv1beta1.CronJob
-	if err := r.Client.Get(ctx, nsName, &cronJob); err != nil {
-		r.logger.Error(err, "unable to get the underlying cronjob", "cronjob", nsName)
-		// Ignore the NOTFOUND error.
-		return nil, client.IgnoreNotFound(err)
-	}
-
-	return &cronJob, nil
 }
 
-func (r *InspectionPolicyReconciler) generateCronJobCR(policy *goharborv1.InspectionPolicy) (*batchv1beta1.CronJob, error) {
+func (r *InspectionPolicyReconciler) generateCronJobCR(policy *goharborv1.InspectionPolicy, cronjobType string) (*batchv1beta1.CronJob, error) {
 	var fl int32 = 1
+	var name, image, command string
+	if cronjobType == goharborv1.CronjobInpsection {
+		name = "inspector"
+		command = "/inspector"
+	} else if cronjobType == goharborv1.CronjobKubebench {
+		name = "kubebench"
+		command = "/kubebench"
+	}
+	image = getImage(policy, cronjobType)
 
 	cj := &batchv1beta1.CronJob{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      randomName(policy.Name),
+			Name:      randomName(policy.Name) + "--" + name,
 			Namespace: *policy.Spec.WorkNamespace,
 			Labels: map[string]string{
 				labelOwnerKey: policy.Name,
+				labelTypeKey:  cronjobType,
 			},
 			Annotations: make(map[string]string),
 		},
@@ -429,10 +465,10 @@ func (r *InspectionPolicyReconciler) generateCronJobCR(policy *goharborv1.Inspec
 						Spec: corev1.PodSpec{
 							Containers: []corev1.Container{
 								{
-									Name:            "inspector",
-									Image:           getImage(policy),
+									Name:            name,
+									Image:           image,
 									ImagePullPolicy: getImagePullPolicy(policy),
-									Command:         []string{"/inspector"},
+									Command:         []string{command},
 									Args: []string{
 										"--policy",
 										policy.Name,
@@ -471,76 +507,13 @@ func (r *InspectionPolicyReconciler) generateCronJobCR(policy *goharborv1.Inspec
 	return cj, nil
 }
 
-func (r *InspectionPolicyReconciler) generateCronJobCR4KubeBench(policy *goharborv1.InspectionPolicy) (*batchv1beta1.CronJob, error) {
-
-	var fl int32 = 1
-
-	cj := &batchv1beta1.CronJob{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      randomName(policy.Name + "_kube-bench"),
-			Namespace: *policy.Spec.WorkNamespace,
-			Labels: map[string]string{
-				labelOwnerKey: policy.Name,
-			},
-			Annotations: make(map[string]string),
-		},
-		Spec: batchv1beta1.CronJobSpec{
-			Schedule:                   policy.Spec.Schedule,
-			ConcurrencyPolicy:          batchv1beta1.ConcurrencyPolicy(policy.Spec.Strategy.ConcurrencyRule),
-			Suspend:                    policy.Spec.Strategy.Suspend,
-			SuccessfulJobsHistoryLimit: policy.Spec.Strategy.HistoryLimit,
-			FailedJobsHistoryLimit:     &fl,
-			JobTemplate: batchv1beta1.JobTemplateSpec{
-				Spec: batchv1.JobSpec{
-					Template: corev1.PodTemplateSpec{
-						Spec: corev1.PodSpec{
-							Containers: []corev1.Container{
-								{
-									Name:            "kubebench",
-									Image:           getImage(policy),
-									ImagePullPolicy: getImagePullPolicy(policy),
-									Command:         []string{"/kubebench"},
-									Args: []string{
-										"--policy",
-										policy.Name,
-									},
-								},
-							},
-							RestartPolicy:      corev1.RestartPolicyOnFailure,
-							ServiceAccountName: saName,
-						},
-					},
-				},
-			},
-		},
-	}
-
+func getImage(policy *goharborv1.InspectionPolicy, cronjobType string) string {
 	if policy.Spec.Inspector != nil {
-		if len(policy.Spec.Inspector.ImagePullSecrets) > 0 {
-			cj.Spec.JobTemplate.Spec.Template.Spec.ImagePullSecrets = append(
-				cj.Spec.JobTemplate.Spec.Template.Spec.ImagePullSecrets,
-				policy.Spec.Inspector.ImagePullSecrets...)
+		if cronjobType == goharborv1.CronjobInpsection {
+			return policy.Spec.Inspector.Image
+		} else if cronjobType == goharborv1.CronjobKubebench {
+			return policy.Spec.Inspector.KubebenchImage
 		}
-	}
-
-	// Set owner reference.
-	if err := ctrl.SetControllerReference(policy, cj, r.Scheme); err != nil {
-		return nil, err
-	}
-
-	jdata, err := json.Marshal(cj.Spec)
-	if err != nil {
-		return nil, err
-	}
-
-	cj.Annotations[lastAppliedAnnotation] = string(jdata)
-
-	return cj, nil
-}
-
-func getImage(policy *goharborv1.InspectionPolicy) string {
-	if policy.Spec.Inspector != nil {
-		return policy.Spec.Inspector.Image
 	}
 
 	return fmt.Sprintf("%s:%s", defaultImage, defaultImageTag)

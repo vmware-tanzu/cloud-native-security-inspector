@@ -16,7 +16,7 @@ import (
 )
 
 var (
-	log     = ctrl.Log.WithName("inspector")
+	log     = ctrl.Log.WithName("kubebench")
 	scheme  = runtime.NewScheme()
 	rootCtx = context.Background()
 )
@@ -31,15 +31,15 @@ func init() {
 
 func main() {
 	var policy string
-
 	flag.StringVar(&policy, "policy", "", "name of the inspection policy")
 	opts := zap.Options{
 		Development:     true,
 		Level:           zapcore.DebugLevel,
-		StacktraceLevel: zapcore.DebugLevel,
+		StacktraceLevel: zapcore.ErrorLevel,
 	}
 	opts.BindFlags(flag.CommandLine)
 	flag.Parse()
+	log.Info("kube-bench scanning....")
 
 	ctrl.SetLogger(zap.New(zap.UseFlagOptions(&opts)))
 
