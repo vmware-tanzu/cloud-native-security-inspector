@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-
-import * as echarts from 'echarts';
-type EChartsOption = echarts.EChartsOption;
+import { echarts, BarSeriesOption } from 'src/app/shard/shard/echarts';
+type ECOption = echarts.ComposeOption<BarSeriesOption>
 @Component({
   selector: 'app-kube-bench-report-list',
   templateUrl: './kube-bench-report-list.component.html',
@@ -1494,7 +1493,7 @@ resources and that all new resources are created in a specific namespace.
     private router: Router
   ) { }
 
-  echartsOption!: EChartsOption
+  echartsOption!: ECOption
   ngOnInit(): void {
     this.echartsInit()
 

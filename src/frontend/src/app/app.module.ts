@@ -45,6 +45,7 @@ import { KubeBenchReportListComponent } from './view/assements/kube-bench-report
 import { KubeBenchReportTestViewComponent } from './view/assements/kube-bench-report-test-view/kube-bench-report-test-view.component';
 import { KubeBenchReportTestDetailComponent } from './view/assements/kube-bench-report-test-detail/kube-bench-report-test-detail.component';
 import { KubeBenchReportComponent } from './view/assements/kube-bench-report/kube-bench-report.component'
+
 @NgModule({
   declarations: [
     AppComponent,

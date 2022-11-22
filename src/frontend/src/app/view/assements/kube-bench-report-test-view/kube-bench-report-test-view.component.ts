@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import * as echarts from 'echarts';
 import { HttpClient } from '@angular/common/http';
-type EChartsOption = echarts.EChartsOption;
+import { echarts, PieSeriesOption } from 'src/app/shard/shard/echarts';
+type ECOption = echarts.ComposeOption<PieSeriesOption>
 @Component({
   selector: 'app-kube-bench-report-test-view',
   templateUrl: './kube-bench-report-test-view.component.html',
@@ -16,7 +16,7 @@ export class KubeBenchReportTestViewComponent implements OnInit, OnDestroy {
   kubeReportTestList: any[] = []
   // echarts
   myChart!: any
-  echartsOption!: EChartsOption
+  echartsOption!: ECOption
 
   constructor(
     private route:ActivatedRoute,

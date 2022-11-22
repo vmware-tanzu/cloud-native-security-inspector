@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import * as echarts from 'echarts';
-type EChartsOption = echarts.EChartsOption;
+import { echarts, PieSeriesOption } from 'src/app/shard/shard/echarts';
+type ECOption = echarts.ComposeOption<PieSeriesOption>
 @Component({
   selector: 'app-kube-bench-report-test-detail',
   templateUrl: './kube-bench-report-test-detail.component.html',
@@ -17,7 +17,7 @@ export class KubeBenchReportTestDetailComponent implements OnInit, OnDestroy {
   kubeTestResultList: any[] = []
   // echarts
   myChart!: any
-  echartsOption!: EChartsOption
+  echartsOption!: ECOption
 
   constructor(
     private route:ActivatedRoute,
@@ -26,7 +26,7 @@ export class KubeBenchReportTestDetailComponent implements OnInit, OnDestroy {
   ) { }
 
   echartsInit() {
-    const chartDom = document.getElementById('test-view')!;
+    const chartDom = document.getElementById('test-detail')!;
     this.myChart = echarts.init(chartDom);
   }
 
@@ -51,7 +51,6 @@ export class KubeBenchReportTestDetailComponent implements OnInit, OnDestroy {
           this.title = this.testInfo.desc
           this.kubeTestResultList = this.testInfo.results
           console.log(this.testInfo);
-
           // update echarts
           this.echartsOption = {
             tooltip: {
@@ -98,7 +97,6 @@ export class KubeBenchReportTestDetailComponent implements OnInit, OnDestroy {
               }
             ]
           }
-          this.myChart.clear()
           this.echartsOption && this.myChart.setOption(this.echartsOption);
           this.echartsLoading = false      
     
