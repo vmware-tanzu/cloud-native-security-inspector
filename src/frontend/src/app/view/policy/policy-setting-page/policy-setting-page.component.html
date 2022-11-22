@@ -112,6 +112,7 @@
         <clr-select-container>
           <label class="w-200">{{'Policy.settingsName'|translate}}</label>
           <select clrSelect name="settingsName" formControlName="settingsName">
+            <option></option>
             <option *ngFor="let item of settingList" [value]="item.metadata.name">{{item.metadata.name}}</option>
           </select>
         </clr-select-container>
