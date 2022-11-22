@@ -112,6 +112,7 @@
         <clr-select-container>
           <label class="w-200">{{'Policy.settingsName'|translate}}</label>
           <select clrSelect name="settingsName" formControlName="settingsName">
+            <option></option>
             <option *ngFor="let item of settingList" [value]="item.metadata.name">{{item.metadata.name}}</option>
           </select>
         </clr-select-container>
@@ -141,7 +142,7 @@
 
             <clr-password-container>
               <label>{{'Policy.elasticSearchPasswd'|translate}}:</label>
-              <input clrPassword placeholder="Password please!" name="openSearchPasswd" formControlName="openSearchPasswd" />
+              <input clrPassword placeholder="Password please!" name="elasticSearchPasswd" formControlName="elasticSearchPasswd" />
             </clr-password-container>
 
               
@@ -408,7 +409,7 @@
             </div>
             <div class="modal-body">
                 <!-- <app-corn (setSchedule)='setSchedule($event)' #corn></app-corn> -->
-                <app-corn-schedule  (saveSchedule)="saveSchedule($event)" (cancelSchedule)="cancelSchedule($event)"></app-corn-schedule>
+                <app-corn-schedule  (saveSchedule)="saveSchedule($event)" (cancelSchedule)="cancelSchedule()"></app-corn-schedule>
             </div>
             <!-- <div class="modal-footer">
                 <button class="btn btn-outline" (click)='isCornUpdateModal=false' type="button">Cancel</button>
