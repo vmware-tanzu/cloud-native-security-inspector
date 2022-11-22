@@ -93,12 +93,25 @@
             <option value="Forbid">Forbid</option>
           </select>
         </clr-select-container>
-  
-        <clr-input-container>
-          <label>{{'CommonlyUse.image'|translate}}:  </label>
-          <input clrInput placeholder="" name="image" formControlName="image"/>
-        </clr-input-container>
-  
+
+        <clr-combobox-container>
+          <label>{{'CommonlyUse.image'|translate}}:</label>
+          <clr-combobox formControlName="image" name="image" clrMulti="true" required>
+            <ng-container *clrOptionSelected="let selected">
+              <clr-icon shape="network-globe"></clr-icon> {{selected?.name}}
+            </ng-container>
+            <clr-options>
+              <clr-option *clrOptionItems="let image of imageList;" [clrValue]="image">
+                  {{image.name}}
+                <div style="display: flex; position: relative;">
+                  <clr-icon style="position: absolute; left: -20px; top: 5px;" shape="network-globe"></clr-icon>
+                  <span>{{image.url}}</span>  
+                </div>
+              </clr-option>
+            </clr-options>
+          </clr-combobox>
+        </clr-combobox-container>
+
         <clr-select-container>
           <label class="w-200">{{'Policy.imagePullPolicy'|translate}}</label>
           <select clrSelect name="imagePullPolicy" formControlName="imagePullPolicy">

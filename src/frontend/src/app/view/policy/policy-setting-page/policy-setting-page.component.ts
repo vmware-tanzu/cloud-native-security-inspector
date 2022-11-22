@@ -26,6 +26,16 @@ export class PolicySettingPageComponent implements OnInit {
       "scheme":"application/vnd.security.vulnerability.report; version=1.1"
     }
   ]
+  imageList = [
+    {
+      name: 'inspector',
+      url: 'projects.registry.vmware.com/cnsi/inspector:0.1'
+    },
+    {
+      name: 'kubebench',
+      url: 'projects.registry.vmware.com/cnsi/kubebench:0.1'
+    }
+  ]
   public actions = [
     {
       "kind":"quarantine_vulnerable_workload"
@@ -41,11 +51,14 @@ export class PolicySettingPageComponent implements OnInit {
 
   get inspectionSettingValid() {
     let result = true
-    const data = this.policyForm.get('inspectionSetting')?.value
+    const data = this.policyForm.get('inspectionSetting')?.value    
     if (this.schedule) {
       result = false
     }
 
+    if (!data.image || data.image.length < 1) {
+      result = true
+    }
     if (!data.elasticSearchEnabled) {      
       delete data.elasticSearchAddr
       delete data.elasticSearchUser
@@ -126,7 +139,7 @@ export class PolicySettingPageComponent implements OnInit {
         historyLimit:[5],
         suspend: [false],
         concurrencyRule:['Forbid'],
-        image:['projects.registry.vmware.com/cnsi/inspector:0.1'],
+        image:[[]],
         imagePullPolicy: ['IfNotPresent'],
         settingsName: [''],
         elasticSearchEnabled: [false],
@@ -392,6 +405,8 @@ export class PolicySettingPageComponent implements OnInit {
     if (testData) { // unit test
       data = testData
     } else {
+      const imagesList = this.policyForm.get('inspectionSetting')?.get('image')?.value
+      // 等待开发      
       data = {
         apiVersion: "goharbor.goharbor.io/v1alpha1",
         kind: "InspectionPolicy",
@@ -455,7 +470,7 @@ export class PolicySettingPageComponent implements OnInit {
             }
           },
           inspector: {
-            image: this.policyForm.get('inspectionSetting')?.get('image')?.value,
+            image: imagesList[0].url,
             imagePullPolicy: this.policyForm.get('inspectionSetting')?.get('imagePullPolicy')?.value,
             imagePullSecrets: []
           },
