@@ -94,13 +94,13 @@ func (s *Server) Analyze(option AnalyzeOption) {
 
 		for _, r := range t.Related {
 			var risks []*RiskItem
-			if r.Type == "Pod" {
+			if r.Type == "Service" {
 				//TODO generate exposure risk
 			} else if r.Type == "Deployment" {
 				//TODO generate host risk
 			} else if r.Type == "Node" {
 				//TODO generate compliance risk
-			} else if r.Type == "Service" {
+			} else if r.Type == "Pod" {
 				//TODO generate compliance risk
 			}
 
@@ -114,13 +114,13 @@ func (s *Server) Analyze(option AnalyzeOption) {
 
 	s.Workloads.Risks = v
 	if option.DumpAssessReport {
-		err := s.Workloads.ExportAssessmentDetails(s.DetailExporter)
+		err := s.Workloads.ExportAssessmentReports(s.DetailExporter)
 		if err != nil {
 
 		}
 	}
 
-	if option.DumpAssessReport {
+	if option.DumpDetails {
 		err := s.Workloads.ExportAssessmentDetails(s.DetailExporter)
 		if err != nil {
 
