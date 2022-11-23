@@ -3,8 +3,15 @@
 package harbor
 
 import (
+	"bytes"
 	"context"
+	"crypto/tls"
+	"encoding/json"
 	"fmt"
+	"github.com/goharbor/harbor/src/pkg/scan/vuln"
+	"io"
+	log2 "log"
+	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
@@ -38,6 +45,8 @@ type Adapter struct {
 	// cache client for reading caching data.
 	cache cache.Client
 }
+
+var DefaultSchemes = []string{"http", "https"}
 
 // WithClient sets Harbor client.
 func (a *Adapter) WithClient(cli *harbor.ClientSet) *Adapter {
@@ -560,4 +569,61 @@ func (a *Adapter) scanOnPush(ctx context.Context) error {
 	}
 
 	return nil
+}
+
+func (a *Adapter) GetVulnerabilitiesList(ctx context.Context, id core.ArtifactID) (*vuln.Report, error) {
+	log2.Default().Printf("ProjectName: %s", id.Namespace())
+	log2.Default().Printf("RepositoryName: %s", id.Repository())
+	log2.Default().Printf("Reference: %s", id.Digest())
+	log2.Default().Printf("Registry: %s", id.Registry())
+
+	xAcceptVulnerabilities := core.DataSchemeVulnerability
+	for _, scheme := range DefaultSchemes {
+		requestURL := fmt.Sprintf("%s://%s/api/v2.0/projects/%s/repositories/%s/artifacts/%s/additions/vulnerabilities",
+			scheme, id.Registry(), id.Namespace(), id.Repository(), id.Digest())
+		log2.Default().Printf("requestURL: %s", requestURL)
+
+		request, err := http.NewRequest("GET", requestURL, bytes.NewBuffer(nil))
+		if err != nil {
+			log2.Default().Printf("new request err: %v", err)
+			continue
+		}
+		request.Header.Set("X-Accept-Vulnerabilities", xAcceptVulnerabilities)
+		client := &http.Client{
+			Transport: &http.Transport{
+				TLSClientConfig: &tls.Config{
+					InsecureSkipVerify: true,
+				},
+			},
+		}
+		res, err := client.Do(request)
+		if err != nil {
+			log2.Default().Printf("find vulnerabilities err: %v", err)
+			continue
+		}
+		var report map[string]*vuln.Report
+		err = json.NewDecoder(res.Body).Decode(&report)
+		if err != nil {
+			body, _ := io.ReadAll(res.Body)
+			log2.Default().Printf("vuln report json unmarshal: %s", string(body))
+			continue
+		}
+		return report[xAcceptVulnerabilities], nil
+	}
+
+	return nil, errors.New("not find report")
+	//addition, err := a.cli.V2().Artifact.GetVulnerabilitiesAddition(ctx, &artifact.GetVulnerabilitiesAdditionParams{
+	//	ProjectName:            id.Namespace(),
+	//	RepositoryName:         id.Repository(),
+	//	Reference:              id.Digest(),
+	//	XAcceptVulnerabilities: &xAcceptVulnerabilities,
+	//})
+	//if err != nil {
+	//	return nil, errors.Wrapf(err, "failed to get image: %s vuln report", id.String())
+	//}
+	//
+	//log2.Default().Printf("report: %s", addition.GetPayload())
+
+	//err = json.Unmarshal([]byte(addition.GetPayload()), &report)
+	//return report, errors.Wrapf(err, "vuln report json unmarshal: %s", addition.GetPayload())
 }

@@ -3,10 +3,15 @@ package riskmanager
 import (
 	"context"
 	"github.com/go-logr/logr"
+	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/api/v1alpha1"
 	osearch "github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/consumers/opensearch"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/inspection"
+	v1 "k8s.io/api/apps/v1"
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"log"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"time"
 )
@@ -22,6 +27,8 @@ type controller struct {
 	logger logr.Logger
 	scheme *runtime.Scheme
 	ready  bool
+
+	scanner inspection.Scanner
 }
 
 var (
@@ -33,26 +40,26 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 	viper.SetConfigName("config") // name of config file (without extension)
 	viper.AddConfigPath(cfgDir)
 
-	client := osearch.NewClient([]byte{},
+	osClient := osearch.NewClient([]byte{},
 		policy.Spec.Inspection.Assessment.OpenSearchAddr,
 		policy.Spec.Inspection.Assessment.OpenSearchUser,
 		policy.Spec.Inspection.Assessment.OpenSearchPasswd)
-	if client == nil {
-		c.logger.Info("OpenSearch client is nil", nil, nil)
+	if osClient == nil {
+		c.logger.Info("OpenSearch osClient is nil", nil, nil)
 	}
 
 	conf := ReadEnvConfig()
 
 	if conf.StandAlone {
-		exporterDetail := osearch.OpenSearchExporter{Client: client, Logger: c.logger}
-		err := exporterDetail.NewExporter(client, "assessment_report")
+		exporterDetail := osearch.OpenSearchExporter{Client: osClient, Logger: c.logger}
+		err := exporterDetail.NewExporter(osClient, conf.DetailIndex)
 		if err != nil {
 			//Error Handling
 			return err
 		}
 
-		exporterAccessReport := osearch.OpenSearchExporter{Client: client, Logger: c.logger}
-		err = exporterAccessReport.NewExporter(client, conf.DetailIndex)
+		exporterAccessReport := osearch.OpenSearchExporter{Client: osClient, Logger: c.logger}
+		err = exporterAccessReport.NewExporter(osClient, "assessment_report")
 		if err != nil {
 			//Error handling
 			return err
@@ -64,14 +71,85 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 		}()
 	}
 
-	//TODO
-	// @jinpeng get all resources
+	// Skip work namespace.
+	skips := []string{*policy.Spec.WorkNamespace}
+	nsl, err := c.scanner.ScanNamespaces(ctx, policy.Spec.Inspection.NamespaceSelector, skips)
+	if err != nil {
+		return errors.Wrap(err, "scan namespaces")
+	}
+
+	// Nothing to handle
+	// Just in case.
+	if len(nsl) == 0 {
+		c.logger.V(1).Info("no namespaces found")
+		return nil
+	}
+
+	var allResources []*ResourceItem
+	var nodes []string
+	for _, ns := range nsl {
+		// Get Pod
+		var pods corev1.PodList
+		err = c.scanner.ScanOtherResource(ctx, corev1.LocalObjectReference{Name: ns.Name}, policy.Spec.Inspection.WorkloadSelector, &pods)
+		if err == nil {
+			for _, pod := range pods.Items {
+				resource := NewResourceItem("Pod")
+				resource.SetPod(&pod)
+				allResources = append(allResources, resource)
+				nodeName := pod.Spec.NodeName
+				if nodeName != "" && !inArray(nodeName, nodes) {
+					nodes = append(nodes, nodeName)
+				}
+			}
+		} else {
+			c.logger.Error(err, "list pods")
+		}
+		// Get Deployment
+		var deploys v1.DeploymentList
+		err = c.scanner.ScanOtherResource(ctx, corev1.LocalObjectReference{Name: ns.Name}, policy.Spec.Inspection.WorkloadSelector, &deploys)
+		if err == nil {
+			for _, deploy := range deploys.Items {
+				resource := NewResourceItem("Deployment")
+				resource.SetDeployment(&deploy)
+				allResources = append(allResources, resource)
+			}
+		} else {
+			c.logger.Error(err, "list deployments")
+		}
+		// Get Service
+		var services corev1.ServiceList
+		err = c.scanner.ScanOtherResource(ctx, corev1.LocalObjectReference{Name: ns.Name}, policy.Spec.Inspection.WorkloadSelector, &services)
+		if err == nil {
+			for _, service := range services.Items {
+				resource := NewResourceItem("Service")
+				resource.SetService(&service)
+				allResources = append(allResources, resource)
+			}
+		} else {
+			c.logger.Error(err, "list services")
+		}
+
+	}
+	// Get Node
+	if len(nodes) > 0 {
+		for _, i := range nodes {
+			var node corev1.Node
+			err = c.kc.Get(ctx, client.ObjectKey{Name: i}, &node)
+			if err == nil {
+				resource := NewResourceItem("Node")
+				resource.SetNode(&node)
+				allResources = append(allResources, resource)
+			} else {
+				c.logger.Error(err, "get node")
+			}
+		}
+	}
 
 	httpClient := NewClient(conf, c.logger)
-	var allResources []ResourceItem
 
 	for _, v := range allResources {
-		err := httpClient.PostResource(v)
+		log.Default().Printf("resource: %s \n", v.Type)
+		err = httpClient.PostResource(v)
 		if err != nil {
 			c.logger.Error(err, "cannot post resource")
 		}
@@ -79,10 +157,11 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 
 	option := AnalyzeOption{DumpAssessReport: true, DumpDetails: true}
 
-	if err := httpClient.PostAnalyze(option); err == nil {
+	if err = httpClient.PostAnalyze(option); err == nil {
 		for {
 			if ok, err := httpClient.IsAnalyzeRunning(); err != nil {
 				c.logger.Error(err, "failed to fetch status")
+				time.Sleep(1 * time.Second)
 			} else if ok {
 				c.logger.Info("the analyze is running")
 				time.Sleep(30 * time.Second)
@@ -140,8 +219,24 @@ func (c *controller) WithScheme(scheme *runtime.Scheme) *controller {
 
 // CTRL returns controller interface.
 func (c *controller) CTRL() Controller {
+	c.scanner = inspection.NewScanner().
+		WithScheme(c.scheme).
+		UseClient(c.kc).
+		SetLogger(c.logger).
+		Complete()
+
 	// Mark controller is ready.
 	c.ready = true
 
 	return c
+}
+
+func inArray(need string, arr []string) bool {
+	for _, k := range arr {
+		if k == need {
+			return true
+		}
+	}
+
+	return false
 }

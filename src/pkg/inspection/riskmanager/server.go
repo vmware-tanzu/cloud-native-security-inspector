@@ -1,8 +1,11 @@
 package riskmanager
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	consumers "github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/consumers/opensearch"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/providers"
+	"log"
 	"net/http"
 )
 
@@ -27,11 +30,23 @@ type Server struct {
 	Last               int64
 	DetailExporter     *consumers.OpenSearchExporter
 	AssessmentExporter *consumers.OpenSearchExporter
+	adapter            providers.Adapter
 }
 
 // NewServer new server instance
 func NewServer(detailExporter *consumers.OpenSearchExporter, assessmentExporter *consumers.OpenSearchExporter) *Server {
-	return &Server{DetailExporter: detailExporter, AssessmentExporter: assessmentExporter}
+	return &Server{
+		DetailExporter:     detailExporter,
+		AssessmentExporter: assessmentExporter,
+		Images:             make(map[string]*ImageItem),
+		Workloads:          *NewWorkloads(make(map[string][]*RiskItem), make(map[string]Workload)),
+	}
+}
+
+// WithAdapter sets adapter.
+func (s *Server) WithAdapter(Adapter providers.Adapter) *Server {
+	s.adapter = Adapter
+	return s
 }
 
 // postAlbums adds an album from JSON received in the request body.
@@ -44,10 +59,12 @@ func (s *Server) postResource(c *gin.Context) {
 		return
 	}
 
+	log.Println("receive resource type: " + v.Type)
+
 	images := v.GetImages()
 	for _, i := range images {
-		if im, ok := s.Images[i.UUID()]; !ok {
-			s.Images[i.UUID()] = im
+		if _, ok := s.Images[i.UUID()]; !ok {
+			s.Images[i.UUID()] = NewImageItem(i.ImageName, i.ArtifactID)
 		}
 
 		s.Images[i.UUID()].AddRelatedResource(&v)
@@ -64,23 +81,26 @@ func (s *Server) Analyze(option AnalyzeOption) {
 		s.IsRunning = false
 	}()
 
-	var v RiskCollection
+	var v RiskCollection = make(map[string][]*RiskItem)
 	for _, t := range s.Images {
-		if err := t.FetchHarborReport(); err != nil {
+		report, err := t.FetchHarborReport(s.adapter)
+		if err != nil {
+			log.Printf("%v", err)
 			//TODO handle error
 		} else {
+			log.Printf("vuln len: %d", len(report.Vulnerabilities))
 			// TODO generate vulnerability risk
 		}
 
 		for _, r := range t.Related {
 			var risks []*RiskItem
-			if r.Type == "Service" {
+			if r.Type == "Pod" {
 				//TODO generate exposure risk
-			} else if r.Type == "Secret" {
+			} else if r.Type == "Deployment" {
 				//TODO generate host risk
 			} else if r.Type == "Node" {
 				//TODO generate compliance risk
-			} else if r.Type == "Secret" {
+			} else if r.Type == "Service" {
 				//TODO generate compliance risk
 			}
 
@@ -121,6 +141,7 @@ func (s *Server) postAnalyze(c *gin.Context) {
 	if !s.IsRunning {
 		go s.Analyze(v)
 		c.IndentedJSON(http.StatusCreated, "start analyzing")
+		return
 	}
 
 	c.IndentedJSON(http.StatusFailedDependency, "analyze is running")
@@ -145,5 +166,12 @@ func (s *Server) Run(address string) {
 	router.GET("/risks", s.getRisks)
 	router.POST("/analyze", s.postAnalyze)
 	router.POST("/resource", s.postResource)
-	router.Run(address)
+	fmt.Println("Server run at:")
+	fmt.Printf("-  Local:   %s/ \r\n", address)
+	err := router.Run(address)
+	if err != nil {
+		fmt.Printf("ListenAndServe err: %v", err)
+		return
+	}
+	log.Println("Server exiting")
 }

@@ -5,11 +5,13 @@ DOCKERCMD=$(shell which docker)
 KUBECTLCMD=$(shell which kubectl)
 SWAGGER := $(DOCKERCMD) run --rm -it -v $(HOME):$(HOME) -w $(shell pwd) quay.io/goswagger/swagger
 
-REGISTRY ?= projects.registry.vmware.com/cnsi
+#REGISTRY ?= projects.registry.vmware.com/cnsi
+REGISTRY ?= 10.40.101.1:30002/cnsi
 # Image URL to use all building/pushing image targets
 IMG ?= $(REGISTRY)/manager:0.1
 IMG_CMD ?= $(REGISTRY)/inspector:0.1
 PORTAl ?= $(REGISTRY)/portal:0.1
+RISK ?= $(REGISTRY)/risk:0.1
 # Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
 CRD_OPTIONS ?= "crd:trivialVersions=true,preserveUnknownFields=false"
 
@@ -75,6 +77,9 @@ build-manager: generate fmt vet ## Build manager binary.
 build-inspector: generate fmt vet ## Build inspector command.
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/inspector cmd/inspector/main.go
 
+build-risk:  ## Build risk command.
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/risk cmd/riskmanager/main.go
+
 run: manifests generate fmt vet ## Run a controller from your host.
 	go run ./main.go
 
@@ -87,10 +92,14 @@ docker-build-inspector: build-inspector ## Build docker image with inspector cmd
 docker-build-portal:
 	$(DOCKERCMD) build -t ${PORTAl} -f Dockerfile.portal .
 
+docker-build-risk: build-risk ## Build docker image with risk cmd.
+	$(DOCKERCMD) build -t ${RISK} -f Dockerfile.riskmanager.local .
+
 docker-push: ## Push docker images with the manager.
 	$(DOCKERCMD) push ${IMG}
 	$(DOCKERCMD) push ${IMG_CMD}
 	$(DOCKERCMD) push ${PORTAl}
+	$(DOCKERCMD) push ${RISK}
 
 ##@ Deployment
 namespace:

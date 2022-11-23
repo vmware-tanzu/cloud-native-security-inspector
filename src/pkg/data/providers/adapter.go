@@ -11,4 +11,5 @@ type Adapter interface {
 	data.Requester
 	data.Register
 	data.Configurator
+	data.Artifact
 }

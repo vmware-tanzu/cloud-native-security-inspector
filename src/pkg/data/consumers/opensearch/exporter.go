@@ -46,7 +46,7 @@ func (o *OpenSearchExporter) NewExporter(client *opensearch.Client, indexName st
 	if result, err := o.indexExists(indexName); err != nil {
 		if !result {
 			// No index for CNSI has been detected. A new index will be created.
-			if err := o.setupIndex(); err != nil {
+			if err = o.setupIndex(); err != nil {
 				return err
 			}
 		} else {

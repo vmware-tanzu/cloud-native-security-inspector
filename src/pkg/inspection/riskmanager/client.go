@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-logr/logr"
+	"log"
 	"net/http"
 )
 
@@ -33,7 +34,7 @@ func (c *Client) IsAnalyzeRunning() (bool, error) {
 	defer res.Body.Close()
 	var target Status
 
-	err = json.NewDecoder(res.Body).Decode(target)
+	err = json.NewDecoder(res.Body).Decode(&target)
 	if err != nil {
 		return false, err
 	}
@@ -44,7 +45,7 @@ func (c *Client) IsAnalyzeRunning() (bool, error) {
 // PostAnalyze ask server to analyze resources
 func (c *Client) PostAnalyze(a AnalyzeOption) error {
 	requestURL := fmt.Sprintf(fmt.Sprintf("%s/analyze", c.conf.Server))
-	c.logger.Info(fmt.Sprintf("post to %s", requestURL))
+	log.Default().Printf("post to: %s \n", requestURL)
 
 	if jsonData, err := json.Marshal(a); err == nil {
 		request, error := http.NewRequest("POST", requestURL, bytes.NewBuffer(jsonData))
@@ -64,7 +65,7 @@ func (c *Client) PostAnalyze(a AnalyzeOption) error {
 
 func (c *Client) PostResource(a interface{}) error {
 	requestURL := fmt.Sprintf(fmt.Sprintf("%s/resource", c.conf.Server))
-	c.logger.Info(fmt.Sprintf("post to %s", requestURL))
+	log.Default().Printf("post to: %s \n", requestURL)
 
 	if jsonData, err := json.Marshal(a); err == nil {
 		request, error := http.NewRequest("POST", requestURL, bytes.NewBuffer(jsonData))
