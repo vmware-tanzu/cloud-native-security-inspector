@@ -27,6 +27,8 @@ type Scanner interface {
 	ScanNamespaces(ctx context.Context, selector *metav1.LabelSelector, skips []string) ([]corev1.ObjectReference, error)
 	// ScanWorkloads scans all the workloads that matches the selector under the namespace.
 	ScanWorkloads(ctx context.Context, namespace corev1.LocalObjectReference, selector *metav1.LabelSelector) ([]*v1alpha1.Workload, error)
+	// ScanOtherResource scans any kind resource that matches the selector under the namespace.
+	ScanOtherResource(ctx context.Context, namespace corev1.LocalObjectReference, selector *metav1.LabelSelector, list client.ObjectList) error
 }
 
 // DefaultScanner implements inspection.Scanner.
@@ -192,6 +194,16 @@ func (ds *DefaultScanner) getReplicaSetOwnerRef(ctx context.Context, namespacedN
 	}
 
 	return extractOwnerRef(namespacedName.Namespace, rps.GetOwnerReferences()), nil
+}
+
+// ScanOtherResource implements inspection.Scanner.
+func (ds *DefaultScanner) ScanOtherResource(ctx context.Context, namespace corev1.LocalObjectReference,
+	selector *metav1.LabelSelector, list client.ObjectList) error {
+	if err := ds.List(ctx, list, client.InNamespace(namespace.Name), client.MatchingLabelsSelector{Selector: convertLabelSelector(selector)}); err != nil {
+		return errors.Wrap(err, "list")
+	}
+
+	return nil
 }
 
 func extractContainers(pod corev1.Pod) []*v1alpha1.Container {

@@ -12,6 +12,7 @@ IMG_MANAGER ?= $(REGISTRY)/manager:$(IMG_TAG)
 IMG_CMD_INSPECTOR ?= $(REGISTRY)/inspector:$(IMG_TAG)
 IMG_CMD_KUBEBENCH ?= $(REGISTRY)/kubebench:$(IMG_TAG)
 PORTAl ?= $(REGISTRY)/portal:$(IMG_TAG)
+RISK ?= $(REGISTRY)/risk:0.1
 
 # Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
 CRD_OPTIONS ?= "crd:trivialVersions=true,preserveUnknownFields=false"
@@ -80,6 +81,9 @@ build-inspector: generate fmt vet ## Build inspector command.
 build-kubebench: generate fmt vet ## Build inspector command.
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/kubebench cmd/kubebench/main.go
 
+build-risk:  ## Build risk command.
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/risk cmd/riskmanager/main.go
+
 run: manifests generate fmt vet ## Run a controller from your host.
 	go run ./main.go
 
@@ -97,11 +101,15 @@ docker-build-kubebench: build-kubebench ## Build docker image with kubebench cmd
 docker-build-portal:
 	$(DOCKERCMD) build -t ${PORTAl} -f Dockerfile.portal .
 
+docker-build-risk: build-risk ## Build docker image with risk cmd.
+	$(DOCKERCMD) build -t ${RISK} -f Dockerfile.riskmanager.local .
+
 docker-push: ## Push docker images with the manager.
 	$(DOCKERCMD) push ${IMG_MANAGER}
 	$(DOCKERCMD) push ${IMG_CMD_INSPECTOR}
 	$(DOCKERCMD) push ${IMG_CMD_KUBEBENCH}
 	$(DOCKERCMD) push ${PORTAl}
+	$(DOCKERCMD) push ${RISK}
 
 ##@ Deployment
 namespace:
