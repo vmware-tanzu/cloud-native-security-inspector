@@ -114,13 +114,13 @@ func (s *Server) Analyze(option AnalyzeOption) {
 
 	s.Workloads.Risks = v
 	if option.DumpAssessReport {
-		err := s.Workloads.ExportAssessmentDetails(s.DetailExporter)
+		err := s.Workloads.ExportAssessmentReports(s.DetailExporter)
 		if err != nil {
 
 		}
 	}
 
-	if option.DumpAssessReport {
+	if option.DumpDetails {
 		err := s.Workloads.ExportAssessmentDetails(s.DetailExporter)
 		if err != nil {
 

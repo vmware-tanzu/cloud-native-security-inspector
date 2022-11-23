@@ -37,8 +37,7 @@ func init() {
 func main() {
 	var policy string
 	var mode string
-	flag.StringVar(&mode, "mode", "", "running mode")
-
+	flag.StringVar(&mode, "mode", "standalone", "running mode")
 	flag.StringVar(&policy, "policy", "", "name of the inspection policy")
 	opts := zap.Options{
 		Development:     true,
