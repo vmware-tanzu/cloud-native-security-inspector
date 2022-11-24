@@ -57,7 +57,8 @@ func NewListNamespacesParamsWithHTTPClient(client *http.Client) *ListNamespacesP
 	}
 }
 
-/*ListNamespacesParams contains all the parameters to send to the API endpoint
+/*
+ListNamespacesParams contains all the parameters to send to the API endpoint
 for the list namespaces operation typically these are written to a http.Request
 */
 type ListNamespacesParams struct {
