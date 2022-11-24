@@ -19,6 +19,6 @@ spec:
       containers:
       - name: cloud-native-security-inspector-frontend
         image: projects.registry.vmware.com/cnsi/portal:0.1
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         ports:
           - containerPort: 3800       

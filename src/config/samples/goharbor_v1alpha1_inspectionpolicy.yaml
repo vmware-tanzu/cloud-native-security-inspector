@@ -15,7 +15,7 @@ spec:
     concurrencyRule: "Forbid"
   inspector:
     image: projects.registry.vmware.com/cnsi/inspector:0.1
-    imagePullPolicy: Always
+    imagePullPolicy: IfNotPresent
   inspection:
     namespaceSelector:
       matchLabels:
