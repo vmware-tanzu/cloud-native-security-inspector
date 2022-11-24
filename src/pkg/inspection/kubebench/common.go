@@ -15,7 +15,6 @@
 package kubebench
 
 import (
-	"bufio"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -83,12 +82,6 @@ func NewRunFilter(opts FilterOpts) (check.Predicate, error) {
 }
 
 func runChecks(nodetype check.NodeType, testYamlFile, detectedVersion string) {
-	// Verify config file was loaded into Viper during Cobra sub-command initialization.
-	//if configFileError != nil {
-	//	colorPrint(check.FAIL, fmt.Sprintf("Failed to read config file: %v\n", configFileError))
-	//	os.Exit(1)
-	//}
-
 	in, err := ioutil.ReadFile(testYamlFile)
 	if err != nil {
 		exitWithError(fmt.Errorf("error opening %s test file: %v", testYamlFile, err))
@@ -185,54 +178,6 @@ func colorPrint(state check.State, s string) {
 	colors[state].Printf("[%s] ", state)
 	fmt.Printf("%s", s)
 }
-
-// prettyPrint outputs the results to stdout in human-readable format
-//func prettyPrint(r *check.Controls, summary check.Summary) {
-//	// Print check results.
-//	if !noResults {
-//		colorPrint(check.INFO, fmt.Sprintf("%s %s\n", r.ID, r.Text))
-//		for _, g := range r.Groups {
-//			colorPrint(check.INFO, fmt.Sprintf("%s %s\n", g.ID, g.Text))
-//			for _, c := range g.Checks {
-//				colorPrint(c.State, fmt.Sprintf("%s %s\n", c.ID, c.Text))
-//
-//				if includeTestOutput && c.State == check.FAIL && len(c.ActualValue) > 0 {
-//					printRawOutput(c.ActualValue)
-//				}
-//			}
-//		}
-//
-//		fmt.Println()
-//	}
-//
-//	// Print remediations.
-//	if !noRemediations {
-//		if summary.Fail > 0 || summary.Warn > 0 {
-//			colors[check.WARN].Printf("== Remediations %s ==\n", r.Type)
-//			for _, g := range r.Groups {
-//				for _, c := range g.Checks {
-//					if c.State == check.FAIL {
-//						fmt.Printf("%s %s\n", c.ID, c.Remediation)
-//					}
-//					if c.State == check.WARN {
-//						// Print the error if test failed due to problem with the audit command
-//						if c.Reason != "" && c.Type != "manual" {
-//							fmt.Printf("%s audit test did not run: %s\n", c.ID, c.Reason)
-//						} else {
-//							fmt.Printf("%s %s\n", c.ID, c.Remediation)
-//						}
-//					}
-//				}
-//			}
-//			fmt.Println()
-//		}
-//	}
-//
-//	// Print summary setting output color to highest severity.
-//	if !noSummary {
-//		printSummary(summary, string(r.Type))
-//	}
-//}
 
 func printSummary(summary check.Summary, sectionName string) {
 	var res check.State
@@ -405,84 +350,6 @@ func isThisNodeRunning(nodeType check.NodeType) bool {
 
 	glog.V(2).Infof("Node is running %s components", nodeType)
 	return true
-}
-
-func exitCodeSelection(controlsCollection []*check.Controls) int {
-	for _, control := range controlsCollection {
-		if control.Fail > 0 {
-			return exitCode
-		}
-	}
-
-	return 0
-}
-
-//func writeJSONOutput(controlsCollection []*check.Controls) {
-//	var out []byte
-//	var err error
-//	if !noTotals {
-//		var totals check.OverallControls
-//		totals.Controls = controlsCollection
-//		totals.Totals = getSummaryTotals(controlsCollection)
-//		out, err = json.Marshal(totals)
-//	} else {
-//		out, err = json.Marshal(controlsCollection)
-//	}
-//	if err != nil {
-//		exitWithError(fmt.Errorf("failed to output in JSON format: %v", err))
-//	}
-//	printOutput(string(out), outputFile)
-//}
-
-//func writeStdoutOutput(controlsCollection []*check.Controls) {
-//	for _, controls := range controlsCollection {
-//		summary := controls.Summary
-//		prettyPrint(controls, summary)
-//	}
-//	if !noTotals {
-//		printSummary(getSummaryTotals(controlsCollection), "total")
-//	}
-//}
-
-func getSummaryTotals(controlsCollection []*check.Controls) check.Summary {
-	var totalSummary check.Summary
-	for _, controls := range controlsCollection {
-		summary := controls.Summary
-		totalSummary.Fail = totalSummary.Fail + summary.Fail
-		totalSummary.Warn = totalSummary.Warn + summary.Warn
-		totalSummary.Pass = totalSummary.Pass + summary.Pass
-		totalSummary.Info = totalSummary.Info + summary.Info
-	}
-	return totalSummary
-}
-
-func printRawOutput(output string) {
-	for _, row := range strings.Split(output, "\n") {
-		fmt.Println(fmt.Sprintf("\t %s", row))
-	}
-}
-
-func writeOutputToFile(output string, outputFile string) error {
-	file, err := os.Create(outputFile)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	w := bufio.NewWriter(file)
-	fmt.Fprintln(w, output)
-	return w.Flush()
-}
-
-func printOutput(output string, outputFile string) {
-	if outputFile == "" {
-		fmt.Println(output)
-	} else {
-		err := writeOutputToFile(output, outputFile)
-		if err != nil {
-			exitWithError(fmt.Errorf("Failed to write to output file %s: %v", outputFile, err))
-		}
-	}
 }
 
 // validTargets helps determine if the targets
