@@ -349,7 +349,7 @@ func (e ElasticSearchExporter) Save(doc api.AssessmentReport) error {
 						if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
 							ctrlLog.Info("Error parsing the response body: %s", err)
 						} else {
-							fmt.Println("OK")
+							ctrlLog.Info("Successfully decode the response")
 						}
 					}
 				}
@@ -430,7 +430,7 @@ func (e ElasticSearchExporter) Search(query string, after ...string) ([]consumer
 		results.Hits = append(results.Hits, &h)
 	}
 	var reportList []consumers.AssessmentReportDoc
-	fmt.Printf("Results hits: %v \n", len(results.Hits))
+	logger.Info("Results hits: %v \n", len(results.Hits))
 	for _, ret := range results.Hits {
 		reportList = append(reportList, ret.AssessmentReportDoc)
 	}

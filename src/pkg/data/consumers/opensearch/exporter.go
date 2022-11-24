@@ -115,7 +115,7 @@ func (o *OpenSearchExporter) Save(doc api.AssessmentReport) error {
 						if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
 							ctrlLog.Info("Error parsing the response body: %s", err)
 						} else {
-							fmt.Println("OK")
+							ctrlLog.Info("Successfully decode the response")
 						}
 					}
 				}
@@ -158,7 +158,7 @@ func (o *OpenSearchExporter) SaveCIS(controlsCollection []*check.Controls) error
 			if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
 				ctrlLog.Info("Error parsing the response body: %s", err)
 			} else {
-				fmt.Println("OK")
+				ctrlLog.Info("Successfully decode the response")
 			}
 		}
 

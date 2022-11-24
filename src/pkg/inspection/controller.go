@@ -361,7 +361,6 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 			return err
 		}
 	}
-	// Check the Kubernetes using kubebench
 
 	return nil
 }
