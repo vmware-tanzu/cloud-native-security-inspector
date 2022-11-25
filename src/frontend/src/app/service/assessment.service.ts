@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment'
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,11 +10,7 @@ export class AssessmentService {
   public environment:any = environment
   constructor(private http: HttpClient) { }
 
-  getKubeBenchReport(limit:number = 10, continues:string='') {
-    return this.http.get(this.environment.api.goharbor + '/settings')
-  }
-
-  getKubeBenchResult() {
-    return this.http.get(this.environment.api.goharbor + '/settings')
+  getKubeBenchReport (data: {url: string, index: string, username: string, password: string, query: any}) :Observable<any>{
+    return this.http.post<any>('/open-search', data)
   }
 }

@@ -15,7 +15,7 @@ export class PolicySettingPageComponent implements OnInit {
   policyForm!: UntypedFormGroup;
   private isDisabled = false
   public checkES = ''
-  public schedule = '3/* * * * *'
+  public schedule = '*/3 * * * *'
   public text = ''
   public isCornUpdateModal = false
   public baselines = [
@@ -277,7 +277,16 @@ export class PolicySettingPageComponent implements OnInit {
           this.policyForm.get('inspectionSetting')?.get('historyLimit')?.setValue(policyList[0].spec.strategy.historyLimit)
           this.policyForm.get('inspectionSetting')?.get('suspend')?.setValue(policyList[0].spec.strategy.suspend)
           this.policyForm.get('inspectionSetting')?.get('concurrencyRule')?.setValue(policyList[0].spec.strategy.concurrencyRule)
-          this.policyForm.get('inspectionSetting')?.get('image')?.setValue(policyList[0].spec.inspector.image)
+          if (policyList[0].spec.inspector.image && policyList[0].spec.inspector.kubebenchImage) {
+            this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['inspector', 'kubebench'])
+          } else {
+            if (policyList[0].spec.inspector.image) {
+              this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['inspector'])
+            } else if (policyList[0].spec.inspector.kubebenchImage) {
+              this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['kubebench'])
+            }
+          }
+
           this.policyForm.get('inspectionSetting')?.get('imagePullPolicy')?.setValue(policyList[0].spec.inspector.imagePullPolicy)
           this.policyForm.get('inspectionSetting')?.get('settingsName')?.setValue(policyList[0].spec.settingsName)
           // this.policyForm.get('endpoint')?.setValue(policyList[0].spec.inspection.dataProvider.endpoint)
@@ -383,7 +392,7 @@ export class PolicySettingPageComponent implements OnInit {
           ]
           this.namespacelabels = []
           this.workloadlabels = []
-          this.schedule = '3/* * * * *'
+          this.schedule = '*/3 * * * *'
         }
       },
       err => {
@@ -406,7 +415,6 @@ export class PolicySettingPageComponent implements OnInit {
       data = testData
     } else {
       const imagesList = this.policyForm.get('inspectionSetting')?.get('image')?.value
-      // 等待开发      
       data = {
         apiVersion: "goharbor.goharbor.io/v1alpha1",
         kind: "InspectionPolicy",
@@ -470,7 +478,6 @@ export class PolicySettingPageComponent implements OnInit {
             }
           },
           inspector: {
-            image: imagesList[0].url,
             imagePullPolicy: this.policyForm.get('inspectionSetting')?.get('imagePullPolicy')?.value,
             imagePullSecrets: []
           },
@@ -484,6 +491,13 @@ export class PolicySettingPageComponent implements OnInit {
           workNamespace: this.policyForm.get('inspectionSetting')?.get('namespace')?.value
         }
       }
+      imagesList.forEach((image: any) => {
+        if (image === 'inspector') {
+          data.spec.inspector.image = this.imageList[0].url
+        } else if (image === 'kubebench') {
+          data.spec.inspector.kubebenchImage = this.imageList[1].url
+        }
+      });
     }
     if(this.policyForm.get('inspectionResult')?.get('actions')?.value){
       data.spec.inspection.actions = [
@@ -537,8 +551,6 @@ export class PolicySettingPageComponent implements OnInit {
     this.checkES = ''
     const elasticSearchEnabled =this.policyForm.get('inspectionSetting')?.get('elasticSearchEnabled')?.value
     const openSearchEnabled =this.policyForm.get('inspectionSetting')?.get('openSearchEnabled')?.value
-    // this.policyInfo.metadata.name = this.policyForm.get('name')?.value
-    this.policyInfo.spec.inspector.image = this.policyForm.get('inspectionSetting')?.get('image')?.value
     this.policyInfo.spec.inspector.imagePullPolicy = this.policyForm.get('inspectionSetting')?.get('imagePullPolicy')?.value
     this.policyInfo.spec.schedule = this.schedule
     this.policyInfo.spec.settingsName = this.policyForm.get('inspectionSetting')?.get('settingsName')?.value
@@ -546,6 +558,19 @@ export class PolicySettingPageComponent implements OnInit {
     this.policyInfo.spec.strategy.historyLimit = +this.policyForm.get('inspectionSetting')?.get('historyLimit')?.value
     this.policyInfo.spec.strategy.suspend = this.policyForm.get('inspectionSetting')?.get('suspend')?.value
     this.policyInfo.spec.workNamespace = this.policyForm.get('inspectionSetting')?.get('namespace')?.value
+
+    const imagesList = this.policyForm.get('inspectionSetting')?.get('image')?.value
+
+    delete this.policyInfo.spec.inspector.image
+    delete this.policyInfo.spec.inspector.kubebenchImage
+
+    imagesList.forEach((image: any) => {
+      if (image === 'inspector') {
+        this.policyInfo.spec.inspector.image = this.imageList[0].url
+      } else if (image === 'kubebench') {
+        this.policyInfo.spec.inspector.kubebenchImage = this.imageList[1].url
+      }
+    });
     
     if(this.policyForm.get('inspectionResult')?.get('actions')?.value){
       this.policyInfo.spec.inspection.actions = []

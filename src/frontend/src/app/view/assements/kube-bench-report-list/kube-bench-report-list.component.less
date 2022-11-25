@@ -1,6 +1,37 @@
 .report {
   position: relative;
   padding: 15px;
+  &::ng-deep {
+    clr-datagrid {
+      clr-dg-column {
+        &.namespace-filter {
+          .datagrid-column-flex {
+            .datagrid-column-title {
+              display: flex;
+              justify-content: space-between;
+              position: relative;
+            }
+          }
+          .filter-warp {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            margin-top: 0.24rem;
+            background: #21333b;
+            border-width: 0.05rem;
+            border-style: solid;
+            border-color: #000;
+            padding: 0.9rem;
+            padding-top: 2rem;
+            box-shadow: 0 0.05rem 0.15rem rgb(140 140 140 / 25%);
+            box-shadow: 0 0.05rem 0.15rem var(--clr-datagrid-popovers-box-shadow-color, rgba(140, 140, 140, 0.25));
+            border-radius: 0.15rem;
+            font-weight: 400;
+          }
+        }
+      }
+    }
+  }
 }
 .echarts-loading {
   position: relative;
@@ -9,5 +40,20 @@
     position: absolute;
     left: 50%;
     top: 150px
+  }
+}
+clr-datagrid {
+  &::ng-deep {
+
+    .sort {
+      display: flex;
+      flex: 1;
+      justify-content: space-between;
+      clr-icon {
+        &.oder {
+          transform: rotate(180deg);
+        }
+      }
+    }
   }
 }

@@ -33,7 +33,8 @@
     "create": "创建",
     "cancel": "取消",
     "delete": "删除",
-    "inspectionNamespace": "监测命名空间"
+    "inspectionNamespace": "监测命名空间",
+    "description": "描述"
   },
   "Header": {
     "title": "Cloud Native Security Inspector"
@@ -186,7 +187,21 @@
   "cornJob": {
     "Weekly": "每周在周日早上的0点运行一次",
     "Daily": "每天0点运行一次",
-    "Hourly": "每小时开始时运行一次"
+    "Hourly": "每小时开始时运行一次",
+    "ExecutionType": "执行类型",
+    "execute Once": "执行一次",
+    "executeMultiple times": "多次执行"
+  },
+  "Kube_bench_list": {
+    "title": "Kube Bench报告",
+    "node_type": "节点类型",
+    "passed": "通过",
+    "failed": "失败",
+    "warned": "警告",
+    "inform": "信息",
+    "reason": "原因",
+    "status": "状态",
+    "remediation": "修改建议"
   },
   "en": "English",
   "zh_CN": "中文 (简体)"

@@ -5,6 +5,7 @@ import {
   EventEmitter,
   Input,
   OnInit,
+  Output,
   ViewChild,
 } from '@angular/core';
 import { ClrDatagridFilterInterface } from '@clr/angular';
@@ -12,6 +13,7 @@ import { fromEvent } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { PolicyService } from 'src/app/service/policy.service'
 import { ShardService } from 'src/app/service/shard.service';
+
 @Component({
   selector: 'app-dg-filter',
   templateUrl: './dg-filter.component.html',
@@ -22,8 +24,10 @@ export class DgFilterComponent
   {
       @Input() dataSource: any[] = [];
       @Input() label: any;
+      @Input() labelKey = '';
       @Input() continues: string = '';
       @Input() pageSize: number = 10;
+      @Output() updateListHandler = new EventEmitter()
       @ViewChild('filterInput', { static: true }) filterInputRef!: ElementRef;
   
       selectedLabels: Map<number, boolean> = new Map<number, boolean>();
@@ -41,7 +45,10 @@ export class DgFilterComponent
               });
               // setInterval(() => console.log(111, this.labelFilter), 1000)
       }
-      constructor(private cdr: ChangeDetectorRef, private policyService:PolicyService, private shardService:ShardService) {}
+      constructor(private cdr: ChangeDetectorRef, 
+        private policyService:PolicyService, 
+        private shardService:ShardService,
+        ) {}
   
       labelFilterInput () {
 
@@ -58,18 +65,6 @@ export class DgFilterComponent
       }
   
       accepts(cv: any): boolean {
-          // if (this.resourceType === ResourceType.CHART_VERSION) {
-          //     return (cv as HelmChartVersion).labels.some(label =>
-          //         this.selectedLabels.get(label.id)
-          //     );
-          // } else if (this.resourceType === ResourceType.REPOSITORY_TAG) {
-          //     return (cv as Artifact).labels.some(label =>
-          //         this.selectedLabels.get(label.id)
-          //     );
-          // } else {
-          //     return true;
-          // }
-          console.log('cv', cv);
           return true
           
       }
@@ -89,11 +84,17 @@ export class DgFilterComponent
       }
 
       search() {
-          console.log(this.labelFilter);
-          this.policyService.getNamespaceAssessmentreports(this.labelFilter, this.pageSize, '').subscribe(
-              data => {
-                this.shardService.reportslist = data.items
-              }
-          )
+          if (this.label) {
+            this.updateListHandler.emit({
+                value: this.labelFilter, 
+                key: this.labelKey
+            })            
+          } else {
+              this.policyService.getNamespaceAssessmentreports(this.labelFilter, this.pageSize, '').subscribe(
+                  data => {
+                    this.shardService.reportslist = data.items
+                  }
+              )
+          }
       }
   }

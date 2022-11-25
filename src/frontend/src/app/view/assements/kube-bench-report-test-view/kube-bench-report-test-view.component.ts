@@ -38,8 +38,6 @@ export class KubeBenchReportTestViewComponent implements OnInit, OnDestroy {
 	}
 
   toKubeBenchReportTestResult(kube: any) {
-    console.log('kube.id', kube.section);
-    
     sessionStorage.setItem('result_'+kube.section, JSON.stringify(kube))
     this.router.navigateByUrl(`assessments/kube-bench/test-detail/${kube.section}`)
   }
@@ -49,6 +47,7 @@ export class KubeBenchReportTestViewComponent implements OnInit, OnDestroy {
     this.route.params.subscribe(
       data => {
         this.testId = data.id
+        sessionStorage.setItem('cnsi_report_id', this.testId)
         const testInfoStr = sessionStorage.getItem(data.id)
         if (testInfoStr) {
           this.testInfo = JSON.parse(testInfoStr)
@@ -114,7 +113,7 @@ export class KubeBenchReportTestViewComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    sessionStorage.removeItem(this.testId)
+    // sessionStorage.removeItem(this.testId)
   }
 
 

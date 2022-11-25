@@ -4,7 +4,9 @@
 -->
 
 <div class="report">
-  <h2>{{'Report_View.title'|translate}}</h2>
+  <h2>
+    
+    {{'Report_View.title'|translate}}</h2>
   <app-line id='report-line' #reportline [chartOptions]="shardService.reportLineChartOption"></app-line>
 
   <clr-datagrid (clrDgRefresh)="pageChange($event)">

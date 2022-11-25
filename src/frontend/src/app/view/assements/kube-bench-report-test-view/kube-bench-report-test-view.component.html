@@ -1,5 +1,10 @@
 <div class="report">
-  <h2>{{title}}</h2>
+  <h2>
+    <a href="javascript:;" [routerLink]='["/assessments/kube-bench"]'>
+      <clr-icon shape="angle" class="angle-top"></clr-icon>
+    </a>
+    
+    {{title}}</h2>
   <div class="echarts-loading" *ngIf="echartsLoading">
     <span class="spinner spinner-lg">
       Loading...
@@ -8,7 +13,7 @@
   <div id="test-view" style="width: 600px;height:400px;"></div>
 
   <clr-datagrid>
-    <clr-dg-column [clrDgField]="'workload.workload.metadata.name'">section</clr-dg-column>
+    <!-- <clr-dg-column [clrDgField]="'workload.workload.metadata.name'">section</clr-dg-column> -->
     <clr-dg-column [clrDgField]="'namespace'">{{'CommonlyUse.name'|translate}}</clr-dg-column>
     <clr-dg-column [clrDgField]="'workload.workload.metadata.kind'">{{'CommonlyUse.type'|translate}}</clr-dg-column>
     <clr-dg-column [clrDgField]="'workload.passed'" >{{'Kube_bench_list.passed'|translate}}</clr-dg-column>
@@ -17,13 +22,18 @@
     <clr-dg-column [clrDgField]="'workload.workload.metadata.apiVersion'" >{{'Kube_bench_list.inform'|translate}}</clr-dg-column>
   
     <clr-dg-row *clrDgItems="let kube of kubeReportTestList">
-      <clr-dg-cell>
+      <!-- <clr-dg-cell>
         <a href="javascript:;" (click)="toKubeBenchReportTestResult(kube)" >
           {{kube.section}}
           <clr-icon shape="pop-out"></clr-icon>
         </a>
+      </clr-dg-cell> -->
+      <clr-dg-cell>
+                <a href="javascript:;" (click)="toKubeBenchReportTestResult(kube)" >
+          {{kube.desc}}
+          <clr-icon shape="pop-out"></clr-icon>
+        </a>
       </clr-dg-cell>
-      <clr-dg-cell>{{kube.desc}}</clr-dg-cell>
       <clr-dg-cell>{{kube.type}}</clr-dg-cell>
       <clr-dg-cell>
         <a href="..." class="label clickable" style="border-color: #266900;">

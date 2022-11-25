@@ -1,5 +1,9 @@
 <div class="report">
-  <h2>{{title}}</h2>
+  <h2>
+    <a href="javascript:;" [routerLink]='["/assessments/kube-bench/test-view/" + report_id]'>
+      <clr-icon shape="angle" class="angle-top"></clr-icon>
+    </a>
+    {{title}}</h2>
   <div class="echarts-loading" *ngIf="echartsLoading">
     <span class="spinner spinner-lg">
       Loading...
@@ -8,58 +12,27 @@
   <div id="test-detail" style="width: 600px;height:400px;"></div>
 
   <clr-datagrid>
-    <clr-dg-column [clrDgField]="'workload.workload.metadata.name'">section</clr-dg-column>
-    <clr-dg-column [clrDgField]="'namespace'">{{'CommonlyUse.name'|translate}}</clr-dg-column>
-    <clr-dg-column [clrDgField]="'workload.workload.metadata.kind'">{{'CommonlyUse.type'|translate}}</clr-dg-column>
-    <clr-dg-column [clrDgField]="'workload.passed'" >{{'Kube_bench_list.passed'|translate}}</clr-dg-column>
-    <clr-dg-column [clrDgField]="'workload.workload.pods.length'" > {{'Kube_bench_list.failed'|translate}} </clr-dg-column>
-    <clr-dg-column [clrDgField]="'workload.workload.metadata.apiVersion'" >{{'Kube_bench_list.warned'|translate}}</clr-dg-column>
-    <clr-dg-column [clrDgField]="'workload.workload.metadata.apiVersion'" >{{'Kube_bench_list.inform'|translate}}</clr-dg-column>
+    <clr-dg-column [clrDgField]="'test_number'">ID</clr-dg-column>
+    <clr-dg-column [clrDgField]="'test_desc'">{{'CommonlyUse.description'|translate}}</clr-dg-column>
+    <clr-dg-column [clrDgField]="'type'">{{'CommonlyUse.type'|translate}}</clr-dg-column>
+    <clr-dg-column [clrDgField]="'reason'" >{{'Kube_bench_list.reason'|translate}}</clr-dg-column>
+    <clr-dg-column [clrDgField]="'status'" > {{'Kube_bench_list.status'|translate}} </clr-dg-column>
+    <clr-dg-column [clrDgField]="'remediation'" >{{'Kube_bench_list.remediation'|translate}}</clr-dg-column>
   
     <clr-dg-row *clrDgItems="let kube of kubeTestResultList">
       <clr-dg-cell>
-        {{kube.section}}
+        {{kube.test_number}}
       </clr-dg-cell>
-      <clr-dg-cell>{{kube.desc}}</clr-dg-cell>
+      <clr-dg-cell>{{kube.test_desc}}</clr-dg-cell>
       <clr-dg-cell>{{kube.type}}</clr-dg-cell>
       <clr-dg-cell>
-        <a href="..." class="label clickable" style="border-color: #266900;">
-          {{'Kube_bench_list.passed'|translate}}
-          
-          <span class="badge" style="background-color: #266900; color: #fff;">
-            {{kube.pass}}
-          </span>
-        </a>
+        {{kube.reason}}
       </clr-dg-cell>
       <clr-dg-cell>
-        <a href="..." class="label clickable" style="border-color: #A32100;">
-          {{'Kube_bench_list.failed'|translate}}
-          
-          <span class="badge" style="background-color: #A32100; color: #fff;">
-            {{kube.fail}}
-          </span>
-        </a>
-
+        {{kube.status}}
       </clr-dg-cell>
       <clr-dg-cell>
-        <a href="..." class="label clickable" style="border-color: #EFD603;">
-          {{'Kube_bench_list.warned'|translate}}
-          
-          <span class="badge" style="background-color: #EFD603; color: #313131;">
-            {{kube.warn}}
-          </span>
-        </a>
-
-      </clr-dg-cell>
-      <clr-dg-cell>
-        <a href="..." class="label clickable" style="border-color: #49AFd9;">
-          {{'Kube_bench_list.inform'|translate}}
-          
-          <span class="badge" style="background-color: #49AFd9; color: #fff;">
-            {{kube.info}}
-          </span>
-        </a>
-
+        {{kube.remediation}}
       </clr-dg-cell>
     </clr-dg-row>
   

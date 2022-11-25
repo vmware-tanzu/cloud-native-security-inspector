@@ -98,10 +98,10 @@
           <label>{{'CommonlyUse.image'|translate}}:</label>
           <clr-combobox formControlName="image" name="image" clrMulti="true" required>
             <ng-container *clrOptionSelected="let selected">
-              <clr-icon shape="network-globe"></clr-icon> {{selected?.name}}
+              <clr-icon shape="network-globe"></clr-icon> {{selected}}
             </ng-container>
             <clr-options>
-              <clr-option *clrOptionItems="let image of imageList;" [clrValue]="image">
+              <clr-option *clrOptionItems="let image of imageList;" [clrValue]="image.name">
                   {{image.name}}
                 <div style="display: flex; position: relative;">
                   <clr-icon style="position: absolute; left: -20px; top: 5px;" shape="network-globe"></clr-icon>

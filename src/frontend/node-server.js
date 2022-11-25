@@ -12,8 +12,7 @@ const fs = require('fs')
 const port = 3800
 const APISERVER='https://kubernetes.default.svc'
 const SERVICEACCOUNT='/var/run/secrets/kubernetes.io/serviceaccount'
-// const NAMESPACE= fs.readFile(`${SERVICEACCOUNT}/namespace`)
-// const CACERT=fs.readFile(`${SERVICEACCOUNT}/ca.crt`)
+const { Client } = require('@opensearch-project/opensearch')
 
 let token = fs.readFileSync(`${SERVICEACCOUNT}/token`, 'utf8')
 let app = express()
@@ -89,5 +88,50 @@ app.post('/es-test', (req, res) => {
     res.status(response.statusCode).send('test result')
   })
 })
+
+app.post('/open-search', (req, res) => {
+  const body = req.body
+  console.log('body', body)
+  const client = new Client({
+    node: body.url,
+    ssl: {
+      rejectUnauthorized: false
+    },
+    auth: {
+      username: body.username,
+      password: body.password
+    }
+
+  });
+  test_search(client, body).then(v => {
+    res.status(200).send(v) 
+  }).catch(err => {
+    res.status(500).send(err) 
+  })
+
+})
+
+test_search = async (client, body) => { 
+  let query = { 
+    query: { 
+      match: { 
+        createTime: {
+          query: "2022-11-23T07:45:18Z",
+        },
+      }, 
+    }, 
+    size: 10,
+    from: 4
+  }; 
+  try {
+    let response = await client.search({ index: body.index, body: body.query }); 
+    console.log("Searching:"); 
+    console.log(response.body); 
+    return  response.body
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
 
 app.listen(port)

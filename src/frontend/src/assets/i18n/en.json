@@ -33,7 +33,8 @@
     "create": "Create",
     "cancel": "Cancel",
     "delete": "Delete",
-    "inspectionNamespace": "Inspection Namespace"
+    "inspectionNamespace": "Inspection Namespace",
+    "description": "Description"
   },
   "Header": {
     "title": "Cloud Native Security Inspector"
@@ -199,7 +200,10 @@
     "passed": "Passed",
     "failed": "Failed",
     "warned": "Warned",
-    "inform": "Inform"
+    "inform": "Inform",
+    "reason": "Reason",
+    "status": "Status",
+    "remediation": "Remediation"
   },
   "en": "English",
   "zh_CN": "中文 (简体)"

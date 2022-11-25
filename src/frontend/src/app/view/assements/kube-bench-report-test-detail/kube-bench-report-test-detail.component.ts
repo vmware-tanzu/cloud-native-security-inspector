@@ -11,6 +11,7 @@ type ECOption = echarts.ComposeOption<PieSeriesOption>
 export class KubeBenchReportTestDetailComponent implements OnInit, OnDestroy {
 
   testId = ''
+  report_id = ''
   testInfo: any = {}
   title = ''
   echartsLoading = true
@@ -43,6 +44,7 @@ export class KubeBenchReportTestDetailComponent implements OnInit, OnDestroy {
     this.route.params.subscribe(
       data => {
         this.testId = data.id
+        this.report_id = sessionStorage.getItem('cnsi_report_id') || ''
         const testInfoStr = sessionStorage.getItem('result_' + this.testId)
         if (testInfoStr) {
           this.testInfo = JSON.parse(testInfoStr)
