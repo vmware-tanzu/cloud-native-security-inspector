@@ -153,7 +153,7 @@ export class PolicySettingPageComponent implements OnInit {
         elasticSearchUser: [''],
         elasticSearchPasswd: [''],
         elasticSearchCert: [''],
-        openSearchEnabled: [false],
+        openSearchEnabled: [true],
         openSearchAddrHeader: ['https://'],
         openSearchAddr: [''],
         openSearchUser: [''],

@@ -29,7 +29,22 @@
         {{kube.reason}}
       </clr-dg-cell>
       <clr-dg-cell>
-        {{kube.status}}
+        <span class="status pass" *ngIf="kube.status === 'PASS'">
+          <clr-icon shape="check-circle" class="is_solid"></clr-icon>
+          {{kube.status}}
+        </span>
+        <span class="status fail" *ngIf="kube.status === 'FAIl'">
+          <clr-icon shape="exclamation-circle" class="is_solid"></clr-icon>
+          {{kube.status}}
+        </span>
+        <span class="status warn" *ngIf="kube.status === 'WARN'">
+          <clr-icon shape="exclamation-triangle" class="is_solid"></clr-icon>
+          {{kube.status}}
+        </span>
+        <span class="status info" *ngIf="kube.status === 'INFO'">
+          <clr-icon shape="info-circle" class="is_solid"></clr-icon>
+          {{kube.status}}
+        </span>
       </clr-dg-cell>
       <clr-dg-cell>
         {{kube.remediation}}

@@ -16,6 +16,8 @@ export class KubeBenchReportListComponent implements OnInit {
   // filter
   kubeTypeFilterFlag = false
   kubeNodeTypeFilterFlag = false
+  oldKey = ''
+  oldValue = ''
   // sort
   isOder = false
   // default data
@@ -105,7 +107,7 @@ export class KubeBenchReportListComponent implements OnInit {
           containLabel: true
         },
         title: {
-          text: 'Kube Bench Type Reports',
+          text: 'Kube Bench Reports Type',
           textStyle: {
             color: '#fff'
           },
@@ -148,26 +150,45 @@ export class KubeBenchReportListComponent implements OnInit {
 
   getKubeBenchReportList(filter: {key:string, value: string, size?: number, from?:number}) {
     this.dgLoading = true
+    let reset = false
     const query: any = { 
       size: filter.size ? filter.size :10,
       from: filter.from ? filter.from: 0
     };
-    if (filter.value) {
-      query.query = {
-        match: {} as any,
+    if (filter.key) {
+      if (!this.oldKey) {
+        this.oldKey = filter.key
+        this.oldValue = filter.value
+        reset = true
+      } else {
+        if (this.oldKey === filter.key) {
+          if (this.oldValue === filter.value) {
+            reset = false
+          } else {
+            reset = true
+          }
+        } else {
+          reset = true
+        }
       }
-      query.query.match[filter.key] = filter.value
+      if (filter.value) {
+        query.query = {
+          match: {} as any,
+        }
+        query.query.match[filter.key] = filter.value
+      } else {
+        this.oldKey = ''
+        this.oldValue = ''
+      }
     }
-    const reset = filter.key ? true : false
     function callBack(data: any, that: any) {
       if (reset) {
-        that.kubeBenchReportList = []
+        that.kubeBenchReportList = []        
         that.pagination.page.current = 1
         that.pagination.page.size = that.defaultSize
-        that.pagination.page.from = that.from
-        that.pagination.page.change
-
+        that.pagination.page.from = that.from        
         that.kubeBenchReportList = data.hits.hits
+        that.pagination.page.change
       } else {
         data.hits.hits.forEach((el: any) => {
           that.kubeBenchReportList.push(el)
@@ -183,15 +204,15 @@ export class KubeBenchReportListComponent implements OnInit {
     this.dgLoading = true
     if (event.page.current <= 1) {// size change
       if (event.page.size !== this.defaultSize) {
-        this.getKubeBenchReportList({key: '', value: '', size: event.page.size})
+        this.getKubeBenchReportList({key: this.oldKey, value: this.oldValue, size: event.page.size})
       } else {
         this.dgLoading = false
       }
     } else {// page change
       if (event.page.size !== this.defaultSize) {
-        this.getKubeBenchReportList({key: '', value: '', size: event.page.size, from: event.page.from})
+        this.getKubeBenchReportList({key: this.oldKey, value: this.oldValue, size: event.page.size, from: event.page.from})
       } else {
-        this.getKubeBenchReportList({key: '', value: '', from: event.page.from })
+        this.getKubeBenchReportList({key: this.oldKey, value: this.oldValue, from: event.page.from })
       }
 
     }
@@ -227,12 +248,16 @@ export class KubeBenchReportListComponent implements OnInit {
   // extract function
   extractKubeBenchApi(query: any, callback: Function) {
     this.dgLoading = true
-    const opensearchInfoJson = localStorage.getItem('cnsi-open-search')
-    if (opensearchInfoJson) {
-      this.opensearchInfo = JSON.parse(opensearchInfoJson)     
+    const opensearchInfoJson = localStorage.getItem('cnsi-open-search') || "{}"
+    const elasticsearchInfoJson = localStorage.getItem('cnsi-elastic-search') || "{}"
+    const opensearchInfo = JSON.parse(opensearchInfoJson)   
+    const elasticsearchInfo = JSON.parse(elasticsearchInfoJson)   
+    if (opensearchInfo.url || elasticsearchInfo.url) {
+      this.opensearchInfo = opensearchInfo.url ?  opensearchInfo : elasticsearchInfo 
       this.assessmentService.getKubeBenchReport({url: this.opensearchInfo.url, index: 'cis_report', username: this.opensearchInfo.user, password: this.opensearchInfo.password, query}).subscribe(
         data => {
           callback(data, this)
+          this.pageMaxCount = Math.ceil(data.hits.total.value / this.defaultSize)
         },
         err => {}
       )

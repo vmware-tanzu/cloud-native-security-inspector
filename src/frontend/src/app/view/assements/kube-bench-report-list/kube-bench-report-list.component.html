@@ -10,6 +10,7 @@
   </div>
 
   <clr-datagrid [clrDgLoading]="dgLoading" (clrDgRefresh)="pageChange($event)">
+    <clr-dg-column >{{'CommonlyUse.typeId'|translate}}</clr-dg-column>
     <clr-dg-column >{{'CommonlyUse.name'|translate}}</clr-dg-column>
     <clr-dg-column class="namespace-filter">
       {{'CommonlyUse.type'|translate}}
@@ -41,15 +42,16 @@
     <clr-dg-column [clrDgSortBy]="'_source.total_info'">{{'Kube_bench_list.inform'|translate}}</clr-dg-column>
   
     <clr-dg-row *clrDgItems="let kube of kubeBenchReportList">
+      <clr-dg-cell>{{kube._source.id}}</clr-dg-cell>
       <clr-dg-cell>
         <a href="javascript:;" (click)="toKubeBenchReportTests(kube)" >
-          {{kube._id}}
           <clr-icon shape="pop-out"></clr-icon>
+          {{kube._id}}
         </a>
       </clr-dg-cell>
       <clr-dg-cell>{{kube._source.text}}</clr-dg-cell>
       <clr-dg-cell>{{kube._source.node_type}}</clr-dg-cell>
-      <clr-dg-cell>{{kube._source.createTime | date}}</clr-dg-cell>
+      <clr-dg-cell>{{kube._source.createTime | date: 'medium'}}</clr-dg-cell>
       <clr-dg-cell>
         <a href="..." class="label clickable" style="border-color: #266900;">
           {{'Kube_bench_list.passed'|translate}}

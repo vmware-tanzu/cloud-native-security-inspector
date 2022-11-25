@@ -13,28 +13,23 @@
   <div id="test-view" style="width: 600px;height:400px;"></div>
 
   <clr-datagrid>
-    <!-- <clr-dg-column [clrDgField]="'workload.workload.metadata.name'">section</clr-dg-column> -->
+    <clr-dg-column >{{'CommonlyUse.typeId'|translate}}</clr-dg-column>
     <clr-dg-column [clrDgField]="'namespace'">{{'CommonlyUse.name'|translate}}</clr-dg-column>
-    <clr-dg-column [clrDgField]="'workload.workload.metadata.kind'">{{'CommonlyUse.type'|translate}}</clr-dg-column>
     <clr-dg-column [clrDgField]="'workload.passed'" >{{'Kube_bench_list.passed'|translate}}</clr-dg-column>
     <clr-dg-column [clrDgField]="'workload.workload.pods.length'" > {{'Kube_bench_list.failed'|translate}} </clr-dg-column>
     <clr-dg-column [clrDgField]="'workload.workload.metadata.apiVersion'" >{{'Kube_bench_list.warned'|translate}}</clr-dg-column>
     <clr-dg-column [clrDgField]="'workload.workload.metadata.apiVersion'" >{{'Kube_bench_list.inform'|translate}}</clr-dg-column>
   
     <clr-dg-row *clrDgItems="let kube of kubeReportTestList">
-      <!-- <clr-dg-cell>
-        <a href="javascript:;" (click)="toKubeBenchReportTestResult(kube)" >
-          {{kube.section}}
-          <clr-icon shape="pop-out"></clr-icon>
-        </a>
-      </clr-dg-cell> -->
+      <clr-dg-cell>
+        {{kube.section}}
+      </clr-dg-cell>
       <clr-dg-cell>
                 <a href="javascript:;" (click)="toKubeBenchReportTestResult(kube)" >
+                  <clr-icon shape="pop-out"></clr-icon>
           {{kube.desc}}
-          <clr-icon shape="pop-out"></clr-icon>
         </a>
       </clr-dg-cell>
-      <clr-dg-cell>{{kube.type}}</clr-dg-cell>
       <clr-dg-cell>
         <a href="..." class="label clickable" style="border-color: #266900;">
           {{'Kube_bench_list.passed'|translate}}

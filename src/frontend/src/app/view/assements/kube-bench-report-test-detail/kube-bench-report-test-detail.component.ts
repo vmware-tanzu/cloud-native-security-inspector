@@ -110,7 +110,6 @@ export class KubeBenchReportTestDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    sessionStorage.removeItem('result_'+this.testId)
   }
 
 }

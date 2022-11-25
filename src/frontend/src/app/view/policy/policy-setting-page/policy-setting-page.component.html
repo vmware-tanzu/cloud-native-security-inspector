@@ -22,49 +22,6 @@
           <input clrInput placeholder="" name="namespace" formControlName="namespace"/>
         </clr-input-container>
   
-        <!-- <clr-select-container>
-          <label class="w-200">{{'Policy.type'|translate}}</label>
-          <select clrSelect name="format" formControlName="type">
-            <option value="network">Network</option>
-            <option value="OPA gatekeeper">{{'Policy.opa'|translate}}</option>
-          </select>
-        </clr-select-container>
-        <div class="port" *ngIf="policyForm.get('type')?.value==='OPA gatekeeper'">
-          <clr-select-container>
-            <label class="w-200">{{'Policy.ingress'|translate}}</label>
-            <select clrSelect name="gatekeeper" formControlName="gatekeeper">
-              <option value="IPBlock">{{'Policy.block'|translate}}</option>
-              <option value="Protocol">{{'Policy.protocol'|translate}}</option>
-              <option value="Port">{{'Policy.port'|translate}}</option>
-            </select>      
-          </clr-select-container>
-          <clr-input-container>
-            <label>{{policyForm.get('gatekeeper')?.value}}: </label>
-            <input clrInput placeholder="" name="port" formControlName="port"/>
-          </clr-input-container>
-          <clr-input-container *ngIf="policyForm.get('gatekeeper')?.value==='Port'">
-            <label>{{'Policy.endPort'|translate}}: </label>
-            <input clrInput placeholder="" name="endPort" formControlName="endPort"/>
-          </clr-input-container>
-        </div>
-        <div class="port" *ngIf="policyForm.get('type')?.value==='OPA gatekeeper'">
-          <clr-select-container>
-            <label class="w-200">{{'Policy.egress'|translate}}</label>
-            <select clrSelect name="gatekeeper" formControlName="e_gatekeeper">
-              <option value="IPBlock">{{'Policy.block'|translate}}</option>
-              <option value="Protocol">{{'Policy.protocol'|translate}}</option>
-              <option value="Port">{{'Policy.port'|translate}}</option>
-            </select>      
-          </clr-select-container>
-          <clr-input-container>
-            <label>{{policyForm.get('e_gatekeeper')?.value}}: </label>
-            <input clrInput placeholder="" name="port" formControlName="e_port"/>
-          </clr-input-container>
-          <clr-input-container *ngIf="policyForm.get('e_gatekeeper')?.value==='Port'">
-            <label>{{'Policy.endPort'|translate}}: </label>
-            <input clrInput placeholder="" name="endPort" formControlName="e_endPort"/>
-          </clr-input-container>
-        </div> -->
         <div class="schedule">
           <h4>{{'Policy.schedule'|translate}}:</h4>
           <div>
@@ -95,7 +52,7 @@
         </clr-select-container>
 
         <clr-combobox-container>
-          <label>{{'CommonlyUse.image'|translate}}:</label>
+          <label>{{'CommonlyUse.scanInspector'|translate}}:</label>
           <clr-combobox formControlName="image" name="image" clrMulti="true" required>
             <ng-container *clrOptionSelected="let selected">
               <clr-icon shape="network-globe"></clr-icon> {{selected}}
@@ -129,7 +86,52 @@
             <option *ngFor="let item of settingList" [value]="item.metadata.name">{{item.metadata.name}}</option>
           </select>
         </clr-select-container>
+
+        <!-- openSearchEnabled -->
+        <clr-toggle-container class="clr-inline">
+          <label class="w-200">{{'Policy.openSearchEnabled'|translate}}:</label>
+          <clr-toggle-wrapper>
+            <input type="checkbox" clrToggle name="openSearchEnabled" formControlName="openSearchEnabled" />
+          </clr-toggle-wrapper>
+        </clr-toggle-container>
+        <div *ngIf="policyForm.get('inspectionSetting')?.get('openSearchEnabled')?.value">
+          <div class="endpoint-container">
+            <label>{{'Policy.elasticSearchAddr' |translate}}: </label>
+            <select clrSelect name="openSearchAddrHeader" formControlName="openSearchAddrHeader">
+              <option value="http://">http</option>
+              <option value="https://">https</option>
+            </select>
+            <input clrInput placeholder="" name="openSearchAddr" formControlName="openSearchAddr"/>
+          </div>
   
+          <clr-input-container>
+            <label>{{'Policy.elasticSearchUser'|translate}}:  </label>
+            <input clrInput placeholder="" name="openSearchUser" formControlName="openSearchUser"/>
+          </clr-input-container>
+  
+          <div class="passwd-test">
+            <clr-password-container>
+              <label>{{'Policy.elasticSearchPasswd'|translate}}:</label>
+              <input clrPassword placeholder="Password please!" name="openSearchPasswd" formControlName="openSearchPasswd" />
+            </clr-password-container>
+    
+              
+            <!-- <div class="test-icon">
+              <button class="btn btn-info btn-sm" (click)="testElasticSearch()">
+                {{'CommonlyUse.test'| translate}}
+              </button>
+              <span  *ngIf="checkES === 'passed'">
+                <clr-icon class="passed" shape="check-circle" ></clr-icon> Successful
+              </span>
+              <span  *ngIf="checkES === 'not passed'" class="not-passed" >
+                <clr-icon  shape="times" class="not-passed"></clr-icon> Failed
+              </span>
+            </div> -->
+          </div>
+
+        </div>
+
+         <!-- elasticSearchEnabled -->
         <clr-toggle-container class="clr-inline">
           <label class="w-200">{{'Policy.elasticSearchEnabled'|translate}}:</label>
           <clr-toggle-wrapper>
@@ -176,50 +178,6 @@
             <label>{{'Policy.elasticSearchCert'|translate}}</label>
             <textarea style="width: 300px; height: 150px;" clrTextarea name="elasticSearchCert" formControlName="elasticSearchCert"></textarea>
           </clr-textarea-container>
-
-        </div>
-
-        <!-- openSearchEnabled -->
-        <clr-toggle-container class="clr-inline">
-          <label class="w-200">{{'Policy.openSearchEnabled'|translate}}:</label>
-          <clr-toggle-wrapper>
-            <input type="checkbox" clrToggle name="openSearchEnabled" formControlName="openSearchEnabled" />
-          </clr-toggle-wrapper>
-        </clr-toggle-container>
-        <div *ngIf="policyForm.get('inspectionSetting')?.get('openSearchEnabled')?.value">
-          <div class="endpoint-container">
-            <label>{{'Policy.elasticSearchAddr' |translate}}: </label>
-            <select clrSelect name="openSearchAddrHeader" formControlName="openSearchAddrHeader">
-              <option value="http://">http</option>
-              <option value="https://">https</option>
-            </select>
-            <input clrInput placeholder="" name="openSearchAddr" formControlName="openSearchAddr"/>
-          </div>
-  
-          <clr-input-container>
-            <label>{{'Policy.elasticSearchUser'|translate}}:  </label>
-            <input clrInput placeholder="" name="openSearchUser" formControlName="openSearchUser"/>
-          </clr-input-container>
-  
-          <div class="passwd-test">
-            <clr-password-container>
-              <label>{{'Policy.elasticSearchPasswd'|translate}}:</label>
-              <input clrPassword placeholder="Password please!" name="openSearchPasswd" formControlName="openSearchPasswd" />
-            </clr-password-container>
-    
-              
-            <!-- <div class="test-icon">
-              <button class="btn btn-info btn-sm" (click)="testElasticSearch()">
-                {{'CommonlyUse.test'| translate}}
-              </button>
-              <span  *ngIf="checkES === 'passed'">
-                <clr-icon class="passed" shape="check-circle" ></clr-icon> Successful
-              </span>
-              <span  *ngIf="checkES === 'not passed'" class="not-passed" >
-                <clr-icon  shape="times" class="not-passed"></clr-icon> Failed
-              </span>
-            </div> -->
-          </div>
 
         </div>
 
@@ -325,25 +283,25 @@
           </clr-toggle-wrapper>
         </clr-toggle-container>              
         
-        <clr-select-container *ngIf="policyForm.get('inspectionResult')?.get('generate')?.value">
+        <!-- <clr-select-container *ngIf="policyForm.get('inspectionResult')?.get('generate')?.value">
           <label class="w-200">{{'Policy.format'|translate}}</label>
           <select clrSelect name="format" formControlName="format">
             <option value="YAML">YAML</option>
             <option value="JSON">JSON</option>
           </select>
-        </clr-select-container>
+        </clr-select-container> -->
         
         <clr-input-container *ngIf="policyForm.get('inspectionResult')?.get('generate')?.value">
           <label>{{'Policy.live_time'|translate}}:   </label>
           <input clrInput placeholder="" name="liveTime" formControlName="liveTime"/>
         </clr-input-container>
   
-        <clr-toggle-container *ngIf="policyForm.get('inspectionResult')?.get('generate')?.value" class="clr-inline">
+        <!-- <clr-toggle-container *ngIf="policyForm.get('inspectionResult')?.get('generate')?.value" class="clr-inline">
           <label class="w-200">{{'Policy.managedBy'|translate}}:</label>
           <clr-toggle-wrapper>
             <input  type="checkbox" clrToggle name="managedBy" formControlName="managedBy" />
           </clr-toggle-wrapper>
-        </clr-toggle-container> 
+        </clr-toggle-container>  -->
   
         <div class="actions" >
           <h4 class="action-title">

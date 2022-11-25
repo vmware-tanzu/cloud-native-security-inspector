@@ -9,3 +9,31 @@
   color: #fff;
   margin-left: 15px;
 }
+.report .status {
+  display: flex;
+  align-items: center;
+}
+.report .status.pass {
+  color: #91CB74;
+}
+.report .status.pass clr-icon {
+  color: #91CB74;
+}
+.report .status.fail {
+  color: #EE6666;
+}
+.report .status.fail clr-icon {
+  color: #EE6666;
+}
+.report .status.info {
+  color: #5470C6;
+}
+.report .status.info clr-icon {
+  color: #5470C6;
+}
+.report .status.warn {
+  color: #FAC858;
+}
+.report .status.warn clr-icon {
+  color: #FAC858;
+}

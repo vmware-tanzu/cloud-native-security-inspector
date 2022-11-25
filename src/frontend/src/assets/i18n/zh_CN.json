@@ -34,7 +34,9 @@
     "cancel": "取消",
     "delete": "删除",
     "inspectionNamespace": "监测命名空间",
-    "description": "描述"
+    "description": "描述",
+    "scanInspector": "扫描检查器",
+    "typeId": "类型ID"
   },
   "Header": {
     "title": "Cloud Native Security Inspector"

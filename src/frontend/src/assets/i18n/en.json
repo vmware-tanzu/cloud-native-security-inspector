@@ -34,7 +34,9 @@
     "cancel": "Cancel",
     "delete": "Delete",
     "inspectionNamespace": "Inspection Namespace",
-    "description": "Description"
+    "description": "Description",
+    "scanInspector": "Scan Inspector",
+    "typeId": "Type ID"
   },
   "Header": {
     "title": "Cloud Native Security Inspector"
@@ -141,12 +143,12 @@
     "value": "value",
     "settingsName": "Settings Name",
     "enabled": "Enabled Settings",
-    "elasticSearchEnabled": "Elastic Search",
+    "elasticSearchEnabled": "ElasticSearch",
     "elasticSearchAddr": "Address",
     "elasticSearchUser": "User",
     "elasticSearchPasswd": "Password",
     "elasticSearchCert": "Certificate",
-    "openSearchEnabled": "Open Search",
+    "openSearchEnabled": "OpenSearch",
     "workNamespace": "Work Namespace",
     "image": "Image URL"
 
