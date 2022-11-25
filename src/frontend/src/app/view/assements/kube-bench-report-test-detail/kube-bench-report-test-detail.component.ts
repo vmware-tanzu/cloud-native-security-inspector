@@ -45,7 +45,7 @@ export class KubeBenchReportTestDetailComponent implements OnInit, OnDestroy {
       data => {
         this.testId = data.id
         this.report_id = sessionStorage.getItem('cnsi_report_id') || ''
-        const testInfoStr = sessionStorage.getItem('result_' + this.testId)
+        const testInfoStr = sessionStorage.getItem(this.testId)
         if (testInfoStr) {
           this.testInfo = JSON.parse(testInfoStr)
           console.log('this.testInfo', this.testInfo);
@@ -103,7 +103,7 @@ export class KubeBenchReportTestDetailComponent implements OnInit, OnDestroy {
           this.echartsLoading = false      
     
         } else {
-          this.router.navigateByUrl('assessments/kube-bench')
+          this.router.navigateByUrl('assessments/kube-bench/list')
         }
       }
     )

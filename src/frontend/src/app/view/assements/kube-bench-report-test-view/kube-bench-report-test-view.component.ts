@@ -38,8 +38,8 @@ export class KubeBenchReportTestViewComponent implements OnInit, OnDestroy {
 	}
 
   toKubeBenchReportTestResult(kube: any) {
-    sessionStorage.setItem('result_'+kube.section, JSON.stringify(kube))
-    this.router.navigateByUrl(`assessments/kube-bench/test-detail/${kube.section}`)
+    sessionStorage.setItem(kube.desc, JSON.stringify(kube))
+    this.router.navigateByUrl(`assessments/kube-bench/test-detail/${kube.desc}`)
   }
 
   ngOnInit(): void {
