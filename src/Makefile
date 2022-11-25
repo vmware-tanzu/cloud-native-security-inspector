@@ -6,11 +6,12 @@ KUBECTLCMD=$(shell which kubectl)
 SWAGGER := $(DOCKERCMD) run --rm -it -v $(HOME):$(HOME) -w $(shell pwd) quay.io/goswagger/swagger
 
 REGISTRY ?= projects.registry.vmware.com/cnsi
+IMG_TAG = 0.1
 # Image URL to use all building/pushing image targets
-IMG ?= $(REGISTRY)/manager:0.1
-IMG_CMD_INSPECTOR ?= $(REGISTRY)/inspector:0.1
-IMG_CMD_KUBEBENCH ?= $(REGISTRY)/kubebench:0.1
-PORTAl ?= $(REGISTRY)/portal:0.1
+IMG ?= $(REGISTRY)/manager:$(IMG_TAG)
+IMG_CMD_INSPECTOR ?= $(REGISTRY)/inspector:$(IMG_TAG)
+IMG_CMD_KUBEBENCH ?= $(REGISTRY)/kubebench:$(IMG_TAG)
+PORTAl ?= $(REGISTRY)/portal:$(IMG_TAG)
 # Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
 CRD_OPTIONS ?= "crd:trivialVersions=true,preserveUnknownFields=false"
 

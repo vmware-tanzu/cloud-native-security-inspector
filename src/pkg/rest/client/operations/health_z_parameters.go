@@ -57,7 +57,8 @@ func NewHealthZParamsWithHTTPClient(client *http.Client) *HealthZParams {
 	}
 }
 
-/*HealthZParams contains all the parameters to send to the API endpoint
+/*
+HealthZParams contains all the parameters to send to the API endpoint
 for the health z operation typically these are written to a http.Request
 */
 type HealthZParams struct {

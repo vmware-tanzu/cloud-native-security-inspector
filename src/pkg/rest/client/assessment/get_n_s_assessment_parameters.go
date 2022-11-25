@@ -57,7 +57,8 @@ func NewGetNSAssessmentParamsWithHTTPClient(client *http.Client) *GetNSAssessmen
 	}
 }
 
-/*GetNSAssessmentParams contains all the parameters to send to the API endpoint
+/*
+GetNSAssessmentParams contains all the parameters to send to the API endpoint
 for the get n s assessment operation typically these are written to a http.Request
 */
 type GetNSAssessmentParams struct {

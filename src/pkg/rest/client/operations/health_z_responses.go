@@ -42,7 +42,8 @@ func NewHealthZOK() *HealthZOK {
 	return &HealthZOK{}
 }
 
-/*HealthZOK handles this case with default header values.
+/*
+HealthZOK handles this case with default header values.
 
 successful operation
 */
