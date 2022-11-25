@@ -230,7 +230,7 @@ export class KubeBenchReportListComponent implements OnInit {
     const opensearchInfoJson = localStorage.getItem('cnsi-open-search')
     if (opensearchInfoJson) {
       this.opensearchInfo = JSON.parse(opensearchInfoJson)     
-      this.assessmentService.getKubeBenchReport({url: 'https://127.0.0.1:9999', index: 'cis_report', username: this.opensearchInfo.user, password: this.opensearchInfo.password, query}).subscribe(
+      this.assessmentService.getKubeBenchReport({url: this.opensearchInfo.url, index: 'cis_report', username: this.opensearchInfo.user, password: this.opensearchInfo.password, query}).subscribe(
         data => {
           callback(data, this)
         },

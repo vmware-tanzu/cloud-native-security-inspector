@@ -59,6 +59,11 @@ export class PolicySettingPageComponent implements OnInit {
     if (!data.image || data.image.length < 1) {
       result = true
     }
+
+    if (!data.elasticSearchEnabled && !data.openSearchEnabled) {
+      result = true
+    }
+
     if (!data.elasticSearchEnabled) {      
       delete data.elasticSearchAddr
       delete data.elasticSearchUser
