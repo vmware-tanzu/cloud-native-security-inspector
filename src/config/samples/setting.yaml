@@ -22,14 +22,14 @@ spec:
       namespace: default
     provider: Harbor
     name: source-harbor
-    endpoint: https://demo.goharbor.io
+    endpoint: https://your-harbor-regsitry
     scanSchedule: "0 0 0 * * *"
-    skipTLSVerify: false
+    skipTLSVerify: true
 
   knownRegistries:
   - provider: docker-registry
     name: local-registry
-    endpoint: https://10.0.0.1:5000
+    endpoint: https://your-known-registry:5000
     credentialRef:
       name: harbor
       namespace: default

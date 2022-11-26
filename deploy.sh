@@ -1,30 +1,55 @@
 #!/bin/bash
 set -e
 
-usage=$'Please set --with-portal if needs enable portal.
-Please set --build-source if needs build from scratch.'
+usage=$'Run "./deploy install" to install Project Narrows. Please set --build-source if needs build from scratch.'
 
+source src/tools/installation/common.sh
+set +o noglob
 
 with_portal=true
 build_source=$false
 install=$false
 uninstall=$false
 
+if [ $# -eq 0 ]; then
+    error "$usage"
+fi
+
+DIR="$(cd "$(dirname "$0")" && pwd)"
+source $DIR/src/tools/installation/common.sh
+
+
+function install_opensearch() {
+    note "Installing opensearch"
+    check_helm
+    helm repo add opensearch https://opensearch-project.github.io/helm-charts/
+    helm repo update
+    helm install opensearch-deployment-for-narrows opensearch/opensearch --version 2.8.0
+    success "OpenSearch installed"
+}
+
+function uninstall_opensearch() {
+    note "Uninstalling opensearch"
+    check_helm
+    helm repo add opensearch https://opensearch-project.github.io/helm-charts/
+    helm uninstall opensearch-deployment-for-narrows
+    success "OpenSearch uninstalled"
+}
+
 while [ $# -gt 0 ]; do
         case $1 in
             --help)
-            echo $usage
+            note "$usage"
             exit 0;;
             install)
             install=true;;
-            --with-portal)
-            with_portal=true;;
             --build-source)
+            check_golang
             build_source=true;;
             uninstall)
             uninstall=true;;
             *)
-            echo $usage
+            note "$usage"
             exit 1;;
         esac
         shift || true
@@ -34,25 +59,46 @@ done
 cd src/
 if [ $install ] && [ $with_portal ]
 then
-    make deploy
+    check_kubectl
+    install_opensearch
+    note "Installing Project Narrows"
+    make install
+    success "Project Narrows installed"
 fi
 
 if [ $install ] && [ $with_portal != "true" ]
 then
-    make deploy
+    check_kubectl
+    install_opensearch
+    note "Installing Project Narrows"
+    make install
+    success "Project Narrows installed"
 fi
 
 
 if [ $install ] && [ $build_source ]
 then
+    check_kubectl
+    check_docker
+    note "Docker build manager"
     make docker-build-manager
+    note "Docker build inspector"
     make docker-build-inspector
+    note "Docker build portal"
     make docker-build-portal
+    note "Push images to registry"
     make docker-push
+    note "Deploying ..."
     make deploy
+    success "Project Narrows installed"
 fi
 
 if [ $uninstall ]
 then
-    make undeploy
+    check_kubectl
+    uninstall_opensearch
+    note "Uninstalling Project Narrows..."
+    make uninstall
+    success "Project Narrows uninstalled"
 fi
+
