@@ -8,10 +8,11 @@ SWAGGER := $(DOCKERCMD) run --rm -it -v $(HOME):$(HOME) -w $(shell pwd) quay.io/
 REGISTRY ?= projects.registry.vmware.com/cnsi
 IMG_TAG = 0.1
 # Image URL to use all building/pushing image targets
-IMG ?= $(REGISTRY)/manager:$(IMG_TAG)
+IMG_MANAGER ?= $(REGISTRY)/manager:$(IMG_TAG)
 IMG_CMD_INSPECTOR ?= $(REGISTRY)/inspector:$(IMG_TAG)
 IMG_CMD_KUBEBENCH ?= $(REGISTRY)/kubebench:$(IMG_TAG)
 PORTAl ?= $(REGISTRY)/portal:$(IMG_TAG)
+
 # Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
 CRD_OPTIONS ?= "crd:trivialVersions=true,preserveUnknownFields=false"
 
@@ -28,7 +29,6 @@ endif
 SHELL = /usr/bin/env bash -o pipefail
 .SHELLFLAGS = -ec
 
-all: build
 
 ##@ General
 
@@ -86,7 +86,7 @@ run: manifests generate fmt vet ## Run a controller from your host.
 docker-build-all: docker-build-manager docker-build-inspector docker-build-kubebench docker-build-portal
 
 docker-build-manager: test build-manager ## Build docker image with the manager.
-	$(DOCKERCMD) build -t ${IMG} .
+	$(DOCKERCMD) build -t ${IMG_MANAGER} .
 
 docker-build-inspector: build-inspector ## Build docker image with inspector cmd.
 	$(DOCKERCMD) build -t ${IMG_CMD_INSPECTOR} -f Dockerfile.inspection .
@@ -98,7 +98,7 @@ docker-build-portal:
 	$(DOCKERCMD) build -t ${PORTAl} -f Dockerfile.portal .
 
 docker-push: ## Push docker images with the manager.
-	$(DOCKERCMD) push ${IMG}
+	$(DOCKERCMD) push ${IMG_MANAGER}
 	$(DOCKERCMD) push ${IMG_CMD_INSPECTOR}
 	$(DOCKERCMD) push ${IMG_CMD_KUBEBENCH}
 	$(DOCKERCMD) push ${PORTAl}
@@ -108,19 +108,21 @@ namespace:
 	$(KUBECTLCMD) create namespace cnsi-system --dry-run=client -o yaml | $(KUBECTLCMD) apply -f -
 
 
-install: manifests kustomize ## Install CRDs into the K8s cluster specified in ~/.kube/config.
+gen-and-apply-crd: manifests kustomize ## Install CRDs into the K8s cluster specified in ~/.kube/config.
 	$(KUSTOMIZE) build config/crd | kubectl apply -f -
 
-uninstall: manifests kustomize ## Uninstall CRDs from the K8s cluster specified in ~/.kube/config.
+uninstall-crd: manifests kustomize ## Uninstall CRDs from the K8s cluster specified in ~/.kube/config.
 	$(KUSTOMIZE) build config/crd | kubectl delete -f -
 
-deploy: namespace portal manifests kustomize  ## Deploy controller to the K8s cluster specified in ~/.kube/config.
-	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
+deploy: portal manifests kustomize  ## Deploy controller to the K8s cluster specified in ~/.kube/config.
+	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG_MANAGER}
 	$(KUSTOMIZE) build config/default | kubectl apply -f -
 
 deploy-without-portal: manifests kustomize ## Deploy controller to the K8s cluster specified in ~/.kube/config.
-	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
+	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG_MANAGER}
 	$(KUSTOMIZE) build config/default | kubectl apply -f -
+
+#uninstall:
 
 remove_clusterrolebinding:
     clean = $(shell kubectl delete clusterrolebinding cnsi-inspector-rolebinding)
@@ -130,12 +132,21 @@ remove_clusterrolebinding:
 undeploy: remove_clusterrolebinding ## Undeploy controller from the K8s cluster specified in ~/.kube/config.
 	$(KUSTOMIZE) build config/default | kubectl delete -f -
 
-portal:
+portal: namespace
 	$(KUBECTLCMD) apply -f frontend/scripts/cloud-native-security-inspector-portal-serviceaccount.yaml
 	$(KUBECTLCMD) apply -f frontend/scripts/cloud-native-security-inspector-portal-role.yaml
 	$(KUBECTLCMD) apply -f frontend/scripts/cloud-native-security-inspector-portal-rolebinding.yaml
 	$(KUBECTLCMD) apply -f frontend/scripts/cloud-native-security-inspector-portal.yaml
 	$(KUBECTLCMD) apply -f frontend/scripts/cloud-native-security-inspector-portal-service.yaml
+
+# To install and uninstall CNSI components without golang and kustomize required. Probably this is the recommended commands for users currently.
+install: portal
+	$(KUBECTLCMD) apply -f tools/installation/yaml/manager.yaml
+	$(KUBECTLCMD) apply -f tools/installation/yaml/crd.yaml
+
+uninstall: remove_clusterrolebinding
+	$(KUBECTLCMD) delete -f tools/installation/yaml/crd.yaml --ignore-not-found=true
+	$(KUBECTLCMD) delete -f tools/installation/yaml/manager.yaml --ignore-not-found=true
 
 
 CONTROLLER_GEN = $(shell pwd)/bin/controller-gen
@@ -144,7 +155,6 @@ controller-gen: tidy ## Download controller-gen locally if necessary.
 
 KUSTOMIZE = $(shell pwd)/bin/kustomize
 kustomize: ## Download kustomize locally if necessary.
-	#$(call go-get-tool,$(KUSTOMIZE),sigs.k8s.io/kustomize/kustomize/v3@v3.8.7)
 	$(call go-get-tool,$(KUSTOMIZE),sigs.k8s.io/kustomize/kustomize/v4@v4.5.7)
 
 # go-get-tool will 'go get' any package $2 and install it to $1.
