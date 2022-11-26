@@ -5,8 +5,8 @@ package policy
 import (
 	"context"
 
-	"github.com/vmware-tanzu/cloud-native-security-inspector/api/v1alpha1"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/policy/enforcement"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/policy/enforcement"
 )
 
 // Enforcer to enforce policy.

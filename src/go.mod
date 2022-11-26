@@ -1,4 +1,4 @@
-module github.com/vmware-tanzu/cloud-native-security-inspector
+module github.com/vmware-tanzu/cloud-native-security-inspector/src
 
 go 1.19
 
