@@ -68,8 +68,50 @@ func (r *ResourceItem) IsPod() bool {
 	return false
 }
 
+func (r *ResourceItem) IsService() bool {
+	if r.Type == "Service" && r.Service != nil {
+		return true
+	}
+
+	return false
+}
+
+func (r *ResourceItem) IsDeployment() bool {
+	if r.Type == "Deployment" && r.Deployment != nil {
+		return true
+	}
+
+	return false
+}
+
+func (r *ResourceItem) IsNode() bool {
+	if r.Type == "Node" && r.Node != nil {
+		return true
+	}
+
+	return false
+}
+
+func (r *ResourceItem) IsServiceAccount() bool {
+	if r.Type == "ServiceAccount" && r.ServiceAccount != nil {
+		return true
+	}
+
+	return false
+}
+
+func (r *ResourceItem) IsSecret() bool {
+	if r.Type == "Secret" && r.Secret != nil {
+		return true
+	}
+
+	return false
+}
+
 // GetImages get images from a pod
 func (r *ResourceItem) GetImages() (images []*ImageItem) {
+
+	//Only pod is added to image related items
 	if r.IsPod() {
 		for _, ct := range r.Pod.Status.ContainerStatuses {
 			aid := core.ParseArtifactIDFrom(ct.Image, ct.ImageID)
@@ -82,25 +124,18 @@ func (r *ResourceItem) GetImages() (images []*ImageItem) {
 		}
 	}
 
-	//TODO for other resource, need to correlating the image string with the resource
-	// deployment <-> image
-	// service <-> image
-	// secret <-> image
-	// persistence <-> image
-	// node <-> image
-	// etc
-
 	return
 }
 
 // GenerateReportItems generate report Item
 func (r *ResourceItem) GenerateReportItems() (rs []*RiskItem, e error) {
-	//TODO implement me
+	//TODO @jinpeng
 	return
 }
 
+// GenerateUUID generate uuid for all types of resource items
 func (r *ResourceItem) GenerateUUID() {
-	//TODO generate the uuid given different type resources
+	//TODO @jinpeng confirm with jincheng for uuid
 	uuid := ""
 	r.ID = uuid
 }
@@ -128,7 +163,7 @@ func (i *ImageItem) UUID() string {
 }
 
 func (i *ImageItem) generateUUID() {
-	//TODO generate the uuid given different type resources
+	//TODO @jinpeng
 	uuid := i.ImageName
 	i.ID = uuid
 }
@@ -147,17 +182,4 @@ func (i *ImageItem) FetchHarborReport(Adapter providers.Adapter) (*vuln.Report, 
 func (i *ImageItem) AddRelatedResource(v *ResourceItem) {
 	i.Related = append(i.Related, v)
 	return
-}
-
-// IsVulnerable make verdict for image whether it is affected by the vulnerabilities
-func (i *ImageItem) IsVulnerable(cves []string) bool {
-	//TODO given a list of cves make verdict whether the image is vulnerable or not
-	return false
-}
-
-// GenerateReportItem generate the report for open
-func (i *ImageItem) GenerateReportItem() error {
-	//TODO fetch the image scan reports from the Harbor service
-
-	return nil
 }

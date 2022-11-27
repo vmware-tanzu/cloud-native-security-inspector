@@ -88,7 +88,7 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 	var allResources []*ResourceItem
 	var nodes []string
 	for _, ns := range nsl {
-		// Get Pod
+		// Get Pod and post the pod first
 		var pods corev1.PodList
 		err = c.scanner.ScanOtherResource(ctx, corev1.LocalObjectReference{Name: ns.Name}, policy.Spec.Inspection.WorkloadSelector, &pods)
 		if err == nil {
@@ -149,7 +149,8 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 
 	for _, v := range allResources {
 		log.Default().Printf("resource: %s \n", v.Type)
-		err = httpClient.PostResource(v)
+		err = httpClient.
+			PostResource(v)
 		if err != nil {
 			c.logger.Error(err, "cannot post resource")
 		}

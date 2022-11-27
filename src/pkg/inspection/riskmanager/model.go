@@ -1,9 +1,16 @@
 package riskmanager
 
 import (
+	"github.com/goharbor/harbor/src/lib/log"
 	api "github.com/vmware-tanzu/cloud-native-security-inspector/api/v1alpha1"
 	consumers "github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/consumers/opensearch"
 )
+
+// ResourceSelector resource selector
+type ResourceSelector struct {
+	Category  string
+	Selectors map[string]string
+}
 
 // Workload the workload
 type Workload interface {
@@ -14,10 +21,9 @@ type Workload interface {
 
 // RiskItem the detail of the risk item
 type RiskItem struct {
-	Score                  int
-	Scale                  int
-	Passed                 bool
-	Reason                 string
+	Score                  int    `json:"score,omitempty"`  //risk score
+	Scale                  int    `json:"scale,omitempty"`  //risk scale(maximum)
+	Reason                 string `json:"reason,omitempty"` //reason of the risk
 	*HostRiskItem          `json:"host,omitempty"`
 	*VulnerabilityRiskItem `json:"vuln,omitempty"`
 	*ExposureRiskItem      `json:"exposure,omitempty"`
@@ -49,40 +55,59 @@ type ComplianceRiskItem struct {
 // RiskCollection generate all risk items summary for all workloads
 type RiskCollection map[string][]*RiskItem
 
-func (r *RiskCollection) merge(items []*RiskItem) {
-	//TODO merge risk items
-	return
-}
-
 // Workloads the workloads in the cluster
 type Workloads struct {
-	Items map[string]Workload `json:"items"`
-	Risks RiskCollection      `json:"risks"`
+	Items map[string]*ResourceItem `json:"items"`
+	Risks RiskCollection           `json:"risks"`
 }
 
 // NewWorkloads  new workloads summary
-func NewWorkloads(risks RiskCollection, w map[string]Workload) *Workloads {
+func NewWorkloads(risks RiskCollection, w map[string]*ResourceItem) *Workloads {
 	return &Workloads{Risks: risks, Items: w}
 }
 
 // AddResource add resource
 func (w *Workloads) AddResource(r *ResourceItem) {
-	//TODO add resource to workloads
+	if r != nil {
+		w.Items[r.UUID()] = r
+	}
+
+	return
+}
+
+// AddRiskItem add risk item for workload
+func (w *Workloads) AddRiskItem(id string, r *RiskItem) {
+	if _, ok := w.Items[id]; ok {
+		if _, ok := w.Risks[id]; ok {
+			w.Risks[id] = append(w.Risks[id], r)
+		} else {
+			w.Risks[id] = []*RiskItem{r}
+		}
+	} else {
+		log.Errorf("%s is not in workload list", id)
+	}
+
+	return
+}
+
+// GetWorkloads given either a selector or uuid name
+func (w *Workloads) GetWorkloads(selector *ResourceSelector, uuid string) (rs []*ResourceItem) {
+	if selector != nil {
+		//TODO @jinpeng
+	} else if uuid != "" {
+		for _, v := range w.Items {
+			if v.UUID() == uuid {
+				rs = append(rs, v)
+			}
+		}
+	}
+
 	return
 }
 
 func (w *Workloads) generateAssessReport() (a api.AssessmentReport) {
-	//TODO generate the AssessmentReport
+	//TODO generate the AssessmentReport @jinpeng
 	return
-}
-
-func (w *Workloads) getRisks() {
-	w.Risks = make(map[string][]*RiskItem)
-	for _, v := range w.Items {
-		if risks, err := v.GenerateReportItems(); err == nil {
-			w.Risks.merge(risks)
-		}
-	}
 }
 
 // ExportAssessmentDetails export the assessment report
@@ -92,10 +117,6 @@ func (w *Workloads) ExportAssessmentDetails(e *consumers.OpenSearchExporter) err
 
 // ExportAssessmentReports export the assessment report
 func (w *Workloads) ExportAssessmentReports(e *consumers.OpenSearchExporter) error {
-	if w.Risks == nil {
-		w.getRisks()
-	}
-
 	r := w.generateAssessReport()
 	return e.Save(r)
 }
