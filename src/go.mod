@@ -13,6 +13,7 @@ require (
 	github.com/go-openapi/strfmt v0.21.3
 	github.com/go-openapi/swag v0.22.3
 	github.com/go-openapi/validate v0.22.0
+	github.com/goark/go-cvss v1.3.0
 	github.com/goharbor/go-client v0.25.0
 	github.com/goharbor/harbor/src v0.0.0-20221115123844-ea27197a8227
 	github.com/golang/glog v1.0.0
@@ -68,6 +69,7 @@ require (
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/go-playground/validator/v10 v10.10.0 // indirect
+	github.com/goark/errs v1.1.0 // indirect
 	github.com/goccy/go-json v0.9.7 // indirect
 	github.com/gocraft/work v0.5.1 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect

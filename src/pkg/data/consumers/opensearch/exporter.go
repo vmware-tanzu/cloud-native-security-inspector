@@ -126,8 +126,9 @@ func (o *OpenSearchExporter) Save(doc api.AssessmentReport) error {
 	return nil
 }
 
+// SaveRiskReport save risk
 func (o *OpenSearchExporter) SaveRiskReport(a interface{}) error {
-	//TODO
+	//TODO @jinpeng
 	return nil
 }
 

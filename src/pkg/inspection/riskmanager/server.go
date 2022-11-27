@@ -25,6 +25,7 @@ type AnalyzeOption struct {
 // Server the server
 type Server struct {
 	Workloads          Workloads
+	Evaluator          Evaluator
 	IsRunning          bool
 	Images             map[string]*ImageItem
 	Last               int64
@@ -34,12 +35,15 @@ type Server struct {
 }
 
 // NewServer new server instance
-func NewServer(detailExporter *consumers.OpenSearchExporter, assessmentExporter *consumers.OpenSearchExporter) *Server {
+func NewServer(detailExporter *consumers.OpenSearchExporter,
+	assessmentExporter *consumers.OpenSearchExporter) *Server {
+
 	return &Server{
 		DetailExporter:     detailExporter,
 		AssessmentExporter: assessmentExporter,
 		Images:             make(map[string]*ImageItem),
-		Workloads:          *NewWorkloads(make(map[string][]*RiskItem), make(map[string]Workload)),
+		Workloads:          *NewWorkloads(make(map[string][]*RiskItem), make(map[string]*ResourceItem)),
+		Evaluator:          &DefaultEvaluator{},
 	}
 }
 
@@ -75,35 +79,31 @@ func (s *Server) postResource(c *gin.Context) {
 	c.IndentedJSON(http.StatusCreated, v)
 }
 
+func (s *Server) Clear() {
+	s.Images = make(map[string]*ImageItem)
+	s.Workloads.Risks = make(map[string][]*RiskItem)
+	s.Workloads.Items = make(map[string]*ResourceItem)
+}
+
 func (s *Server) Analyze(option AnalyzeOption) {
 	s.IsRunning = true
 	defer func() {
 		s.IsRunning = false
+		s.Clear()
 	}()
 
 	var v RiskCollection = make(map[string][]*RiskItem)
 	for _, t := range s.Images {
 		report, err := t.FetchHarborReport(s.adapter)
 		if err != nil {
-			log.Printf("%v", err)
-			//TODO handle error
+			log.Printf("error: %v", err)
+			continue
 		} else {
 			log.Printf("vuln len: %d", len(report.Vulnerabilities))
-			// TODO generate vulnerability risk
 		}
 
 		for _, r := range t.Related {
-			var risks []*RiskItem
-			if r.Type == "Pod" {
-				//TODO generate exposure risk
-			} else if r.Type == "Deployment" {
-				//TODO generate host risk
-			} else if r.Type == "Node" {
-				//TODO generate compliance risk
-			} else if r.Type == "Service" {
-				//TODO generate compliance risk
-			}
-
+			risks := s.Evaluator.Eval(r, &s.Workloads, report)
 			if s, ok := v[r.UUID()]; !ok {
 				v[r.UUID()] = risks
 			} else {
@@ -116,14 +116,14 @@ func (s *Server) Analyze(option AnalyzeOption) {
 	if option.DumpAssessReport {
 		err := s.Workloads.ExportAssessmentReports(s.DetailExporter)
 		if err != nil {
-
+			log.Printf("error: %v", err)
 		}
 	}
 
 	if option.DumpDetails {
 		err := s.Workloads.ExportAssessmentDetails(s.DetailExporter)
 		if err != nil {
-
+			log.Printf("error: %v", err)
 		}
 	}
 }
