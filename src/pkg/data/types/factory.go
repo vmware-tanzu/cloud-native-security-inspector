@@ -4,8 +4,8 @@ package types
 
 import (
 	"github.com/pkg/errors"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/core"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/types/vuln"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/core"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/types/vuln"
 )
 
 var _ Store = &vuln.Store{}

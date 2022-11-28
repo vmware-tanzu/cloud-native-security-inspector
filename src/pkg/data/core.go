@@ -5,9 +5,9 @@ package data
 import (
 	"context"
 
-	"github.com/vmware-tanzu/cloud-native-security-inspector/api/v1alpha1"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/core"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/types"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/core"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/types"
 )
 
 // ReadOptions contains options for client reading.
