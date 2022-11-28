@@ -10,7 +10,7 @@ export class AssessmentService {
   public environment:any = environment
   constructor(private http: HttpClient) { }
 
-  getKubeBenchReport (data: {url: string, index: string, username: string, password: string, query: any}) :Observable<any>{
+  getKubeBenchReport (data: {url: string, index: string, username: string, password: string, query: any, client: string, ca: string}) :Observable<any>{
     return this.http.post<any>('/open-search', data)
   }
 }

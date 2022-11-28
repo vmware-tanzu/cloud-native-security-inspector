@@ -16,6 +16,7 @@
     "https": "^1.0.0",
     "request": "^2.88.2",
     "supervisor": "^0.12.0",
-    "@opensearch-project/opensearch": "^2.1.0"
+    "@opensearch-project/opensearch": "^2.1.0",
+    "@elastic/elasticsearch": "^8.5.0"
   }
 }

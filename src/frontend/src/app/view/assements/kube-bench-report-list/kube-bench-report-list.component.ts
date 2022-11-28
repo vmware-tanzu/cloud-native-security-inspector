@@ -252,9 +252,18 @@ export class KubeBenchReportListComponent implements OnInit {
     const elasticsearchInfoJson = localStorage.getItem('cnsi-elastic-search') || "{}"
     const opensearchInfo = JSON.parse(opensearchInfoJson)   
     const elasticsearchInfo = JSON.parse(elasticsearchInfoJson)   
+    let client = ''
+    let ca = ''
     if (opensearchInfo.url || elasticsearchInfo.url) {
-      this.opensearchInfo = opensearchInfo.url ?  opensearchInfo : elasticsearchInfo 
-      this.assessmentService.getKubeBenchReport({url: this.opensearchInfo.url, index: 'cis_report', username: this.opensearchInfo.user, password: this.opensearchInfo.password, query}).subscribe(
+      if (opensearchInfo.url) {
+        client = 'opensearch'
+        this.opensearchInfo = opensearchInfo
+      } else {
+        this.opensearchInfo = elasticsearchInfo
+        client = 'elasticsearch'
+        ca = elasticsearchInfo.ca
+      }
+      this.assessmentService.getKubeBenchReport({url: this.opensearchInfo.url, index: 'cis_report', username: this.opensearchInfo.user, password: this.opensearchInfo.password, query, client, ca}).subscribe(
         data => {
           callback(data, this)
           this.pageMaxCount = Math.ceil(data.hits.total.value / this.defaultSize)

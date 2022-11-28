@@ -408,7 +408,8 @@ export class PolicySettingPageComponent implements OnInit {
         const elasticsearchInfo =  {
           url: policyList[0].spec.inspection.assessment.elasticSearchAddr,
           user: policyList[0].spec.inspection.assessment.elasticSearchUser,
-          password: policyList[0].spec.inspection.assessment.elasticSearchPasswd
+          password: policyList[0].spec.inspection.assessment.elasticSearchPasswd,
+          ca: policyList[0].spec.inspection.assessment.elasticSearchCert
         }
         localStorage.setItem('cnsi-open-search', JSON.stringify(opensearchInfo))
         localStorage.setItem('cnsi-elastic-search', JSON.stringify(elasticsearchInfo))
@@ -568,101 +569,116 @@ export class PolicySettingPageComponent implements OnInit {
   }
   modifyPolicy () {
     this.checkES = ''
-    const elasticSearchEnabled =this.policyForm.get('inspectionSetting')?.get('elasticSearchEnabled')?.value
-    const openSearchEnabled =this.policyForm.get('inspectionSetting')?.get('openSearchEnabled')?.value
-    this.policyInfo.spec.inspector.imagePullPolicy = this.policyForm.get('inspectionSetting')?.get('imagePullPolicy')?.value
-    this.policyInfo.spec.schedule = this.schedule
-    this.policyInfo.spec.settingsName = this.policyForm.get('inspectionSetting')?.get('settingsName')?.value
-    this.policyInfo.spec.strategy.concurrencyRule = this.policyForm.get('inspectionSetting')?.get('concurrencyRule')?.value
-    this.policyInfo.spec.strategy.historyLimit = +this.policyForm.get('inspectionSetting')?.get('historyLimit')?.value
-    this.policyInfo.spec.strategy.suspend = this.policyForm.get('inspectionSetting')?.get('suspend')?.value
-    this.policyInfo.spec.workNamespace = this.policyForm.get('inspectionSetting')?.get('namespace')?.value
+    // const elasticSearchEnabled =this.policyForm.get('inspectionSetting')?.get('elasticSearchEnabled')?.value
+    // const openSearchEnabled =this.policyForm.get('inspectionSetting')?.get('openSearchEnabled')?.value
+    // this.policyInfo.spec.inspector.imagePullPolicy = this.policyForm.get('inspectionSetting')?.get('imagePullPolicy')?.value
+    // this.policyInfo.spec.schedule = this.schedule
+    // this.policyInfo.spec.settingsName = this.policyForm.get('inspectionSetting')?.get('settingsName')?.value
+    // this.policyInfo.spec.strategy.concurrencyRule = this.policyForm.get('inspectionSetting')?.get('concurrencyRule')?.value
+    // this.policyInfo.spec.strategy.historyLimit = +this.policyForm.get('inspectionSetting')?.get('historyLimit')?.value
+    // this.policyInfo.spec.strategy.suspend = this.policyForm.get('inspectionSetting')?.get('suspend')?.value
+    // this.policyInfo.spec.workNamespace = this.policyForm.get('inspectionSetting')?.get('namespace')?.value
 
-    const imagesList = this.policyForm.get('inspectionSetting')?.get('image')?.value
+    // const imagesList = this.policyForm.get('inspectionSetting')?.get('image')?.value
 
-    delete this.policyInfo.spec.inspector.image
-    delete this.policyInfo.spec.inspector.kubebenchImage
+    // delete this.policyInfo.spec.inspector.image
+    // delete this.policyInfo.spec.inspector.kubebenchImage
 
-    imagesList.forEach((image: any) => {
-      if (image === 'inspector') {
-        this.policyInfo.spec.inspector.image = this.imageList[0].url
-      } else if (image === 'kubebench') {
-        this.policyInfo.spec.inspector.kubebenchImage = this.imageList[1].url
-      }
-    });
+    // imagesList.forEach((image: any) => {
+    //   if (image === 'inspector') {
+    //     this.policyInfo.spec.inspector.image = this.imageList[0].url
+    //   } else if (image === 'kubebench') {
+    //     this.policyInfo.spec.inspector.kubebenchImage = this.imageList[1].url
+    //   }
+    // });
     
-    if(this.policyForm.get('inspectionResult')?.get('actions')?.value){
-      this.policyInfo.spec.inspection.actions = []
-      this.actions.forEach(el => {
-        this.policyInfo.spec.inspection.actions.push({
-          ignore: {
-            matchExpressions: [],
-            matchLabels: {}
-          },
-          kind: el.kind,
-          settings: {}
-        })
-      })
-    } else {
-      this.policyInfo.spec.inspection.actions = []
-    }
-    this.policyInfo.spec.inspection.assessment.format = this.policyForm.get('inspectionResult')?.get('format')?.value
-    this.policyInfo.spec.inspection.assessment.generate = this.policyForm.get('inspectionResult')?.get('generate')?.value
-    this.policyInfo.spec.inspection.assessment.liveTime = +this.policyForm.get('inspectionResult')?.get('liveTime')?.value
-    this.policyInfo.spec.inspection.assessment.managedBy = this.policyForm.get('inspectionResult')?.get('managedBy')?.value
-    this.policyInfo.spec.inspection.assessment.elasticSearchEnabled = elasticSearchEnabled
-    this.policyInfo.spec.inspection.assessment.openSearchEnabled = openSearchEnabled
-    this.policyInfo.spec.inspection.baselines = this.baselines
-    if (this.policyInfo.spec.inspection.namespaceSelector) {
-      this.policyInfo.spec.inspection.namespaceSelector.matchLabels = {}
-    }
-    if (this.policyInfo.spec.inspection.workloadSelector) {
-      this.policyInfo.spec.inspection.workloadSelector.matchLabels = {}
-    }
-    if (this.namespacelabels.length > 0) {
-      this.namespacelabels.forEach(el => {
-        this.policyInfo.spec.inspection.namespaceSelector.matchLabels[el.key] = el.value
-      })
-    }
-    if (this.workloadlabels.length > 0) {
-      this.workloadlabels.forEach(el => {
-        this.policyInfo.spec.inspection.workloadSelector.matchLabels[el.key] = el.value
-      })
-    }
-    if (elasticSearchEnabled) {
-      this.policyInfo.spec.inspection.assessment.elasticSearchAddr = this.policyForm.get('inspectionSetting')?.get('elasticSearchAddrHeader')?.value + this.policyForm.get('inspectionSetting')?.get('elasticSearchAddr')?.value
-      this.policyInfo.spec.inspection.assessment.elasticSearchUser = this.policyForm.get('inspectionSetting')?.get('elasticSearchUser')?.value
-      this.policyInfo.spec.inspection.assessment.elasticSearchPasswd = this.policyForm.get('inspectionSetting')?.get('elasticSearchPasswd')?.value
-      this.policyInfo.spec.inspection.assessment.elasticSearchCert = this.policyForm.get('inspectionSetting')?.get('elasticSearchCert')?.value
-    } else {
-      delete this.policyInfo.spec.inspection.assessment.elasticSearchAddr
-      delete this.policyInfo.spec.inspection.assessment.elasticSearchUser
-      delete this.policyInfo.spec.inspection.assessment.elasticSearchPasswd
-      delete this.policyInfo.spec.inspection.assessment.elasticSearchCert
-    }
+    // if(this.policyForm.get('inspectionResult')?.get('actions')?.value){
+    //   this.policyInfo.spec.inspection.actions = []
+    //   this.actions.forEach(el => {
+    //     this.policyInfo.spec.inspection.actions.push({
+    //       ignore: {
+    //         matchExpressions: [],
+    //         matchLabels: {}
+    //       },
+    //       kind: el.kind,
+    //       settings: {}
+    //     })
+    //   })
+    // } else {
+    //   this.policyInfo.spec.inspection.actions = []
+    // }
+    // this.policyInfo.spec.inspection.assessment.format = this.policyForm.get('inspectionResult')?.get('format')?.value
+    // this.policyInfo.spec.inspection.assessment.generate = this.policyForm.get('inspectionResult')?.get('generate')?.value
+    // this.policyInfo.spec.inspection.assessment.liveTime = +this.policyForm.get('inspectionResult')?.get('liveTime')?.value
+    // this.policyInfo.spec.inspection.assessment.managedBy = this.policyForm.get('inspectionResult')?.get('managedBy')?.value
+    // this.policyInfo.spec.inspection.assessment.elasticSearchEnabled = elasticSearchEnabled
+    // this.policyInfo.spec.inspection.assessment.openSearchEnabled = openSearchEnabled
+    // this.policyInfo.spec.inspection.baselines = this.baselines
+    // if (this.policyInfo.spec.inspection.namespaceSelector) {
+    //   this.policyInfo.spec.inspection.namespaceSelector.matchLabels = {}
+    // }
+    // if (this.policyInfo.spec.inspection.workloadSelector) {
+    //   this.policyInfo.spec.inspection.workloadSelector.matchLabels = {}
+    // }
+    // if (this.namespacelabels.length > 0) {
+    //   this.namespacelabels.forEach(el => {
+    //     this.policyInfo.spec.inspection.namespaceSelector.matchLabels[el.key] = el.value
+    //   })
+    // }
+    // if (this.workloadlabels.length > 0) {
+    //   this.workloadlabels.forEach(el => {
+    //     this.policyInfo.spec.inspection.workloadSelector.matchLabels[el.key] = el.value
+    //   })
+    // }
+    // if (elasticSearchEnabled) {
+    //   this.policyInfo.spec.inspection.assessment.elasticSearchAddr = this.policyForm.get('inspectionSetting')?.get('elasticSearchAddrHeader')?.value + this.policyForm.get('inspectionSetting')?.get('elasticSearchAddr')?.value
+    //   this.policyInfo.spec.inspection.assessment.elasticSearchUser = this.policyForm.get('inspectionSetting')?.get('elasticSearchUser')?.value
+    //   this.policyInfo.spec.inspection.assessment.elasticSearchPasswd = this.policyForm.get('inspectionSetting')?.get('elasticSearchPasswd')?.value
+    //   this.policyInfo.spec.inspection.assessment.elasticSearchCert = this.policyForm.get('inspectionSetting')?.get('elasticSearchCert')?.value
+    // } else {
+    //   delete this.policyInfo.spec.inspection.assessment.elasticSearchAddr
+    //   delete this.policyInfo.spec.inspection.assessment.elasticSearchUser
+    //   delete this.policyInfo.spec.inspection.assessment.elasticSearchPasswd
+    //   delete this.policyInfo.spec.inspection.assessment.elasticSearchCert
+    // }
 
-    if (openSearchEnabled) {
-      this.policyInfo.spec.inspection.assessment.openSearchAddr = this.policyForm.get('inspectionSetting')?.get('openSearchAddrHeader')?.value + this.policyForm.get('inspectionSetting')?.get('openSearchAddr')?.value
-      this.policyInfo.spec.inspection.assessment.openSearchUser = this.policyForm.get('inspectionSetting')?.get('openSearchUser')?.value
-      this.policyInfo.spec.inspection.assessment.openSearchPasswd = this.policyForm.get('inspectionSetting')?.get('openSearchPasswd')?.value
-    } else {
-      delete this.policyInfo.spec.inspection.assessment.openSearchAddr
-      delete this.policyInfo.spec.inspection.assessment.openSearchUser
-      delete this.policyInfo.spec.inspection.assessment.openSearchPasswd
-    }
+    // if (openSearchEnabled) {
+    //   this.policyInfo.spec.inspection.assessment.openSearchAddr = this.policyForm.get('inspectionSetting')?.get('openSearchAddrHeader')?.value + this.policyForm.get('inspectionSetting')?.get('openSearchAddr')?.value
+    //   this.policyInfo.spec.inspection.assessment.openSearchUser = this.policyForm.get('inspectionSetting')?.get('openSearchUser')?.value
+    //   this.policyInfo.spec.inspection.assessment.openSearchPasswd = this.policyForm.get('inspectionSetting')?.get('openSearchPasswd')?.value
+    // } else {
+    //   delete this.policyInfo.spec.inspection.assessment.openSearchAddr
+    //   delete this.policyInfo.spec.inspection.assessment.openSearchUser
+    //   delete this.policyInfo.spec.inspection.assessment.openSearchPasswd
+    // }
     
-    this.policyService.modifyPolicy(this.policyForm.get('inspectionSetting')?.get('name')?.value, this.policyInfo).subscribe(
+
+    this.deletePolicy(this.policyForm.get('inspectionSetting')?.get('name')?.value)
+    // this.policyService.modifyPolicy(this.policyForm.get('inspectionSetting')?.get('name')?.value, this.policyInfo).subscribe(
+    //   data => {
+    //     this.messageFlag = 'success'
+    //     this.messageContent = 'Policy updated!'
+    //     this.router.navigateByUrl('/policy')
+    //   },
+    //   err => {
+    //     this.messageFlag = 'fail'
+    //     this.messageContent = err.error.message || 'Policy updated fail!'
+    //   }
+    // )
+    
+  }
+
+  deletePolicy (deleteName: string) {
+    this.policyService.deletePolicy(deleteName).subscribe(
       data => {
-        this.messageFlag = 'success'
-        this.messageContent = 'Policy updated!'
-        this.getInspectionpolicies()
+        this.createPolicy()
       },
       err => {
         this.messageFlag = 'fail'
         this.messageContent = err.error.message || 'Policy updated fail!'
       }
     )
-    
+
   }
 
   // Schedule
