@@ -155,9 +155,9 @@ export class PolicySettingPageComponent implements OnInit {
         elasticSearchCert: [''],
         openSearchEnabled: [true],
         openSearchAddrHeader: ['https://'],
-        openSearchAddr: [''],
-        openSearchUser: [''],
-        openSearchPasswd: [''],
+        openSearchAddr: ['opensearch-cluster-master.default:9200'],
+        openSearchUser: ['admin'],
+        openSearchPasswd: ['admin'],
       }),
       inspectionStandard: this.formBuilder.group({
       }),
@@ -399,6 +399,20 @@ export class PolicySettingPageComponent implements OnInit {
           this.workloadlabels = []
           this.schedule = '*/3 * * * *'
         }
+
+        const opensearchInfo =  {
+          url: policyList[0].spec.inspection.assessment.openSearchAddr,
+          user: policyList[0].spec.inspection.assessment.openSearchUser,
+          password: policyList[0].spec.inspection.assessment.openSearchPasswd
+        }
+        const elasticsearchInfo =  {
+          url: policyList[0].spec.inspection.assessment.elasticSearchAddr,
+          user: policyList[0].spec.inspection.assessment.elasticSearchUser,
+          password: policyList[0].spec.inspection.assessment.elasticSearchPasswd
+        }
+        localStorage.setItem('cnsi-open-search', JSON.stringify(opensearchInfo))
+        localStorage.setItem('cnsi-elastic-search', JSON.stringify(elasticsearchInfo))
+
       },
       err => {
         console.log('err', err);
