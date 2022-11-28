@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 	"flag"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/api/v1alpha1"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/inspection/kubebench"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/inspection/kubebench"
 	"go.uber.org/zap/zapcore"
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"

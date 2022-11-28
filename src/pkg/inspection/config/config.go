@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	goharborv1 "github.com/vmware-tanzu/cloud-native-security-inspector/api/v1alpha1"
+	goharborv1 "github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
 	"k8s.io/apimachinery/pkg/util/json"
 )
 

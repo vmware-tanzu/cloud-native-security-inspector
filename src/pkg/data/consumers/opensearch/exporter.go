@@ -8,8 +8,8 @@ import (
 	"github.com/opensearch-project/opensearch-go"
 	"github.com/opensearch-project/opensearch-go/opensearchapi"
 	"github.com/pkg/errors"
-	api "github.com/vmware-tanzu/cloud-native-security-inspector/api/v1alpha1"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/consumers"
+	api "github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 	"strconv"
@@ -198,7 +198,7 @@ func (o *OpenSearchExporter) listIndex(name string) ([]OpenSearchIndex, error) {
 	var esIndices []OpenSearchIndex
 	if res.IsError() {
 		if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
-			log.Log.Info("Error parsing the response body: %s", err)
+			log.Log.Info("Error parsing the response body")
 		} else {
 			errRes := r["error"]
 			r = errRes.(map[string]interface{})
@@ -208,7 +208,7 @@ func (o *OpenSearchExporter) listIndex(name string) ([]OpenSearchIndex, error) {
 		// Deserialize the response into a map.
 		var r []map[string]interface{}
 		if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
-			log.Log.Info("Error parsing the response body: %s", err)
+			log.Log.Info("Error parsing the response body")
 		} else {
 			// Print the response status.
 			for _, i := range r {

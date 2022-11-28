@@ -2,9 +2,10 @@ package consumers
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/elastic/go-elasticsearch/v8"
-	"github.com/go-logr/logr"
-	"log"
+	"github.com/pkg/errors"
+	"sigs.k8s.io/controller-runtime/pkg/log"
 	"strings"
 	"sync"
 )
@@ -12,15 +13,14 @@ import (
 var (
 	lock   = &sync.Mutex{}
 	client *elasticsearch.Client
-	logger = logr.Logger{}
 )
 
 func NewClient(cert []byte, addr string, username string, passwd string) *elasticsearch.Client {
 	lock.Lock()
 	defer lock.Unlock()
-	logger.Info("ElasticSearch config: ", "addr", addr)
-	logger.Info("ElasticSearch config: ", "clientArgs.username", username)
-	logger.Info("ElasticSearch config: ", "passwd", passwd)
+	log.Log.Info("ElasticSearch config: ", "addr", addr)
+	log.Log.Info("ElasticSearch config: ", "clientArgs.username", username)
+	log.Log.Info("ElasticSearch config: ", "passwd", passwd)
 	if client == nil {
 		cfg := elasticsearch.Config{
 			Addresses: []string{
@@ -33,7 +33,7 @@ func NewClient(cert []byte, addr string, username string, passwd string) *elasti
 		var err error
 		client, err = elasticsearch.NewClient(cfg)
 		if err != nil {
-			logger.Info("ElasticSearch client is nil", nil, nil)
+			log.Log.Info("ElasticSearch client is nil", nil, nil)
 			ctrlLog.V(0).Error(err, "Error creating the Client of ElasticSearch")
 		}
 	}
@@ -45,24 +45,23 @@ func TestClient() error {
 	var r map[string]interface{}
 	res, err := client.Info()
 	if err != nil {
-		logger.Info("", err)
-		log.Fatalf("Error getting response: %s", err)
+		log.Log.Error(err, "Error getting response")
 		return err
 	}
 	defer res.Body.Close()
 	// Check response status
 	if res.IsError() {
-		log.Fatalf("Error: %s", res.String())
+		log.Log.Error(errors.New("ElasticSearch test client error"), "TestClient error")
 		return err
 	}
 	// Deserialize the response into a map.
 	if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
-		log.Fatalf("Error parsing the response body: %s", err)
+		log.Log.Error(errors.New("ElasticSearch json decode error"), "TestClient error")
 		return err
 	}
 	// Print client and server version numbers.
-	log.Printf("Client: %s", elasticsearch.Version)
-	log.Printf("Server: %s", r["version"].(map[string]interface{})["number"])
-	log.Println(strings.Repeat("~", 37))
+	log.Log.Info(fmt.Sprintf("Client: %s", elasticsearch.Version))
+	log.Log.Info(fmt.Sprintf("Server: %s", r["version"].(map[string]interface{})["number"]))
+	log.Log.Info(fmt.Sprintf(strings.Repeat("~", 37)))
 	return nil
 }

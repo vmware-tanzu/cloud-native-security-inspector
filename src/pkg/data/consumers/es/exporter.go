@@ -9,10 +9,11 @@ import (
 	"github.com/elastic/go-elasticsearch/v8/esapi"
 	"github.com/go-logr/logr"
 	"github.com/pkg/errors"
-	api "github.com/vmware-tanzu/cloud-native-security-inspector/api/v1alpha1"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/consumers"
+	api "github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers"
 	"io"
 	ctrl "sigs.k8s.io/controller-runtime"
+	"sigs.k8s.io/controller-runtime/pkg/log"
 	"strconv"
 	"strings"
 	"time"
@@ -430,7 +431,7 @@ func (e ElasticSearchExporter) Search(query string, after ...string) ([]consumer
 		results.Hits = append(results.Hits, &h)
 	}
 	var reportList []consumers.AssessmentReportDoc
-	logger.Info("Results hits: %v \n", len(results.Hits))
+	log.Log.Info("Results hits: ", len(results.Hits))
 	for _, ret := range results.Hits {
 		reportList = append(reportList, ret.AssessmentReportDoc)
 	}
