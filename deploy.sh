@@ -32,7 +32,7 @@ function uninstall_opensearch() {
     note "Uninstalling opensearch"
     check_helm
     helm repo add opensearch https://opensearch-project.github.io/helm-charts/
-    helm uninstall opensearch-deployment-for-narrows
+    helm uninstall opensearch-deployment-for-narrows || :
     success "OpenSearch uninstalled"
 }
 
