@@ -7,6 +7,7 @@ import (
 	"github.com/vmware-tanzu/cloud-native-security-inspector/api/v1alpha1"
 	osearch "github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/consumers/opensearch"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/providers"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/inspection"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/inspection/riskmanager"
 	"go.uber.org/zap/zapcore"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
@@ -93,29 +94,28 @@ func main() {
 
 		logger.Info("OS config: ", "addr: ", inspectionPolicy.Spec.Inspection.Assessment.OpenSearchAddr)
 		logger.Info("OS config: ", "username: ", inspectionPolicy.Spec.Inspection.Assessment.OpenSearchUser)
-		logger.Info("OS config: ", "passwd: ", inspectionPolicy.Spec.Inspection.Assessment.OpenSearchPasswd)
 
-		client := osearch.NewClient([]byte{},
+		osClient := osearch.NewClient([]byte{},
 			inspectionPolicy.Spec.Inspection.Assessment.OpenSearchAddr,
 			inspectionPolicy.Spec.Inspection.Assessment.OpenSearchUser,
 			inspectionPolicy.Spec.Inspection.Assessment.OpenSearchPasswd)
 
-		if client == nil {
+		if osClient == nil {
 			log.Info("OpenSearch client is nil", nil, nil)
 			os.Exit(1)
 		}
 
 		conf := riskmanager.ReadEnvConfig()
-		exporterDetail := osearch.OpenSearchExporter{Client: client, Logger: log}
-		err = exporterDetail.NewExporter(client, conf.DetailIndex)
+		exporterDetail := osearch.OpenSearchExporter{Client: osClient, Logger: log}
+		err = exporterDetail.NewExporter(osClient, conf.DetailIndex)
 		if err != nil {
 			log.Error(err, "new export risk_manager_details")
 			//Error Handling
 			os.Exit(1)
 		}
 
-		exporterAccessReport := osearch.OpenSearchExporter{Client: client, Logger: log}
-		err = exporterAccessReport.NewExporter(client, "assessment_report")
+		exporterAccessReport := osearch.OpenSearchExporter{Client: osClient, Logger: log}
+		err = exporterAccessReport.NewExporter(osClient, "assessment_report")
 		if err != nil {
 			log.Error(err, "new export assessment_report")
 			//Error handling
@@ -125,6 +125,18 @@ func main() {
 		server := riskmanager.NewServer(&exporterDetail, &exporterAccessReport).WithAdapter(provider)
 		server.Run(conf.Server)
 	} else {
+
+		accessReportRunner := inspection.NewController().
+			WithScheme(scheme).
+			WithLogger(log).
+			WithK8sClient(k8sClient).
+			CTRL()
+
+		if err = accessReportRunner.Run(ctx, inspectionPolicy); err != nil {
+			log.Error(err, "access report controller run")
+			os.Exit(1)
+		}
+
 		runner := riskmanager.NewController().
 			WithScheme(scheme).
 			WithLogger(log).

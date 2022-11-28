@@ -1,4 +1,4 @@
-package riskmanager
+package data
 
 import (
 	"context"
@@ -7,6 +7,8 @@ import (
 	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/providers"
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/util/uuid"
 	"log"
 )
 
@@ -20,6 +22,7 @@ type ResourceItem struct {
 	ServiceAccount *v1.ServiceAccount `json:"service_account,omitempty"`
 	Secret         *v1.Secret         `json:"secret,omitempty"`
 	Deployment     *appsv1.Deployment `json:"deployment,omitempty"`
+	metav1.ObjectMeta
 }
 
 // NewResourceItem create a new resource item given one of the source item
@@ -30,26 +33,32 @@ func NewResourceItem(kind string) *ResourceItem {
 
 func (r *ResourceItem) SetPod(pod *v1.Pod) {
 	r.Pod = pod
+	r.ObjectMeta = pod.ObjectMeta
 }
 
 func (r *ResourceItem) SetService(service *v1.Service) {
 	r.Service = service
+	r.ObjectMeta = service.ObjectMeta
 }
 
 func (r *ResourceItem) SetDeployment(deploy *appsv1.Deployment) {
 	r.Deployment = deploy
+	r.ObjectMeta = deploy.ObjectMeta
 }
 
 func (r *ResourceItem) SetNode(node *v1.Node) {
 	r.Node = node
+	r.ObjectMeta = node.ObjectMeta
 }
 
 func (r *ResourceItem) SetSecret(secret *v1.Secret) {
 	r.Secret = secret
+	r.ObjectMeta = secret.ObjectMeta
 }
 
 func (r *ResourceItem) SetServiceAccount(serviceAccount *v1.ServiceAccount) {
 	r.ServiceAccount = serviceAccount
+	r.ObjectMeta = serviceAccount.ObjectMeta
 }
 
 // UUID get uuid
@@ -128,16 +137,19 @@ func (r *ResourceItem) GetImages() (images []*ImageItem) {
 }
 
 // GenerateReportItems generate report Item
-func (r *ResourceItem) GenerateReportItems() (rs []*RiskItem, e error) {
-	//TODO @jinpeng
+func (r *ResourceItem) GenerateReportItems(w *Workloads, report *vuln.Report, evaluator Evaluator) (rs []*RiskItem, e error) {
+	rs = evaluator.Eval(r, w, report)
 	return
 }
 
 // GenerateUUID generate uuid for all types of resource items
 func (r *ResourceItem) GenerateUUID() {
-	//TODO @jinpeng confirm with jincheng for uuid
-	uuid := ""
-	r.ID = uuid
+	uid := uuid.NewUUID()
+	if r.ObjectMeta.GetUID() != "" {
+		uid = r.ObjectMeta.GetUID()
+	}
+
+	r.ID = string(uid)
 }
 
 // ImageItem the image item get from the work load
@@ -159,13 +171,15 @@ func NewImageItem(containerImage string, ArtifactID core.ArtifactID) *ImageItem 
 
 // UUID uuid
 func (i *ImageItem) UUID() string {
+	if i.ID == "" {
+		i.generateUUID()
+	}
 	return i.ID
 }
 
 func (i *ImageItem) generateUUID() {
-	//TODO @jinpeng
-	uuid := i.ImageName
-	i.ID = uuid
+	u := i.ArtifactID.String()
+	i.ID = u
 }
 
 // FetchHarborReport fetch the harbor report
@@ -180,6 +194,7 @@ func (i *ImageItem) FetchHarborReport(Adapter providers.Adapter) (*vuln.Report, 
 
 // AddRelatedResource add resource
 func (i *ImageItem) AddRelatedResource(v *ResourceItem) {
+	log.Default().Printf("ArtifactID: %s, relation pod: %s", i.ArtifactID.String(), v.ObjectMeta.Name)
 	i.Related = append(i.Related, v)
 	return
 }

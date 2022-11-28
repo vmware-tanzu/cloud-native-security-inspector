@@ -8,6 +8,7 @@ import (
 	"github.com/vmware-tanzu/cloud-native-security-inspector/api/v1alpha1"
 	osearch "github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/consumers/opensearch"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/inspection"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/inspection/data"
 	v1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -85,7 +86,7 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 		return nil
 	}
 
-	var allResources []*ResourceItem
+	var allResources []*data.ResourceItem
 	var nodes []string
 	for _, ns := range nsl {
 		// Get Pod and post the pod first
@@ -93,7 +94,7 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 		err = c.scanner.ScanOtherResource(ctx, corev1.LocalObjectReference{Name: ns.Name}, policy.Spec.Inspection.WorkloadSelector, &pods)
 		if err == nil {
 			for _, pod := range pods.Items {
-				resource := NewResourceItem("Pod")
+				resource := data.NewResourceItem("Pod")
 				resource.SetPod(&pod)
 				allResources = append(allResources, resource)
 				nodeName := pod.Spec.NodeName
@@ -109,7 +110,7 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 		err = c.scanner.ScanOtherResource(ctx, corev1.LocalObjectReference{Name: ns.Name}, policy.Spec.Inspection.WorkloadSelector, &deploys)
 		if err == nil {
 			for _, deploy := range deploys.Items {
-				resource := NewResourceItem("Deployment")
+				resource := data.NewResourceItem("Deployment")
 				resource.SetDeployment(&deploy)
 				allResources = append(allResources, resource)
 			}
@@ -121,7 +122,7 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 		err = c.scanner.ScanOtherResource(ctx, corev1.LocalObjectReference{Name: ns.Name}, policy.Spec.Inspection.WorkloadSelector, &services)
 		if err == nil {
 			for _, service := range services.Items {
-				resource := NewResourceItem("Service")
+				resource := data.NewResourceItem("Service")
 				resource.SetService(&service)
 				allResources = append(allResources, resource)
 			}
@@ -136,7 +137,7 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 			var node corev1.Node
 			err = c.kc.Get(ctx, client.ObjectKey{Name: i}, &node)
 			if err == nil {
-				resource := NewResourceItem("Node")
+				resource := data.NewResourceItem("Node")
 				resource.SetNode(&node)
 				allResources = append(allResources, resource)
 			} else {
@@ -156,7 +157,7 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 		}
 	}
 
-	option := AnalyzeOption{DumpAssessReport: true, DumpDetails: true}
+	option := AnalyzeOption{DumpDetails: true}
 
 	if err = httpClient.PostAnalyze(option); err == nil {
 		for {
@@ -176,24 +177,24 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 	return nil
 }
 
-func exportReportToOpenSearch(report *RiskCollection, policy *v1alpha1.InspectionPolicy, logger logr.Logger) error {
-	client := osearch.NewClient([]byte{},
-		policy.Spec.Inspection.Assessment.OpenSearchAddr,
-		policy.Spec.Inspection.Assessment.OpenSearchUser,
-		policy.Spec.Inspection.Assessment.OpenSearchPasswd)
-	if client == nil {
-		logger.Info("OpenSearch client is nil", nil, nil)
-	}
-	exporter := osearch.OpenSearchExporter{Client: client, Logger: logger}
-	err := exporter.NewExporter(client, "assessment_report")
-	if err != nil {
-		return err
-	}
-	if err := exporter.SaveRiskReport(report); err != nil {
-		return err
-	}
-	return nil
-}
+//func exportReportToOpenSearch(report RiskCollection, policy *v1alpha1.InspectionPolicy, logger logr.Logger) error {
+//	client := osearch.NewClient([]byte{},
+//		policy.Spec.Inspection.Assessment.OpenSearchAddr,
+//		policy.Spec.Inspection.Assessment.OpenSearchUser,
+//		policy.Spec.Inspection.Assessment.OpenSearchPasswd)
+//	if client == nil {
+//		logger.Info("OpenSearch client is nil", nil, nil)
+//	}
+//	exporter := osearch.OpenSearchExporter{Client: client, Logger: logger}
+//	err := exporter.NewExporter(client, "assessment_report")
+//	if err != nil {
+//		return err
+//	}
+//	if err = exporter.SaveRiskReport(report); err != nil {
+//		return err
+//	}
+//	return nil
+//}
 
 // NewController news a controller.
 func NewController() *controller {

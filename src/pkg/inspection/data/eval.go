@@ -1,4 +1,4 @@
-package riskmanager
+package data
 
 import (
 	"fmt"
@@ -67,6 +67,10 @@ func (d *DefaultEvaluator) getSeriousVulnerability(i *ResourceItem, w *Workloads
 			Reason: fmt.Sprintf("%s with severity: %s", v.ID, v.Severity),
 			VulnerabilityRiskItem: &VulnerabilityRiskItem{
 				InfectionVectors: v.CVSSDetails.VectorV3,
+				Package:          v.Package,
+				Version:          v.Version,
+				FixVersion:       v.FixVersion,
+				Description:      v.Description,
 			},
 		})
 	}
