@@ -1,9 +1,8 @@
-package riskmanager
+package data
 
 import (
 	"github.com/goharbor/harbor/src/lib/log"
-	api "github.com/vmware-tanzu/cloud-native-security-inspector/api/v1alpha1"
-	consumers "github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/consumers/opensearch"
+	"k8s.io/apimachinery/pkg/labels"
 )
 
 // ResourceSelector resource selector
@@ -40,6 +39,20 @@ type HostRiskItem struct {
 type VulnerabilityRiskItem struct {
 	POCReferences    []string
 	InfectionVectors string
+	// An operating system or software dependency package containing the vulnerability.
+	// e.g: dpkg
+	Package string `json:"package"`
+	// The version of the package containing the vulnerability.
+	// e.g: 1.17.27
+	Version string `json:"version"`
+	// The version of the package containing the fix if available.
+	// e.g: 1.18.0
+	FixVersion string `json:"fix_version"`
+	// example: dpkg-source in dpkg 1.3.0 through 1.18.23 is able to use a non-GNU patch program
+	// and does not offer a protection mechanism for blank-indented diff hunks, which allows remote
+	// attackers to conduct directory traversal attacks via a crafted Debian source package, as
+	// demonstrated by using of dpkg-source on NetBSD.
+	Description string `json:"description"`
 }
 
 // ExposureRiskItem exposure risk item
@@ -78,7 +91,7 @@ func (w *Workloads) AddResource(r *ResourceItem) {
 // AddRiskItem add risk item for workload
 func (w *Workloads) AddRiskItem(id string, r *RiskItem) {
 	if _, ok := w.Items[id]; ok {
-		if _, ok := w.Risks[id]; ok {
+		if _, ok = w.Risks[id]; ok {
 			w.Risks[id] = append(w.Risks[id], r)
 		} else {
 			w.Risks[id] = []*RiskItem{r}
@@ -93,7 +106,11 @@ func (w *Workloads) AddRiskItem(id string, r *RiskItem) {
 // GetWorkloads given either a selector or uuid name
 func (w *Workloads) GetWorkloads(selector *ResourceSelector, uuid string) (rs []*ResourceItem) {
 	if selector != nil {
-		//TODO @jinpeng
+		for _, item := range w.Items {
+			rs = append(rs, item)
+		}
+		rs = w.matchLabel(rs, selector.Selectors)
+		rs = w.matchCategory(rs, selector.Category)
 	} else if uuid != "" {
 		for _, v := range w.Items {
 			if v.UUID() == uuid {
@@ -105,18 +122,52 @@ func (w *Workloads) GetWorkloads(selector *ResourceSelector, uuid string) (rs []
 	return
 }
 
-func (w *Workloads) generateAssessReport() (a api.AssessmentReport) {
-	//TODO generate the AssessmentReport @jinpeng
-	return
-}
+//func (w *Workloads) generateAssessReport() (a api.AssessmentReport) {
+//	//TODO generate the AssessmentReport @jinpeng
+//	return
+//}
 
 // ExportAssessmentDetails export the assessment report
-func (w *Workloads) ExportAssessmentDetails(e *consumers.OpenSearchExporter) error {
-	return e.SaveRiskReport(w.Risks)
-}
+//func (w *Workloads) ExportAssessmentDetails(e *consumers.OpenSearchExporter) error {
+//	return e.SaveRiskReport(w.Risks)
+//}
 
 // ExportAssessmentReports export the assessment report
-func (w *Workloads) ExportAssessmentReports(e *consumers.OpenSearchExporter) error {
-	r := w.generateAssessReport()
-	return e.Save(r)
+//func (w *Workloads) ExportAssessmentReports(e *consumers.OpenSearchExporter) error {
+//	r := w.generateAssessReport()
+//	return e.Save(r)
+//}
+
+// matchLabel match label
+func (w *Workloads) matchLabel(rs []*ResourceItem, selectorLabel map[string]string) (fit []*ResourceItem) {
+	if len(selectorLabel) == 0 {
+		return rs
+	}
+
+	for _, item := range rs {
+		sel := labels.SelectorFromValidatedSet(selectorLabel)
+		lbs := labels.Set(item.ObjectMeta.GetLabels())
+		if !sel.Matches(lbs) {
+			continue
+		}
+		fit = append(fit, item)
+	}
+
+	return fit
+}
+
+// matchCategory match category
+func (w *Workloads) matchCategory(rs []*ResourceItem, selectorCategory string) (fit []*ResourceItem) {
+	if selectorCategory == "" {
+		return rs
+	}
+
+	for _, item := range rs {
+		if item.Type != selectorCategory {
+			continue
+		}
+		fit = append(fit, item)
+	}
+
+	return fit
 }

@@ -10,6 +10,7 @@ import (
 	"github.com/pkg/errors"
 	api "github.com/vmware-tanzu/cloud-native-security-inspector/api/v1alpha1"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/consumers"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/inspection/data"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 	"strconv"
@@ -126,8 +127,49 @@ func (o *OpenSearchExporter) Save(doc api.AssessmentReport) error {
 }
 
 // SaveRiskReport save risk
-func (o *OpenSearchExporter) SaveRiskReport(a interface{}) error {
-	//TODO @jinpeng
+func (o *OpenSearchExporter) SaveRiskReport(risks data.RiskCollection) error {
+	var (
+		res        *opensearchapi.Response
+		err        error
+		esDocument []byte
+	)
+	for s, items := range risks {
+		detail, _ := json.Marshal(items)
+		var esDoc consumers.RiskReportDoc
+		esDoc.DocId = s
+		esDoc.Detail = string(detail)
+		esDoc.CreateTimestamp = time.Now().Format(time.RFC3339)
+		esDocument, err = json.Marshal(esDoc)
+		if err != nil {
+			return err
+		}
+		res, err = opensearchapi.IndexRequest{
+			Index:      o.indexName,
+			DocumentID: s,
+			Body:       strings.NewReader(string(esDocument)),
+			Refresh:    "true",
+		}.Do(context.Background(), o.Client)
+		if err != nil {
+			ctrlLog.Error(err, "Error getting response")
+			return err
+		}
+
+		if res.IsError() {
+			ctrlLog.Info("[%s] Error indexing document ID=%v", res.Status(), s)
+			return errors.New(fmt.Sprint("http error, code ", res.StatusCode))
+		} else {
+			// Deserialize the response into a map.
+			var r map[string]interface{}
+			if err = json.NewDecoder(res.Body).Decode(&r); err != nil {
+				ctrlLog.Info("Error parsing the response body: %s", err)
+			} else {
+				fmt.Println("OK")
+			}
+		}
+	}
+
+	defer res.Body.Close()
+
 	return nil
 }
 
@@ -238,6 +280,16 @@ func (o *OpenSearchExporter) setupIndex() error {
 			  "reportUID":       { "type": "text", "analyzer": "english" },
 			  "createTime":       { "type": "date" },
 			  "inspectionConfiguration":       { "type": "text", "analyzer": "english" }
+				}
+			}
+		}`
+	} else if o.indexName == "risk_manager_details" {
+		mapping = `{
+		"mappings": {
+			"properties": {
+			  "docId":         { "type": "keyword" },
+			  "detail":  { "type": "text" },
+			  "createTime":       { "type": "date" },
 				}
 			}
 		}`
