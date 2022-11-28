@@ -33,7 +33,7 @@
     "create": "创建",
     "cancel": "取消",
     "delete": "删除",
-    "inspectionNamespace": "监测命名空间",
+    "inspectionNamespace": "定时任务所在的命名空间",
     "description": "描述",
     "scanInspector": "扫描检查器",
     "typeId": "类型ID"
@@ -45,7 +45,8 @@
     "Assessments": {
       "title": "评估报告",
       "report_view": "报告",
-      "Kube_bench": "Kube-bench报告"
+      "Kube_bench": "kubebench扫描器报告",
+      "image_nspector_reports": "镜像扫描器报告"
     },
     "Insight": {
       "title": "安全状态",
@@ -142,12 +143,12 @@
     "value": "值",
     "settingsName": "配置名称",
     "enabled": "启用设置",
-    "elasticSearchEnabled": "弹性搜索",
+    "elasticSearchEnabled": "ElasticSearch",
     "elasticSearchAddr": "地址",
     "elasticSearchUser": "账户",
     "elasticSearchPasswd": "密码",
     "elasticSearchCert": "证书",
-    "openSearchEnabled": "打开搜索",
+    "openSearchEnabled": "OpenSearch",
     "workNamespace": "工作命名空间",
     "image": "镜像地址"
   },
@@ -200,7 +201,7 @@
     "passed": "通过",
     "failed": "失败",
     "warned": "警告",
-    "inform": "信息",
+    "inform": "通知",
     "reason": "原因",
     "status": "状态",
     "remediation": "修改建议"

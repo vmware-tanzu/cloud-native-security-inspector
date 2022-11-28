@@ -45,7 +45,8 @@
     "Assessments": {
       "title": "Assessments",
       "report_view": "Reports",
-      "Kube_bench": "Kube-bench reports"
+      "Kube_bench": "kubebench inspector reports",
+      "image_nspector_reports": "Image inspector reports"
     },
     "Insight": {
       "title": "Insight",
