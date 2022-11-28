@@ -155,6 +155,7 @@
   "Setting": {
     "Settings": "设置",
     "settingPage": "设置详情",
+    "settingView": "设置详情",
     "policy": "策略配置",
     "harbor": "Harbor配置",
     "cache": "缓存",
@@ -162,7 +163,7 @@
     "data_source": "数据源",
     "credential_name": "凭据名称",
     "credential_namespace": "凭据命名空间",
-    "known_registries": "已知注册表",
+    "known_registries": "已知镜像仓库",
     "Secret": "私有数据",
     "accessKey": "访问密钥",
     "accessSecret": "访问秘密",

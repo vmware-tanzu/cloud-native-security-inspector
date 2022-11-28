@@ -8,8 +8,8 @@
   </div>
   <div class="setting-page">
     <clr-tabs>
-      <clr-tab>
-        <button clrTabLink id="link1">Secret</button>
+      <clr-tab >
+        <button clrTabLink id="link1" (click)="getSecrets()">Secret</button>
           <ng-template [clrIfActive]="true">
             <clr-tab-content>
               <button class="btn btn-primary btn-sm create" (click)="secretModalFlag=true">
