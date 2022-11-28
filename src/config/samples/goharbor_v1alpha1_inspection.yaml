@@ -1,9 +1,0 @@
-# Copyright 2022 VMware, Inc.
-# SPDX-License-Identifier: Apache-2.0
-apiVersion: goharbor.goharbor.io/v1alpha1
-kind: Inspection
-metadata:
-  name: inspection-sample
-spec:
-  # Add fields here
-  foo: bar

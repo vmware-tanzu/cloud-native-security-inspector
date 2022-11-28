@@ -254,10 +254,10 @@ func (e *ElasticSearchExporter) deleteIndex(index []string) error {
 	return nil
 }
 
+// SaveCIS implements Exporter
 func (e ElasticSearchExporter) SaveCIS(controlsCollection []*check.Controls) error {
 	var res *esapi.Response
 	for _, control := range controlsCollection {
-		fmt.Println(control.JSON())
 		doc, err := json.Marshal(control)
 		if err != nil {
 			return err
@@ -283,7 +283,7 @@ func (e ElasticSearchExporter) SaveCIS(controlsCollection []*check.Controls) err
 			if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
 				ctrlLog.Info("Error parsing the response body: %s", err)
 			} else {
-				fmt.Println("OK")
+				ctrlLog.Info("Decode successfully!")
 			}
 		}
 
@@ -291,7 +291,7 @@ func (e ElasticSearchExporter) SaveCIS(controlsCollection []*check.Controls) err
 	return nil
 }
 
-// Save an AssessmentReport to this index
+// Save implements Exporter
 func (e ElasticSearchExporter) Save(doc api.AssessmentReport) error {
 	var res *esapi.Response
 
@@ -349,7 +349,7 @@ func (e ElasticSearchExporter) Save(doc api.AssessmentReport) error {
 						if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
 							ctrlLog.Info("Error parsing the response body: %s", err)
 						} else {
-							fmt.Println("OK")
+							ctrlLog.Info("Successfully decode the response")
 						}
 					}
 				}
@@ -360,11 +360,12 @@ func (e ElasticSearchExporter) Save(doc api.AssessmentReport) error {
 	return nil
 }
 
-// Delete an Assessment report in the index
+// Delete implements Exporter
 func (e ElasticSearchExporter) Delete(doc api.AssessmentReport) error {
 	return nil
 }
 
+// Search implements Exporter
 func (e ElasticSearchExporter) Search(query string, after ...string) ([]consumers.AssessmentReportDoc, error) {
 	type envelopeResponse struct {
 		Took int
@@ -429,7 +430,7 @@ func (e ElasticSearchExporter) Search(query string, after ...string) ([]consumer
 		results.Hits = append(results.Hits, &h)
 	}
 	var reportList []consumers.AssessmentReportDoc
-	fmt.Printf("Results hits: %v \n", len(results.Hits))
+	logger.Info("Results hits: %v \n", len(results.Hits))
 	for _, ret := range results.Hits {
 		reportList = append(reportList, ret.AssessmentReportDoc)
 	}
@@ -440,6 +441,7 @@ func (e ElasticSearchExporter) getContainerUsedMost() (api.AssessmentReportList,
 	return api.AssessmentReportList{}, nil
 }
 
+// List implements Exporter
 func (e ElasticSearchExporter) List() (api.AssessmentReportList, error) {
 	return api.AssessmentReportList{}, nil
 }
@@ -454,9 +456,6 @@ func (e ElasticSearchExporter) log(message string, err error, keysAndValues ...i
 }
 
 func (e *ElasticSearchExporter) WithLogger(logger logr.Logger) *ElasticSearchExporter {
-	//if logger != nil {
 	e.Logger = logger.WithName("exporter")
-	//}
-
 	return e
 }

@@ -3,7 +3,7 @@ package consumers
 import (
 	"encoding/json"
 	"github.com/elastic/go-elasticsearch/v8"
-	"github.com/goharbor/harbor/src/jobservice/logger"
+	"github.com/go-logr/logr"
 	"log"
 	"strings"
 	"sync"
@@ -12,14 +12,15 @@ import (
 var (
 	lock   = &sync.Mutex{}
 	client *elasticsearch.Client
+	logger = logr.Logger{}
 )
 
 func NewClient(cert []byte, addr string, username string, passwd string) *elasticsearch.Client {
 	lock.Lock()
 	defer lock.Unlock()
-	logger.Info("ES config: ", "addr", addr)
-	logger.Info("ES config: ", "clientArgs.username", username)
-	logger.Info("ES config: ", "passwd", passwd)
+	logger.Info("ElasticSearch config: ", "addr", addr)
+	logger.Info("ElasticSearch config: ", "clientArgs.username", username)
+	logger.Info("ElasticSearch config: ", "passwd", passwd)
 	if client == nil {
 		cfg := elasticsearch.Config{
 			Addresses: []string{
@@ -32,7 +33,7 @@ func NewClient(cert []byte, addr string, username string, passwd string) *elasti
 		var err error
 		client, err = elasticsearch.NewClient(cfg)
 		if err != nil {
-			logger.Info("ES client is nil", nil, nil)
+			logger.Info("ElasticSearch client is nil", nil, nil)
 			ctrlLog.V(0).Error(err, "Error creating the Client of ElasticSearch")
 		}
 	}
@@ -42,7 +43,6 @@ func NewClient(cert []byte, addr string, username string, passwd string) *elasti
 
 func TestClient() error {
 	var r map[string]interface{}
-	logger.Info("ES Test Client", nil, client.BaseClient.Transport)
 	res, err := client.Info()
 	if err != nil {
 		logger.Info("", err)

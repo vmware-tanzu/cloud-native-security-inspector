@@ -115,6 +115,7 @@ func (c *controller) EnsureSettings(ctx context.Context, policy *v1alpha1.Inspec
 // Run implements Controller.
 func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy) error {
 	logFromContext := log.FromContext(ctx)
+	log.Log.Info("In inspection controller...")
 	if policy == nil {
 		return errors.New("empty inspection policy config to runtime")
 	}
@@ -360,7 +361,6 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 			return err
 		}
 	}
-	// Check the Kubernetes using kubebench
 
 	return nil
 }

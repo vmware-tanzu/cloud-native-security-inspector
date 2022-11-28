@@ -48,7 +48,8 @@ func NewListNamespacesOK() *ListNamespacesOK {
 	return &ListNamespacesOK{}
 }
 
-/*ListNamespacesOK handles this case with default header values.
+/*
+ListNamespacesOK handles this case with default header values.
 
 successful operation
 */
@@ -79,7 +80,8 @@ func NewListNamespacesInternalServerError() *ListNamespacesInternalServerError {
 	return &ListNamespacesInternalServerError{}
 }
 
-/*ListNamespacesInternalServerError handles this case with default header values.
+/*
+ListNamespacesInternalServerError handles this case with default header values.
 
 Internal server error occurred
 */

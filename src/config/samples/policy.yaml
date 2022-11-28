@@ -13,7 +13,8 @@ spec:
     concurrencyRule: "Forbid"
   inspector:
     image: projects.registry.vmware.com/cnsi/inspector:0.1
-    imagePullPolicy: IfNotPresent
+    kubebenchImage: projects.registry.vmware.com/cnsi/kubebench:0.1
+    imagePullPolicy: Always
   inspection:
     namespaceSelector:
       matchLabels:
@@ -53,7 +54,7 @@ spec:
         cMLCda4m/ySymHLt
         -----END CERTIFICATE-----
       openSearchEnabled: true
-      openSearchAddr: "https://127.0.0.1:9999"
+      openSearchAddr: "https://opensearch-cluster-master.default:9200"
       openSearchUser: "admin"
       openSearchPasswd: "admin"
     baselines:
@@ -64,4 +65,3 @@ spec:
     actions:
       #- kind: "forbid_vulnerable_deployment"
       - kind: "quarantine_vulnerable_workload"
-      #- kind: "alert"

@@ -1,5 +1,7 @@
 package consumers
 
+import "github.com/aquasecurity/kube-bench/check"
+
 type ContainerInfo struct {
 	ContainerId      string `json:"containerId"`
 	ContainerName    string `json:"containerName"`
@@ -33,3 +35,18 @@ type AssessmentReportDoc struct {
 	// Report is the info of the assessment report which contains the scanning result of this container
 	ReportInfo
 }
+
+type CISReport struct {
+	check.Controls
+	CreateTimestamp string `json:"createTime"`
+}
+
+//type Controls struct {
+//	ID              string   `yaml:"id" json:"id"`
+//	Version         string   `json:"version"`
+//	DetectedVersion string   `json:"detected_version,omitempty"`
+//	Text            string   `json:"text"`
+//	Type            NodeType `json:"node_type"`
+//	Groups          []*Group `json:"tests"`
+//	Summary
+//}

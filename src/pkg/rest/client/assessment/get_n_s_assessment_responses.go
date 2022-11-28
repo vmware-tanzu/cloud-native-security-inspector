@@ -54,7 +54,8 @@ func NewGetNSAssessmentOK() *GetNSAssessmentOK {
 	return &GetNSAssessmentOK{}
 }
 
-/*GetNSAssessmentOK handles this case with default header values.
+/*
+GetNSAssessmentOK handles this case with default header values.
 
 successful operation
 */
@@ -87,7 +88,8 @@ func NewGetNSAssessmentBadRequest() *GetNSAssessmentBadRequest {
 	return &GetNSAssessmentBadRequest{}
 }
 
-/*GetNSAssessmentBadRequest handles this case with default header values.
+/*
+GetNSAssessmentBadRequest handles this case with default header values.
 
 Bad request
 */
@@ -108,7 +110,8 @@ func NewGetNSAssessmentInternalServerError() *GetNSAssessmentInternalServerError
 	return &GetNSAssessmentInternalServerError{}
 }
 
-/*GetNSAssessmentInternalServerError handles this case with default header values.
+/*
+GetNSAssessmentInternalServerError handles this case with default header values.
 
 Internal server error occurred
 */

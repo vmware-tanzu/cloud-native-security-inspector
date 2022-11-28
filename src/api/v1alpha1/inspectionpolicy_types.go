@@ -14,6 +14,13 @@ const (
 	PolicySuspend = "Suspend"
 )
 
+const (
+	// CronjobInpsection describes the Inspection type of cronjob.
+	CronjobInpsection = "Inpection"
+	// CronjobKubebench describes the Kubebench type of the cronjob.
+	CronjobKubebench = "Kubebench"
+)
+
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
@@ -175,6 +182,9 @@ type Inspector struct {
 	// Image of the inspector.
 	// +kubebuilder:validation:Required
 	Image string `json:"image"`
+	// Image of the kubebench.
+	// +kubebuilder:validation:Required
+	KubebenchImage string `json:"kubebenchImage"`
 	// Image pull policy.
 	// +kubebuilder:default:=IfNotPresent
 	ImagePullPolicy corev1.PullPolicy `json:"imagePullPolicy"`
@@ -224,8 +234,12 @@ type InspectionPolicyStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Executor of this policy. It is always an object reference to the underlying cronjob.
-	Executor *corev1.ObjectReference `json:"executor"`
+	// InspectionExecutor of this policy. It is always an object reference to the underlying cronjob.
+	InspectionExecutor *corev1.ObjectReference `json:"inspectionExecutor"`
+
+	// KubebenchExecutor of this policy. It is always an object reference to the underlying cronjob.
+	KubebenchExecutor *corev1.ObjectReference `json:"kubebenchExecutor"`
+
 	// Status of the policy.
 	// Pending, Standby, Suspend.
 	Status string `json:"status"`

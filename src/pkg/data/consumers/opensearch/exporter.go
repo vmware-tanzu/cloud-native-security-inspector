@@ -57,6 +57,7 @@ func (o *OpenSearchExporter) NewExporter(client *opensearch.Client, indexName st
 	return nil
 }
 
+// Save implements Exporter
 func (o *OpenSearchExporter) Save(doc api.AssessmentReport) error {
 	var res *opensearchapi.Response
 
@@ -114,7 +115,7 @@ func (o *OpenSearchExporter) Save(doc api.AssessmentReport) error {
 						if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
 							ctrlLog.Info("Error parsing the response body: %s", err)
 						} else {
-							fmt.Println("OK")
+							ctrlLog.Info("Successfully decode the response")
 						}
 					}
 				}
@@ -125,18 +126,59 @@ func (o *OpenSearchExporter) Save(doc api.AssessmentReport) error {
 	return nil
 }
 
+// SaveCIS implements Exporter
 func (o *OpenSearchExporter) SaveCIS(controlsCollection []*check.Controls) error {
+	currentTimeData := time.Now().Format(time.RFC3339)
+	var res *opensearchapi.Response
+	for _, control := range controlsCollection {
+		var report consumers.CISReport
+		report.CreateTimestamp = currentTimeData
+		report.Controls = *control
+		doc, err := json.Marshal(report)
+
+		if err != nil {
+			return err
+		}
+
+		res, err = opensearchapi.IndexRequest{
+			Index:      o.indexName,
+			DocumentID: "kubebench-Report_" + currentTimeData + "__" + control.ID,
+			Body:       strings.NewReader(string(doc)),
+			Refresh:    "true",
+		}.Do(context.Background(), o.Client)
+		if err != nil {
+			ctrlLog.Error(err, "Error getting response")
+			return err
+		}
+
+		if res.IsError() {
+			ctrlLog.Info("[%s] Error indexing document ID=%v", res.Status(), "name-name")
+			return errors.New(fmt.Sprint("http error, code ", res.StatusCode))
+		} else {
+			// Deserialize the response into a map.
+			var r map[string]interface{}
+			if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
+				ctrlLog.Info("Error parsing the response body: %s", err)
+			} else {
+				ctrlLog.Info("Successfully decode the response")
+			}
+		}
+
+	}
 	return nil
 }
 
+// Delete implements Exporter
 func (o *OpenSearchExporter) Delete(doc api.AssessmentReport) error {
 	return nil
 }
 
+// Search implements Exporter
 func (o *OpenSearchExporter) Search(query string, after ...string) ([]consumers.AssessmentReportDoc, error) {
 	return nil, nil
 }
 
+// List implements Exporter
 func (o *OpenSearchExporter) List() (api.AssessmentReportList, error) {
 	return api.AssessmentReportList{}, nil
 }
@@ -189,27 +231,28 @@ func (o *OpenSearchExporter) setupIndex() error {
 			  "id":  { "type": "text" },
 			  "version":      { "type": "text", "analyzer": "english" },
 			  "detected_version":        { "type": "text", "analyzer": "english" },
-			  "text": { "type": "text", "analyzer": "english" },
-			  "node_type":  { "type": "text" },
-			  "section":       { "type": "text" },
-			  "type":       { "type": "text" },
-			  "pass":       { "type": "text" },
-			  "fail":       { "type": "text" },
-			  "warn":       { "type": "text" },
-			  "info":       { "type": "text" },
-			  "desc":       { "type": "text" },
-			  "test_number":       { "type": "text" },
-			  "test_desc":       { "type": "text" },
+			  "text": { "type": "keyword" },
+			  "node_type":  { "type": "keyword" },
+			  "section":       { "type": "keyword" },
+			  "type":       { "type": "keyword" },
+			  "pass":       { "type": "keyword" },
+			  "fail":       { "type": "keyword" },
+			  "warn":       { "type": "keyword" },
+			  "info":       { "type": "keyword" },
+			  "desc":       { "type": "keyword" },
+			  "test_number":       { "type": "keyword" },
+			  "test_desc":       { "type": "keyword" },
 			  "audit":       { "type": "text" },
 			  "audit_env":       { "type": "text" },
 			  "audit_config":       { "type": "text" },
 			  "remediation":       { "type": "text" },
 			  "test_info":       { "type": "text" },
-			  "status":       { "type": "text" },
+			  "status":       { "type": "keyword" },
 			  "actual_value":       { "type": "text" },
 			  "scored":       { "type": "text" },
 			  "expected_result":       { "type": "text" },
-			  "reason":       { "type": "text" }
+			  "reason":       { "type": "text" },
+              "createTime":   { "type": "date" }
 				}
 			}
 		}`
@@ -218,16 +261,16 @@ func (o *OpenSearchExporter) setupIndex() error {
 		"mappings": {
 			"properties": {
 			  "docId":         { "type": "keyword" },
-			  "containerId":  { "type": "text" },
-			  "containerName":      { "type": "text", "analyzer": "english" },
-			  "containerImage":        { "type": "text", "analyzer": "english" },
-			  "containerImageId": { "type": "text", "analyzer": "english" },
-			  "isInit":  { "type": "text" },
-			  "kind":       { "type": "text" },
-			  "workloadName":       { "type": "text", "analyzer": "english" },
-			  "workloadNamespace":       { "type": "text", "analyzer": "english" },
-			  "actionEnforcement":       { "type": "text", "analyzer": "english" },
-			  "passed":       { "type": "text", "analyzer": "english" },
+			  "containerId":  { "type": "keyword" },
+			  "containerName":      { "type": "keyword" },
+			  "containerImage":        { "type": "keyword" },
+			  "containerImageId": { "type": "keyword" },
+			  "isInit":  { "type": "keyword" },
+			  "kind":       { "type": "keyword" },
+			  "workloadName":       { "type": "keyword" },
+			  "workloadNamespace":       { "type": "keyword" },
+			  "actionEnforcement":       { "type": "keyword" },
+			  "passed":       { "type": "keyword" },
 			  "Failures":       { "type": "text", "analyzer": "english" },
 			  "reportUID":       { "type": "text", "analyzer": "english" },
 			  "createTime":       { "type": "date" },

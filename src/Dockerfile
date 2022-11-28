@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Build the manager binary
 #FROM golang:1.16 as builder
-FROM projects.registry.vmware.com/cnsi/golang:1.16 as builder
+FROM projects.registry.vmware.com/cnsi/golang:1.19 as builder
 WORKDIR /workspace
 # Copy the Go Modules manifests
 COPY go.mod go.mod
