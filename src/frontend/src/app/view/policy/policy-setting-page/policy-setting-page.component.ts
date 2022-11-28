@@ -411,8 +411,8 @@ export class PolicySettingPageComponent implements OnInit {
           password: policyList[0].spec.inspection.assessment.elasticSearchPasswd,
           ca: policyList[0].spec.inspection.assessment.elasticSearchCert
         }
-        localStorage.setItem('cnsi-open-search', JSON.stringify(opensearchInfo))
-        localStorage.setItem('cnsi-elastic-search', JSON.stringify(elasticsearchInfo))
+        sessionStorage.setItem('cnsi-open-search', JSON.stringify(opensearchInfo))
+        sessionStorage.setItem('cnsi-elastic-search', JSON.stringify(elasticsearchInfo))
 
       },
       err => {

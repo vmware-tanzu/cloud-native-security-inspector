@@ -248,8 +248,8 @@ export class KubeBenchReportListComponent implements OnInit {
   // extract function
   extractKubeBenchApi(query: any, callback: Function) {
     this.dgLoading = true
-    const opensearchInfoJson = localStorage.getItem('cnsi-open-search') || "{}"
-    const elasticsearchInfoJson = localStorage.getItem('cnsi-elastic-search') || "{}"
+    const opensearchInfoJson = sessionStorage.getItem('cnsi-open-search') || "{}"
+    const elasticsearchInfoJson = sessionStorage.getItem('cnsi-elastic-search') || "{}"
     const opensearchInfo = JSON.parse(opensearchInfoJson)   
     const elasticsearchInfo = JSON.parse(elasticsearchInfoJson)   
     let client = ''
