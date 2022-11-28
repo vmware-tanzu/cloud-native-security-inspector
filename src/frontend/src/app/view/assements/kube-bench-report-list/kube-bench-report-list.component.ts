@@ -25,7 +25,7 @@ export class KubeBenchReportListComponent implements OnInit {
   defaultSize = 10
   from = 0
   pageMaxCount = 1
-  opensearchInfo!: {url: string, user: string, password: string}
+  opensearchInfo!: {url: string, user: string, pswd: string}
   kubeBenchReportList: any = [
   ]
   constructor(
@@ -248,8 +248,8 @@ export class KubeBenchReportListComponent implements OnInit {
   // extract function
   extractKubeBenchApi(query: any, callback: Function) {
     this.dgLoading = true
-    const opensearchInfoJson = sessionStorage.getItem('cnsi-open-search') || "{}"
-    const elasticsearchInfoJson = sessionStorage.getItem('cnsi-elastic-search') || "{}"
+    const opensearchInfoJson = localStorage.getItem('cnsi-open-search') || "{}"
+    const elasticsearchInfoJson = localStorage.getItem('cnsi-elastic-search') || "{}"
     const opensearchInfo = JSON.parse(opensearchInfoJson)   
     const elasticsearchInfo = JSON.parse(elasticsearchInfoJson)   
     let client = ''
@@ -263,7 +263,7 @@ export class KubeBenchReportListComponent implements OnInit {
         client = 'elasticsearch'
         ca = elasticsearchInfo.ca
       }
-      this.assessmentService.getKubeBenchReport({url: this.opensearchInfo.url, index: 'cis_report', username: this.opensearchInfo.user, password: this.opensearchInfo.password, query, client, ca}).subscribe(
+      this.assessmentService.getKubeBenchReport({url: this.opensearchInfo.url, index: 'cis_report', username: this.opensearchInfo.user, password: this.opensearchInfo.pswd, query, client, ca}).subscribe(
         data => {
           callback(data, this)
           this.pageMaxCount = Math.ceil(data.hits.total.value / this.defaultSize)
