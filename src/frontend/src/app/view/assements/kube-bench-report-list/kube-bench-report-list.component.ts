@@ -263,7 +263,7 @@ export class KubeBenchReportListComponent implements OnInit {
         client = 'elasticsearch'
         ca = elasticsearchInfo.ca
       }
-      this.assessmentService.getKubeBenchReport({url: this.opensearchInfo.url, index: 'cis_report', username: this.opensearchInfo.user, password: this.opensearchInfo.pswd, query, client, ca}).subscribe(
+      this.assessmentService.getKubeBenchReport({url: this.opensearchInfo.url, index: 'cis_report', username: this.opensearchInfo.user, password: window.atob(this.opensearchInfo.pswd), query, client, ca}).subscribe(
         data => {
           callback(data, this)
           this.pageMaxCount = Math.ceil(data.hits.total.value / this.defaultSize)
