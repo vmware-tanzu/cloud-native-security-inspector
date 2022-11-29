@@ -605,7 +605,7 @@ func (a *Adapter) GetVulnerabilitiesList(ctx context.Context, id core.ArtifactID
 		err = json.NewDecoder(res.Body).Decode(&report)
 		if err != nil {
 			body, _ := io.ReadAll(res.Body)
-			log2.Default().Printf("vuln report json unmarshal: %s", string(body))
+			log2.Default().Printf("vuln report json unmarshal: (%s)", string(body))
 			continue
 		}
 		return report[xAcceptVulnerabilities], nil
