@@ -289,7 +289,7 @@ func (o *OpenSearchExporter) setupIndex() error {
 			"properties": {
 			  "docId":         { "type": "keyword" },
 			  "detail":  { "type": "text" },
-			  "createTime":       { "type": "date" },
+			  "createTime":       { "type": "date" }
 				}
 			}
 		}`
