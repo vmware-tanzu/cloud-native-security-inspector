@@ -95,7 +95,7 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 		if err == nil {
 			for _, pod := range pods.Items {
 				resource := data.NewResourceItem("Pod")
-				resource.SetPod(&pod)
+				resource.SetPod(pod)
 				allResources = append(allResources, resource)
 				nodeName := pod.Spec.NodeName
 				if nodeName != "" && !inArray(nodeName, nodes) {
@@ -150,6 +150,9 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 
 	for _, v := range allResources {
 		log.Default().Printf("resource name: %s, type: %s \n", v.ObjectMeta.Name, v.Type)
+		if v.IsPod() {
+			log.Default().Printf("pod name: %s, namespace: %s", v.Pod.GetName(), v.Pod.GetNamespace())
+		}
 		err = httpClient.
 			PostResource(v)
 		if err != nil {
