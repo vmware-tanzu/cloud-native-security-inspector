@@ -68,16 +68,20 @@ func (c *Client) PostResource(a interface{}) error {
 	log.Default().Printf("post to: %s \n", requestURL)
 
 	if jsonData, err := json.Marshal(a); err == nil {
-		request, error := http.NewRequest("POST", requestURL, bytes.NewBuffer(jsonData))
+		request, _ := http.NewRequest("POST", requestURL, bytes.NewBuffer(jsonData))
 		request.Header.Set("Content-Type", "application/json; charset=UTF-8")
 
 		client := &http.Client{}
-		response, error := client.Do(request)
-		if error != nil || response.StatusCode != http.StatusCreated {
+		response, err := client.Do(request)
+		if err != nil || response.StatusCode != http.StatusCreated {
 			return err
 		}
 
 		response.Body.Close()
+
+		log.Default().Printf("http request send success")
+	} else {
+		log.Default().Printf("json marshal err: %v", err)
 	}
 
 	return nil

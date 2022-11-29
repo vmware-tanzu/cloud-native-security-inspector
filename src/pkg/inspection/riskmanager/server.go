@@ -56,11 +56,14 @@ func (s *Server) WithAdapter(Adapter providers.Adapter) *Server {
 
 // postAlbums adds an album from JSON received in the request body.
 func (s *Server) postResource(c *gin.Context) {
+	log.Println("come in postResource request")
 	var v data.ResourceItem
 
 	// Call BindJSON to bind the received JSON to
 	// newAlbum.
 	if err := c.BindJSON(&v); err != nil {
+		log.Printf("bind json err: %v \n", err)
+		c.IndentedJSON(http.StatusBadRequest, err)
 		return
 	}
 
@@ -87,6 +90,7 @@ func (s *Server) Clear() {
 }
 
 func (s *Server) Analyze(option AnalyzeOption) {
+	log.Println("come in Analyze request")
 	s.IsRunning = true
 	defer func() {
 		s.IsRunning = false
@@ -127,13 +131,14 @@ func (s *Server) Analyze(option AnalyzeOption) {
 		err := s.DetailExporter.SaveRiskReport(s.Workloads.Risks)
 		//err := s.Workloads.ExportAssessmentDetails(s.DetailExporter)
 		if err != nil {
-			log.Printf("error: %v", err)
+			log.Printf("SaveRiskReport error: %v", err)
 		}
 	}
 }
 
 // postAnalyze adds an album from JSON received in the request body.
 func (s *Server) postAnalyze(c *gin.Context) {
+	log.Println("come in postAnalyze request")
 	var v AnalyzeOption
 
 	// Call BindJSON to bind the received JSON to
