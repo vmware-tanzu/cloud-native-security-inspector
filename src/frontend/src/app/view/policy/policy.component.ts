@@ -67,16 +67,16 @@ export class PolicyComponent implements OnInit {
           const opensearchInfo =  {
             url: this.policyList[0].spec.inspection.assessment.openSearchAddr,
             user: this.policyList[0].spec.inspection.assessment.openSearchUser,
-            pswd: window.btoa(this.policyList[0].spec.inspection.assessment.openSearchPasswd)
+            pswd: this.policyList[0].spec.inspection.assessment.openSearchPasswd
           }
           const elasticsearchInfo =  {
             url: this.policyList[0].spec.inspection.assessment.elasticSearchAddr,
             user: this.policyList[0].spec.inspection.assessment.elasticSearchUser,
-            pswd: window.btoa(this.policyList[0].spec.inspection.assessment.elasticSearchPasswd),
+            pswd: this.policyList[0].spec.inspection.assessment.elasticSearchPasswd,
             ca: this.policyList[0].spec.inspection.assessment.elasticSearchCert
           }
-          localStorage.setItem('cnsi-open-search', JSON.stringify(opensearchInfo))
-          localStorage.setItem('cnsi-elastic-search', JSON.stringify(elasticsearchInfo))
+          localStorage.setItem('cnsi-open-search', window.btoa('u749VQF7hEqDTZ2y161R9J8F'+JSON.stringify(opensearchInfo)))
+          localStorage.setItem('cnsi-elastic-search', window.btoa('u749VQF7hEqDTZ2y161R9J8F'+JSON.stringify(elasticsearchInfo)))
         }
       },
       err => {

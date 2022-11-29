@@ -245,13 +245,16 @@ export class KubeBenchReportListComponent implements OnInit {
     this.extractKubeBenchApi(query, callBack)
   }
 
-  // extract function
+  // extract function u749VQF7hEqDTZ2y161R9J8F
   extractKubeBenchApi(query: any, callback: Function) {
     this.dgLoading = true
-    const opensearchInfoJson = localStorage.getItem('cnsi-open-search') || "{}"
-    const elasticsearchInfoJson = localStorage.getItem('cnsi-elastic-search') || "{}"
-    const opensearchInfo = JSON.parse(opensearchInfoJson)   
-    const elasticsearchInfo = JSON.parse(elasticsearchInfoJson)   
+    const opensearchbase: any = localStorage.getItem('cnsi-open-search')
+    const elasticsearchbase: any = localStorage.getItem('cnsi-elastic-search')
+    const opensearchInfoJson = window.atob(opensearchbase)
+    const elasticsearchInfoJson = window.atob(elasticsearchbase)
+
+    const opensearchInfo = JSON.parse(opensearchInfoJson.slice(24))   
+    const elasticsearchInfo = JSON.parse(elasticsearchInfoJson.slice(24))  
     let client = ''
     let ca = ''
     if (opensearchInfo.url || elasticsearchInfo.url) {
@@ -263,7 +266,7 @@ export class KubeBenchReportListComponent implements OnInit {
         client = 'elasticsearch'
         ca = elasticsearchInfo.ca
       }
-      this.assessmentService.getKubeBenchReport({url: this.opensearchInfo.url, index: 'cis_report', username: this.opensearchInfo.user, password: window.atob(this.opensearchInfo.pswd), query, client, ca}).subscribe(
+      this.assessmentService.getKubeBenchReport({url: this.opensearchInfo.url, index: 'cis_report', username: this.opensearchInfo.user, password: this.opensearchInfo.pswd, query, client, ca}).subscribe(
         data => {
           callback(data, this)
           this.pageMaxCount = Math.ceil(data.hits.total.value / this.defaultSize)

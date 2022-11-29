@@ -403,16 +403,17 @@ export class PolicySettingPageComponent implements OnInit {
         const opensearchInfo =  {
           url: policyList[0].spec.inspection.assessment.openSearchAddr,
           user: policyList[0].spec.inspection.assessment.openSearchUser,
-          pswd: window.btoa(policyList[0].spec.inspection.assessment.openSearchPasswd)
+          pswd: policyList[0].spec.inspection.assessment.openSearchPasswd
         }
         const elasticsearchInfo =  {
           url: policyList[0].spec.inspection.assessment.elasticSearchAddr,
           user: policyList[0].spec.inspection.assessment.elasticSearchUser,
-          pswd: window.btoa(policyList[0].spec.inspection.assessment.elasticSearchPasswd),
+          pswd: policyList[0].spec.inspection.assessment.elasticSearchPasswd,
           ca: policyList[0].spec.inspection.assessment.elasticSearchCert
         }
-        localStorage.setItem('cnsi-open-search', JSON.stringify(opensearchInfo))
-        localStorage.setItem('cnsi-elastic-search', JSON.stringify(elasticsearchInfo))
+        
+        localStorage.setItem('cnsi-open-search', window.btoa('u749VQF7hEqDTZ2y161R9J8F'+JSON.stringify(opensearchInfo)))
+        localStorage.setItem('cnsi-elastic-search', window.btoa('u749VQF7hEqDTZ2y161R9J8F'+JSON.stringify(elasticsearchInfo)))
 
       },
       err => {
