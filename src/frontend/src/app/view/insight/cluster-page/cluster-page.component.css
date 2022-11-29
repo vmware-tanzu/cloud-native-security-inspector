@@ -49,13 +49,13 @@
   height: 30px;
 }
 .cluster-page clr-tabs::ng-deep .report .data div.normal clr-icon {
-  color: green;
+  color: #3BA272;
 }
 .cluster-page clr-tabs::ng-deep .report .data div.abnormal-but-compliant clr-icon {
   color: yellow;
 }
 .cluster-page clr-tabs::ng-deep .report .data div.abnormal clr-icon {
-  color: red;
+  color: #EE6666;
 }
 .cluster-page clr-tabs::ng-deep::ng-deep clr-dg-column {
   background-color: #22343C;
@@ -120,8 +120,8 @@
   height: 10px;
   position: absolute;
   left: 0;
-  background-color: green;
+  background-color: #3BA272;
 }
 .cluster-page clr-tabs::ng-deep .clickable .card-block.abnormal .pro {
-  background-color: red !important;
+  background-color: #EE6666 !important;
 }

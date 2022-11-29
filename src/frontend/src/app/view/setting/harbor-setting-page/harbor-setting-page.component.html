@@ -12,12 +12,12 @@
     <clr-step-title>{{'Setting.RequiredFields'|translate}}</clr-step-title>
     <clr-step-description>{{'Setting.inspectionDesc'|translate}}</clr-step-description>
     <clr-step-content *clrIfExpanded>
-      <clr-input-container style="padding-bottom: 10px;">
+      <clr-input-container class="w-230" style="padding-bottom: 10px;">
         <label>{{'Setting.setting_name'|translate}}: </label>
         <input clrInput placeholder="" name="name" formControlName="name"/>
       </clr-input-container>
 
-      <clr-select-container>
+      <clr-select-container class="w-230">
         <label class="w-200">{{'Setting.credential_name'|translate}}</label>
         <select clrSelect name="data_credential_name" formControlName="data_credential_name">
           <option value=""></option>
@@ -25,17 +25,17 @@
         </select>
       </clr-select-container>
 
-      <clr-input-container>
+      <clr-input-container class="w-230">
         <label>{{'Setting.credential_namespace'|translate}}: </label>
         <input clrInput placeholder="" style="color: #999;" name="data_credential_namespace" formControlName="data_credential_namespace"/>
       </clr-input-container>
 
-      <clr-input-container>
+      <clr-input-container class="w-230">
         <label>{{'Report_Detail.provider' |translate}}: </label>
         <input clrInput placeholder="" style="color: #999;" name="data_provider" formControlName="data_provider"/>
       </clr-input-container>
 
-      <clr-input-container>
+      <clr-input-container class="w-230">
         <label>{{'CommonlyUse.name'|translate}}: </label>
         <input clrInput placeholder="" style="color: #999;" name="data_name" [value]="dataSourceName" disabled/>
       </clr-input-container>
@@ -80,32 +80,32 @@
           {{'Setting.removeKnown'|translate}}
           <clr-icon (click)="knownRegistriesremoveItem(i)" style="color: hsl(9, 100%, 43%);" *ngIf="i!==0" shape="minus-circle" class="is-solid"></clr-icon>
         </p>
-        <clr-select-container>
+        <clr-select-container class="w-230">
           <label class="w-200">{{'Setting.provider'|translate}}</label>
           <select clrSelect name="provider" [(ngModel)]="known.provider" [ngModelOptions]="{standalone: true}">
             <option *ngFor="let item of knownRegistriesProviderList" [value]="item">{{item}}</option>
           </select>
         </clr-select-container>
 
-        <clr-input-container>
+        <clr-input-container class="w-230">
           <label>{{'CommonlyUse.name'|translate}}: </label>
           <input clrInput placeholder="" name="name" [(ngModel)]="known.name" [ngModelOptions]="{standalone: true}"/>
         </clr-input-container>
 
-        <clr-input-container>
+        <clr-input-container class="w-230">
           <label>{{'Report_Detail.endpoint' |translate}}: </label>
           <input clrInput placeholder="" name="endpoint" [(ngModel)]="known.endpoint" [ngModelOptions]="{standalone: true}"/>
         </clr-input-container>
 
 
-        <clr-select-container>
+        <clr-select-container class="w-230">
           <label class="w-200">{{'Setting.credential_name'|translate}}</label>
           <select clrSelect name="know_credential_name" [(ngModel)]="known.credentialRef.name" [ngModelOptions]="{standalone: true}">
             <option *ngFor="let item of secretsList" [value]="item.metadata.name">{{item.metadata.name}}</option>
           </select>
         </clr-select-container>
 
-        <clr-input-container>
+        <clr-input-container class="w-230">
           <label>{{'Setting.credential_namespace'|translate}}: </label>
           <input clrInput placeholder="" style="color: #999;" name="know_credential_namespace" disabled [(ngModel)]="known.credentialRef.namespace" [ngModelOptions]="{standalone: true}"/>
         </clr-input-container>
@@ -126,12 +126,12 @@
     <clr-step-title>{{'Setting.cache'|translate}}</clr-step-title>
     <clr-step-description>{{'Setting.cacheDesc'| translate}}</clr-step-description>
     <clr-step-content *clrIfExpanded>
-      <clr-input-container>
+      <clr-input-container class="w-230">
         <label>{{'Setting.address' |translate}}: </label>
         <input clrInput placeholder="" name="address" formControlName="address"/>
       </clr-input-container>
 
-      <clr-input-container>
+      <clr-input-container class="w-230">
         <label>{{'Setting.livingTime' |translate}}: </label>
         <input clrInput placeholder="" name="livingTime" formControlName="livingTime"/>
       </clr-input-container>

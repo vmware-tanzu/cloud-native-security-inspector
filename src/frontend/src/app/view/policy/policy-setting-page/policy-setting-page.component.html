@@ -12,12 +12,12 @@
       <clr-step-title>{{'Setting.inspectionSetting'|translate}}</clr-step-title>
       <clr-step-description>{{'Setting.inspectionDesc'|translate}}</clr-step-description>
       <clr-step-content *clrIfExpanded>
-        <clr-input-container>
+        <clr-input-container class="w-230">
           <label>{{'Policy.name'|translate}}: </label>
           <input clrInput placeholder="" name="name" formControlName="name"/>
         </clr-input-container>
   
-        <clr-input-container>
+        <clr-input-container class="w-230">
           <label>{{'CommonlyUse.inspectionNamespace'|translate}}: </label>
           <input clrInput placeholder="" name="namespace" formControlName="namespace"/>
         </clr-input-container>
@@ -31,7 +31,7 @@
           </button>
           </div>
         </div>
-        <clr-input-container>
+        <clr-input-container class="w-230">
           <label>{{'Policy.historyLimit'|translate}}:  </label>
           <input clrInput placeholder="" name="historyLimit" formControlName="historyLimit"/>
         </clr-input-container>
@@ -43,15 +43,14 @@
           </clr-toggle-wrapper>
         </clr-toggle-container>
   
-        <clr-select-container>
+        <clr-select-container class="w-230">
           <label class="w-200">{{'Policy.concurrencyRule'|translate}}</label>
           <select clrSelect name="concurrencyRule" formControlName="concurrencyRule">
             <option value="Allow">Allow</option>
             <option value="Forbid">Forbid</option>
           </select>
         </clr-select-container>
-
-        <clr-combobox-container>
+        <clr-combobox-container class="combobox">
           <label>{{'CommonlyUse.scanInspector'|translate}}:</label>
           <clr-combobox formControlName="image" name="image" clrMulti="true" required>
             <ng-container *clrOptionSelected="let selected">
@@ -69,7 +68,7 @@
           </clr-combobox>
         </clr-combobox-container>
 
-        <clr-select-container>
+        <clr-select-container class="w-230">
           <label class="w-200">{{'Policy.imagePullPolicy'|translate}}</label>
           <select clrSelect name="imagePullPolicy" formControlName="imagePullPolicy">
             <option value="IfNotPresent">IfNotPresent</option>
@@ -79,7 +78,7 @@
         </clr-select-container>
   
         
-        <clr-select-container>
+        <clr-select-container class="w-230">
           <label class="w-200">{{'Policy.settingsName'|translate}}</label>
           <select clrSelect name="settingsName" formControlName="settingsName">
             <option></option>
@@ -104,13 +103,13 @@
             <input clrInput placeholder="" name="openSearchAddr" formControlName="openSearchAddr"/>
           </div>
   
-          <clr-input-container>
+          <clr-input-container class="w-230">
             <label>{{'Policy.elasticSearchUser'|translate}}:  </label>
             <input clrInput placeholder="" name="openSearchUser" formControlName="openSearchUser"/>
           </clr-input-container>
   
           <div class="passwd-test">
-            <clr-password-container>
+            <clr-password-container class="w-230-psd">
               <label>{{'Policy.elasticSearchPasswd'|translate}}:</label>
               <input clrPassword placeholder="Password please!" name="openSearchPasswd" formControlName="openSearchPasswd" />
             </clr-password-container>
@@ -148,14 +147,13 @@
             <input clrInput placeholder="" name="elasticSearchAddr" formControlName="elasticSearchAddr"/>
           </div>
   
-          <clr-input-container>
+          <clr-input-container class="w-230">
             <label>{{'Policy.elasticSearchUser'|translate}}:  </label>
             <input clrInput placeholder="" name="elasticSearchUser" formControlName="elasticSearchUser"/>
           </clr-input-container>
   
           <div class="passwd-test">
-
-            <clr-password-container>
+            <clr-password-container class="w-230-psd">
               <label>{{'Policy.elasticSearchPasswd'|translate}}:</label>
               <input clrPassword placeholder="Password please!" name="elasticSearchPasswd" formControlName="elasticSearchPasswd" />
             </clr-password-container>
@@ -176,7 +174,7 @@
 
           <clr-textarea-container>
             <label>{{'Policy.elasticSearchCert'|translate}}</label>
-            <textarea style="width: 300px; height: 150px;" clrTextarea name="elasticSearchCert" formControlName="elasticSearchCert"></textarea>
+            <textarea style="width: 230px; height: 150px;" clrTextarea name="elasticSearchCert" formControlName="elasticSearchCert"></textarea>
           </clr-textarea-container>
 
         </div>
@@ -195,13 +193,13 @@
           </h4>
           <ul class="list">
             <li *ngFor="let item of baselines, let i = index">
-              <clr-input-container>
+              <clr-input-container class="w-230">
                 <label>{{'Policy.kind'|translate}}:   
                   <clr-icon (click)="policySettingremoveItem('baseline', i)" style="color: hsl(9, 100%, 43%);" *ngIf="i!==0" shape="minus-circle" class="is-solid"></clr-icon>
                 </label>
                 <input style="color: #999;" clrInput placeholder="" name="kind" disabled [(ngModel)]="item.kind" [ngModelOptions]="{standalone: true}" />
               </clr-input-container>
-              <clr-select-container *ngIf="policyForm.get('inspectionResult')?.get('generate')?.value">
+              <clr-select-container class="w-230" *ngIf="policyForm.get('inspectionResult')?.get('generate')?.value">
                 <label class="w-200">{{'Policy.baseline'|translate}}</label>
                 <select clrSelect name="baseline" [(ngModel)]="item.baseline" [ngModelOptions]="{standalone: true}">
                   <option value="Low">Low</option>
@@ -211,11 +209,11 @@
                 </select>
               </clr-select-container>
   
-              <clr-input-container>
+              <clr-input-container class="w-230">
                 <label>{{'CommonlyUse.version'|translate}}:   </label>
                 <input clrInput placeholder="" name="version" [(ngModel)]="item.version" [ngModelOptions]="{standalone: true}"/>
               </clr-input-container>
-              <clr-input-container>
+              <clr-input-container class="w-230">
                 <label>{{'Policy.scheme'|translate}}:   </label>
                 <input clrInput placeholder="" name="scheme" [(ngModel)]="item.scheme" [ngModelOptions]="{standalone: true}"/>
               </clr-input-container>
@@ -229,13 +227,13 @@
           </h4>
           <ul class="list">
             <li *ngFor="let item of namespacelabels,let i = index;">
-              <clr-input-container>
+              <clr-input-container class="w-230">
                 <label>{{'Policy.key'| translate}}:   
                   <clr-icon (click)="policySettingremoveItem('namespacelabels', i)" style="color: hsl(9, 100%, 43%);"shape="minus-circle" class="is-solid"></clr-icon>
                 </label>
                 <input clrInput placeholder="" name="liveTime" [(ngModel)]="item.key" [ngModelOptions]="{standalone: true}"/>
               </clr-input-container>
-              <clr-input-container>
+              <clr-input-container class="w-230">
                 <label>{{'Policy.value'| translate}}:   
                 </label>
                 <input clrInput placeholder="" name="liveTime" [(ngModel)]="item.value" [ngModelOptions]="{standalone: true}"/>
@@ -251,13 +249,13 @@
           </h4>
           <ul class="list">
             <li *ngFor="let item of workloadlabels,let i = index;">
-              <clr-input-container>
+              <clr-input-container class="w-230">
                 <label>{{'Policy.key'| translate}}:   
                   <clr-icon (click)="policySettingremoveItem('workloadlabels', i)" style="color: hsl(9, 100%, 43%);"shape="minus-circle" class="is-solid"></clr-icon>
                 </label>
                 <input clrInput placeholder="" name="liveTime" [(ngModel)]="item.key" [ngModelOptions]="{standalone: true}"/>
               </clr-input-container>
-              <clr-input-container>
+              <clr-input-container class="w-230">
                 <label>{{'Policy.value'| translate}}:   
                 </label>
                 <input clrInput placeholder="" name="liveTime" [(ngModel)]="item.value" [ngModelOptions]="{standalone: true}"/>
@@ -291,7 +289,7 @@
           </select>
         </clr-select-container> -->
         
-        <clr-input-container *ngIf="policyForm.get('inspectionResult')?.get('generate')?.value">
+        <clr-input-container class="w-230" *ngIf="policyForm.get('inspectionResult')?.get('generate')?.value">
           <label>{{'Policy.live_time'|translate}}:   </label>
           <input clrInput placeholder="" name="liveTime" formControlName="liveTime"/>
         </clr-input-container>
@@ -316,9 +314,9 @@
             </clr-toggle-container> 
             <!-- <clr-icon (click)="policySettingAddItem('action')" style="color:hsl(198, 80%, 46%)" shape="plus-circle" class="is-solid"></clr-icon> -->
           </h4>
-          <ul class="list" *ngIf="policyForm.get('inspectionResult')?.get('actions')?.value">
+          <ul class="list" style="list-style:none; margin-left: 0;" *ngIf="policyForm.get('inspectionResult')?.get('actions')?.value">
             <li *ngFor="let item of actions,let i = index;">
-              <clr-input-container>
+              <clr-input-container class="w-230">
                 <label>{{'Policy.kind'|translate}}:   
                   <clr-icon (click)="policySettingremoveItem('action', i)" style="color: hsl(9, 100%, 43%);" *ngIf="i!==0" shape="minus-circle" class="is-solid"></clr-icon>
                 </label>

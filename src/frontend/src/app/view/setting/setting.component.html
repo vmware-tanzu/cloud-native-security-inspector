@@ -16,7 +16,7 @@
                 <clr-icon shape="plus"></clr-icon>
                 {{'CommonlyUse.new'|translate}}</button>
   
-              <clr-datagrid >
+              <clr-datagrid [clrDgLoading]="secretLoading">
                 <clr-dg-column>{{'CommonlyUse.name' | translate}}</clr-dg-column>
                 <clr-dg-column>{{'CommonlyUse.namespace' | translate}}</clr-dg-column>
                 <clr-dg-column>{{'CommonlyUse.create_time'| translate}}</clr-dg-column>
@@ -44,7 +44,7 @@
               <button *ngIf="harborSetingList.length === 0"  class="btn btn-primary btn-sm create" routerLink="/modify-setting/create">
                 <clr-icon shape="plus"></clr-icon>
                 {{'CommonlyUse.new'|translate}} </button>
-              <clr-datagrid >
+              <clr-datagrid [clrDgLoading]="settingLoading">
                 <clr-dg-column>{{'CommonlyUse.name' | translate}}</clr-dg-column>
                 <clr-dg-column>Secret</clr-dg-column>
                 <clr-dg-column>{{'Report_Detail.endpoint' | translate}}</clr-dg-column>
