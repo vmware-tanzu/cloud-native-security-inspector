@@ -16,7 +16,7 @@ import (
 type ResourceItem struct {
 	ID             string             `json:"uuid"`
 	Type           string             `json:"type"`
-	Pod            *v1.Pod            `json:"pod,omitempty"`
+	Pod            v1.Pod             `json:"pod,omitempty"`
 	Service        *v1.Service        `json:"service,omitempty"`
 	Node           *v1.Node           `json:"node,omitempty"`
 	ServiceAccount *v1.ServiceAccount `json:"service_account,omitempty"`
@@ -27,11 +27,10 @@ type ResourceItem struct {
 
 // NewResourceItem create a new resource item given one of the source item
 func NewResourceItem(kind string) *ResourceItem {
-	r := &ResourceItem{Type: kind}
-	return r
+	return &ResourceItem{Type: kind}
 }
 
-func (r *ResourceItem) SetPod(pod *v1.Pod) {
+func (r *ResourceItem) SetPod(pod v1.Pod) {
 	r.Pod = pod
 	r.ObjectMeta = pod.ObjectMeta
 }
@@ -70,7 +69,7 @@ func (r *ResourceItem) UUID() string {
 }
 
 func (r *ResourceItem) IsPod() bool {
-	if r.Type == "Pod" && r.Pod != nil {
+	if r.Type == "Pod" && r.Pod.GetName() != "" {
 		return true
 	}
 
