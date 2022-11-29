@@ -9,12 +9,20 @@
       <clr-icon shape="line-chart" clrVerticalNavIcon></clr-icon>
       {{'Nav.Assessments.title'| translate}}
       <clr-vertical-nav-group-children>
-          <a clrVerticalNavLink
-             routerLink="/assessments"
-             routerLinkActive="active">
-             {{'Nav.Assessments.report_view'| translate}}
-          </a>
-      </clr-vertical-nav-group-children>
+        <a clrVerticalNavLink
+           routerLink="/assessments/report"
+           routerLinkActive="active">
+           {{'Nav.Assessments.image_nspector_reports'| translate}}
+        </a>
+    </clr-vertical-nav-group-children>
+    <clr-vertical-nav-group-children>
+        <a class="kube-bench"
+            clrVerticalNavLink
+           routerLink="/assessments/kube-bench"
+           routerLinkActive="active">
+           {{'Nav.Assessments.Kube_bench'| translate}}
+        </a>
+    </clr-vertical-nav-group-children>
   </clr-vertical-nav-group>
   <clr-vertical-nav-group
           routerLinkActive="active">

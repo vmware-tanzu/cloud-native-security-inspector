@@ -1,11 +1,21 @@
 {
   "/proxy": {
-      "target": "http://127.0.0.1:8082",
-      "logLevel": "debug", 
-      "secure": false,
-      "changeOrigin": true,
-      "pathRewrite": {
-          "^/proxy": ""
-      }
+    "target": "http://127.0.0.1:8082",
+    "logLevel": "debug", 
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+        "^/proxy": ""
+    }
+  },
+  "/open": {
+    "target": "http://localhost:3800",
+    "logLevel": "debug", 
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+        "^/open": ""
+    }
   }
+
 }

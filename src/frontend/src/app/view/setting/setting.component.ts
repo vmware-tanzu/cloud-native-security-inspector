@@ -66,7 +66,7 @@ export class SettingComponent implements OnInit, OnDestroy {
         if (data.items.length < 1) {
           clearInterval(this.createTimer)
         }
-        if (data.items[0].status) {
+        if (data.items[0] && data.items[0].status) {
           clearInterval(this.createTimer)
           this.noteIconFlag = true;
         }

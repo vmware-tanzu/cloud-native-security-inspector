@@ -8,8 +8,8 @@
   </div>
   <div class="setting-page">
     <clr-tabs>
-      <clr-tab>
-        <button clrTabLink id="link1">Secret</button>
+      <clr-tab >
+        <button clrTabLink id="link1" (click)="getSecrets()">Secret</button>
           <ng-template [clrIfActive]="true">
             <clr-tab-content>
               <button class="btn btn-primary btn-sm create" (click)="secretModalFlag=true">
@@ -41,7 +41,9 @@
         <ng-template clrIfActive>
           <clr-tab-content>
             <clr-tab-content> 
-              <button *ngIf="harborSetingList.length === 0"  class="btn btn-primary btn-sm create" routerLink="/modify-setting/create">{{'CommonlyUse.new'|translate}} </button>
+              <button *ngIf="harborSetingList.length === 0"  class="btn btn-primary btn-sm create" routerLink="/modify-setting/create">
+                <clr-icon shape="plus"></clr-icon>
+                {{'CommonlyUse.new'|translate}} </button>
               <clr-datagrid >
                 <clr-dg-column>{{'CommonlyUse.name' | translate}}</clr-dg-column>
                 <clr-dg-column>Secret</clr-dg-column>

@@ -63,6 +63,21 @@ export class PolicyComponent implements OnInit {
     this.policyService.getInspectionpolicies().subscribe(
       (data: any) => {
         this.policyList = data.items
+        if (this.policyList.length > 0) {
+          const opensearchInfo =  {
+            url: this.policyList[0].spec.inspection.assessment.openSearchAddr,
+            user: this.policyList[0].spec.inspection.assessment.openSearchUser,
+            pswd: this.policyList[0].spec.inspection.assessment.openSearchPasswd
+          }
+          const elasticsearchInfo =  {
+            url: this.policyList[0].spec.inspection.assessment.elasticSearchAddr,
+            user: this.policyList[0].spec.inspection.assessment.elasticSearchUser,
+            pswd: this.policyList[0].spec.inspection.assessment.elasticSearchPasswd,
+            ca: this.policyList[0].spec.inspection.assessment.elasticSearchCert
+          }
+          localStorage.setItem('cnsi-open-search', window.btoa('u749VQF7hEqDTZ2y161R9J8F'+JSON.stringify(opensearchInfo)))
+          localStorage.setItem('cnsi-elastic-search', window.btoa('u749VQF7hEqDTZ2y161R9J8F'+JSON.stringify(elasticsearchInfo)))
+        }
       },
       err => {
         console.log('err', err);

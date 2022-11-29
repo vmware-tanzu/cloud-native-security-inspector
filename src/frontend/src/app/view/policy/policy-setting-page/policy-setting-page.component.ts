@@ -15,7 +15,7 @@ export class PolicySettingPageComponent implements OnInit {
   policyForm!: UntypedFormGroup;
   private isDisabled = false
   public checkES = ''
-  public schedule = '3/* * * * *'
+  public schedule = '*/3 * * * *'
   public text = ''
   public isCornUpdateModal = false
   public baselines = [
@@ -24,6 +24,16 @@ export class PolicySettingPageComponent implements OnInit {
       "baseline":"High",
       "version":"v1.1",
       "scheme":"application/vnd.security.vulnerability.report; version=1.1"
+    }
+  ]
+  imageList = [
+    {
+      name: 'inspector',
+      url: 'projects.registry.vmware.com/cnsi/inspector:0.1'
+    },
+    {
+      name: 'kubebench',
+      url: 'projects.registry.vmware.com/cnsi/kubebench:0.1'
     }
   ]
   public actions = [
@@ -41,9 +51,17 @@ export class PolicySettingPageComponent implements OnInit {
 
   get inspectionSettingValid() {
     let result = true
-    const data = this.policyForm.get('inspectionSetting')?.value
+    const data = this.policyForm.get('inspectionSetting')?.value    
     if (this.schedule) {
       result = false
+    }
+
+    if (!data.image || data.image.length < 1) {
+      result = true
+    }
+
+    if (!data.elasticSearchEnabled && !data.openSearchEnabled) {
+      result = true
     }
 
     if (!data.elasticSearchEnabled) {      
@@ -126,7 +144,7 @@ export class PolicySettingPageComponent implements OnInit {
         historyLimit:[5],
         suspend: [false],
         concurrencyRule:['Forbid'],
-        image:['projects.registry.vmware.com/cnsi/inspector:0.1'],
+        image:[[]],
         imagePullPolicy: ['IfNotPresent'],
         settingsName: [''],
         elasticSearchEnabled: [false],
@@ -135,11 +153,11 @@ export class PolicySettingPageComponent implements OnInit {
         elasticSearchUser: [''],
         elasticSearchPasswd: [''],
         elasticSearchCert: [''],
-        openSearchEnabled: [false],
+        openSearchEnabled: [true],
         openSearchAddrHeader: ['https://'],
-        openSearchAddr: [''],
-        openSearchUser: [''],
-        openSearchPasswd: [''],
+        openSearchAddr: ['opensearch-cluster-master.default:9200'],
+        openSearchUser: ['admin'],
+        openSearchPasswd: ['admin'],
       }),
       inspectionStandard: this.formBuilder.group({
       }),
@@ -264,7 +282,16 @@ export class PolicySettingPageComponent implements OnInit {
           this.policyForm.get('inspectionSetting')?.get('historyLimit')?.setValue(policyList[0].spec.strategy.historyLimit)
           this.policyForm.get('inspectionSetting')?.get('suspend')?.setValue(policyList[0].spec.strategy.suspend)
           this.policyForm.get('inspectionSetting')?.get('concurrencyRule')?.setValue(policyList[0].spec.strategy.concurrencyRule)
-          this.policyForm.get('inspectionSetting')?.get('image')?.setValue(policyList[0].spec.inspector.image)
+          if (policyList[0].spec.inspector.image && policyList[0].spec.inspector.kubebenchImage) {
+            this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['inspector', 'kubebench'])
+          } else {
+            if (policyList[0].spec.inspector.image) {
+              this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['inspector'])
+            } else if (policyList[0].spec.inspector.kubebenchImage) {
+              this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['kubebench'])
+            }
+          }
+
           this.policyForm.get('inspectionSetting')?.get('imagePullPolicy')?.setValue(policyList[0].spec.inspector.imagePullPolicy)
           this.policyForm.get('inspectionSetting')?.get('settingsName')?.setValue(policyList[0].spec.settingsName)
           // this.policyForm.get('endpoint')?.setValue(policyList[0].spec.inspection.dataProvider.endpoint)
@@ -370,8 +397,24 @@ export class PolicySettingPageComponent implements OnInit {
           ]
           this.namespacelabels = []
           this.workloadlabels = []
-          this.schedule = '3/* * * * *'
+          this.schedule = '*/3 * * * *'
         }
+
+        const opensearchInfo =  {
+          url: policyList[0].spec.inspection.assessment.openSearchAddr,
+          user: policyList[0].spec.inspection.assessment.openSearchUser,
+          pswd: policyList[0].spec.inspection.assessment.openSearchPasswd
+        }
+        const elasticsearchInfo =  {
+          url: policyList[0].spec.inspection.assessment.elasticSearchAddr,
+          user: policyList[0].spec.inspection.assessment.elasticSearchUser,
+          pswd: policyList[0].spec.inspection.assessment.elasticSearchPasswd,
+          ca: policyList[0].spec.inspection.assessment.elasticSearchCert
+        }
+        
+        localStorage.setItem('cnsi-open-search', window.btoa('u749VQF7hEqDTZ2y161R9J8F'+JSON.stringify(opensearchInfo)))
+        localStorage.setItem('cnsi-elastic-search', window.btoa('u749VQF7hEqDTZ2y161R9J8F'+JSON.stringify(elasticsearchInfo)))
+
       },
       err => {
         console.log('err', err);
@@ -392,6 +435,7 @@ export class PolicySettingPageComponent implements OnInit {
     if (testData) { // unit test
       data = testData
     } else {
+      const imagesList = this.policyForm.get('inspectionSetting')?.get('image')?.value
       data = {
         apiVersion: "goharbor.goharbor.io/v1alpha1",
         kind: "InspectionPolicy",
@@ -455,7 +499,6 @@ export class PolicySettingPageComponent implements OnInit {
             }
           },
           inspector: {
-            image: this.policyForm.get('inspectionSetting')?.get('image')?.value,
             imagePullPolicy: this.policyForm.get('inspectionSetting')?.get('imagePullPolicy')?.value,
             imagePullSecrets: []
           },
@@ -469,6 +512,13 @@ export class PolicySettingPageComponent implements OnInit {
           workNamespace: this.policyForm.get('inspectionSetting')?.get('namespace')?.value
         }
       }
+      imagesList.forEach((image: any) => {
+        if (image === 'inspector') {
+          data.spec.inspector.image = this.imageList[0].url
+        } else if (image === 'kubebench') {
+          data.spec.inspector.kubebenchImage = this.imageList[1].url
+        }
+      });
     }
     if(this.policyForm.get('inspectionResult')?.get('actions')?.value){
       data.spec.inspection.actions = [
@@ -520,90 +570,116 @@ export class PolicySettingPageComponent implements OnInit {
   }
   modifyPolicy () {
     this.checkES = ''
-    const elasticSearchEnabled =this.policyForm.get('inspectionSetting')?.get('elasticSearchEnabled')?.value
-    const openSearchEnabled =this.policyForm.get('inspectionSetting')?.get('openSearchEnabled')?.value
-    // this.policyInfo.metadata.name = this.policyForm.get('name')?.value
-    this.policyInfo.spec.inspector.image = this.policyForm.get('inspectionSetting')?.get('image')?.value
-    this.policyInfo.spec.inspector.imagePullPolicy = this.policyForm.get('inspectionSetting')?.get('imagePullPolicy')?.value
-    this.policyInfo.spec.schedule = this.schedule
-    this.policyInfo.spec.settingsName = this.policyForm.get('inspectionSetting')?.get('settingsName')?.value
-    this.policyInfo.spec.strategy.concurrencyRule = this.policyForm.get('inspectionSetting')?.get('concurrencyRule')?.value
-    this.policyInfo.spec.strategy.historyLimit = +this.policyForm.get('inspectionSetting')?.get('historyLimit')?.value
-    this.policyInfo.spec.strategy.suspend = this.policyForm.get('inspectionSetting')?.get('suspend')?.value
-    this.policyInfo.spec.workNamespace = this.policyForm.get('inspectionSetting')?.get('namespace')?.value
-    
-    if(this.policyForm.get('inspectionResult')?.get('actions')?.value){
-      this.policyInfo.spec.inspection.actions = []
-      this.actions.forEach(el => {
-        this.policyInfo.spec.inspection.actions.push({
-          ignore: {
-            matchExpressions: [],
-            matchLabels: {}
-          },
-          kind: el.kind,
-          settings: {}
-        })
-      })
-    } else {
-      this.policyInfo.spec.inspection.actions = []
-    }
-    this.policyInfo.spec.inspection.assessment.format = this.policyForm.get('inspectionResult')?.get('format')?.value
-    this.policyInfo.spec.inspection.assessment.generate = this.policyForm.get('inspectionResult')?.get('generate')?.value
-    this.policyInfo.spec.inspection.assessment.liveTime = +this.policyForm.get('inspectionResult')?.get('liveTime')?.value
-    this.policyInfo.spec.inspection.assessment.managedBy = this.policyForm.get('inspectionResult')?.get('managedBy')?.value
-    this.policyInfo.spec.inspection.assessment.elasticSearchEnabled = elasticSearchEnabled
-    this.policyInfo.spec.inspection.assessment.openSearchEnabled = openSearchEnabled
-    this.policyInfo.spec.inspection.baselines = this.baselines
-    if (this.policyInfo.spec.inspection.namespaceSelector) {
-      this.policyInfo.spec.inspection.namespaceSelector.matchLabels = {}
-    }
-    if (this.policyInfo.spec.inspection.workloadSelector) {
-      this.policyInfo.spec.inspection.workloadSelector.matchLabels = {}
-    }
-    if (this.namespacelabels.length > 0) {
-      this.namespacelabels.forEach(el => {
-        this.policyInfo.spec.inspection.namespaceSelector.matchLabels[el.key] = el.value
-      })
-    }
-    if (this.workloadlabels.length > 0) {
-      this.workloadlabels.forEach(el => {
-        this.policyInfo.spec.inspection.workloadSelector.matchLabels[el.key] = el.value
-      })
-    }
-    if (elasticSearchEnabled) {
-      this.policyInfo.spec.inspection.assessment.elasticSearchAddr = this.policyForm.get('inspectionSetting')?.get('elasticSearchAddrHeader')?.value + this.policyForm.get('inspectionSetting')?.get('elasticSearchAddr')?.value
-      this.policyInfo.spec.inspection.assessment.elasticSearchUser = this.policyForm.get('inspectionSetting')?.get('elasticSearchUser')?.value
-      this.policyInfo.spec.inspection.assessment.elasticSearchPasswd = this.policyForm.get('inspectionSetting')?.get('elasticSearchPasswd')?.value
-      this.policyInfo.spec.inspection.assessment.elasticSearchCert = this.policyForm.get('inspectionSetting')?.get('elasticSearchCert')?.value
-    } else {
-      delete this.policyInfo.spec.inspection.assessment.elasticSearchAddr
-      delete this.policyInfo.spec.inspection.assessment.elasticSearchUser
-      delete this.policyInfo.spec.inspection.assessment.elasticSearchPasswd
-      delete this.policyInfo.spec.inspection.assessment.elasticSearchCert
-    }
+    // const elasticSearchEnabled =this.policyForm.get('inspectionSetting')?.get('elasticSearchEnabled')?.value
+    // const openSearchEnabled =this.policyForm.get('inspectionSetting')?.get('openSearchEnabled')?.value
+    // this.policyInfo.spec.inspector.imagePullPolicy = this.policyForm.get('inspectionSetting')?.get('imagePullPolicy')?.value
+    // this.policyInfo.spec.schedule = this.schedule
+    // this.policyInfo.spec.settingsName = this.policyForm.get('inspectionSetting')?.get('settingsName')?.value
+    // this.policyInfo.spec.strategy.concurrencyRule = this.policyForm.get('inspectionSetting')?.get('concurrencyRule')?.value
+    // this.policyInfo.spec.strategy.historyLimit = +this.policyForm.get('inspectionSetting')?.get('historyLimit')?.value
+    // this.policyInfo.spec.strategy.suspend = this.policyForm.get('inspectionSetting')?.get('suspend')?.value
+    // this.policyInfo.spec.workNamespace = this.policyForm.get('inspectionSetting')?.get('namespace')?.value
 
-    if (openSearchEnabled) {
-      this.policyInfo.spec.inspection.assessment.openSearchAddr = this.policyForm.get('inspectionSetting')?.get('openSearchAddrHeader')?.value + this.policyForm.get('inspectionSetting')?.get('openSearchAddr')?.value
-      this.policyInfo.spec.inspection.assessment.openSearchUser = this.policyForm.get('inspectionSetting')?.get('openSearchUser')?.value
-      this.policyInfo.spec.inspection.assessment.openSearchPasswd = this.policyForm.get('inspectionSetting')?.get('openSearchPasswd')?.value
-    } else {
-      delete this.policyInfo.spec.inspection.assessment.openSearchAddr
-      delete this.policyInfo.spec.inspection.assessment.openSearchUser
-      delete this.policyInfo.spec.inspection.assessment.openSearchPasswd
-    }
+    // const imagesList = this.policyForm.get('inspectionSetting')?.get('image')?.value
+
+    // delete this.policyInfo.spec.inspector.image
+    // delete this.policyInfo.spec.inspector.kubebenchImage
+
+    // imagesList.forEach((image: any) => {
+    //   if (image === 'inspector') {
+    //     this.policyInfo.spec.inspector.image = this.imageList[0].url
+    //   } else if (image === 'kubebench') {
+    //     this.policyInfo.spec.inspector.kubebenchImage = this.imageList[1].url
+    //   }
+    // });
     
-    this.policyService.modifyPolicy(this.policyForm.get('inspectionSetting')?.get('name')?.value, this.policyInfo).subscribe(
+    // if(this.policyForm.get('inspectionResult')?.get('actions')?.value){
+    //   this.policyInfo.spec.inspection.actions = []
+    //   this.actions.forEach(el => {
+    //     this.policyInfo.spec.inspection.actions.push({
+    //       ignore: {
+    //         matchExpressions: [],
+    //         matchLabels: {}
+    //       },
+    //       kind: el.kind,
+    //       settings: {}
+    //     })
+    //   })
+    // } else {
+    //   this.policyInfo.spec.inspection.actions = []
+    // }
+    // this.policyInfo.spec.inspection.assessment.format = this.policyForm.get('inspectionResult')?.get('format')?.value
+    // this.policyInfo.spec.inspection.assessment.generate = this.policyForm.get('inspectionResult')?.get('generate')?.value
+    // this.policyInfo.spec.inspection.assessment.liveTime = +this.policyForm.get('inspectionResult')?.get('liveTime')?.value
+    // this.policyInfo.spec.inspection.assessment.managedBy = this.policyForm.get('inspectionResult')?.get('managedBy')?.value
+    // this.policyInfo.spec.inspection.assessment.elasticSearchEnabled = elasticSearchEnabled
+    // this.policyInfo.spec.inspection.assessment.openSearchEnabled = openSearchEnabled
+    // this.policyInfo.spec.inspection.baselines = this.baselines
+    // if (this.policyInfo.spec.inspection.namespaceSelector) {
+    //   this.policyInfo.spec.inspection.namespaceSelector.matchLabels = {}
+    // }
+    // if (this.policyInfo.spec.inspection.workloadSelector) {
+    //   this.policyInfo.spec.inspection.workloadSelector.matchLabels = {}
+    // }
+    // if (this.namespacelabels.length > 0) {
+    //   this.namespacelabels.forEach(el => {
+    //     this.policyInfo.spec.inspection.namespaceSelector.matchLabels[el.key] = el.value
+    //   })
+    // }
+    // if (this.workloadlabels.length > 0) {
+    //   this.workloadlabels.forEach(el => {
+    //     this.policyInfo.spec.inspection.workloadSelector.matchLabels[el.key] = el.value
+    //   })
+    // }
+    // if (elasticSearchEnabled) {
+    //   this.policyInfo.spec.inspection.assessment.elasticSearchAddr = this.policyForm.get('inspectionSetting')?.get('elasticSearchAddrHeader')?.value + this.policyForm.get('inspectionSetting')?.get('elasticSearchAddr')?.value
+    //   this.policyInfo.spec.inspection.assessment.elasticSearchUser = this.policyForm.get('inspectionSetting')?.get('elasticSearchUser')?.value
+    //   this.policyInfo.spec.inspection.assessment.elasticSearchPasswd = this.policyForm.get('inspectionSetting')?.get('elasticSearchPasswd')?.value
+    //   this.policyInfo.spec.inspection.assessment.elasticSearchCert = this.policyForm.get('inspectionSetting')?.get('elasticSearchCert')?.value
+    // } else {
+    //   delete this.policyInfo.spec.inspection.assessment.elasticSearchAddr
+    //   delete this.policyInfo.spec.inspection.assessment.elasticSearchUser
+    //   delete this.policyInfo.spec.inspection.assessment.elasticSearchPasswd
+    //   delete this.policyInfo.spec.inspection.assessment.elasticSearchCert
+    // }
+
+    // if (openSearchEnabled) {
+    //   this.policyInfo.spec.inspection.assessment.openSearchAddr = this.policyForm.get('inspectionSetting')?.get('openSearchAddrHeader')?.value + this.policyForm.get('inspectionSetting')?.get('openSearchAddr')?.value
+    //   this.policyInfo.spec.inspection.assessment.openSearchUser = this.policyForm.get('inspectionSetting')?.get('openSearchUser')?.value
+    //   this.policyInfo.spec.inspection.assessment.openSearchPasswd = this.policyForm.get('inspectionSetting')?.get('openSearchPasswd')?.value
+    // } else {
+    //   delete this.policyInfo.spec.inspection.assessment.openSearchAddr
+    //   delete this.policyInfo.spec.inspection.assessment.openSearchUser
+    //   delete this.policyInfo.spec.inspection.assessment.openSearchPasswd
+    // }
+    
+
+    this.deletePolicy(this.policyForm.get('inspectionSetting')?.get('name')?.value)
+    // this.policyService.modifyPolicy(this.policyForm.get('inspectionSetting')?.get('name')?.value, this.policyInfo).subscribe(
+    //   data => {
+    //     this.messageFlag = 'success'
+    //     this.messageContent = 'Policy updated!'
+    //     this.router.navigateByUrl('/policy')
+    //   },
+    //   err => {
+    //     this.messageFlag = 'fail'
+    //     this.messageContent = err.error.message || 'Policy updated fail!'
+    //   }
+    // )
+    
+  }
+
+  deletePolicy (deleteName: string) {
+    this.policyService.deletePolicy(deleteName).subscribe(
       data => {
-        this.messageFlag = 'success'
-        this.messageContent = 'Policy updated!'
-        this.getInspectionpolicies()
+        this.createPolicy()
       },
       err => {
         this.messageFlag = 'fail'
         this.messageContent = err.error.message || 'Policy updated fail!'
       }
     )
-    
+
   }
 
   // Schedule

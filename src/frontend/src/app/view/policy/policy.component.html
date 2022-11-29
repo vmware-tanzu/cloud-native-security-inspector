@@ -25,7 +25,7 @@
       <clr-dg-cell>
         {{policy.metadata?.name}}                    </clr-dg-cell>
       <clr-dg-cell>{{policy.spec.settingsName}}</clr-dg-cell>
-      <clr-dg-cell>{{policy.spec.inspector?.image}}</clr-dg-cell>
+      <clr-dg-cell>{{policy.spec.inspector?.image ? policy.spec.inspector?.image : policy.spec.inspector?.kubebenchImage}}</clr-dg-cell>
       <clr-dg-cell>{{policy.spec.schedule}}</clr-dg-cell>
       <clr-dg-cell>{{policy.spec.workNamespace}}</clr-dg-cell>
       <clr-dg-cell>{{policy.metadata?.creationTimestamp | date}}</clr-dg-cell>

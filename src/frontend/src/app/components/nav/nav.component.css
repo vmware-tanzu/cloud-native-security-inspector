@@ -11,3 +11,6 @@ clr-vertical-nav::ng-deep .nav-content .nav-group .nav-group-text {
 clr-vertical-nav::ng-deep .nav-link .nav-text {
   color: #fff;
 }
+clr-vertical-nav::ng-deep .kube-bench span {
+  overflow: inherit;
+}

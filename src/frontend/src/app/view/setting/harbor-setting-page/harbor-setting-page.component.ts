@@ -25,16 +25,16 @@ export class HarborSettingPageComponent implements OnInit {
   harborForm!: UntypedFormGroup;
   harborResponse!:HarborModel
   knownRegistries:knownRegistrieType[] = [
-    {
-      credentialRef : {
-        name: '',
-        namespace: 'default',
-      },
-      endpoint: '',
-      name: '',
-      provider: 'docker-registry',
-      skipTLSVerify: false
-    }
+    // {
+    //   credentialRef : {
+    //     name: '',
+    //     namespace: 'default',
+    //   },
+    //   endpoint: '',
+    //   name: '',
+    //   provider: 'docker-registry',
+    //   skipTLSVerify: false
+    // }
   ]
   knownRegistriesProviderList = ["li-acr","artifact-hub","aws-ecr","azure-acr","docker-hub","docker-registry","dtr","github-ghcr","gitlab","google-gcr","harbor","helm-hub","huawei-SWR","jfrog-artifactory","quay","tencent-tcr"]
 
@@ -117,16 +117,7 @@ export class HarborSettingPageComponent implements OnInit {
   }
 
   knownRegistriesAddItem() {
-    this.knownRegistries.push({
-      credentialRef : {
-        name: '',
-        namespace: '',
-      },
-      endpoint: '',
-      name: '',
-      provider: 'docker-registry',
-      skipTLSVerify: false
-    })
+    this.knownRegistries=[]
   }
   // http
   getSecrets() {
@@ -174,18 +165,7 @@ export class HarborSettingPageComponent implements OnInit {
           this.harborForm.get('cache')?.get('address')?.setValue('')
           this.harborForm.get('cache')?.get('livingTime')?.setValue(0)
           this.harborForm.get('cache')?.get('setting_skipTLSVerify')?.setValue(true)
-          this.knownRegistries = [
-            {
-              credentialRef : {
-                name: '',
-                namespace: 'default',
-              },
-              endpoint: '',
-              name: '',
-              provider: 'docker-registry',
-              skipTLSVerify: false
-            }
-          ]
+          this.knownRegistries = []
           this.schedule = "0 0 * * *"
         }
       }
@@ -216,7 +196,7 @@ export class HarborSettingPageComponent implements OnInit {
           endpoint: this.harborForm.get('requiredFields')?.get('protocol')?.value + this.harborForm.get('requiredFields')?.get('data_endpoint')?.value,
           name: this.dataSourceName,
           provider: 'Harbor',
-          scanSchedule: `0 ${this.schedule}`,
+          scanSchedule: `0 ${this.schedule.trim()}`,
           skipTLSVerify: this.harborForm.get('requiredFields')?.get('data_skipTLSVerify')?.value,
         },
       },
@@ -233,7 +213,7 @@ export class HarborSettingPageComponent implements OnInit {
       }
     }
 
-    if (this.knownRegistries[0].name) {
+    if (this.knownRegistries[0]) {
       data.spec.knownRegistries=this.knownRegistries
     }
 
@@ -259,8 +239,7 @@ export class HarborSettingPageComponent implements OnInit {
     this.harborResponse.spec.dataSource.credentialRef.namespace = this.harborForm.get('requiredFields')?.get('data_credential_namespace')?.value
     this.harborResponse.spec.dataSource.endpoint = this.harborForm.get('requiredFields')?.get('protocol')?.value + this.harborForm.get('requiredFields')?.get('data_endpoint')?.value
     this.harborResponse.spec.dataSource.name = this.dataSourceName
-    this.harborResponse.spec.dataSource.scanSchedule = `0 ${this.schedule}`
-    
+    this.harborResponse.spec.dataSource.scanSchedule = `0 ${this.schedule.trim()}`
     this.harborResponse.spec.dataSource.skipTLSVerify = this.harborForm.get('requiredFields')?.get('data_skipTLSVerify')?.value
     this.harborResponse.spec.knownRegistries = this.knownRegistries
     if (this.harborForm.get('cache')?.get('address')?.value && this.harborForm.get('cache')?.get('livingTime')?.value) {
@@ -280,7 +259,7 @@ export class HarborSettingPageComponent implements OnInit {
       data => {
         this.messageHarborFlag = 'success'
         this.messageContent = 'Update and apply settings successfully!' 
-        this.getHarbor() 
+        this.router.navigateByUrl('/setting')
       },
       err => {
         this.messageHarborFlag = 'fail'

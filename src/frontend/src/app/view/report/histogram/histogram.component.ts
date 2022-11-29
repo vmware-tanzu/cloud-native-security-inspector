@@ -76,9 +76,11 @@ export class HistogramComponent implements OnInit {
   ngOnInit() {
     this.newReport('bar')
   }
-  render ():any {
+  render ():any {    
     this.myChart.data.datasets = this.chartOptions.series
     this.myChart.data.labels = this.chartOptions.xAxis 
+    console.log('this.myChart', this.myChart);
+    
     this.myChart.update()
   }
 
@@ -107,7 +109,8 @@ export class HistogramComponent implements OnInit {
             ticks: {
               color: '#fff'
             }
-          }          },
+          }          
+        },
       }
     });    
   }

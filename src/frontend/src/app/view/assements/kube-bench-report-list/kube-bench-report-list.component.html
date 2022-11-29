@@ -1,0 +1,105 @@
+<div class="report">
+  <h2>{{'Nav.Assessments.Kube_bench'| translate}}</h2>
+  <div class="echarts-loading" *ngIf="echartsLoading">
+    <span class="spinner spinner-lg">
+      Loading...
+    </span>
+  </div>
+  <div id="main" style="width: 1400px;height:400px;">
+  
+  </div>
+
+  <clr-datagrid [clrDgLoading]="dgLoading" (clrDgRefresh)="pageChange($event)">
+    <clr-dg-column >{{'CommonlyUse.typeId'|translate}}</clr-dg-column>
+    <clr-dg-column >{{'CommonlyUse.name'|translate}}</clr-dg-column>
+    <clr-dg-column class="namespace-filter">
+      {{'CommonlyUse.type'|translate}}
+      <clr-icon shape="filter-grid" class="is-solid" (click)="kubeTypeFilterFlag = !kubeTypeFilterFlag"></clr-icon>
+      <div class="filter-warp" *ngIf="kubeTypeFilterFlag">
+        <clr-icon style="position: absolute; right: 10px; top: 10px;" shape="window-close" (click)="kubeTypeFilterFlag=false"></clr-icon>
+        <app-dg-filter label="kube" labelKey="text" [pageSize]="defaultSize" (updateListHandler)="getKubeBenchReportList($event)">
+        </app-dg-filter>
+      </div>
+    </clr-dg-column>
+    <clr-dg-column class="namespace-filter">
+      {{'Kube_bench_list.node_type'|translate}}     
+     <clr-icon shape="filter-grid" class="is-solid" (click)="kubeNodeTypeFilterFlag = !kubeNodeTypeFilterFlag"></clr-icon>
+      <div class="filter-warp" *ngIf="kubeNodeTypeFilterFlag">
+        <clr-icon style="position: absolute; right: 10px; top: 10px;" shape="window-close" (click)="kubeNodeTypeFilterFlag=false"></clr-icon>
+        <app-dg-filter label="kube" labelKey="node_type" [pageSize]="defaultSize" (updateListHandler)="getKubeBenchReportList($event)">
+        </app-dg-filter>
+      </div>
+    </clr-dg-column>
+    <clr-dg-column >
+      <div class="sort">
+        {{'CommonlyUse.create_time'|translate}}
+        <clr-icon (click)="createTimeSort()" shape="arrow" [class]="{oder: isOder}"></clr-icon>  
+      </div>
+    </clr-dg-column>
+    <clr-dg-column [clrDgSortBy]="'_source.total_pass'">{{'Kube_bench_list.passed'|translate}}</clr-dg-column>
+    <clr-dg-column [clrDgSortBy]="'_source.total_fail'"> {{'Kube_bench_list.failed'|translate}} </clr-dg-column>
+    <clr-dg-column [clrDgSortBy]="'_source.total_warn'">{{'Kube_bench_list.warned'|translate}}</clr-dg-column>
+    <clr-dg-column [clrDgSortBy]="'_source.total_info'">{{'Kube_bench_list.inform'|translate}}</clr-dg-column>
+  
+    <clr-dg-row *clrDgItems="let kube of kubeBenchReportList">
+      <clr-dg-cell>{{kube._source.id}}</clr-dg-cell>
+      <clr-dg-cell>
+        <a href="javascript:;" (click)="toKubeBenchReportTests(kube)" >
+          <clr-icon shape="pop-out"></clr-icon>
+          {{kube._id}}
+        </a>
+      </clr-dg-cell>
+      <clr-dg-cell>{{kube._source.text}}</clr-dg-cell>
+      <clr-dg-cell>{{kube._source.node_type}}</clr-dg-cell>
+      <clr-dg-cell>{{kube._source.createTime | date: 'medium'}}</clr-dg-cell>
+      <clr-dg-cell>
+        <a href="..." class="label clickable" style="border-color: #266900;">
+          {{'Kube_bench_list.passed'|translate}}
+          
+          <span class="badge" style="background-color: #266900; color: #fff;">
+            {{kube._source.total_pass}}
+          </span>
+        </a>
+      </clr-dg-cell>
+      <clr-dg-cell>
+        <a href="..." class="label clickable" style="border-color: #A32100;">
+          {{'Kube_bench_list.failed'|translate}}
+          
+          <span class="badge" style="background-color: #A32100; color: #fff;">
+            {{kube._source.total_fail}}
+          </span>
+        </a>
+
+      </clr-dg-cell>
+      <clr-dg-cell>
+        <a href="..." class="label clickable" style="border-color: #EFD603;">
+          {{'Kube_bench_list.warned'|translate}}
+          
+          <span class="badge" style="background-color: #EFD603; color: #313131;">
+            {{kube._source.total_warn}}
+          </span>
+        </a>
+
+      </clr-dg-cell>
+      <clr-dg-cell>
+        <a href="..." class="label clickable" style="border-color: #49AFd9;">
+          {{'Kube_bench_list.inform'|translate}}
+          
+          <span class="badge" style="background-color: #49AFd9; color: #fff;">
+            {{kube._source.total_info}}
+          </span>
+        </a>
+
+      </clr-dg-cell>
+    </clr-dg-row>
+  
+    <clr-dg-footer>
+      <clr-dg-pagination #pagination [clrDgPageSize]="defaultSize" [clrDgLastPage]="pageMaxCount">
+          <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Reports per page</clr-dg-page-size>
+          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+          of {{pagination.totalItems}} reports
+      </clr-dg-pagination>
+  </clr-dg-footer>
+  
+  </clr-datagrid>
+</div>

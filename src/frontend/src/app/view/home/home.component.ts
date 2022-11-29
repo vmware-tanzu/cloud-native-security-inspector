@@ -30,7 +30,6 @@ export class HomeComponent implements OnInit {
   getAssessmentreports() {
     this.policyService.getAssessmentreports(10).subscribe(
       data => {
-        this.shardService.clusterChartBarOptions.xAxis = []
         this.shardService.namespacChartLineOption.xAxis = []
         this.shardService.namespacChartLineOption.series[0].data = []
         this.shardService.clusterChartBarOptions.series[0] = [{
@@ -39,6 +38,7 @@ export class HomeComponent implements OnInit {
           data: []
         }]
         const workloadNamespance:any = {}
+        this.shardService.clusterChartBarOptions.xAxis = []
         this.shardService.namespaceList.forEach(el => {
           // get namespaces report xAxis data
           this.shardService.namespacChartLineOption.xAxis.push(el.name)
@@ -95,7 +95,6 @@ export class HomeComponent implements OnInit {
         this.shardService.scanTime = reportslist[reportslist.length-1]?.metadata.creationTimestamp        
         //
         this.shardService.violationList = []
-        this.shardService.allWorkloadList = []
         this.shardService.newReport?.spec.namespaceAssessments.forEach(el => {
           const index = this.shardService.namespacChartLineOption.xAxis.findIndex((ns: string)=> ns === el.namespace.name)
           this.shardService.namespacChartLineOption.series[0].data[index] = el.workloadAssessments.length
@@ -126,6 +125,7 @@ export class HomeComponent implements OnInit {
             });
             //
           }
+          this.shardService.allWorkloadList = []
           el.workloadAssessments.forEach(workload => {
             this.shardService.allWorkloadList.push({
               namespace: el.namespace.name,

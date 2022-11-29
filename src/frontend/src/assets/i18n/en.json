@@ -33,7 +33,10 @@
     "create": "Create",
     "cancel": "Cancel",
     "delete": "Delete",
-    "inspectionNamespace": "Inspection Namespace"
+    "inspectionNamespace": "Inspection Namespace",
+    "description": "Description",
+    "scanInspector": "Scan Inspector",
+    "typeId": "Type ID"
   },
   "Header": {
     "title": "Cloud Native Security Inspector"
@@ -41,7 +44,9 @@
   "Nav": {
     "Assessments": {
       "title": "Assessments",
-      "report_view": "Reports"
+      "report_view": "Reports",
+      "Kube_bench": "kubebench inspector reports",
+      "image_nspector_reports": "Image inspector reports"
     },
     "Insight": {
       "title": "Insight",
@@ -139,12 +144,12 @@
     "value": "value",
     "settingsName": "Settings Name",
     "enabled": "Enabled Settings",
-    "elasticSearchEnabled": "Elastic Search",
+    "elasticSearchEnabled": "ElasticSearch",
     "elasticSearchAddr": "Address",
     "elasticSearchUser": "User",
     "elasticSearchPasswd": "Password",
     "elasticSearchCert": "Certificate",
-    "openSearchEnabled": "Open Search",
+    "openSearchEnabled": "OpenSearch",
     "workNamespace": "Work Namespace",
     "image": "Image URL"
 
@@ -191,6 +196,17 @@
     "ExecutionType": "Execution Type",
     "execute Once": "execute once",
     "executeMultiple times": "execute multiple times"
+  },
+  "Kube_bench_list": {
+    "title": "Kube Bench Reports",
+    "node_type": "Node Type",
+    "passed": "Passed",
+    "failed": "Failed",
+    "warned": "Warned",
+    "inform": "Inform",
+    "reason": "Reason",
+    "status": "Status",
+    "remediation": "Remediation"
   },
   "en": "English",
   "zh_CN": "中文 (简体)"

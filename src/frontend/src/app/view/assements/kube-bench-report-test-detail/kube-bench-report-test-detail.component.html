@@ -1,0 +1,64 @@
+<div class="report">
+  <h2>
+    <a href="javascript:;" [routerLink]='["/assessments/kube-bench/test-view/" + report_id]'>
+      <clr-icon shape="angle" class="angle-top"></clr-icon>
+    </a>
+    {{title}}</h2>
+  <div class="echarts-loading" *ngIf="echartsLoading">
+    <span class="spinner spinner-lg">
+      Loading...
+    </span>
+  </div>
+  <div id="test-detail" style="width: 600px;height:400px;"></div>
+
+  <clr-datagrid>
+    <clr-dg-column [clrDgField]="'test_number'">ID</clr-dg-column>
+    <clr-dg-column [clrDgField]="'test_desc'">{{'CommonlyUse.description'|translate}}</clr-dg-column>
+    <clr-dg-column [clrDgField]="'type'">{{'CommonlyUse.type'|translate}}</clr-dg-column>
+    <clr-dg-column [clrDgField]="'reason'" >{{'Kube_bench_list.reason'|translate}}</clr-dg-column>
+    <clr-dg-column [clrDgField]="'status'" > {{'Kube_bench_list.status'|translate}} </clr-dg-column>
+    <clr-dg-column [clrDgField]="'remediation'" >{{'Kube_bench_list.remediation'|translate}}</clr-dg-column>
+  
+    <clr-dg-row *clrDgItems="let kube of kubeTestResultList">
+      <clr-dg-cell>
+        {{kube.test_number}}
+      </clr-dg-cell>
+      <clr-dg-cell>{{kube.test_desc}}</clr-dg-cell>
+      <clr-dg-cell>{{kube.type}}</clr-dg-cell>
+      <clr-dg-cell>
+        {{kube.reason}}
+      </clr-dg-cell>
+      <clr-dg-cell>
+        <span class="status pass" *ngIf="kube.status === 'PASS'">
+          <clr-icon shape="check-circle" class="is_solid"></clr-icon>
+          {{kube.status}}
+        </span>
+        <span class="status fail" *ngIf="kube.status === 'FAIl'">
+          <clr-icon shape="exclamation-circle" class="is_solid"></clr-icon>
+          {{kube.status}}
+        </span>
+        <span class="status warn" *ngIf="kube.status === 'WARN'">
+          <clr-icon shape="exclamation-triangle" class="is_solid"></clr-icon>
+          {{kube.status}}
+        </span>
+        <span class="status info" *ngIf="kube.status === 'INFO'">
+          <clr-icon shape="info-circle" class="is_solid"></clr-icon>
+          {{kube.status}}
+        </span>
+      </clr-dg-cell>
+      <clr-dg-cell>
+        {{kube.remediation}}
+      </clr-dg-cell>
+    </clr-dg-row>
+  
+    <clr-dg-footer>
+      <clr-dg-pagination #pagination [clrDgPageSize]="10">
+          <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Workloads per page</clr-dg-page-size>
+          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+          of {{pagination.totalItems}} workloads
+      </clr-dg-pagination>
+  </clr-dg-footer>
+  </clr-datagrid>
+
+
+</div>

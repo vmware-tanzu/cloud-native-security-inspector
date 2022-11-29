@@ -3,6 +3,7 @@
 const express = require('express')
 const https = require('https')
 const request = require('request');
+// const request = {}
 const { createProxyMiddleware, fixRequestBody  } = require('http-proxy-middleware')
 const bodyParser = require('body-parser')
 const ejs = require('ejs')
@@ -12,9 +13,9 @@ const fs = require('fs')
 const port = 3800
 const APISERVER='https://kubernetes.default.svc'
 const SERVICEACCOUNT='/var/run/secrets/kubernetes.io/serviceaccount'
-// const NAMESPACE= fs.readFile(`${SERVICEACCOUNT}/namespace`)
-// const CACERT=fs.readFile(`${SERVICEACCOUNT}/ca.crt`)
-
+const { Client } = require('@opensearch-project/opensearch')
+const elastic = require('@elastic/elasticsearch')
+const elasticClient = elastic.Client
 let token = fs.readFileSync(`${SERVICEACCOUNT}/token`, 'utf8')
 let app = express()
 // Forward processing of requests starting with /api
@@ -89,5 +90,93 @@ app.post('/es-test', (req, res) => {
     res.status(response.statusCode).send('test result')
   })
 })
+
+app.post('/open-search', (req, res) => {
+  const body = req.body
+  console.log('body', body)
+
+  if (body.client === 'opensearch') {
+    const client = new Client({
+      node: body.url,
+      ssl: {
+        rejectUnauthorized: false
+      },
+      auth: {
+        username: body.username,
+        password: body.password
+      }
+  
+    });
+    open_search(client, body).then(v => {
+      res.status(200).send(v) 
+    }).catch(err => {
+      res.status(500).send(err) 
+    })
+  } else {
+    const client = new elasticClient({
+      node: body.url,
+      tls: {
+        ca: body.ca,
+        rejectUnauthorized: false
+      },
+      auth: {
+        username: body.username,
+        password: body.password
+      }
+    })
+    elastic_search(client, body).then(v => {
+      res.status(200).send(v) 
+    }).catch(err => {
+      res.status(500).send(err) 
+    })  }
+
+})
+
+open_search = async (client, body) => { 
+  let query = { 
+    query: { 
+      match: { 
+        createTime: {
+          query: "2022-11-23T07:45:18Z",
+        },
+      }, 
+    }, 
+    size: 10,
+    from: 4
+  }; 
+  try {
+    let response = await client.search({ index: body.index, body: body.query }); 
+    console.log("Searching:"); 
+    console.log("response:", response); 
+    console.log("response.body:", response.body); 
+    return  response.body
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+elastic_search = async (client, body) => { 
+  let query = { 
+    query: { 
+      match: { 
+        createTime: {
+          query: "2022-11-23T07:45:18Z",
+        },
+      }, 
+    }, 
+    size: 10,
+    from: 4
+  }; 
+  try {
+    let response = await client.search({ index: body.index, body: body.query }); 
+    console.log("Searching:"); 
+    console.log("response:", response); 
+    console.log("response.body:", response.body); 
+    return  response
+  } catch (error) {
+    console.log(error)
+    throw error
+  }}
 
 app.listen(port)

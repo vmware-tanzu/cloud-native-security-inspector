@@ -33,7 +33,10 @@
     "create": "创建",
     "cancel": "取消",
     "delete": "删除",
-    "inspectionNamespace": "监测命名空间"
+    "inspectionNamespace": "定时任务所在的命名空间",
+    "description": "描述",
+    "scanInspector": "扫描检查器",
+    "typeId": "类型ID"
   },
   "Header": {
     "title": "Cloud Native Security Inspector"
@@ -41,7 +44,9 @@
   "Nav": {
     "Assessments": {
       "title": "评估报告",
-      "report_view": "报告"
+      "report_view": "报告",
+      "Kube_bench": "kubebench扫描器报告",
+      "image_nspector_reports": "镜像扫描器报告"
     },
     "Insight": {
       "title": "安全状态",
@@ -138,18 +143,19 @@
     "value": "值",
     "settingsName": "配置名称",
     "enabled": "启用设置",
-    "elasticSearchEnabled": "弹性搜索",
+    "elasticSearchEnabled": "ElasticSearch",
     "elasticSearchAddr": "地址",
     "elasticSearchUser": "账户",
     "elasticSearchPasswd": "密码",
     "elasticSearchCert": "证书",
-    "openSearchEnabled": "打开搜索",
+    "openSearchEnabled": "OpenSearch",
     "workNamespace": "工作命名空间",
     "image": "镜像地址"
   },
   "Setting": {
     "Settings": "设置",
     "settingPage": "设置详情",
+    "settingView": "设置详情",
     "policy": "策略配置",
     "harbor": "Harbor配置",
     "cache": "缓存",
@@ -157,7 +163,7 @@
     "data_source": "数据源",
     "credential_name": "凭据名称",
     "credential_namespace": "凭据命名空间",
-    "known_registries": "已知注册表",
+    "known_registries": "已知镜像仓库",
     "Secret": "私有数据",
     "accessKey": "访问密钥",
     "accessSecret": "访问秘密",
@@ -185,7 +191,21 @@
   "cornJob": {
     "Weekly": "每周在周日早上的0点运行一次",
     "Daily": "每天0点运行一次",
-    "Hourly": "每小时开始时运行一次"
+    "Hourly": "每小时开始时运行一次",
+    "ExecutionType": "执行类型",
+    "execute Once": "执行一次",
+    "executeMultiple times": "多次执行"
+  },
+  "Kube_bench_list": {
+    "title": "Kube Bench报告",
+    "node_type": "节点类型",
+    "passed": "通过",
+    "failed": "失败",
+    "warned": "警告",
+    "inform": "通知",
+    "reason": "原因",
+    "status": "状态",
+    "remediation": "修改建议"
   },
   "en": "English",
   "zh_CN": "中文 (简体)"
