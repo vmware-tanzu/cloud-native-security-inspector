@@ -101,7 +101,7 @@ func (s *Server) Analyze(option AnalyzeOption) {
 	for _, t := range s.Images {
 		report, err := t.FetchHarborReport(s.adapter)
 		if err != nil {
-			log.Printf("error: %v", err)
+			log.Printf("get vuln reprot error: %v", err)
 			continue
 		} else {
 			log.Printf("vuln len: %d", len(report.Vulnerabilities))
@@ -128,6 +128,10 @@ func (s *Server) Analyze(option AnalyzeOption) {
 	//}
 
 	if option.DumpDetails {
+		if s.Workloads.Risks == nil || len(s.Workloads.Risks) == 0 {
+			log.Printf("not vuln save to openSearch")
+			return
+		}
 		err := s.DetailExporter.SaveRiskReport(s.Workloads.Risks)
 		//err := s.Workloads.ExportAssessmentDetails(s.DetailExporter)
 		if err != nil {
