@@ -82,6 +82,34 @@ form {
 
       }
     }
+    .w-230 {
+      .clr-control-container {
+        .clr-input-wrapper,.clr-select-wrapper,.clr-textarea-wrapper {
+          input,select,textarea {
+            width: 230px;
+          }
+        }
+      }
+    }
+    .w-230-psd {
+      .clr-control-container {
+        width: 230px !important;
+        .clr-input-wrapper {
+          width: 230px;
+          .clr-input-group{
+            width: 230px;
+          }
+          input {
+            width: 200px;
+          }
+        }
+      }
+    }
+    .combobox {
+      .clr-control-container {
+        width: 232px !important;
+      }
+    }
   }
   .content {
     display: flex;
@@ -118,6 +146,7 @@ form {
       margin-top: 24px;
     }
     span {
+      width: 180px;
       display: inline-block;
       border-bottom: 1px solid #ddd;
       margin-right: 20px;

@@ -11,7 +11,7 @@
 <button *ngIf="policyList.length < 1" style="margin-left: 20px;" class="btn btn-primary btn-sm create" routerLink="/modify-policy/create">
   <clr-icon shape="plus"></clr-icon>
   {{'CommonlyUse.new'|translate}}</button>
-<clr-datagrid >
+<clr-datagrid [clrDgLoading]="policyLoading">
   <clr-dg-column>{{'CommonlyUse.name' | translate}}</clr-dg-column>
   <clr-dg-column>{{'Nav.Setting.title' | translate}}</clr-dg-column>
   <clr-dg-column>{{'Policy.image' | translate}}</clr-dg-column>

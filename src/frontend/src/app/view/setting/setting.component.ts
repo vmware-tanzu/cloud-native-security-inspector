@@ -30,7 +30,9 @@ export class SettingComponent implements OnInit, OnDestroy {
   public messageHarborFlag = false;
   public messageSecretFlag = ''
   public messageContent = ''
-
+  // loading
+  secretLoading = false
+  settingLoading = false
   constructor(
     private formBuilder: UntypedFormBuilder,
     private harborService: HarborService,
@@ -59,6 +61,7 @@ export class SettingComponent implements OnInit, OnDestroy {
 
   // setting func
   getHarbor(){
+    this.settingLoading = true
     this.harborService.getHarborSetting().subscribe(
       data => {
         this.harborSetingList = data.items;
@@ -70,7 +73,7 @@ export class SettingComponent implements OnInit, OnDestroy {
           clearInterval(this.createTimer)
           this.noteIconFlag = true;
         }
-
+        this.settingLoading = false
       }
     )
   }
@@ -98,9 +101,11 @@ export class SettingComponent implements OnInit, OnDestroy {
 
   // secret func
   getSecrets() {
+    this.secretLoading = true
     this.harborService.getHarborSecretsSetting().subscribe(
       data => {
         this.secretsList = data.items
+        this.secretLoading = false
       }
     )
   }

@@ -19,7 +19,7 @@ export class PolicyComponent implements OnInit {
   public noteIconFlag = true;
   public messageFlag = false;
   public deleteModal = false;
-
+  policyLoading = false
   public messageContent = '';
   public deleteName = '';
 
@@ -60,6 +60,7 @@ export class PolicyComponent implements OnInit {
   }
 
   getInspectionpolicies() {
+    this.policyLoading = true
     this.policyService.getInspectionpolicies().subscribe(
       (data: any) => {
         this.policyList = data.items
@@ -78,6 +79,7 @@ export class PolicyComponent implements OnInit {
           localStorage.setItem('cnsi-open-search', window.btoa('u749VQF7hEqDTZ2y161R9J8F'+JSON.stringify(opensearchInfo)))
           localStorage.setItem('cnsi-elastic-search', window.btoa('u749VQF7hEqDTZ2y161R9J8F'+JSON.stringify(elasticsearchInfo)))
         }
+        this.policyLoading = false
       },
       err => {
         console.log('err', err);

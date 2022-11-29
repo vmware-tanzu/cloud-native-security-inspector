@@ -134,6 +134,32 @@ form::ng-deep .test-icon clr-icon {
 form::ng-deep .test-icon clr-icon.not-passed {
   color: red;
 }
+form::ng-deep .w-230 .clr-control-container .clr-input-wrapper input,
+form::ng-deep .w-230 .clr-control-container .clr-select-wrapper input,
+form::ng-deep .w-230 .clr-control-container .clr-textarea-wrapper input,
+form::ng-deep .w-230 .clr-control-container .clr-input-wrapper select,
+form::ng-deep .w-230 .clr-control-container .clr-select-wrapper select,
+form::ng-deep .w-230 .clr-control-container .clr-textarea-wrapper select,
+form::ng-deep .w-230 .clr-control-container .clr-input-wrapper textarea,
+form::ng-deep .w-230 .clr-control-container .clr-select-wrapper textarea,
+form::ng-deep .w-230 .clr-control-container .clr-textarea-wrapper textarea {
+  width: 230px;
+}
+form::ng-deep .w-230-psd .clr-control-container {
+  width: 230px !important;
+}
+form::ng-deep .w-230-psd .clr-control-container .clr-input-wrapper {
+  width: 230px;
+}
+form::ng-deep .w-230-psd .clr-control-container .clr-input-wrapper .clr-input-group {
+  width: 230px;
+}
+form::ng-deep .w-230-psd .clr-control-container .clr-input-wrapper input {
+  width: 200px;
+}
+form::ng-deep .combobox .clr-control-container {
+  width: 232px !important;
+}
 form .content {
   display: flex;
   flex-wrap: nowrap;
@@ -172,6 +198,7 @@ form .schedule div {
   margin-top: 24px;
 }
 form .schedule span {
+  width: 180px;
   display: inline-block;
   border-bottom: 1px solid #ddd;
   margin-right: 20px;

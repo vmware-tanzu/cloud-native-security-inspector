@@ -29,7 +29,7 @@
   margin-right: 10px;
 }
 .cluster .left ul li div.success clr-icon {
-  color: #60B515;
+  color: #3BA272;
   position: relative;
   top: -1px;
   margin-right: 6px;
@@ -38,13 +38,13 @@
   margin-right: 10px;
 }
 .cluster .left ul li span.content span.success clr-icon {
-  color: #60B515;
+  color: #3BA272;
   position: relative;
   top: -1px;
   margin-right: 6px;
 }
 .cluster .left ul li span.content span.error clr-icon {
-  color: #F54F47;
+  color: #EE6666;
   position: relative;
   top: -1px;
   margin-right: 6px;

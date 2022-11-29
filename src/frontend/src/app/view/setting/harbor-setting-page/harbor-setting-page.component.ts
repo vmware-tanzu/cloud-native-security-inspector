@@ -117,7 +117,16 @@ export class HarborSettingPageComponent implements OnInit {
   }
 
   knownRegistriesAddItem() {
-    this.knownRegistries=[]
+    this.knownRegistries.push({
+        credentialRef : {
+          name: '',
+          namespace: 'default',
+        },
+        endpoint: '',
+        name: '',
+        provider: 'docker-registry',
+        skipTLSVerify: false
+      })
   }
   // http
   getSecrets() {

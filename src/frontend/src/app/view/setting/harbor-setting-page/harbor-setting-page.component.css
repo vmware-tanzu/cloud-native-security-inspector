@@ -42,8 +42,9 @@
 }
 .create-sddc-form::ng-deep .schedule span {
   display: inline-block;
-  border-bottom: 1px solid #666;
+  border-bottom: 1px solid #fff;
   margin-right: 20px;
+  width: 182px;
 }
 .create-sddc-form::ng-deep .schedule button {
   border-color: #666;
@@ -108,4 +109,10 @@
 }
 .create-sddc-form::ng-deep .icon-button clr-icon:hover {
   color: hsl(198, 80%, 46%);
+}
+.create-sddc-form::ng-deep .w-230 .clr-control-container .clr-input-wrapper input,
+.create-sddc-form::ng-deep .w-230 .clr-control-container .clr-select-wrapper input,
+.create-sddc-form::ng-deep .w-230 .clr-control-container .clr-input-wrapper select,
+.create-sddc-form::ng-deep .w-230 .clr-control-container .clr-select-wrapper select {
+  width: 230px;
 }
