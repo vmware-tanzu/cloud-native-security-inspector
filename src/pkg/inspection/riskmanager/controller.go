@@ -149,7 +149,7 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 	httpClient := NewClient(conf, c.logger)
 
 	for _, v := range allResources {
-		log.Default().Printf("resource: %s \n", v.Type)
+		log.Default().Printf("resource name: %s, type: %s \n", v.ObjectMeta.Name, v.Type)
 		err = httpClient.
 			PostResource(v)
 		if err != nil {

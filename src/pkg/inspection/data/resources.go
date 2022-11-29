@@ -129,6 +129,7 @@ func (r *ResourceItem) GetImages() (images []*ImageItem) {
 		}
 		for _, ct := range r.Pod.Status.InitContainerStatuses {
 			aid := core.ParseArtifactIDFrom(ct.Image, ct.ImageID)
+			log.Default().Printf("ArtifactID: %s", aid.String())
 			images = append(images, NewImageItem(ct.Image, aid))
 		}
 	}
