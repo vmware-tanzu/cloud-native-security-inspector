@@ -133,17 +133,17 @@ func (e *ElasticSearchExporter) setupIndex() error {
 			  "id":  { "type": "text" },
 			  "version":      { "type": "text", "analyzer": "english" },
 			  "detected_version":        { "type": "text", "analyzer": "english" },
-			  "text": { "type": "text", "analyzer": "english" },
-			  "node_type":  { "type": "text" },
-			  "section":       { "type": "text" },
-			  "type":       { "type": "text" },
-			  "pass":       { "type": "text" },
-			  "fail":       { "type": "text" },
-			  "warn":       { "type": "text" },
-			  "info":       { "type": "text" },
-			  "desc":       { "type": "text" },
-			  "test_number":       { "type": "text" },
-			  "test_desc":       { "type": "text" },
+			  "text": { "type": "keyword" },
+			  "node_type":  { "type": "keyword" },
+			  "section":       { "type": "keyword" },
+			  "type":       { "type": "keyword" },
+			  "pass":       { "type": "keyword" },
+			  "fail":       { "type": "keyword" },
+			  "warn":       { "type": "keyword" },
+			  "info":       { "type": "keyword" },
+			  "desc":       { "type": "keyword" },
+			  "test_number":       { "type": "keyword" },
+			  "test_desc":       { "type": "keyword" },
 			  "audit":       { "type": "text" },
 			  "audit_env":       { "type": "text" },
 			  "audit_config":       { "type": "text" },
@@ -153,7 +153,8 @@ func (e *ElasticSearchExporter) setupIndex() error {
 			  "actual_value":       { "type": "text" },
 			  "scored":       { "type": "text" },
 			  "expected_result":       { "type": "text" },
-			  "reason":       { "type": "text" }
+			  "reason":       { "type": "text" },
+			  "createTime":   { "type": "date" }
 				}
 			}
 		}`
@@ -257,16 +258,20 @@ func (e *ElasticSearchExporter) deleteIndex(index []string) error {
 
 // SaveCIS implements Exporter
 func (e ElasticSearchExporter) SaveCIS(controlsCollection []*check.Controls) error {
+	currentTimeData := time.Now().Format(time.RFC3339)
 	var res *esapi.Response
 	for _, control := range controlsCollection {
-		doc, err := json.Marshal(control)
+		var report consumers.CISReport
+		report.CreateTimestamp = currentTimeData
+		report.Controls = *control
+		doc, err := json.Marshal(report)
 		if err != nil {
 			return err
 		}
 
 		res, err = esapi.IndexRequest{
 			Index:      e.indexName,
-			DocumentID: control.ID,
+			DocumentID: "kubebench-Report_" + currentTimeData + "__" + control.ID,
 			Body:       strings.NewReader(string(doc)),
 			Refresh:    "true",
 		}.Do(context.Background(), e.Client)
