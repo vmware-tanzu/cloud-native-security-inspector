@@ -15,6 +15,7 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/goharbor/go-client/pkg/harbor"
 	"github.com/goharbor/go-client/pkg/sdk/v2.0/client/artifact"
@@ -595,6 +596,7 @@ func (a *Adapter) GetVulnerabilitiesList(ctx context.Context, id core.ArtifactID
 					InsecureSkipVerify: true,
 				},
 			},
+			Timeout: time.Second * 10,
 		}
 		res, err := client.Do(request)
 		if err != nil {
