@@ -31,14 +31,14 @@ type RiskItem struct {
 
 // HostRiskItem risky host configuration and privilege misuses
 type HostRiskItem struct {
-	Privileges         []string
-	HostConfigurations []string
+	Privileges         []string `json:"privileges"`
+	HostConfigurations []string `json:"host_configurations"`
 }
 
 // VulnerabilityRiskItem risky vulnerability items
 type VulnerabilityRiskItem struct {
-	POCReferences    []string
-	InfectionVectors string
+	POCReferences    []string `json:"poc_references"`
+	InfectionVectors string   `json:"infection_vectors"`
 	// An operating system or software dependency package containing the vulnerability.
 	// e.g: dpkg
 	Package string `json:"package"`
@@ -57,12 +57,12 @@ type VulnerabilityRiskItem struct {
 
 // ExposureRiskItem exposure risk item
 type ExposureRiskItem struct {
-	Addresses []string
+	Addresses []string `json:"addresses"`
 }
 
 // ComplianceRiskItem  risk item
 type ComplianceRiskItem struct {
-	ComplianceRisks []string
+	ComplianceRisks []string `json:"compliance_risks"`
 }
 
 // RiskCollection generate all risk items summary for all workloads

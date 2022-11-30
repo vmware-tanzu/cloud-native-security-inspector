@@ -3,19 +3,18 @@ package main
 import (
 	"context"
 	"flag"
-	"github.com/goharbor/harbor/src/jobservice/logger"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/api/v1alpha1"
-	osearch "github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/consumers/opensearch"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/providers"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/inspection"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/inspection/riskmanager"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
+	es "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers/es"
+	osearch "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers/opensearch"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/providers"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/inspection/riskmanager"
 	"go.uber.org/zap/zapcore"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
+	logDefault "log"
 	"os"
-	"os/signal"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
@@ -72,7 +71,7 @@ func main() {
 		setting := &v1alpha1.Setting{}
 		if err = k8sClient.Get(ctx, client.ObjectKey{Name: inspectionPolicy.Spec.SettingsName}, setting); err != nil {
 			if !apierrors.IsNotFound(err) {
-				logger.Error(err, "unable to get setting")
+				log.Error(err, "unable to get setting")
 			}
 			// Ignore the not found error.
 			os.Exit(1)
@@ -81,62 +80,62 @@ func main() {
 		// get data source provider
 		provider, err := providers.NewProvider(ctx, k8sClient, setting)
 		if err != nil {
-			logger.Error(err, "failed to create provider")
-			os.Exit(1)
-		}
-
-		logger.Info("mode server-only")
-		// Get the policy CR details.
-		if !inspectionPolicy.Spec.Inspection.Assessment.OpenSearchEnabled {
-			log.Info("OpenSearch disEnable")
-			os.Exit(1)
-		}
-
-		logger.Info("OS config: ", "addr: ", inspectionPolicy.Spec.Inspection.Assessment.OpenSearchAddr)
-		logger.Info("OS config: ", "username: ", inspectionPolicy.Spec.Inspection.Assessment.OpenSearchUser)
-
-		osClient := osearch.NewClient([]byte{},
-			inspectionPolicy.Spec.Inspection.Assessment.OpenSearchAddr,
-			inspectionPolicy.Spec.Inspection.Assessment.OpenSearchUser,
-			inspectionPolicy.Spec.Inspection.Assessment.OpenSearchPasswd)
-
-		if osClient == nil {
-			log.Info("OpenSearch client is nil", nil, nil)
+			log.Error(err, "failed to create provider")
 			os.Exit(1)
 		}
 
 		conf := riskmanager.ReadEnvConfig()
-		exporterDetail := osearch.OpenSearchExporter{Client: osClient, Logger: log}
-		err = exporterDetail.NewExporter(osClient, conf.DetailIndex)
-		if err != nil {
-			log.Error(err, "new export risk_manager_details")
-			//Error Handling
-			os.Exit(1)
+
+		logDefault.Default().Printf("mode server-only")
+		var osExporter osearch.OpenSearchExporter
+		if inspectionPolicy.Spec.Inspection.Assessment.OpenSearchEnabled {
+			logDefault.Default().Printf("OS config addr: %s", inspectionPolicy.Spec.Inspection.Assessment.OpenSearchAddr)
+			logDefault.Default().Printf("OS config username: %s", inspectionPolicy.Spec.Inspection.Assessment.OpenSearchUser)
+			osClient := osearch.NewClient([]byte{},
+				inspectionPolicy.Spec.Inspection.Assessment.OpenSearchAddr,
+				inspectionPolicy.Spec.Inspection.Assessment.OpenSearchUser,
+				inspectionPolicy.Spec.Inspection.Assessment.OpenSearchPasswd)
+
+			if osClient == nil {
+				log.Info("OpenSearch client is nil", nil, nil)
+				os.Exit(1)
+			}
+
+			osExporter = osearch.OpenSearchExporter{Client: osClient, Logger: log}
+			err = osExporter.NewExporter(osClient, conf.DetailIndex)
+			if err != nil {
+				log.Error(err, "new os export risk_manager_details")
+				os.Exit(1)
+			}
 		}
 
-		exporterAccessReport := osearch.OpenSearchExporter{Client: osClient, Logger: log}
-		err = exporterAccessReport.NewExporter(osClient, "assessment_report")
-		if err != nil {
-			log.Error(err, "new export assessment_report")
-			//Error handling
-			os.Exit(1)
+		var esExporter es.ElasticSearchExporter
+		if inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchEnabled {
+			cert := []byte(inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchCert)
+			logDefault.Default().Printf("ES config addr: %s", inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchAddr)
+			logDefault.Default().Printf("ES config username: %s", inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchPasswd)
+			esClient := es.NewClient(
+				cert,
+				inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchAddr,
+				inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchUser,
+				inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchPasswd)
+			if esClient == nil {
+				logDefault.Default().Printf("ES client is nil")
+				os.Exit(1)
+			}
+
+			esExporter = es.ElasticSearchExporter{Client: esClient, Logger: log}
+			err = esExporter.NewExporter(esClient, conf.DetailIndex)
+			if err != nil {
+				log.Error(err, "new es export risk_manager_details")
+				//Error Handling
+				os.Exit(1)
+			}
 		}
 
-		server := riskmanager.NewServer(&exporterDetail, &exporterAccessReport).WithAdapter(provider)
+		server := riskmanager.NewServer(&osExporter, &esExporter).WithAdapter(provider)
 		server.Run(conf.Server)
 	} else {
-
-		accessReportRunner := inspection.NewController().
-			WithScheme(scheme).
-			WithLogger(log).
-			WithK8sClient(k8sClient).
-			CTRL()
-
-		if err = accessReportRunner.Run(ctx, inspectionPolicy); err != nil {
-			log.Error(err, "access report controller run")
-			os.Exit(1)
-		}
-
 		runner := riskmanager.NewController().
 			WithScheme(scheme).
 			WithLogger(log).
@@ -147,10 +146,5 @@ func main() {
 			log.Error(err, "risk manager controller run")
 			os.Exit(1)
 		}
-
-		// TODO 程序终止之后需要退出
-		quit := make(chan os.Signal)
-		signal.Notify(quit, os.Interrupt)
-		<-quit
 	}
 }

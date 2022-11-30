@@ -5,10 +5,11 @@ import (
 	"github.com/go-logr/logr"
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/api/v1alpha1"
-	osearch "github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/consumers/opensearch"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/inspection"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/inspection/data"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
+	es "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers/es"
+	osearch "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers/opensearch"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/inspection"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/inspection/data"
 	v1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -40,33 +41,58 @@ var (
 func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy) error {
 	viper.SetConfigName("config") // name of config file (without extension)
 	viper.AddConfigPath(cfgDir)
-
-	osClient := osearch.NewClient([]byte{},
-		policy.Spec.Inspection.Assessment.OpenSearchAddr,
-		policy.Spec.Inspection.Assessment.OpenSearchUser,
-		policy.Spec.Inspection.Assessment.OpenSearchPasswd)
-	if osClient == nil {
-		c.logger.Info("OpenSearch osClient is nil", nil, nil)
-	}
+	// check server is running
+	c.checkServerRunning()
 
 	conf := ReadEnvConfig()
 
 	if conf.StandAlone {
-		exporterDetail := osearch.OpenSearchExporter{Client: osClient, Logger: c.logger}
-		err := exporterDetail.NewExporter(osClient, conf.DetailIndex)
-		if err != nil {
-			//Error Handling
-			return err
+		var osExporter osearch.OpenSearchExporter
+		if policy.Spec.Inspection.Assessment.OpenSearchEnabled {
+			log.Default().Printf("OS config addr: %s", policy.Spec.Inspection.Assessment.OpenSearchAddr)
+			log.Default().Printf("OS config username: %s", policy.Spec.Inspection.Assessment.OpenSearchUser)
+			osClient := osearch.NewClient([]byte{},
+				policy.Spec.Inspection.Assessment.OpenSearchAddr,
+				policy.Spec.Inspection.Assessment.OpenSearchUser,
+				policy.Spec.Inspection.Assessment.OpenSearchPasswd)
+
+			if osClient == nil {
+				log.Default().Printf("OpenSearch client is nil")
+				return nil
+			}
+
+			osExporter = osearch.OpenSearchExporter{Client: osClient, Logger: logr.Logger{}}
+			err := osExporter.NewExporter(osClient, conf.DetailIndex)
+			if err != nil {
+				c.logger.Error(err, "new os export risk_manager_details")
+				return err
+			}
 		}
 
-		exporterAccessReport := osearch.OpenSearchExporter{Client: osClient, Logger: c.logger}
-		err = exporterAccessReport.NewExporter(osClient, "assessment_report")
-		if err != nil {
-			//Error handling
-			return err
+		var esExporter es.ElasticSearchExporter
+		if policy.Spec.Inspection.Assessment.ElasticSearchEnabled {
+			cert := []byte(policy.Spec.Inspection.Assessment.ElasticSearchCert)
+			log.Default().Printf("ES config addr: %s", policy.Spec.Inspection.Assessment.ElasticSearchAddr)
+			log.Default().Printf("ES config username: %s", policy.Spec.Inspection.Assessment.ElasticSearchPasswd)
+			esClient := es.NewClient(
+				cert,
+				policy.Spec.Inspection.Assessment.ElasticSearchAddr,
+				policy.Spec.Inspection.Assessment.ElasticSearchUser,
+				policy.Spec.Inspection.Assessment.ElasticSearchPasswd)
+			if esClient == nil {
+				log.Default().Printf("ES client is nil")
+				return nil
+			}
+
+			esExporter = es.ElasticSearchExporter{Client: esClient, Logger: logr.Logger{}}
+			err := esExporter.NewExporter(esClient, conf.DetailIndex)
+			if err != nil {
+				c.logger.Error(err, "new es export risk_manager_details")
+				return err
+			}
 		}
 
-		server := NewServer(&exporterDetail, &exporterAccessReport)
+		server := NewServer(&osExporter, &esExporter)
 		go func() {
 			server.Run(conf.Server)
 		}()
@@ -149,7 +175,7 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 	httpClient := NewClient(conf, c.logger)
 
 	for _, v := range allResources {
-		log.Default().Printf("resource name: %s, type: %s \n", v.ObjectMeta.Name, v.Type)
+		log.Default().Printf("resource name: %s, type: %s", v.ObjectMeta.Name, v.Type)
 		if v.IsPod() {
 			log.Default().Printf("pod name: %s, namespace: %s", v.Pod.GetName(), v.Pod.GetNamespace())
 		}
@@ -160,7 +186,10 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 		}
 	}
 
-	option := AnalyzeOption{DumpDetails: true}
+	option := AnalyzeOption{
+		OpenSearchEnabled:    policy.Spec.Inspection.Assessment.OpenSearchEnabled,
+		ElasticSearchEnabled: policy.Spec.Inspection.Assessment.ElasticSearchEnabled,
+	}
 
 	if err = httpClient.PostAnalyze(option); err == nil {
 		for {
@@ -170,7 +199,8 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 			} else if ok {
 				c.logger.Info("the analyze is running")
 				time.Sleep(30 * time.Second)
-			} else {
+			} else if !ok {
+				_ = httpClient.SendExitInstruction()
 				c.logger.Info("the analyze is done")
 				break
 			}
@@ -179,25 +209,6 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 
 	return nil
 }
-
-//func exportReportToOpenSearch(report RiskCollection, policy *v1alpha1.InspectionPolicy, logger logr.Logger) error {
-//	client := osearch.NewClient([]byte{},
-//		policy.Spec.Inspection.Assessment.OpenSearchAddr,
-//		policy.Spec.Inspection.Assessment.OpenSearchUser,
-//		policy.Spec.Inspection.Assessment.OpenSearchPasswd)
-//	if client == nil {
-//		logger.Info("OpenSearch client is nil", nil, nil)
-//	}
-//	exporter := osearch.OpenSearchExporter{Client: client, Logger: logger}
-//	err := exporter.NewExporter(client, "assessment_report")
-//	if err != nil {
-//		return err
-//	}
-//	if err = exporter.SaveRiskReport(report); err != nil {
-//		return err
-//	}
-//	return nil
-//}
 
 // NewController news a controller.
 func NewController() *controller {
@@ -234,6 +245,19 @@ func (c *controller) CTRL() Controller {
 	c.ready = true
 
 	return c
+}
+
+func (c *controller) checkServerRunning() {
+	conf := ReadEnvConfig()
+	httpClient := NewClient(conf, c.logger)
+	for {
+		if _, err := httpClient.IsAnalyzeRunning(); err != nil {
+			log.Default().Printf("Server Starting, waiting ...")
+			time.Sleep(3 * time.Second)
+		} else {
+			break
+		}
+	}
 }
 
 func inArray(need string, arr []string) bool {

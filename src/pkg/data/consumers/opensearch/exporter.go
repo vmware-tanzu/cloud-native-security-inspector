@@ -8,9 +8,9 @@ import (
 	"github.com/opensearch-project/opensearch-go"
 	"github.com/opensearch-project/opensearch-go/opensearchapi"
 	"github.com/pkg/errors"
-	api "github.com/vmware-tanzu/cloud-native-security-inspector/api/v1alpha1"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/consumers"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/inspection/data"
+	api "github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/inspection/data"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 	"strconv"
@@ -135,10 +135,22 @@ func (o *OpenSearchExporter) SaveRiskReport(risks data.RiskCollection) error {
 		esDocument []byte
 	)
 	for s, items := range risks {
-		detail, _ := json.Marshal(items)
-		var esDoc consumers.RiskReportDoc
-		esDoc.DocId = s
-		esDoc.Detail = string(detail)
+		split := strings.Split(s, ":")
+		if len(split) != 4 {
+			ctrlLog.Info("key non-standard:" + s)
+			continue
+		}
+		kind := split[0]
+		name := split[1]
+		namespace := split[2]
+		uid := split[3]
+
+		var esDoc consumers.RiskReport
+		esDoc.Kind = kind
+		esDoc.Name = name
+		esDoc.Namespace = namespace
+		esDoc.Uid = uid
+		esDoc.Detail = items
 		esDoc.CreateTimestamp = time.Now().Format(time.RFC3339)
 		esDocument, err = json.Marshal(esDoc)
 		if err != nil {
@@ -146,7 +158,7 @@ func (o *OpenSearchExporter) SaveRiskReport(risks data.RiskCollection) error {
 		}
 		res, err = opensearchapi.IndexRequest{
 			Index:      o.indexName,
-			DocumentID: s,
+			DocumentID: uid,
 			Body:       strings.NewReader(string(esDocument)),
 			Refresh:    "true",
 		}.Do(context.Background(), o.Client)
@@ -330,9 +342,18 @@ func (o *OpenSearchExporter) setupIndex() error {
 		mapping = `{
 		"mappings": {
 			"properties": {
-			  "docId":         { "type": "keyword" },
-			  "detail":  { "type": "text" },
-			  "createTime":       { "type": "date" }
+			  "kind":          { "type": "keyword" },
+			  "name":          { "type": "keyword" },
+			  "namespace":     { "type": "keyword" },
+			  "uid":           { "type": "keyword" },
+			  "score":         { "type": "keyword" },
+			  "scale":         { "type": "keyword" },
+			  "reason":        { "type": "text" },
+              "package":       { "type": "keyword" },
+              "version":       { "type": "keyword" },
+              "fix_version":   { "type": "keyword" },
+              "description":   { "type": "text" },
+			  "createTime":    { "type": "date" }
 				}
 			}
 		}`

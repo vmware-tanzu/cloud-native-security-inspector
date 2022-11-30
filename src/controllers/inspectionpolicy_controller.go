@@ -115,9 +115,13 @@ func (r *InspectionPolicyReconciler) Reconcile(ctx context.Context, req ctrl.Req
 	var statusNeedUpdateForKubebench bool
 	statusNeedUpdateForKubebench, err = r.cronjobForInspection(ctx, policy, goharborv1.CronjobKubebench, logger)
 
+	// Process the cronjob for arksecrisk
+	var statusNeedUpdateForArksecRisk bool
+	statusNeedUpdateForArksecRisk, err = r.cronjobForInspection(ctx, policy, goharborv1.CronjobArksecRisk, logger)
+
 	// either inspection or kubebench needs update, it should be updated
 	var statusNeedUpdate bool
-	if statusNeedUpdateForInspection || statusNeedUpdateForKubebench {
+	if statusNeedUpdateForInspection || statusNeedUpdateForKubebench || statusNeedUpdateForArksecRisk {
 		statusNeedUpdate = true
 	}
 
@@ -376,6 +380,8 @@ func (r *InspectionPolicyReconciler) checkCronJob(ctx context.Context, policy *g
 		exec = policy.Status.InspectionExecutor
 	} else if cronjobType == goharborv1.CronjobKubebench {
 		exec = policy.Status.KubebenchExecutor
+	} else if cronjobType == goharborv1.CronjobArksecRisk {
+		exec = policy.Status.KubebenchExecutor
 	}
 
 	if exec != nil {
@@ -440,6 +446,9 @@ func (r *InspectionPolicyReconciler) generateCronJobCR(policy *goharborv1.Inspec
 	} else if cronjobType == goharborv1.CronjobKubebench {
 		name = "kubebench"
 		command = "/kubebench"
+	} else if cronjobType == goharborv1.CronjobArksecRisk {
+		name = "arksecrisk"
+		command = "/risk"
 	}
 	image = getImage(policy, cronjobType)
 
@@ -484,6 +493,38 @@ func (r *InspectionPolicyReconciler) generateCronJobCR(policy *goharborv1.Inspec
 		},
 	}
 
+	if cronjobType == goharborv1.CronjobArksecRisk {
+		cj.Spec.JobTemplate.Spec.Template.Spec.Containers[0].Env = []corev1.EnvVar{
+			{
+				Name:  "SERVER_ADDR",
+				Value: "http://127.0.0.1:8080",
+			},
+		}
+		cj.Spec.JobTemplate.Spec.Template.Spec.Containers = append(cj.Spec.JobTemplate.Spec.Template.Spec.Containers, corev1.Container{
+			Name:            "server",
+			Image:           image,
+			ImagePullPolicy: getImagePullPolicy(policy),
+			Command:         []string{command},
+			Args: []string{
+				"--policy",
+				policy.Name,
+				"--mode",
+				"server-only",
+			},
+			Env: []corev1.EnvVar{
+				{
+					Name:  "SERVER_ADDR",
+					Value: ":8080",
+				},
+			},
+			Ports: []corev1.ContainerPort{
+				{
+					ContainerPort: 8080,
+				},
+			},
+		})
+	}
+
 	if policy.Spec.Inspector != nil {
 		if len(policy.Spec.Inspector.ImagePullSecrets) > 0 {
 			cj.Spec.JobTemplate.Spec.Template.Spec.ImagePullSecrets = append(
@@ -513,6 +554,8 @@ func getImage(policy *goharborv1.InspectionPolicy, cronjobType string) string {
 			return policy.Spec.Inspector.Image
 		} else if cronjobType == goharborv1.CronjobKubebench {
 			return policy.Spec.Inspector.KubebenchImage
+		} else if cronjobType == goharborv1.CronjobArksecRisk {
+			return policy.Spec.Inspector.ArksecRiskImage
 		}
 	}
 

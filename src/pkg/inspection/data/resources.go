@@ -2,13 +2,13 @@ package data
 
 import (
 	"context"
+	"fmt"
 	"github.com/goharbor/harbor/src/pkg/scan/vuln"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/core"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/pkg/data/providers"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/core"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/providers"
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/util/uuid"
 	"log"
 )
 
@@ -144,12 +144,8 @@ func (r *ResourceItem) GenerateReportItems(w *Workloads, report *vuln.Report, ev
 
 // GenerateUUID generate uuid for all types of resource items
 func (r *ResourceItem) GenerateUUID() {
-	uid := uuid.NewUUID()
-	if r.ObjectMeta.GetUID() != "" {
-		uid = r.ObjectMeta.GetUID()
-	}
-
-	r.ID = string(uid)
+	uid := fmt.Sprintf("%s:%s:%s:%s", r.Type, r.ObjectMeta.GetName(), r.ObjectMeta.GetNamespace(), string(r.ObjectMeta.GetUID()))
+	r.ID = uid
 }
 
 // ImageItem the image item get from the work load

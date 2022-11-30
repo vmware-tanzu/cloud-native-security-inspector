@@ -12,7 +12,7 @@ IMG_MANAGER ?= $(REGISTRY)/manager:$(IMG_TAG)
 IMG_CMD_INSPECTOR ?= $(REGISTRY)/inspector:$(IMG_TAG)
 IMG_CMD_KUBEBENCH ?= $(REGISTRY)/kubebench:$(IMG_TAG)
 PORTAl ?= $(REGISTRY)/portal:$(IMG_TAG)
-RISK ?= $(REGISTRY)/risk:0.1
+RISK ?= $(REGISTRY)/risk:$(IMG_TAG)
 
 # Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
 CRD_OPTIONS ?= "crd:trivialVersions=true,preserveUnknownFields=false"
@@ -81,7 +81,7 @@ build-inspector: generate fmt vet ## Build inspector command.
 build-kubebench: generate fmt vet ## Build inspector command.
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/kubebench cmd/kubebench/main.go
 
-build-risk:  ## Build risk command.
+build-risk: generate fmt vet ## Build risk command.
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/risk cmd/riskmanager/main.go
 
 run: manifests generate fmt vet ## Run a controller from your host.
