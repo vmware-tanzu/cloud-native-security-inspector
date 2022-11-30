@@ -73,7 +73,7 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 		if policy.Spec.Inspection.Assessment.ElasticSearchEnabled {
 			cert := []byte(policy.Spec.Inspection.Assessment.ElasticSearchCert)
 			fmt.Printf("ES config addr: %s \n", policy.Spec.Inspection.Assessment.ElasticSearchAddr)
-			fmt.Printf("ES config username: %s \n", policy.Spec.Inspection.Assessment.ElasticSearchPasswd)
+			//fmt.Printf("ES config username: %s \n", policy.Spec.Inspection.Assessment.ElasticSearchPasswd)
 			esClient := es.NewClient(
 				cert,
 				policy.Spec.Inspection.Assessment.ElasticSearchAddr,

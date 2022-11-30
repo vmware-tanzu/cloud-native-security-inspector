@@ -122,12 +122,12 @@ func (r *ResourceItem) GetImages() (images []*ImageItem) {
 	if r.IsPod() {
 		for _, ct := range r.Pod.Status.ContainerStatuses {
 			aid := core.ParseArtifactIDFrom(ct.Image, ct.ImageID)
-			fmt.Printf("ArtifactID: %s \n", aid.String())
+			//fmt.Printf("ArtifactID: %s \n", aid.String())
 			images = append(images, NewImageItem(ct.Image, aid))
 		}
 		for _, ct := range r.Pod.Status.InitContainerStatuses {
 			aid := core.ParseArtifactIDFrom(ct.Image, ct.ImageID)
-			fmt.Printf("ArtifactID: %s \n", aid.String())
+			//fmt.Printf("ArtifactID: %s \n", aid.String())
 			images = append(images, NewImageItem(ct.Image, aid))
 		}
 	}
@@ -180,7 +180,7 @@ func (i *ImageItem) generateUUID() {
 // FetchHarborReport fetch the harbor report
 func (i *ImageItem) FetchHarborReport(Adapter providers.Adapter) (*vuln.Report, error) {
 	ctx := context.Background()
-	report, err := Adapter.GetVulnerabilitiesList(ctx, i.ArtifactID)
+	report, err := Adapter.GetVulnerabilitiesList(ctx, i.ArtifactID, true)
 	if err != nil {
 		return nil, err
 	}
@@ -189,7 +189,7 @@ func (i *ImageItem) FetchHarborReport(Adapter providers.Adapter) (*vuln.Report, 
 
 // AddRelatedResource add resource
 func (i *ImageItem) AddRelatedResource(v *ResourceItem) {
-	fmt.Printf("ArtifactID: %s, relation pod: %s \n", i.ArtifactID.String(), v.ObjectMeta.Name)
+	//fmt.Printf("ArtifactID: %s, relation pod: %s \n", i.ArtifactID.String(), v.ObjectMeta.Name)
 	i.Related = append(i.Related, v)
 	return
 }

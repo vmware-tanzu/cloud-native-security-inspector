@@ -571,7 +571,7 @@ func (a *Adapter) scanOnPush(ctx context.Context) error {
 	return nil
 }
 
-func (a *Adapter) GetVulnerabilitiesList(ctx context.Context, id core.ArtifactID) (*vuln.Report, error) {
+func (a *Adapter) GetVulnerabilitiesList(ctx context.Context, id core.ArtifactID, skipVerify bool) (*vuln.Report, error) {
 	fmt.Printf("ProjectName: %s \n", id.Namespace())
 	fmt.Printf("RepositoryName: %s \n", id.Repository())
 	fmt.Printf("Reference: %s \n", id.Digest())
@@ -592,7 +592,7 @@ func (a *Adapter) GetVulnerabilitiesList(ctx context.Context, id core.ArtifactID
 		client := &http.Client{
 			Transport: &http.Transport{
 				TLSClientConfig: &tls.Config{
-					InsecureSkipVerify: true,
+					InsecureSkipVerify: skipVerify,
 				},
 			},
 			Timeout: time.Second * 10,

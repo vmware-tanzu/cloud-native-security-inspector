@@ -72,7 +72,7 @@ func (s *Server) postResource(c *gin.Context) {
 		return
 	}
 
-	fmt.Printf("receive resource type: %s \n", v.Type)
+	//fmt.Printf("receive resource type: %s \n", v.Type)
 
 	images := v.GetImages()
 	for _, i := range images {

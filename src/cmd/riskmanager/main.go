@@ -113,7 +113,7 @@ func main() {
 		if inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchEnabled {
 			cert := []byte(inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchCert)
 			fmt.Printf("ES config addr: %s \n", inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchAddr)
-			fmt.Printf("ES config username: %s", inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchPasswd)
+			//fmt.Printf("ES config username: %s", inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchPasswd)
 			esClient := es.NewClient(
 				cert,
 				inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchAddr,
