@@ -9,6 +9,7 @@
     "create_time": "Create Time",
     "action": "Action",
     "version": "Version",
+    "fix_version": "fix_version",
     "annotations": "Annotations",
     "api_version": "ApiVersion",
     "type": "Type",
@@ -17,6 +18,7 @@
     "image": "Image",
     "container": "container",
     "containers": "Containers",
+    "details": "Details",
     "result": "result",
     "summary": "Summary",
     "time_stamp": "Latest scanning timestamp",
@@ -36,7 +38,8 @@
     "inspectionNamespace": "Inspection Namespace",
     "description": "Description",
     "scanInspector": "Scan Inspector",
-    "typeId": "Type ID"
+    "typeId": "Type ID",
+    "information": "Information"
   },
   "Header": {
     "title": "Cloud Native Security Inspector"
@@ -46,7 +49,8 @@
       "title": "Assessments",
       "report_view": "Reports",
       "Kube_bench": "kubebench inspector reports",
-      "image_nspector_reports": "Image inspector reports"
+      "image_nspector_reports": "Image inspector reports",
+      "risk": "Risk inspector report"
     },
     "Insight": {
       "title": "Insight",
@@ -90,6 +94,9 @@
     "cause": "Cause",
     "error_message": "Error Message"
 
+  },
+  "Risk_view": {
+    "numberOfVulnerabilities": "number of vulnerabilities"
   },
   "Cluster": {
     "kubernetes_version": "Kubernetes version",

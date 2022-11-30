@@ -172,7 +172,7 @@
 
           <clr-dg-row *ngFor="let workload of currentReport.workloadAssessments" [clrDgItem]="workload">
             <clr-dg-cell>
-              <a href="javascript: ;" (click)="workloadInfo = workload">{{workload.workload?.metadata.name}}</a>
+              <a href="javascript:;" (click)="getRisk(workload)">{{workload.workload?.metadata.name}}</a>
             </clr-dg-cell>
             <clr-dg-cell>{{workload.workload?.metadata.uid}}</clr-dg-cell>
             <clr-dg-cell>{{workload.workload?.metadata.namespace}}</clr-dg-cell>
@@ -200,6 +200,9 @@
         <h4>{{workloadInfo.workload?.metadata.name}}</h4>
         <h5>Pods:  </h5>
         <div *ngFor="let item of workloadInfo.workload.pods">
+          <h4>
+            <clr-icon shape="info-circle"></clr-icon>
+            {{'CommonlyUse.information' | translate}}</h4>
           <ul class="list">
             <li>
               <b>Name: </b>
@@ -218,6 +221,10 @@
               <span>{{item?.metadata.apiVersion}}</span>
             </li>
           </ul>
+          <h4>
+            <clr-icon shape="bars"></clr-icon>
+            {{'CommonlyUse.containers' | translate}}</h4>
+
           <clr-datagrid>
             <clr-dg-column [clrDgField]="'attributes.pool'">Name</clr-dg-column>
             <clr-dg-column >ID</clr-dg-column>
@@ -233,6 +240,39 @@
               <clr-dg-cell>{{container.isInit}}</clr-dg-cell>
             </clr-dg-row>
           </clr-datagrid>
+
+          <h4 *ngIf="item.detail && item.detail.length > 0 ">
+            <clr-icon shape="details"></clr-icon>
+            {{'CommonlyUse.details' | translate}}</h4>
+          <clr-datagrid *ngIf="item.detail && item.detail.length > 0 ">
+            <clr-dg-column [clrDgField]="'score'">score</clr-dg-column>
+            <clr-dg-column [clrDgField]="'scale'">scale</clr-dg-column>
+            <clr-dg-column [clrDgField]="'vuln.package'">package</clr-dg-column>
+            <clr-dg-column [clrDgField]="'vuln.version'">{{'CommonlyUse.version'|translate}}</clr-dg-column>
+            <clr-dg-column [clrDgField]="'vuln.fix_version'">{{'CommonlyUse.fix_version'|translate}}</clr-dg-column>
+            <clr-dg-column [clrDgField]="'reason'">{{'Kube_bench_list.reason'|translate}}</clr-dg-column>
+            <clr-dg-column >{{'CommonlyUse.description'|translate}}</clr-dg-column>
+  
+            <clr-dg-row *clrDgItems="let detail of item.detail" [clrDgItem]="detail">
+              <clr-dg-cell>{{detail.score}}</clr-dg-cell>
+              <clr-dg-cell>{{detail.scale}}</clr-dg-cell>
+              <clr-dg-cell>{{detail.vuln.package}}</clr-dg-cell>
+              <clr-dg-cell>{{detail.vuln.version}}</clr-dg-cell>
+              <clr-dg-cell>{{detail.vuln.fix_version}}</clr-dg-cell>
+              <clr-dg-cell>{{detail.reason}}</clr-dg-cell>
+
+              <clr-dg-cell>{{detail.vuln.description}}</clr-dg-cell>
+            </clr-dg-row>
+
+            <clr-dg-footer>
+              <clr-dg-pagination #pagination [clrDgPageSize]="10">
+                  <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">deatil per page</clr-dg-page-size>
+                  {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                  of {{pagination.totalItems}} deatils
+              </clr-dg-pagination>
+          </clr-dg-footer>
+          </clr-datagrid>
+
         </div>
       </div>
       <section class="workload-section" *ngIf="workloadInfo && !workloadInfo.passed">

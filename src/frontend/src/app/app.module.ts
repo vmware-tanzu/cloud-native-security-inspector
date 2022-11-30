@@ -44,7 +44,9 @@ import { PolicySettingPageComponent } from './view/policy/policy-setting-page/po
 import { KubeBenchReportListComponent } from './view/assements/kube-bench-report-list/kube-bench-report-list.component';
 import { KubeBenchReportTestViewComponent } from './view/assements/kube-bench-report-test-view/kube-bench-report-test-view.component';
 import { KubeBenchReportTestDetailComponent } from './view/assements/kube-bench-report-test-detail/kube-bench-report-test-detail.component';
-import { KubeBenchReportComponent } from './view/assements/kube-bench-report/kube-bench-report.component'
+import { KubeBenchReportComponent } from './view/assements/kube-bench-report/kube-bench-report.component';
+import { RiskReportViewComponent } from './view/assements/risk-report-view/risk-report-view.component';
+import { RiskReportDetailComponent } from './view/assements/risk-report-detail/risk-report-detail.component'
 
 @NgModule({
   declarations: [
@@ -79,7 +81,9 @@ import { KubeBenchReportComponent } from './view/assements/kube-bench-report/kub
     KubeBenchReportListComponent,
     KubeBenchReportTestViewComponent,
     KubeBenchReportTestDetailComponent,
-    KubeBenchReportComponent
+    KubeBenchReportComponent,
+    RiskReportViewComponent,
+    RiskReportDetailComponent
   ],
   imports: [
     BrowserModule,
