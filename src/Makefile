@@ -87,7 +87,7 @@ build-risk: generate fmt vet ## Build risk command.
 run: manifests generate fmt vet ## Run a controller from your host.
 	go run ./main.go
 
-docker-build-all: docker-build-manager docker-build-inspector docker-build-kubebench docker-build-portal
+docker-build-all: docker-build-manager docker-build-inspector docker-build-kubebench docker-build-portal docker-build-risk
 
 docker-build-manager: test build-manager ## Build docker image with the manager.
 	$(DOCKERCMD) build -t ${IMG_MANAGER} .
