@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
 	es "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers/es"
 	osearch "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers/opensearch"
@@ -13,7 +14,6 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
-	logDefault "log"
 	"os"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -86,11 +86,11 @@ func main() {
 
 		conf := riskmanager.ReadEnvConfig()
 
-		logDefault.Default().Printf("mode server-only")
+		fmt.Println("mode server-only")
 		var osExporter osearch.OpenSearchExporter
 		if inspectionPolicy.Spec.Inspection.Assessment.OpenSearchEnabled {
-			logDefault.Default().Printf("OS config addr: %s", inspectionPolicy.Spec.Inspection.Assessment.OpenSearchAddr)
-			logDefault.Default().Printf("OS config username: %s", inspectionPolicy.Spec.Inspection.Assessment.OpenSearchUser)
+			fmt.Printf("OS config addr: %s \n", inspectionPolicy.Spec.Inspection.Assessment.OpenSearchAddr)
+			fmt.Printf("OS config username: %s \n", inspectionPolicy.Spec.Inspection.Assessment.OpenSearchUser)
 			osClient := osearch.NewClient([]byte{},
 				inspectionPolicy.Spec.Inspection.Assessment.OpenSearchAddr,
 				inspectionPolicy.Spec.Inspection.Assessment.OpenSearchUser,
@@ -112,15 +112,15 @@ func main() {
 		var esExporter es.ElasticSearchExporter
 		if inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchEnabled {
 			cert := []byte(inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchCert)
-			logDefault.Default().Printf("ES config addr: %s", inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchAddr)
-			logDefault.Default().Printf("ES config username: %s", inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchPasswd)
+			fmt.Printf("ES config addr: %s \n", inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchAddr)
+			fmt.Printf("ES config username: %s", inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchPasswd)
 			esClient := es.NewClient(
 				cert,
 				inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchAddr,
 				inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchUser,
 				inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchPasswd)
 			if esClient == nil {
-				logDefault.Default().Printf("ES client is nil")
+				fmt.Println("ES client is nil")
 				os.Exit(1)
 			}
 

@@ -5,8 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-logr/logr"
-	"github.com/goharbor/harbor/src/jobservice/logger"
-	"log"
 	"net/http"
 )
 
@@ -27,7 +25,7 @@ func NewClient(conf *Config, logger logr.Logger) *Client {
 // IsAnalyzeRunning get analyze status
 func (c *Client) IsAnalyzeRunning() (bool, error) {
 	requestURL := fmt.Sprintf(fmt.Sprintf("%s/status", c.conf.Server))
-	log.Default().Printf("get to: %s", requestURL)
+	fmt.Printf("get to: %s \n", requestURL)
 	res, err := http.Get(requestURL)
 	if err != nil {
 		return false, err
@@ -41,7 +39,7 @@ func (c *Client) IsAnalyzeRunning() (bool, error) {
 		return false, err
 	}
 
-	log.Default().Printf("analyze running: %v", target.IsRunning)
+	fmt.Printf("analyze running: %v \n", target.IsRunning)
 
 	return target.IsRunning, nil
 }
@@ -49,7 +47,7 @@ func (c *Client) IsAnalyzeRunning() (bool, error) {
 // PostAnalyze ask server to analyze resources
 func (c *Client) PostAnalyze(a AnalyzeOption) error {
 	requestURL := fmt.Sprintf(fmt.Sprintf("%s/analyze", c.conf.Server))
-	log.Default().Printf("post to: %s", requestURL)
+	fmt.Printf("post to: %s \n", requestURL)
 
 	if jsonData, err := json.Marshal(a); err == nil {
 		request, error := http.NewRequest("POST", requestURL, bytes.NewBuffer(jsonData))
@@ -69,7 +67,7 @@ func (c *Client) PostAnalyze(a AnalyzeOption) error {
 
 func (c *Client) PostResource(a interface{}) error {
 	requestURL := fmt.Sprintf(fmt.Sprintf("%s/resource", c.conf.Server))
-	log.Default().Printf("post to: %s", requestURL)
+	fmt.Printf("post to: %s \n", requestURL)
 
 	if jsonData, err := json.Marshal(a); err == nil {
 		request, _ := http.NewRequest("POST", requestURL, bytes.NewBuffer(jsonData))
@@ -83,7 +81,7 @@ func (c *Client) PostResource(a interface{}) error {
 
 		response.Body.Close()
 	} else {
-		logger.Infof("json marshal err: %v", err)
+		fmt.Printf("json marshal err: %v \n", err)
 	}
 
 	return nil
@@ -92,7 +90,7 @@ func (c *Client) PostResource(a interface{}) error {
 // SendExitInstruction send exit instruction
 func (c *Client) SendExitInstruction() error {
 	requestURL := fmt.Sprintf(fmt.Sprintf("%s/exit", c.conf.Server))
-	log.Default().Printf("get to: %s", requestURL)
+	fmt.Printf("get to: %s \n", requestURL)
 	res, err := http.Get(requestURL)
 	if err != nil {
 		return err

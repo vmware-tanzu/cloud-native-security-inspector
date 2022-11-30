@@ -8,7 +8,6 @@ import (
 	consumers "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers/opensearch"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/providers"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/inspection/data"
-	"log"
 	"net/http"
 	"os"
 	"time"
@@ -62,18 +61,18 @@ func (s *Server) WithAdapter(Adapter providers.Adapter) *Server {
 
 // postAlbums adds an album from JSON received in the request body.
 func (s *Server) postResource(c *gin.Context) {
-	log.Default().Printf("come in postResource request")
+	fmt.Println("come in postResource request")
 	var v data.ResourceItem
 
 	// Call BindJSON to bind the received JSON to
 	// newAlbum.
 	if err := c.BindJSON(&v); err != nil {
-		log.Default().Printf("bind json err: %v \n", err)
+		fmt.Printf("bind json err: %v \n", err)
 		c.IndentedJSON(http.StatusBadRequest, err)
 		return
 	}
 
-	log.Default().Printf("receive resource type: " + v.Type)
+	fmt.Printf("receive resource type: %s \n", v.Type)
 
 	images := v.GetImages()
 	for _, i := range images {
@@ -96,7 +95,7 @@ func (s *Server) Clear() {
 }
 
 func (s *Server) Analyze(option AnalyzeOption) {
-	log.Println("come in Analyze request")
+	fmt.Println("come in Analyze request")
 	s.IsRunning = true
 	defer func() {
 		s.IsRunning = false
@@ -110,7 +109,7 @@ func (s *Server) Analyze(option AnalyzeOption) {
 			logger.Errorf("get vuln reprot error: %v", err)
 			continue
 		} else {
-			log.Default().Printf("vuln len: %d", len(report.Vulnerabilities))
+			fmt.Printf("vuln len: %d \n", len(report.Vulnerabilities))
 		}
 
 		for _, r := range t.Related {
@@ -120,7 +119,7 @@ func (s *Server) Analyze(option AnalyzeOption) {
 
 	if option.OpenSearchEnabled {
 		if s.Workloads.Risks == nil || len(s.Workloads.Risks) == 0 {
-			log.Default().Printf("not vuln save to openSearch")
+			fmt.Println("not vuln save to openSearch")
 			return
 		}
 		err := s.osExporter.SaveRiskReport(s.Workloads.Risks)
@@ -131,7 +130,7 @@ func (s *Server) Analyze(option AnalyzeOption) {
 
 	if option.ElasticSearchEnabled {
 		if s.Workloads.Risks == nil || len(s.Workloads.Risks) == 0 {
-			log.Default().Printf("not vuln save to ElasticSearch")
+			fmt.Println("not vuln save to ElasticSearch")
 			return
 		}
 		err := s.esExporter.SaveRiskReport(s.Workloads.Risks)
@@ -143,7 +142,7 @@ func (s *Server) Analyze(option AnalyzeOption) {
 
 // postAnalyze adds an album from JSON received in the request body.
 func (s *Server) postAnalyze(c *gin.Context) {
-	log.Default().Printf("come in postAnalyze request")
+	fmt.Println("come in postAnalyze request")
 	var v AnalyzeOption
 
 	// Call BindJSON to bind the received JSON to
@@ -173,7 +172,7 @@ func (s *Server) getRisks(c *gin.Context) {
 }
 
 func (s *Server) getExit(c *gin.Context) {
-	log.Default().Printf("receive exit instruction, start exit")
+	fmt.Println("receive exit instruction, start exit")
 	c.IndentedJSON(http.StatusOK, "ok")
 	defer func() {
 		time.Sleep(3 * time.Second)

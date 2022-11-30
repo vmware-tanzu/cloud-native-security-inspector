@@ -2,6 +2,7 @@ package riskmanager
 
 import (
 	"context"
+	"fmt"
 	"github.com/go-logr/logr"
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
@@ -13,7 +14,6 @@ import (
 	v1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
-	"log"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"time"
 )
@@ -49,15 +49,15 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 	if conf.StandAlone {
 		var osExporter osearch.OpenSearchExporter
 		if policy.Spec.Inspection.Assessment.OpenSearchEnabled {
-			log.Default().Printf("OS config addr: %s", policy.Spec.Inspection.Assessment.OpenSearchAddr)
-			log.Default().Printf("OS config username: %s", policy.Spec.Inspection.Assessment.OpenSearchUser)
+			fmt.Printf("OS config addr: %s \n", policy.Spec.Inspection.Assessment.OpenSearchAddr)
+			fmt.Printf("OS config username: %s \n", policy.Spec.Inspection.Assessment.OpenSearchUser)
 			osClient := osearch.NewClient([]byte{},
 				policy.Spec.Inspection.Assessment.OpenSearchAddr,
 				policy.Spec.Inspection.Assessment.OpenSearchUser,
 				policy.Spec.Inspection.Assessment.OpenSearchPasswd)
 
 			if osClient == nil {
-				log.Default().Printf("OpenSearch client is nil")
+				fmt.Println("OpenSearch client is nil")
 				return nil
 			}
 
@@ -72,15 +72,15 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 		var esExporter es.ElasticSearchExporter
 		if policy.Spec.Inspection.Assessment.ElasticSearchEnabled {
 			cert := []byte(policy.Spec.Inspection.Assessment.ElasticSearchCert)
-			log.Default().Printf("ES config addr: %s", policy.Spec.Inspection.Assessment.ElasticSearchAddr)
-			log.Default().Printf("ES config username: %s", policy.Spec.Inspection.Assessment.ElasticSearchPasswd)
+			fmt.Printf("ES config addr: %s \n", policy.Spec.Inspection.Assessment.ElasticSearchAddr)
+			fmt.Printf("ES config username: %s \n", policy.Spec.Inspection.Assessment.ElasticSearchPasswd)
 			esClient := es.NewClient(
 				cert,
 				policy.Spec.Inspection.Assessment.ElasticSearchAddr,
 				policy.Spec.Inspection.Assessment.ElasticSearchUser,
 				policy.Spec.Inspection.Assessment.ElasticSearchPasswd)
 			if esClient == nil {
-				log.Default().Printf("ES client is nil")
+				fmt.Println("ES client is nil")
 				return nil
 			}
 
@@ -175,9 +175,9 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 	httpClient := NewClient(conf, c.logger)
 
 	for _, v := range allResources {
-		log.Default().Printf("resource name: %s, type: %s", v.ObjectMeta.Name, v.Type)
+		fmt.Printf("resource name: %s, type: %s \n", v.ObjectMeta.Name, v.Type)
 		if v.IsPod() {
-			log.Default().Printf("pod name: %s, namespace: %s", v.Pod.GetName(), v.Pod.GetNamespace())
+			fmt.Printf("pod name: %s, namespace: %s \n", v.Pod.GetName(), v.Pod.GetNamespace())
 		}
 		err = httpClient.
 			PostResource(v)
@@ -252,7 +252,7 @@ func (c *controller) checkServerRunning() {
 	httpClient := NewClient(conf, c.logger)
 	for {
 		if _, err := httpClient.IsAnalyzeRunning(); err != nil {
-			log.Default().Printf("Server Starting, waiting ...")
+			fmt.Println("Server Starting, waiting ...")
 			time.Sleep(3 * time.Second)
 		} else {
 			break

@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"github.com/goharbor/harbor/src/pkg/scan/vuln"
 	"io"
-	log2 "log"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -573,20 +572,20 @@ func (a *Adapter) scanOnPush(ctx context.Context) error {
 }
 
 func (a *Adapter) GetVulnerabilitiesList(ctx context.Context, id core.ArtifactID) (*vuln.Report, error) {
-	log2.Default().Printf("ProjectName: %s", id.Namespace())
-	log2.Default().Printf("RepositoryName: %s", id.Repository())
-	log2.Default().Printf("Reference: %s", id.Digest())
-	log2.Default().Printf("Registry: %s", id.Registry())
+	fmt.Printf("ProjectName: %s \n", id.Namespace())
+	fmt.Printf("RepositoryName: %s \n", id.Repository())
+	fmt.Printf("Reference: %s \n", id.Digest())
+	fmt.Printf("Registry: %s \n", id.Registry())
 
 	xAcceptVulnerabilities := core.DataSchemeVulnerability
 	for _, scheme := range DefaultSchemes {
 		requestURL := fmt.Sprintf("%s://%s/api/v2.0/projects/%s/repositories/%s/artifacts/%s/additions/vulnerabilities",
 			scheme, id.Registry(), id.Namespace(), id.Repository(), id.Digest())
-		log2.Default().Printf("requestURL: %s", requestURL)
+		fmt.Printf("requestURL: %s \n", requestURL)
 
 		request, err := http.NewRequest("GET", requestURL, bytes.NewBuffer(nil))
 		if err != nil {
-			log2.Default().Printf("new request err: %v", err)
+			fmt.Printf("new request err: %v \n", err)
 			continue
 		}
 		request.Header.Set("X-Accept-Vulnerabilities", xAcceptVulnerabilities)
@@ -600,14 +599,14 @@ func (a *Adapter) GetVulnerabilitiesList(ctx context.Context, id core.ArtifactID
 		}
 		res, err := client.Do(request)
 		if err != nil {
-			log2.Default().Printf("find vulnerabilities err: %v", err)
+			fmt.Printf("find vulnerabilities err: %v \n", err)
 			continue
 		}
 		var report map[string]*vuln.Report
 		err = json.NewDecoder(res.Body).Decode(&report)
 		if err != nil {
 			body, _ := io.ReadAll(res.Body)
-			log2.Default().Printf("vuln report json unmarshal: (%s)", string(body))
+			fmt.Printf("vuln report json unmarshal: (%s) \n", string(body))
 			continue
 		}
 		return report[xAcceptVulnerabilities], nil
@@ -624,7 +623,7 @@ func (a *Adapter) GetVulnerabilitiesList(ctx context.Context, id core.ArtifactID
 	//	return nil, errors.Wrapf(err, "failed to get image: %s vuln report", id.String())
 	//}
 	//
-	//log2.Default().Printf("report: %s", addition.GetPayload())
+	//fmt.Printf("report: %s", addition.GetPayload())
 
 	//err = json.Unmarshal([]byte(addition.GetPayload()), &report)
 	//return report, errors.Wrapf(err, "vuln report json unmarshal: %s", addition.GetPayload())

@@ -9,7 +9,6 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"log"
 )
 
 // ResourceItem the resource item is to list all the resource is relating the ImageItem
@@ -123,12 +122,12 @@ func (r *ResourceItem) GetImages() (images []*ImageItem) {
 	if r.IsPod() {
 		for _, ct := range r.Pod.Status.ContainerStatuses {
 			aid := core.ParseArtifactIDFrom(ct.Image, ct.ImageID)
-			log.Default().Printf("ArtifactID: %s", aid.String())
+			fmt.Printf("ArtifactID: %s \n", aid.String())
 			images = append(images, NewImageItem(ct.Image, aid))
 		}
 		for _, ct := range r.Pod.Status.InitContainerStatuses {
 			aid := core.ParseArtifactIDFrom(ct.Image, ct.ImageID)
-			log.Default().Printf("ArtifactID: %s", aid.String())
+			fmt.Printf("ArtifactID: %s \n", aid.String())
 			images = append(images, NewImageItem(ct.Image, aid))
 		}
 	}
@@ -190,7 +189,7 @@ func (i *ImageItem) FetchHarborReport(Adapter providers.Adapter) (*vuln.Report, 
 
 // AddRelatedResource add resource
 func (i *ImageItem) AddRelatedResource(v *ResourceItem) {
-	log.Default().Printf("ArtifactID: %s, relation pod: %s", i.ArtifactID.String(), v.ObjectMeta.Name)
+	fmt.Printf("ArtifactID: %s, relation pod: %s \n", i.ArtifactID.String(), v.ObjectMeta.Name)
 	i.Related = append(i.Related, v)
 	return
 }
