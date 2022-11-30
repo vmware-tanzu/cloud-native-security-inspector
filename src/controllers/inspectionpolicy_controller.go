@@ -5,7 +5,7 @@ package controllers
 import (
 	"context"
 	"fmt"
-	"github.com/goharbor/harbor/src/jobservice/logger"
+
 	"strings"
 
 	"github.com/go-logr/logr"
@@ -133,6 +133,11 @@ func (r *InspectionPolicyReconciler) Reconcile(ctx context.Context, req ctrl.Req
 func (r *InspectionPolicyReconciler) cronjobForInspection(ctx context.Context, policy *goharborv1.InspectionPolicy,
 	cronjobType string, logger logr.Logger) (bool, error) {
 	statusNeedUpdate := false
+	if cronjobType == goharborv1.CronjobInpsection && policy.Spec.Inspector.Image == "" {
+		return false, nil
+	} else if cronjobType == goharborv1.CronjobKubebench && policy.Spec.Inspector.KubebenchImage == "" {
+		return false, nil
+	}
 	// Check whether the underlying cronjob resource is existing or not.
 	cj, err := r.checkCronJob(ctx, policy, cronjobType)
 	if err != nil {
@@ -210,10 +215,10 @@ func (r *InspectionPolicyReconciler) updatePolicyStatus(policy *goharborv1.Inspe
 		if *policy.Spec.Strategy.Suspend {
 			policy.Status.Status = goharborv1.PolicySuspend
 		}
-		logger.Info("Update status of inspection policy", "status", policy.Status.Status)
+		log.Log.Info("Update status of inspection policy", "status", policy.Status.Status)
 
 		if err := r.Status().Update(ctx, policy); err != nil {
-			logger.Error(err, "failed to update status of inspection policy")
+			log.Log.Error(err, "failed to update status of inspection policy")
 			return err
 		}
 	}

@@ -180,10 +180,10 @@ type Strategy struct {
 // Inspector contains the image configuration of the inspector.
 type Inspector struct {
 	// Image of the inspector.
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Image string `json:"image"`
 	// Image of the kubebench.
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	KubebenchImage string `json:"kubebenchImage"`
 	// Image pull policy.
 	// +kubebuilder:default:=IfNotPresent
