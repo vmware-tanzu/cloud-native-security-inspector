@@ -20,7 +20,7 @@ import { KubeBenchReportComponent } from 'src/app/view/assements/kube-bench-repo
 import { KubeBenchReportListComponent } from 'src/app/view/assements/kube-bench-report-list/kube-bench-report-list.component'
 import { KubeBenchReportTestViewComponent } from 'src/app/view/assements/kube-bench-report-test-view/kube-bench-report-test-view.component'
 import { KubeBenchReportTestDetailComponent } from 'src/app/view/assements/kube-bench-report-test-detail/kube-bench-report-test-detail.component'
-
+import { RiskReportViewComponent } from 'src/app/view/assements/risk-report-view/risk-report-view.component'
 
 const routes: Routes = [
   {
@@ -56,6 +56,10 @@ const routes: Routes = [
                 redirectTo: 'list'        
               }
             ]
+          },
+          {
+            path: 'risk',
+            component: RiskReportViewComponent
           },
           {
             path: '',

@@ -1,0 +1,60 @@
+<div class="report">
+  <h2>{{'Nav.Assessments.risk'|translate}}</h2>
+  <!-- echarts -->
+  <div id="risk" style="width: 1500px;height:450px; overflow: hidden;"> </div>
+
+  <clr-datagrid  [clrDgLoading]="dgLoading" (clrDgRefresh)="pageChange($event)">
+    <clr-dg-column >ID</clr-dg-column>
+    <clr-dg-column >{{'CommonlyUse.name'|translate}}</clr-dg-column>
+    <clr-dg-column >{{'CommonlyUse.namespace'|translate}}</clr-dg-column>
+    <clr-dg-column >Kind</clr-dg-column>
+
+    <clr-dg-column >
+      <div class="sort">
+        {{'CommonlyUse.create_time'|translate}}
+        <!-- <clr-icon shape="arrow"></clr-icon>   -->
+      </div>
+    </clr-dg-column>
+    <clr-dg-column >{{'Risk_view.numberOfVulnerabilities'|translate}}</clr-dg-column>
+  
+    <clr-dg-row *clrDgItems="let kube of riskList">
+      <clr-dg-cell >
+        <a style="cursor: pointer;" (click)="showDetail(kube)" href="javascript:;">
+          <clr-icon style="color: skyblue" shape="pop-out"></clr-icon>
+          {{kube._source.uid}}
+        </a>
+      </clr-dg-cell>
+      <clr-dg-cell>
+        {{kube._source.name}}
+      </clr-dg-cell>
+
+      <clr-dg-cell>
+        {{kube._source.namespace}}
+      </clr-dg-cell>
+      <clr-dg-cell>
+        {{kube._source.kind}}
+      </clr-dg-cell>
+
+      <clr-dg-cell>{{kube._source.createTime | date: 'medium'}}</clr-dg-cell>
+      <clr-dg-cell>
+        {{kube.risk_number}}
+      </clr-dg-cell>
+    </clr-dg-row>
+  
+    <clr-dg-footer>
+      <clr-dg-pagination #pagination [clrDgPageSize]="defaultSize" [clrDgLastPage]="pageMaxCount">
+          <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Reports per page</clr-dg-page-size>
+          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+          of {{pagination.totalItems}} reports
+      </clr-dg-pagination>
+  </clr-dg-footer>
+  
+  </clr-datagrid>
+<!-- detail -->
+
+  <div class="report-detai-bg" *ngIf="showDetailFlag" (click)="hideDetai($event)">
+    <div class="report-detai" [ngClass]="{'show': showDetailFlag}" >
+     <app-risk-report-detail [detailInfo]="currentDetail"></app-risk-report-detail>
+    </div>
+  </div>
+</div>

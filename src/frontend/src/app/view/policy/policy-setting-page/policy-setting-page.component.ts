@@ -34,7 +34,12 @@ export class PolicySettingPageComponent implements OnInit {
     {
       name: 'kubebench',
       url: 'projects.registry.vmware.com/cnsi/kubebench:0.1'
+    },
+    {
+      name: 'risk',
+      url: 'projects.registry.vmware.com/cnsi/risk:0.1'
     }
+    
   ]
   public actions = [
     {
@@ -283,12 +288,24 @@ export class PolicySettingPageComponent implements OnInit {
           this.policyForm.get('inspectionSetting')?.get('suspend')?.setValue(policyList[0].spec.strategy.suspend)
           this.policyForm.get('inspectionSetting')?.get('concurrencyRule')?.setValue(policyList[0].spec.strategy.concurrencyRule)
           if (policyList[0].spec.inspector.image && policyList[0].spec.inspector.kubebenchImage) {
-            this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['inspector', 'kubebench'])
+            if (policyList[0].spec.inspector.arksecRiskImage) {
+              this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['inspector', 'kubebench', 'risk'])
+            } else {
+              this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['inspector', 'kubebench'])
+            }
           } else {
             if (policyList[0].spec.inspector.image) {
-              this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['inspector'])
+              if (policyList[0].spec.inspector.arksecRiskImage) {
+                this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['inspector', 'risk'])
+              } else {
+                this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['inspector'])
+              }
             } else if (policyList[0].spec.inspector.kubebenchImage) {
-              this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['kubebench'])
+              if (policyList[0].spec.inspector.arksecRiskImage) {
+                this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['kubebench', 'risk'])
+              } else {
+                this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['kubebench'])
+              }
             }
           }
 
@@ -517,6 +534,8 @@ export class PolicySettingPageComponent implements OnInit {
           data.spec.inspector.image = this.imageList[0].url
         } else if (image === 'kubebench') {
           data.spec.inspector.kubebenchImage = this.imageList[1].url
+        } else if (image === 'risk') {
+          data.spec.inspector.arksecRiskImage = this.imageList[2].url
         }
       });
     }

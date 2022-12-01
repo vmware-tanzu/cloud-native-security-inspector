@@ -245,7 +245,7 @@ export class KubeBenchReportListComponent implements OnInit {
     this.extractKubeBenchApi(query, callBack)
   }
 
-  // extract function u749VQF7hEqDTZ2y161R9J8F
+  // extract function 
   extractKubeBenchApi(query: any, callback: Function) {
     this.dgLoading = true
     const opensearchbase: any = localStorage.getItem('cnsi-open-search')

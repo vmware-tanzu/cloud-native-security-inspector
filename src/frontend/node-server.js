@@ -112,6 +112,28 @@ app.post('/open-search', (req, res) => {
     }).catch(err => {
       res.status(500).send(err) 
     })
+  } else if (body.client === 'risk_opensearch') {
+    const client = new Client({
+      node: body.url,
+      ssl: {
+        rejectUnauthorized: false
+      },
+      auth: {
+        username: body.username,
+        password: body.password
+      }
+  
+    });
+    risk_open_serach(client, body).then(v => {
+      res.status(200).send(v) 
+    }).catch(err => {
+      res.status(500).send(err) 
+      // console.log('err', err)
+      // if (err.statusCode === 404) {
+      //   res.status(205).send(body.query+'Not Found')
+      // } else {
+      // }
+    })
   } else {
     const client = new elasticClient({
       node: body.url,
@@ -126,6 +148,7 @@ app.post('/open-search', (req, res) => {
     })
     elastic_search(client, body).then(v => {
       res.status(200).send(v) 
+
     }).catch(err => {
       res.status(500).send(err) 
     })  }
@@ -147,8 +170,6 @@ open_search = async (client, body) => {
   try {
     let response = await client.search({ index: body.index, body: body.query }); 
     console.log("Searching:"); 
-    console.log("response:", response); 
-    console.log("response.body:", response.body); 
     return  response.body
   } catch (error) {
     console.log(error)
@@ -178,5 +199,16 @@ elastic_search = async (client, body) => {
     console.log(error)
     throw error
   }}
+
+risk_open_serach = async (client, body) => {
+  let response = await client.get(
+    {
+      id: body.query,
+      index: body.index, 
+    }
+  )
+  console.log("Searching:"); 
+  return  response.body
+}
 
 app.listen(port)

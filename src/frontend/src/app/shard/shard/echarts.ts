@@ -17,7 +17,8 @@ import {
   DatasetComponent,
   DatasetComponentOption,
   TransformComponent,
-  LegendComponent
+  LegendComponent,
+  VisualMapComponent
 } from 'echarts/components';
 import { LabelLayout, UniversalTransition } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
@@ -36,7 +37,8 @@ echarts.use([
   LabelLayout,
   UniversalTransition,
   CanvasRenderer,
-  LegendComponent
+  LegendComponent,
+  VisualMapComponent
 ]);
 
 export {
