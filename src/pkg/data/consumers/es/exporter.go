@@ -11,6 +11,7 @@ import (
 	"github.com/pkg/errors"
 	api "github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/inspection/data"
 	"io"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/log"
@@ -294,6 +295,65 @@ func (e ElasticSearchExporter) SaveCIS(controlsCollection []*check.Controls) err
 		}
 
 	}
+	return nil
+}
+
+// SaveRiskReport save risk
+func (e *ElasticSearchExporter) SaveRiskReport(risks data.RiskCollection) error {
+	var (
+		res        *esapi.Response
+		err        error
+		esDocument []byte
+	)
+	for s, items := range risks {
+		split := strings.Split(s, ":")
+		if len(split) != 4 {
+			ctrlLog.Info("key non-standard:" + s)
+			continue
+		}
+		kind := split[0]
+		name := split[1]
+		namespace := split[2]
+		uid := split[3]
+
+		var esDoc consumers.RiskReport
+		esDoc.Kind = kind
+		esDoc.Name = name
+		esDoc.Namespace = namespace
+		esDoc.Uid = uid
+		esDoc.Detail = items
+		esDoc.CreateTimestamp = time.Now().Format(time.RFC3339)
+		esDocument, err = json.Marshal(esDoc)
+		if err != nil {
+			return err
+		}
+		res, err = esapi.IndexRequest{
+			Index:      e.indexName,
+			DocumentID: uid,
+			Body:       strings.NewReader(string(esDocument)),
+			Refresh:    "true",
+		}.Do(context.Background(), e.Client)
+		if err != nil {
+			ctrlLog.Error(err, "Error getting response")
+			return err
+		}
+
+		if res.IsError() {
+			ctrlLog.Info("[%s] Error indexing document ID=%v", res.Status(), s)
+			return errors.New(fmt.Sprint("http error, code ", res.StatusCode))
+		} else {
+			// Deserialize the response into a map.
+			var r map[string]interface{}
+			if err = json.NewDecoder(res.Body).Decode(&r); err != nil {
+				ctrlLog.Info("Error parsing the response body: %s", err)
+			} else {
+				fmt.Println("OK")
+			}
+		}
+	}
+
+	defer res.Body.Close()
+
 	return nil
 }
 

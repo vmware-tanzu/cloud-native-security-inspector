@@ -10,6 +10,7 @@ import (
 	"github.com/pkg/errors"
 	api "github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/inspection/data"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 	"strconv"
@@ -46,7 +47,7 @@ func (o *OpenSearchExporter) NewExporter(client *opensearch.Client, indexName st
 	if result, err := o.indexExists(indexName); err != nil {
 		if !result {
 			// No index for CNSI has been detected. A new index will be created.
-			if err := o.setupIndex(); err != nil {
+			if err = o.setupIndex(); err != nil {
 				return err
 			}
 		} else {
@@ -123,6 +124,65 @@ func (o *OpenSearchExporter) Save(doc api.AssessmentReport) error {
 		}
 	}
 	defer res.Body.Close()
+	return nil
+}
+
+// SaveRiskReport save risk
+func (o *OpenSearchExporter) SaveRiskReport(risks data.RiskCollection) error {
+	var (
+		res        *opensearchapi.Response
+		err        error
+		esDocument []byte
+	)
+	for s, items := range risks {
+		split := strings.Split(s, ":")
+		if len(split) != 4 {
+			ctrlLog.Info("key non-standard:" + s)
+			continue
+		}
+		kind := split[0]
+		name := split[1]
+		namespace := split[2]
+		uid := split[3]
+
+		var esDoc consumers.RiskReport
+		esDoc.Kind = kind
+		esDoc.Name = name
+		esDoc.Namespace = namespace
+		esDoc.Uid = uid
+		esDoc.Detail = items
+		esDoc.CreateTimestamp = time.Now().Format(time.RFC3339)
+		esDocument, err = json.Marshal(esDoc)
+		if err != nil {
+			return err
+		}
+		res, err = opensearchapi.IndexRequest{
+			Index:      o.indexName,
+			DocumentID: uid,
+			Body:       strings.NewReader(string(esDocument)),
+			Refresh:    "true",
+		}.Do(context.Background(), o.Client)
+		if err != nil {
+			ctrlLog.Error(err, "Error getting response")
+			return err
+		}
+
+		if res.IsError() {
+			ctrlLog.Info("[%s] Error indexing document ID=%v", res.Status(), s)
+			return errors.New(fmt.Sprint("http error, code ", res.StatusCode))
+		} else {
+			// Deserialize the response into a map.
+			var r map[string]interface{}
+			if err = json.NewDecoder(res.Body).Decode(&r); err != nil {
+				ctrlLog.Info("Error parsing the response body: %s", err)
+			} else {
+				fmt.Println("OK")
+			}
+		}
+	}
+
+	defer res.Body.Close()
+
 	return nil
 }
 
@@ -275,6 +335,25 @@ func (o *OpenSearchExporter) setupIndex() error {
 			  "reportUID":       { "type": "text", "analyzer": "english" },
 			  "createTime":       { "type": "date" },
 			  "inspectionConfiguration":       { "type": "text", "analyzer": "english" }
+				}
+			}
+		}`
+	} else if o.indexName == "risk_manager_details" {
+		mapping = `{
+		"mappings": {
+			"properties": {
+			  "kind":          { "type": "keyword" },
+			  "name":          { "type": "keyword" },
+			  "namespace":     { "type": "keyword" },
+			  "uid":           { "type": "keyword" },
+			  "score":         { "type": "keyword" },
+			  "scale":         { "type": "keyword" },
+			  "reason":        { "type": "text" },
+              "package":       { "type": "keyword" },
+              "version":       { "type": "keyword" },
+              "fix_version":   { "type": "keyword" },
+              "description":   { "type": "text" },
+			  "createTime":    { "type": "date" }
 				}
 			}
 		}`

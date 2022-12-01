@@ -1,6 +1,9 @@
 package consumers
 
-import "github.com/aquasecurity/kube-bench/check"
+import (
+	"github.com/aquasecurity/kube-bench/check"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/inspection/data"
+)
 
 type ContainerInfo struct {
 	ContainerId      string `json:"containerId"`
@@ -50,3 +53,12 @@ type CISReport struct {
 //	Groups          []*Group `json:"tests"`
 //	Summary
 //}
+
+type RiskReport struct {
+	Detail          []*data.RiskItem
+	Kind            string `json:"kind"`
+	Name            string `json:"name"`
+	Namespace       string `json:"namespace"`
+	Uid             string `json:"uid"`
+	CreateTimestamp string `json:"createTime"`
+}
