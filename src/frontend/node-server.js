@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 const express = require('express')
 const https = require('https')
-// const request = require('request');
-const request = {}
+const request = require('request');
+// const request = {}
 const { createProxyMiddleware, fixRequestBody  } = require('http-proxy-middleware')
 const bodyParser = require('body-parser')
 const ejs = require('ejs')
@@ -16,7 +16,7 @@ const SERVICEACCOUNT='/var/run/secrets/kubernetes.io/serviceaccount'
 const { Client } = require('@opensearch-project/opensearch')
 const elastic = require('@elastic/elasticsearch')
 const elasticClient = elastic.Client
-// let token = fs.readFileSync(`${SERVICEACCOUNT}/token`, 'utf8')
+let token = fs.readFileSync(`${SERVICEACCOUNT}/token`, 'utf8')
 let app = express()
 // Forward processing of requests starting with /api
 app.use('/proxy', createProxyMiddleware({ 
@@ -25,10 +25,10 @@ app.use('/proxy', createProxyMiddleware({
 	// Rewrite path when forwarding
 	pathRewrite: {'^/proxy' : ''},
   headers: {
-    // 'Authorization': `Bearer ${token}`
+    'Authorization': `Bearer ${token}`
   },
   ssl: {
-    // ca: fs.readFileSync(`${SERVICEACCOUNT}/ca.crt`, 'utf8')
+    ca: fs.readFileSync(`${SERVICEACCOUNT}/ca.crt`, 'utf8')
   },
 	changeOrigin: true,
   secure: false,
