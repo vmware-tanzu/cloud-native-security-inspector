@@ -37,7 +37,7 @@
     "delete": "Delete",
     "inspectionNamespace": "Work Namespace",
     "description": "Description",
-    "scanInspector": "Scan Inspector",
+    "scanInspector": "Scanners",
     "typeId": "Type ID",
     "information": "Information"
   },
@@ -48,9 +48,9 @@
     "Assessments": {
       "title": "Assessments",
       "report_view": "Reports",
-      "Kube_bench": "kubebench inspector reports",
-      "image_nspector_reports": "Image inspector reports",
-      "risk": "Risk inspector reports"
+      "Kube_bench": "kubebench scanning reports",
+      "image_nspector_reports": "Image scanning reports",
+      "risk": "Risk scanning reports"
     },
     "Insight": {
       "title": "Insight",
@@ -138,7 +138,7 @@
     "baseline": "Baseline",
 
     "concurrencyRule": "ConcurrencyRule",
-    "imagePullPolicy": "ImagePullPolicy",
+    "imagePullPolicy": "Image Pull Policy",
     "information": "DataProvider Information",
     "username": "Username",
     "password": "Password",

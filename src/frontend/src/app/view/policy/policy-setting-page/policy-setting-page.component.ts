@@ -306,6 +306,12 @@ export class PolicySettingPageComponent implements OnInit {
               } else {
                 this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['kubebench'])
               }
+            } else if (policyList[0].spec.inspector.riskImage) {
+              if (policyList[0].spec.inspector.image) {
+                this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['inspector', 'risk'])
+              } else {
+                this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['kubebench', 'risk'])
+              }
             }
           }
 
