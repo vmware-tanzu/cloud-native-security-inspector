@@ -240,12 +240,15 @@ type InspectionPolicyStatus struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// InspectionExecutor of this policy. It is always an object reference to the underlying cronjob.
+	// +kubebuilder:validation:Optional
 	InspectionExecutor *corev1.ObjectReference `json:"inspectionExecutor"`
 
 	// KubebenchExecutor of this policy. It is always an object reference to the underlying cronjob.
+	// +kubebuilder:validation:Optional
 	KubebenchExecutor *corev1.ObjectReference `json:"kubebenchExecutor"`
 
 	// RiskExecutor of this policy. It is always an object reference to the underlying cronjob.
+	// +kubebuilder:validation:Optional
 	RiskExecutor *corev1.ObjectReference `json:"riskExecutor"`
 
 	// Status of the policy.

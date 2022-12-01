@@ -134,6 +134,7 @@ func (o *OpenSearchExporter) SaveRiskReport(risks data.RiskCollection) error {
 		err        error
 		esDocument []byte
 	)
+	currentTimeData := time.Now().Format(time.RFC3339)
 	for s, items := range risks {
 		split := strings.Split(s, ":")
 		if len(split) != 4 {
@@ -149,9 +150,9 @@ func (o *OpenSearchExporter) SaveRiskReport(risks data.RiskCollection) error {
 		esDoc.Kind = kind
 		esDoc.Name = name
 		esDoc.Namespace = namespace
-		esDoc.Uid = uid
+		esDoc.Uid = fmt.Sprintf("%s_%s", uid, currentTimeData)
 		esDoc.Detail = items
-		esDoc.CreateTimestamp = time.Now().Format(time.RFC3339)
+		esDoc.CreateTimestamp = currentTimeData
 		esDocument, err = json.Marshal(esDoc)
 		if err != nil {
 			return err

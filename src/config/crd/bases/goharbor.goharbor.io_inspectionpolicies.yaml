@@ -512,9 +512,6 @@ spec:
                 description: Status of the policy. Pending, Standby, Suspend.
                 type: string
             required:
-            - inspectionExecutor
-            - kubebenchExecutor
-            - riskExecutor
             - status
             type: object
         type: object
