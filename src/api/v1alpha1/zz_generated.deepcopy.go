@@ -622,8 +622,8 @@ func (in *InspectionPolicyStatus) DeepCopyInto(out *InspectionPolicyStatus) {
 		*out = new(corev1.ObjectReference)
 		**out = **in
 	}
-	if in.ArksecRiskExecutor != nil {
-		in, out := &in.ArksecRiskExecutor, &out.ArksecRiskExecutor
+	if in.RiskExecutor != nil {
+		in, out := &in.RiskExecutor, &out.RiskExecutor
 		*out = new(corev1.ObjectReference)
 		**out = **in
 	}
