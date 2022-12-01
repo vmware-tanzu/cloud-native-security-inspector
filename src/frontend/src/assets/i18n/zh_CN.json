@@ -35,7 +35,7 @@
     "create": "创建",
     "cancel": "取消",
     "delete": "删除",
-    "inspectionNamespace": "定时任务所在的命名空间",
+    "inspectionNamespace": "工作命名空间",
     "description": "描述",
     "scanInspector": "扫描检查器",
     "typeId": "类型ID",

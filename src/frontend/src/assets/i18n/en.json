@@ -35,7 +35,7 @@
     "create": "Create",
     "cancel": "Cancel",
     "delete": "Delete",
-    "inspectionNamespace": "Inspection Namespace",
+    "inspectionNamespace": "Work Namespace",
     "description": "Description",
     "scanInspector": "Scan Inspector",
     "typeId": "Type ID",
@@ -50,7 +50,7 @@
       "report_view": "Reports",
       "Kube_bench": "kubebench inspector reports",
       "image_nspector_reports": "Image inspector reports",
-      "risk": "Risk inspector report"
+      "risk": "Risk inspector reports"
     },
     "Insight": {
       "title": "Insight",
