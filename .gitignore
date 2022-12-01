@@ -25,3 +25,5 @@ dist/
 node_modules/
 coverage/
 .angular/
+package-lock.json
+yarn.lock
