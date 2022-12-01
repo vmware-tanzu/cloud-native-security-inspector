@@ -144,13 +144,13 @@ func (o *OpenSearchExporter) SaveRiskReport(risks data.RiskCollection) error {
 		kind := split[0]
 		name := split[1]
 		namespace := split[2]
-		uid := split[3]
+		uid := fmt.Sprintf("%s_%s", split[3], currentTimeData)
 
 		var esDoc consumers.RiskReport
 		esDoc.Kind = kind
 		esDoc.Name = name
 		esDoc.Namespace = namespace
-		esDoc.Uid = fmt.Sprintf("%s_%s", uid, currentTimeData)
+		esDoc.Uid = uid
 		esDoc.Detail = items
 		esDoc.CreateTimestamp = currentTimeData
 		esDocument, err = json.Marshal(esDoc)
