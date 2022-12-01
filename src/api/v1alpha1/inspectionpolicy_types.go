@@ -19,8 +19,8 @@ const (
 	CronjobInpsection = "Inpection"
 	// CronjobKubebench describes the Kubebench type of the cronjob.
 	CronjobKubebench = "Kubebench"
-	// CronjobArksecRisk describes the Risk type of the cronjob.
-	CronjobArksecRisk = "ArksecRisk"
+	// CronjobRisk describes the Risk type of the cronjob.
+	CronjobRisk = "Risk"
 )
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
@@ -187,8 +187,9 @@ type Inspector struct {
 	// Image of the kubebench.
 	// +kubebuilder:validation:Optional
 	KubebenchImage string `json:"kubebenchImage"`
-	// Image of the arksec.
-	ArksecRiskImage string `json:"arksecRiskImage"`
+	// Image of the risk.
+	// +kubebuilder:validation:Optional
+	RiskImage string `json:"riskImage"`
 	// Image pull policy.
 	// +kubebuilder:default:=IfNotPresent
 	ImagePullPolicy corev1.PullPolicy `json:"imagePullPolicy"`
@@ -244,8 +245,8 @@ type InspectionPolicyStatus struct {
 	// KubebenchExecutor of this policy. It is always an object reference to the underlying cronjob.
 	KubebenchExecutor *corev1.ObjectReference `json:"kubebenchExecutor"`
 
-	// ArksecRiskExecutor of this policy. It is always an object reference to the underlying cronjob.
-	ArksecRiskExecutor *corev1.ObjectReference `json:"arksecRiskExecutor"`
+	// RiskExecutor of this policy. It is always an object reference to the underlying cronjob.
+	RiskExecutor *corev1.ObjectReference `json:"riskExecutor"`
 
 	// Status of the policy.
 	// Pending, Standby, Suspend.

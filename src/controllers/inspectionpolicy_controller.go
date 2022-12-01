@@ -115,13 +115,13 @@ func (r *InspectionPolicyReconciler) Reconcile(ctx context.Context, req ctrl.Req
 	var statusNeedUpdateForKubebench bool
 	statusNeedUpdateForKubebench, err = r.cronjobForInspection(ctx, policy, goharborv1.CronjobKubebench, logger)
 
-	// Process the cronjob for arksecrisk
-	var statusNeedUpdateForArksecRisk bool
-	statusNeedUpdateForArksecRisk, err = r.cronjobForInspection(ctx, policy, goharborv1.CronjobArksecRisk, logger)
+	// Process the cronjob for risk
+	var statusNeedUpdateForRisk bool
+	statusNeedUpdateForRisk, err = r.cronjobForInspection(ctx, policy, goharborv1.CronjobRisk, logger)
 
 	// either inspection or kubebench needs update, it should be updated
 	var statusNeedUpdate bool
-	if statusNeedUpdateForInspection || statusNeedUpdateForKubebench || statusNeedUpdateForArksecRisk {
+	if statusNeedUpdateForInspection || statusNeedUpdateForKubebench || statusNeedUpdateForRisk {
 		statusNeedUpdate = true
 	}
 
@@ -141,7 +141,10 @@ func (r *InspectionPolicyReconciler) cronjobForInspection(ctx context.Context, p
 		return false, nil
 	} else if cronjobType == goharborv1.CronjobKubebench && policy.Spec.Inspector.KubebenchImage == "" {
 		return false, nil
+	} else if cronjobType == goharborv1.CronjobRisk && policy.Spec.Inspector.RiskImage == "" {
+		return false, nil
 	}
+
 	// Check whether the underlying cronjob resource is existing or not.
 	cj, err := r.checkCronJob(ctx, policy, cronjobType)
 	if err != nil {
@@ -385,8 +388,8 @@ func (r *InspectionPolicyReconciler) checkCronJob(ctx context.Context, policy *g
 		exec = policy.Status.InspectionExecutor
 	} else if cronjobType == goharborv1.CronjobKubebench {
 		exec = policy.Status.KubebenchExecutor
-	} else if cronjobType == goharborv1.CronjobArksecRisk {
-		exec = policy.Status.KubebenchExecutor
+	} else if cronjobType == goharborv1.CronjobRisk {
+		exec = policy.Status.RiskExecutor
 	}
 
 	if exec != nil {
@@ -451,8 +454,8 @@ func (r *InspectionPolicyReconciler) generateCronJobCR(policy *goharborv1.Inspec
 	} else if cronjobType == goharborv1.CronjobKubebench {
 		name = "kubebench"
 		command = "/kubebench"
-	} else if cronjobType == goharborv1.CronjobArksecRisk {
-		name = "arksecrisk"
+	} else if cronjobType == goharborv1.CronjobRisk {
+		name = "risk"
 		command = "/risk"
 	}
 	image = getImage(policy, cronjobType)
@@ -498,7 +501,7 @@ func (r *InspectionPolicyReconciler) generateCronJobCR(policy *goharborv1.Inspec
 		},
 	}
 
-	if cronjobType == goharborv1.CronjobArksecRisk {
+	if cronjobType == goharborv1.CronjobRisk {
 		cj.Spec.JobTemplate.Spec.Template.Spec.Containers[0].Env = []corev1.EnvVar{
 			{
 				Name:  "SERVER_ADDR",
@@ -559,8 +562,8 @@ func getImage(policy *goharborv1.InspectionPolicy, cronjobType string) string {
 			return policy.Spec.Inspector.Image
 		} else if cronjobType == goharborv1.CronjobKubebench {
 			return policy.Spec.Inspector.KubebenchImage
-		} else if cronjobType == goharborv1.CronjobArksecRisk {
-			return policy.Spec.Inspector.ArksecRiskImage
+		} else if cronjobType == goharborv1.CronjobRisk {
+			return policy.Spec.Inspector.RiskImage
 		}
 	}
 
