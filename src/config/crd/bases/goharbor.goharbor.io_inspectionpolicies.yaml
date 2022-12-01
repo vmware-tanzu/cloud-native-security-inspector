@@ -340,9 +340,7 @@ spec:
                     description: Image of the kubebench.
                     type: string
                 required:
-                - image
                 - imagePullPolicy
-                - kubebenchImage
                 type: object
               schedule:
                 description: 'Schedule of the inspector. Cron format. Reference: https://en.wikipedia.org/wiki/Cron'
