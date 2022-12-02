@@ -1,6 +1,11 @@
 <div class="report">
   <h2>{{'Nav.Assessments.risk'|translate}}</h2>
   <!-- echarts -->
+  <div class="echarts-loading" *ngIf="echartsLoading">
+    <span class="spinner spinner-lg">
+      Loading...
+    </span>
+  </div>
   <div id="risk" style="width: 1500px;height:450px; overflow: hidden;"> </div>
 
   <clr-datagrid  [clrDgLoading]="dgLoading" (clrDgRefresh)="pageChange($event)">

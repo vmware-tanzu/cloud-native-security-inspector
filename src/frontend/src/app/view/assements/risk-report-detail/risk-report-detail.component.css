@@ -2,3 +2,27 @@
   height: 100vh;
   overflow: auto;
 }
+.datagrid::ng-deep .datagrid-column:first-of-type,
+.datagrid::ng-deep .datagrid-cell:first-of-type {
+  flex: none;
+}
+.datagrid::ng-deep .datagrid-column:nth-of-type(2),
+.datagrid::ng-deep .datagrid-cell:nth-of-type(2) {
+  flex: none;
+}
+.datagrid::ng-deep .datagrid-column:nth-of-type(3),
+.datagrid::ng-deep .datagrid-cell:nth-of-type(3) {
+  flex: none;
+}
+.datagrid::ng-deep .datagrid-column:nth-of-type(4),
+.datagrid::ng-deep .datagrid-cell:nth-of-type(4) {
+  flex: none;
+}
+.datagrid::ng-deep .datagrid-column:nth-of-type(5),
+.datagrid::ng-deep .datagrid-cell:nth-of-type(5) {
+  flex: none;
+}
+.datagrid::ng-deep .datagrid-column:nth-of-type(6),
+.datagrid::ng-deep .datagrid-cell:nth-of-type(6) {
+  margin-left: 10px;
+}

@@ -29,3 +29,12 @@
   opacity: 1;
   transition: right 5s, opacity 2s;
 }
+.report .echarts-loading {
+  position: relative;
+  width: 1400px;
+}
+.report .echarts-loading .spinner {
+  position: absolute;
+  left: 50%;
+  top: 150px;
+}

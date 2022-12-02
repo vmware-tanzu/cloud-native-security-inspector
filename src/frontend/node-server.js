@@ -110,7 +110,7 @@ app.post('/open-search', (req, res) => {
     open_search(client, body).then(v => {
       res.status(200).send(v) 
     }).catch(err => {
-      res.status(500).send(err) 
+      res.status(500).send(err.message) 
     })
   } else if (body.client === 'risk_opensearch') {
     const client = new Client({
@@ -127,12 +127,7 @@ app.post('/open-search', (req, res) => {
     risk_open_serach(client, body).then(v => {
       res.status(200).send(v) 
     }).catch(err => {
-      res.status(500).send(err) 
-      // console.log('err', err)
-      // if (err.statusCode === 404) {
-      //   res.status(205).send(body.query+'Not Found')
-      // } else {
-      // }
+      res.status(500).send(err.message) 
     })
   } else {
     const client = new elasticClient({
@@ -150,7 +145,7 @@ app.post('/open-search', (req, res) => {
       res.status(200).send(v) 
 
     }).catch(err => {
-      res.status(500).send(err) 
+      res.status(500).send(err.message) 
     })  }
 
 })

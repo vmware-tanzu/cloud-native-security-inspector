@@ -36,7 +36,7 @@
     <clr-accordion-panel >
       <clr-accordion-title>{{'CommonlyUse.details' | translate}}</clr-accordion-title>
       <clr-accordion-content *clrIfExpanded>
-        <clr-datagrid *ngIf="detailInfo._source && detailInfo._source.Detail.length > 0 ">
+        <clr-datagrid class="datagrid" *ngIf="detailInfo._source && detailInfo._source.Detail.length > 0 ">
           <clr-dg-column [clrDgField]="'score'">score</clr-dg-column>
           <clr-dg-column [clrDgField]="'scale'">scale</clr-dg-column>
           <clr-dg-column [clrDgField]="'vuln.package'">package</clr-dg-column>
