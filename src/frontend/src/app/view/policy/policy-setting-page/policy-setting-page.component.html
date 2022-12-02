@@ -193,12 +193,12 @@
           </h4>
           <ul class="list">
             <li *ngFor="let item of baselines, let i = index">
-              <clr-input-container class="w-230">
+              <!-- <clr-input-container class="w-230">
                 <label>{{'Policy.kind'|translate}}:   
                   <clr-icon (click)="policySettingremoveItem('baseline', i)" style="color: hsl(9, 100%, 43%);" *ngIf="i!==0" shape="minus-circle" class="is-solid"></clr-icon>
                 </label>
                 <input style="color: #999;" clrInput placeholder="" name="kind" disabled [(ngModel)]="item.kind" [ngModelOptions]="{standalone: true}" />
-              </clr-input-container>
+              </clr-input-container> -->
               <clr-select-container class="w-230" *ngIf="policyForm.get('inspectionResult')?.get('generate')?.value">
                 <label class="w-200">{{'Policy.baseline'|translate}}</label>
                 <select clrSelect name="baseline" [(ngModel)]="item.baseline" [ngModelOptions]="{standalone: true}">
@@ -209,14 +209,14 @@
                 </select>
               </clr-select-container>
   
-              <clr-input-container class="w-230">
+              <!-- <clr-input-container class="w-230">
                 <label>{{'CommonlyUse.version'|translate}}:   </label>
                 <input clrInput placeholder="" name="version" [(ngModel)]="item.version" [ngModelOptions]="{standalone: true}"/>
               </clr-input-container>
               <clr-input-container class="w-230">
                 <label>{{'Policy.scheme'|translate}}:   </label>
                 <input clrInput placeholder="" name="scheme" [(ngModel)]="item.scheme" [ngModelOptions]="{standalone: true}"/>
-              </clr-input-container>
+              </clr-input-container> -->
             </li>
           </ul>
         </div>
