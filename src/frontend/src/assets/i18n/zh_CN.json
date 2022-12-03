@@ -48,9 +48,9 @@
     "Assessments": {
       "title": "评估报告",
       "report_view": "报告",
-      "Kube_bench": "kubebench扫描器报告",
-      "image_nspector_reports": "镜像扫描器报告",
-      "risk": "漏洞扫描报告"
+      "Kube_bench": "kubebench扫描报告",
+      "image_nspector_reports": "镜像扫描报告",
+      "risk": "风险扫描报告"
     },
     "Insight": {
       "title": "安全状态",
@@ -77,7 +77,7 @@
     "kind": "Kind",
     "assessment": "Assessment",
     "format": "Format",
-    "generate": "Generate",
+    "generate": "Generate报告",
     "live_time": "LiveTime",
     "managedBy": "ManagedBy",
     "baselines": "Baselines",
@@ -141,9 +141,9 @@
     "assessment": "评估",
     "format": "格式",
     "generate": "生成报告",
-    "live_time": "保留时间",
+    "live_time": "保留时间(秒)",
     "managedBy": "托管",
-    "baselines": "基线",
+    "baselines": "基线 (配置harbor镜像检查器)",
     "baseline": "基线",
     "scheme": "模式",
     "key": "键",
@@ -156,7 +156,7 @@
     "elasticSearchPasswd": "密码",
     "elasticSearchCert": "证书",
     "openSearchEnabled": "OpenSearch",
-    "workNamespace": "工作命名空间",
+    "workNamespace": "定时任务所在的命名空间",
     "image": "镜像地址"
   },
   "Setting": {

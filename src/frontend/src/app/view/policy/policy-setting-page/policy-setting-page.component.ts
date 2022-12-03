@@ -210,9 +210,9 @@ export class PolicySettingPageComponent implements OnInit {
       case 'baseline':
         this.baselines.push({
           kind: 'vulnerability',
-          baseline:'',
-          version:'',
-          scheme: ''
+          baseline:'High',
+          version:'v1.1',
+          scheme: 'application/vnd.security.vulnerability.report; version=1.1'
         })
         break
       case 'namespacelabels':
@@ -288,23 +288,31 @@ export class PolicySettingPageComponent implements OnInit {
           this.policyForm.get('inspectionSetting')?.get('suspend')?.setValue(policyList[0].spec.strategy.suspend)
           this.policyForm.get('inspectionSetting')?.get('concurrencyRule')?.setValue(policyList[0].spec.strategy.concurrencyRule)
           if (policyList[0].spec.inspector.image && policyList[0].spec.inspector.kubebenchImage) {
-            if (policyList[0].spec.inspector.arksecRiskImage) {
+            if (policyList[0].spec.inspector.riskImage) {
               this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['inspector', 'kubebench', 'risk'])
             } else {
               this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['inspector', 'kubebench'])
             }
           } else {
             if (policyList[0].spec.inspector.image) {
-              if (policyList[0].spec.inspector.arksecRiskImage) {
+              if (policyList[0].spec.inspector.riskImage) {
                 this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['inspector', 'risk'])
               } else {
                 this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['inspector'])
               }
             } else if (policyList[0].spec.inspector.kubebenchImage) {
-              if (policyList[0].spec.inspector.arksecRiskImage) {
+              if (policyList[0].spec.inspector.riskImage) {
                 this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['kubebench', 'risk'])
               } else {
                 this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['kubebench'])
+              }
+            } else if (policyList[0].spec.inspector.riskImage) {
+              if (policyList[0].spec.inspector.image) {
+                this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['inspector', 'risk'])
+              } else if (policyList[0].spec.inspector.kubebenchImage){
+                this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['kubebench', 'risk'])
+              } else {
+                this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['risk'])
               }
             }
           }
@@ -482,30 +490,6 @@ export class PolicySettingPageComponent implements OnInit {
               openSearchEnabled: this.policyForm.get('inspectionSetting')?.get('openSearchEnabled')?.value,
             },
             baselines: this.baselines,
-            // dataProvider: {
-            //   cache: {
-            //     address: '',
-            //     credential: {
-            //       accessKey: this.policyForm.get('username')?.value,
-            //       accessSecret: this.policyForm.get('password')?.value
-            //     },
-            //     database: 0,
-            //     kind: "Redis",
-            //     settings: {
-            //       livingTime: 0,
-            //       skipTLSVerify: true
-            //     }
-            //   },
-            //   connection: {
-            //     insecure: this.policyForm.get('insecure')?.value
-            //   },
-            //   credential: {
-            //     accessKey: this.policyForm.get('username')?.value,
-            //     accessSecret: this.policyForm.get('password')?.value
-            //   },
-            //   endpoint: this.policyForm.get('endpoint')?.value,
-            //   provider: "Harbor"
-            // },
             namespaceSelector: {
               matchExpressions: [],
               matchLabels: {}
@@ -535,7 +519,7 @@ export class PolicySettingPageComponent implements OnInit {
         } else if (image === 'kubebench') {
           data.spec.inspector.kubebenchImage = this.imageList[1].url
         } else if (image === 'risk') {
-          data.spec.inspector.arksecRiskImage = this.imageList[2].url
+          data.spec.inspector.riskImage= this.imageList[2].url
         }
       });
     }

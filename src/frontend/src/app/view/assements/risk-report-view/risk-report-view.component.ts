@@ -20,7 +20,7 @@ export class RiskReportViewComponent implements OnInit {
   pageMaxCount = 1
   dgLoading = false
   public showDetailFlag = false
-
+  echartsLoading = true
   riskList = []
   constructor(
     private assessmentService: AssessmentService
@@ -30,9 +30,28 @@ export class RiskReportViewComponent implements OnInit {
     this.echartsInit()
     const query: any = { 
       size:  this.defaultSize,
-      from: 0
+      from: 0,
+      sort: [
+        {
+          createTime: {order: "desc"}
+        }
+      ]
     };
-    this.getRiskList(query, this.riskCallBack)
+    this.getRiskList(query, (data: any, that: any) => {
+      const dateList: any = []
+      const valueList: any = []
+      data.hits.hits.forEach((el: any) => {
+        if (el._source.uid) {
+          el.risk_number = el._source.Detail.length
+          that.riskList.push(el)
+          dateList.push(el._source.createTime)
+          valueList.push(el.risk_number)
+          that.echartsRender(dateList, valueList)
+          that.echartsLoading = false
+        }
+      });    
+      that.dgLoading = false;
+    })
 
   }
   // init
@@ -108,7 +127,7 @@ export class RiskReportViewComponent implements OnInit {
         data => {
           callback(data, this)
           // data.hits.total.value
-          this.pageMaxCount = Math.ceil( 100 / this.defaultSize)
+          this.pageMaxCount = Math.ceil( data.hits.total.value / this.defaultSize)
         },
         err => {}
       )
@@ -128,11 +147,9 @@ export class RiskReportViewComponent implements OnInit {
         that.riskList.push(el)
         dateList.push(el._source.createTime)
         valueList.push(el.risk_number)
-        that.echartsRender(dateList, valueList)
+        // that.echartsRender(dateList, valueList)
       }
-    });
-    console.log('dateList', valueList, dateList);
-    
+    });    
     that.dgLoading = false;
   }
 
@@ -156,7 +173,12 @@ export class RiskReportViewComponent implements OnInit {
   getRiskReportList(reset: boolean, size?: number, from?:number) {
     const query: any = { 
       size: size ? size :10,
-      from: from ? from: 0
+      from: from ? from: 0,
+      sort: [
+        {
+          createTime: {order: "desc"}
+        }
+      ]
     };
     function callBack(data: any, that: any) {
       if (reset) {
