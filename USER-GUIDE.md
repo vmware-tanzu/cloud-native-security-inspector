@@ -25,14 +25,14 @@
         - [1.2.2.1 Actions](#1221-actions)
       - [1.2.3 Assessment report](#123-assessment-report)
   - [2. Troubleshooting](#2-troubleshooting)
-    - [2.1 With portal](#21-with-portal)
+    - [2.1 With portal](#21-build-portal-from-scratch)
 ----
 
-## 1. To start using Cloud Native Security Inspector
+## 1. To start using Cloud Native Security Inspector (CNSI)
 ### 1.1 With portal (recommended)
 #### 1.1.1 Configurations
 
-  1. Get Kubernetes node INTERNAL-IP
+1. Get Kubernetes node IP
 
 ```shell
 $ kubectl get nodes -o wide
@@ -40,71 +40,70 @@ $ kubectl get nodes -o wide
 NAME        STATUS   ROLES           AGE   VERSION   INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION       CONTAINER-RUNTIME
 junhao-vm   Ready    control-plane   52d   v1.24.2   10.117.32.162   <none>        Ubuntu 18.04.6 LTS   4.15.0-189-generic   containerd://1.6.6
 ```
-  2. In the browser address bar enter:
+2. In the browser address bar enter:
   ```shell
     http://10.117.32.162:30150
   ```
 
-  3. Firstly you need to configurate Cloud-Native-Security-Inspector before using it. Click the Setting menu and configure security data source related content. 
-      The setting is the global configuration for the security data source and image known registries. 
-
-  <img src="./docs/setting-menu.png">
-
+3. Create a Secret first, then create a Setting. The Setting is mainly about Harbor related configurations.
 
 ###### Secret
-  Create a secret for Harbor so that Cloud-Native-Security-Inspector can talk to Harbor with the credentials. The secret you created will be referenced by the setting. If you already had the secret, you can skip creating one and move forward to next step.
-  <img src="./docs/secret.png">
+Create a secret for Harbor so that Cloud-Native-Security-Inspector can talk to Harbor with the credentials.
+The secret you created will be referred by the setting. If you have already had the K8s secret, you can skip creating one and move forward to next step.
+<img src="./docs/pictures/create-secret.png">
 
-  | Field Name  | Type   | Description |
-  |----------|--------| ----------- |
-  | accessKey   | string | The username of Harbor |
-  | accessSecret | string | The password of Harbor |
-  | Name         | string | The secret's name      |
-  | Namespace    | string | The secret's namespace |
+| Field Name    | Type   | Description            |
+|---------------|--------|------------------------|
+| accessKey     | string | The username of Harbor |
+| accessSecret  | string | The password of Harbor |
+| Name          | string | The secret's name      |
+| Namespace     | string | The secret's namespace |
 
 ##### Setting
-  Click on "Credential Name" and choose the secret you've created in previous step. Currently only Harbor is supported as the security data provider. You also need to specify the endpoint of Harbor and the scan interval.
-  <img src="./docs/setting-required-fields.png">
+Click on "Credential Name" and choose the secret you've created in previous step. 
+You also need to specify the endpoint of Harbor and the scan interval.
 
-###### DataSource
+<img src="./docs/pictures/create-setting.png">
 
-| Field Name           | Field Type | Description                                                              |
-|----------------------| ---------- |--------------------------------------------------------------------------|
-| Setting Name         | string     | The name of the data source                                              |
-| Credential Name      | string     | The name of the credential of data source                                |
-| Credential Namespace | string     | The namespace of the credential of data source                           |
-| Provider             | string     | The provider of the data source, currently only support Harbor           |
-| Name                 | string     | The name of the datasource setting, auto-generated and can't be modified |
-| Endpoint             | URL(string)| The endpoint of the data source                                          |
-| Schedule             | string     | The cron expression to be configured in Harbor to specfiy the CVE update interval|
-| skipTLSVerify        | boolean    | Whether need to skip the TLS verify                                      |
+###### Required Fields
+
+| Field Name           | Field Type  | Description                                                                       |
+|----------------------|-------------|-----------------------------------------------------------------------------------|
+| Setting Name         | string      | The name of the data source                                                       |
+| Credential Name      | string      | The name of the credential of data source                                         |
+| Credential Namespace | string      | The namespace of the credential of data source                                    |
+| Provider             | string      | The provider of the data source, currently only support Harbor                    |
+| Name                 | string      | The name of the datasource setting, auto-generated and can't be modified          |
+| Endpoint             | URL(string) | The endpoint of the data source                                                   |
+| Schedule             | string      | The cron expression to be configured in Harbor to specify the CVE update interval |
+| skipTLSVerify        | boolean     | Whether need to skip the TLS verify                                               |
 
 
-  <img src="./docs/setting-registry.png">
 
 ###### KnownRegistry
-This filed is optional. If it is configed, replicate rules are setup in Harbor and images from KnowRegisties can be automatically replicated to Harbor fisrtly.
+This field is optional. If it is configured, replicate rules are set up in Harbor and images from 
+KnowRegistries can be automatically replicated to Harbor.
 
-| Field Name              | Field Type | Description |
-| ------------------      | ---------  | -----------                                                                  |
-| provider                | string     | The provider of the registry, currently supports the adapter lists in Harbor |
-| name                    | string     | The name of the registry                                                     |
-| endpoint                | URL(string)| The endpoint of the registry                                                 |
-| Credential Name         | string     | The name of the credential of KnownRegistry                                  |
-| Credential Namespace    | string     | The namespace of the credential of KnownRegistry                             |
-| skipTLSVerify           | boolean    | Whether need to skip the TLS verify                                          |
+| Field Name           | Field Type  | Description                                                                  |
+|----------------------|-------------|------------------------------------------------------------------------------|
+| provider             | string      | The provider of the registry, currently supports the adapter lists in Harbor |
+| name                 | string      | The name of the registry                                                     |
+| endpoint             | URL(string) | The endpoint of the registry                                                 |
+| Credential Name      | string      | The name of the credential of KnownRegistry                                  |
+| Credential Namespace | string      | The namespace of the credential of KnownRegistry                             |
+| skipTLSVerify        | boolean     | Whether need to skip the TLS verify                                          |
 
   <img src="./docs/setting-cache.png">
 
 
 ###### Cache
-This filed is optional. If it is configed. Cloud-Native-Security-Inspector can use the external Redis you specified here to cache the security data from Harbor.
+This filed is optional. If it is configured. Cloud-Native-Security-Inspector can use the external Redis you specified here to cache the security data from Harbor.
 
-| Field Name | Field Type | Description |
-  | ---------- | ---------  | ----------- |
-| address    | URL(string)     | The URL of the redis address |
-| livingTime | int64      | LivingTime (seconds) specifies the living time of the cache data |
-| skipTLSVerify | boolean | SkipTLSVerify indicates whether skip the TLS verification. Only active when 'rediss' scheme is configured |
+| Field Name    | Field Type  | Description                                                                                              |
+|---------------|-------------|----------------------------------------------------------------------------------------------------------|
+| address       | URL(string) | The URL of the redis address                                                                             |
+| livingTime    | int64       | LivingTime (seconds) specifies the living time of the cache data                                         |
+| skipTLSVerify | boolean     | SkipTLSVerify indicates whether skip the TLS verification. Only active when 'redis' scheme is configured |
   
 
 
@@ -112,27 +111,28 @@ This filed is optional. If it is configed. Cloud-Native-Security-Inspector can u
   <img src="./docs/policy-inspection-setting.png">
 
 
-
+#### Policy
 ###### Inspection Settings
-| Field Name | Field Type | Description |
-  | ---------- | ---------  | ----------- |
-| Policy Name | string | Users can customize the name of this policy|
-| Worknamespace |*string|WorkNamespace specify the namespace for creating the underlying inspection resources|
-| Schedule     |string|Configure Inspection scan cycle|
-| HistoryLimit|*int32|HistoryLimit limits the max number of the completed inspections|
-|Suspend|*bool|If true, suspend the subsequent inspections temporarily|
-|ConcurrencyRule|string|ConcurrencyRule indicates how to handle the overlapped inspector processes|
-|Image|string|Image of the inspector|
-|ImagePullPolicy|corev1.PullPolicy|Image pull policy. Choose from Always, IfNotPresent and Never|
-|Settings Name| string |Select the existing setting's name|
-  <img src="./docs/policy-standard-setting.png">
+| Field Name      | Field Type        | Description                                                                          |
+|-----------------|-------------------|--------------------------------------------------------------------------------------|
+| Policy Name     | string            | Users can customize the name of this policy                                          |
+| Worknamespace   | *string           | WorkNamespace specify the namespace for creating the underlying inspection resources |
+| Schedule        | string            | Configure Inspection scan cycle                                                      |
+| HistoryLimit    | *int32            | HistoryLimit limits the max number of the completed inspections                      |
+| Suspend         | *bool             | If true, suspend the subsequent inspections temporarily                              |
+| ConcurrencyRule | string            | ConcurrencyRule indicates how to handle the overlapped inspector processes           |
+| Scan Inspector  | string            | The inspector which will be used by this policy                                      |
+| ImagePullPolicy | corev1.PullPolicy | Image pull policy. Choose from Always, IfNotPresent and Never                        |
+| Settings Name   | string            | Select the existing setting's name                                                   |
+| OpenSearch      | multiple configs  | Enable this to leverage OpenSearch to store the time-series assessment reports       |
+| ElasticSearch   | multiple configs  | Enable this to leverage ElasticSearch to store the time-series assessment reports    |
+
+<img src="./docs/policy-standard-setting.png">
 
 ###### Baselines
-| Field Name | Field Type | Description |
-  | ---------- | ---------  | ----------- |
-| Kind |string|Kind of inspector|
-| Baseline|string|Baseline for the compliance of this kind|
-
+| Field Name | Field Type | Description                              |
+|------------|------------|------------------------------------------|
+| Baseline   | string     | Baseline for the compliance of this kind |
 
 ###### Namespace Labels Selectors
 NamespaceSelector is to specify which namespaces should be scanned
@@ -147,20 +147,18 @@ NamespaceSelector is to specify which workloads should be scanned
 
 You can choose whether the assessment reports are generated after each scanning. In additional to that, you can config the format and live time of the reports.
 
-| Field Name | Field Type | Description                                                                       |
-  | ---------- |-----------------------------------------------------------------------------------| ----------- |
-| Generate |bool| Generate indicates whether generate the assessment report or not, default is true |
-| Format|string| Format of the assessment report data                                              |
-| LiveTime|int64| Live time of the generated report                                                 |
-| ManagedBy| bool | Indicate whether the assessmentreports are managed by the policy, default is true |
+| Field Name      | Field Type | Description                                                                       |
+|-----------------|------------|-----------------------------------------------------------------------------------|
+| Generate report | bool       | Generate indicates whether generate the assessment report or not, default is true |
+| LiveTime        | int64      | Live time of the generated report, the unit is second                             |
 
 
 ###### Actions
 If violations are found by the scanning, you can choose if quarantine the workloads that have the vulnerabilities.
 
-  | Field Name | Field Type | Description |
-  | ---------- | ---------  | ----------- |
-  | Kind |string|Kind of action. Now the only choice is quarantine_vulnerable_workload|
+| Field Name | Field Type | Description                                                           |
+|------------|------------|-----------------------------------------------------------------------|
+| Kind       | string     | Kind of action. Now the only choice is quarantine_vulnerable_workload |
 
  
   4.  After the inspection policy created, inspection scanning will be triggered according to your configuration.  You can navigate to assessments menu to see the security posture and risk trends of the cluster.
@@ -171,7 +169,7 @@ If violations are found by the scanning, you can choose if quarantine the worklo
   By clicking the button in action column of each report, you can view the details of the report.
   <img src="./docs/report-detail.png">
 
-#### 1.1.3  Insight
+#### 1.1.3 Insight
 In insight menu, the security information is clustered by different aspects to help the security auditor know the security posture clearly. 
 ##### Cluster
   Security data gathered by cluster.
@@ -236,7 +234,7 @@ spec:
     skipTLSVerify: true
 ```
 
-You should define a Opaque secret that has accessKey and accessSecret fields in the
+You should define an Opaque secret that has accessKey and accessSecret fields in the
 data property, the value of accessKey is the base64 encoded harbor username and the
 value of accessSecret is the base64 encoded harbor password.
 
@@ -345,7 +343,7 @@ If the `actions` field is not specified, no action will be performed on violatio
   
   When violation is detected on workloads, Cloud-Native-Security-Inspector will create a network policy with "deny-all" rules for the namespace if not exist. The violation pods will be labeled `goharbor.io/controller: "TSI"` and `goharbor.io/inspection: "risk'` to match the pod selector on network policy and the pods will be quarantined.
 
-  When the voidlation pods turns good, the labels will be removed from the pods. And the quarantine will be revoked.
+  When the violation pods turns good, the labels will be removed from the pods. And the quarantine will be revoked.
 
 - TBD
 
@@ -530,45 +528,14 @@ spec:
 </details>
 
 
-
-
-
 ## 2. Troubleshooting
 ### 2.1 Build portal from scratch
-If you encounter the problem of installing npm dependencies during the portal building process, please modify the npm reference source in Dockerfile.portal
+If you encounter the problem of installing npm dependencies during the portal building process,
+please modify the npm reference source in Dockerfile.portal
 
   <img src="docs/npm-error.png" />
 
 ```shell
 $ npm --registry https://registry.npm.taobao.org install
   
-```
-### 2.2 Port conflicts
-The portal needs to use port 30150. Cloud-Native-Security-Inspector portal will fail to deploy if the port has already been occupied.
-
-  <img src="docs/deploy-error.png" />
-
-Please follow below instructions to update the port of portal and redeploy:
-
-```shell
-$ cd src/frontend/scripts
-$ vim cloud-native-security-inspector-portal-service.yaml
-
-kind: Service
-apiVersion: v1
-metadata:
-  name: cloud-native-security-inspector-portal-service
-spec:
-  selector:
-    cloud-native-security-inspector-portal: portal
-  ports:
-  - protocol: TCP
-    port: 3800
-    targetPort: 3800
-    nodePort: <Replace with free port>
-  type: NodePort
-
-$ cd ../../
-$ make undeploy
-$ make deploy
 ```

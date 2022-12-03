@@ -15,7 +15,7 @@ Cloud Native Security Inspector is an open source cloud native runtime security 
 
 
 ## Architecture
-  <img src="./docs/architecture.png">  
+  <img src="./docs/pictures/architecture.png">  
 
 **Cloud Native Security Inspector** consists of the following 3 components:
 1. Controller Manager
