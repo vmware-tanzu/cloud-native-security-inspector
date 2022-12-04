@@ -21,17 +21,19 @@
       </div>
     </clr-dg-column>
     <clr-dg-column >{{'CommonlyUse.create_time'|translate}}</clr-dg-column>
-    <clr-dg-column >{{'CommonlyUse.action'|translate}}</clr-dg-column>
+    <!-- <clr-dg-column >{{'CommonlyUse.action'|translate}}</clr-dg-column> -->
 
     <clr-dg-row *clrDgItems="let report of shardService.reportslist">
       <clr-dg-cell>
-        {{report.metadata.name}}
+        <a href="javascript:;" (click)="toReport(report)" >
+          <clr-icon style="color: skyblue; cursor: pointer;" shape="pop-out"></clr-icon>
+          {{report.metadata.name}}
+        </a>
       </clr-dg-cell>
       <clr-dg-cell>{{report.metadata.namespace}}</clr-dg-cell>
       <clr-dg-cell>{{report.metadata.creationTimestamp}}</clr-dg-cell>
-      <clr-dg-cell>
-        <clr-icon (click)="toReport(report)" style="color: skyblue" shape="pop-out"></clr-icon>
-      </clr-dg-cell>
+      <!-- <clr-dg-cell >
+      </clr-dg-cell> -->
 
     </clr-dg-row>
     <clr-dg-footer>

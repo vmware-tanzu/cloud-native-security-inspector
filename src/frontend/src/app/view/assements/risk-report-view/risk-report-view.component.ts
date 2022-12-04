@@ -15,9 +15,10 @@ export class RiskReportViewComponent implements OnInit {
   myChart!: any
   opensearchInfo!: {url: string, user: string, pswd: string}
   currentDetail: any = {}
-  defaultSize = 10
+  defaultSize = 0
   from = 0
   pageMaxCount = 1
+  currentPage = 1
   dgLoading = false
   public showDetailFlag = false
   echartsLoading = true
@@ -37,21 +38,6 @@ export class RiskReportViewComponent implements OnInit {
         }
       ]
     };
-    this.getRiskList(query, (data: any, that: any) => {
-      const dateList: any = []
-      const valueList: any = []
-      data.hits.hits.forEach((el: any) => {
-        if (el._source.uid) {
-          el.risk_number = el._source.Detail.length
-          that.riskList.push(el)
-          dateList.push(el._source.createTime)
-          valueList.push(el.risk_number)
-          that.echartsRender(dateList, valueList)
-          that.echartsLoading = false
-        }
-      });    
-      that.dgLoading = false;
-    })
 
   }
   // init
@@ -69,7 +55,7 @@ export class RiskReportViewComponent implements OnInit {
           type: 'continuous',
           seriesIndex: 0,
           min: 0,
-          max: 200000
+          max: 400
         }
       ],
     
@@ -110,7 +96,7 @@ export class RiskReportViewComponent implements OnInit {
   }
 
   // get risk list
-  getRiskList(query: any, callback: Function) {
+  getRiskList(query: any, callback: Function) {    
     this.dgLoading = true
     const opensearchbase: any = localStorage.getItem('cnsi-open-search')
     // const elasticsearchbase: any = localStorage.getItem('cnsi-elastic-search')
@@ -125,8 +111,7 @@ export class RiskReportViewComponent implements OnInit {
       this.opensearchInfo = opensearchInfo
       this.assessmentService.getKubeBenchReport({url: this.opensearchInfo.url, index: 'risk_manager_details', username: this.opensearchInfo.user, password: this.opensearchInfo.pswd, query, client, ca}).subscribe(
         data => {
-          callback(data, this)
-          // data.hits.total.value
+          callback(data, this, query)
           this.pageMaxCount = Math.ceil( data.hits.total.value / this.defaultSize)
         },
         err => {}
@@ -138,18 +123,36 @@ export class RiskReportViewComponent implements OnInit {
   }
 
   // risk callback
-  riskCallBack(data: any, that: any) {
+  riskCallBack(data: any, that: any, query?: any, max?: number) {
     const dateList: any = []
     const valueList: any = []
+    let index = query.from-1;
     data.hits.hits.forEach((el: any) => {
       if (el._source.uid) {
         el.risk_number = el._source.Detail.length
-        that.riskList.push(el)
         dateList.push(el._source.createTime)
         valueList.push(el.risk_number)
-        // that.echartsRender(dateList, valueList)
+        if (query && max) {          
+          if ((query.from + query.size) <= max) {
+            for (index < query.from + query.size; index++;) {
+              that.riskList[index] = el
+              break
+            }
+          } else {
+            for (index < max; index++;) {
+              that.riskList[index] = el
+              break
+            }
+          }
+        } else {
+          that.riskList.push(el)
+        }
       }
-    });    
+    });     
+    if (that.echartsLoading) {
+      that.echartsRender(dateList, valueList)
+      that.echartsLoading = false       
+    }
     that.dgLoading = false;
   }
 
@@ -157,20 +160,36 @@ export class RiskReportViewComponent implements OnInit {
   pageChange(event: any) {
     if (event.page.current <= 1) {// size change
       if (event.page.size !== this.defaultSize) {
-        this.getRiskReportList(true, event.page.size)
+        this.getRiskReportList(true, event.page.size, 0)
       } else {
       }
     } else {// page change
-      if (event.page.size !== this.defaultSize) {
-        this.getRiskReportList(false, event.page.size, event.page.from)
+
+      if (event.page.size === 10 && this.defaultSize === 10) {// default
+        if (event.page.current === this.pageMaxCount) {
+          //lastpage
+          this.getRiskReportList(false, event.page.size, event.page.size * (this.pageMaxCount - 1))
+        } else {
+          // pre / next
+          this.getRiskReportList(false, event.page.size, event.page.from)
+        }
       } else {
-        this.getRiskReportList(false, event.page.size, event.page.from)
+        // size and current change
+        if (this.defaultSize === event.page.size) {
+          // current change
+          this.getRiskReportList(false, event.page.size, event.page.from)
+        } else {
+          // size change
+          this.pagination.currentPage = 1  
+          this.getRiskReportList(true, event.page.size, 0)
+        }
       }
 
     }
+    this.defaultSize = event.page.size
   }
 
-  getRiskReportList(reset: boolean, size?: number, from?:number) {
+  getRiskReportList(reset: boolean, size?: number, from?:number, current?: number) {
     const query: any = { 
       size: size ? size :10,
       from: from ? from: 0,
@@ -180,15 +199,37 @@ export class RiskReportViewComponent implements OnInit {
         }
       ]
     };
-    function callBack(data: any, that: any) {
+    function callBack(data: any, that: any, query: any) {
       if (reset) {
-        that.kubeBenchReportList = []        
-        that.kubeBenchReportList = data.hits.hits
-        that.pagination.page.change
-        that.dgLoading = false
+        that.riskList = []        
+        that.riskList = data.hits.hits
+        that.pageMaxCount = Math.ceil( data.hits.total.value / query.size)
+        that.pagination.lastPage = that.pageMaxCount        
+        that.pagination.page.change   
+        that.dgLoading = false;
+
+        if (that.echartsLoading) {
+          const dateList: any = []
+          const valueList: any = []
+  
+          data.hits.hits.forEach((el: any) => {
+            if (el._source.uid) {
+              el.risk_number = el._source.Detail.length
+              dateList.push(el._source.createTime)
+              valueList.push(el.risk_number)
+            }
+          })
+          that.echartsRender(dateList, valueList)
+          that.echartsLoading = false
+        }
+                   
+
       } else {
-        that.riskCallBack(data,that)
+        that.riskCallBack(data,that, query, data.hits.total.value)
+
       }
+      
+
     }
     this.getRiskList(query, callBack)
   }
