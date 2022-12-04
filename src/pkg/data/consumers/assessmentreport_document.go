@@ -54,11 +54,16 @@ type CISReport struct {
 //	Summary
 //}
 
-type RiskReport struct {
+type RiskDetail struct {
 	Detail          []*data.RiskItem
 	Kind            string `json:"kind"`
 	Name            string `json:"name"`
 	Namespace       string `json:"namespace"`
 	Uid             string `json:"uid"`
+	CreateTimestamp string `json:"createTime"`
+}
+
+type RiskReport struct {
+	ReportDetail    []RiskDetail
 	CreateTimestamp string `json:"createTime"`
 }

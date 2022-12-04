@@ -181,6 +181,44 @@ func (e *ElasticSearchExporter) setupIndex() error {
 				}
 			}
 		}`
+	} else if e.indexName == "risk_manager_details" {
+		mapping = `{
+		"mappings": {
+			"properties": {
+			  "kind":          { "type": "keyword" },
+			  "name":          { "type": "keyword" },
+			  "namespace":     { "type": "keyword" },
+			  "uid":           { "type": "keyword" },
+			  "score":         { "type": "keyword" },
+			  "scale":         { "type": "keyword" },
+			  "reason":        { "type": "text" },
+              "package":       { "type": "keyword" },
+              "version":       { "type": "keyword" },
+              "fix_version":   { "type": "keyword" },
+              "description":   { "type": "text" },
+			  "createTime":    { "type": "date" }
+				}
+			}
+		}`
+	} else if e.indexName == "risk_manager_report" {
+		mapping = `{
+		"mappings": {
+			"properties": {
+			  "kind":          { "type": "keyword" },
+			  "name":          { "type": "keyword" },
+			  "namespace":     { "type": "keyword" },
+			  "uid":           { "type": "keyword" },
+			  "score":         { "type": "keyword" },
+			  "scale":         { "type": "keyword" },
+			  "reason":        { "type": "text" },
+              "package":       { "type": "keyword" },
+              "version":       { "type": "keyword" },
+              "fix_version":   { "type": "keyword" },
+              "description":   { "type": "text" },
+			  "createTime":    { "type": "date" }
+				}
+			}
+		}`
 	}
 
 	res, err := e.Client.Indices.Create(e.indexName, e.Client.Indices.Create.WithBody(strings.NewReader(mapping)))
@@ -304,7 +342,9 @@ func (e *ElasticSearchExporter) SaveRiskReport(risks data.RiskCollection) error 
 		res        *esapi.Response
 		err        error
 		esDocument []byte
+		report     []consumers.RiskDetail
 	)
+
 	currentTimeData := time.Now().Format(time.RFC3339)
 	for s, items := range risks {
 		split := strings.Split(s, ":")
@@ -315,9 +355,9 @@ func (e *ElasticSearchExporter) SaveRiskReport(risks data.RiskCollection) error 
 		kind := split[0]
 		name := split[1]
 		namespace := split[2]
-		uid := fmt.Sprintf("%s_%s", split[3], currentTimeData)
+		uid := split[3]
 
-		var esDoc consumers.RiskReport
+		var esDoc consumers.RiskDetail
 		esDoc.Kind = kind
 		esDoc.Name = name
 		esDoc.Namespace = namespace
@@ -329,7 +369,7 @@ func (e *ElasticSearchExporter) SaveRiskReport(risks data.RiskCollection) error 
 			return err
 		}
 		res, err = esapi.IndexRequest{
-			Index:      e.indexName,
+			Index:      "risk_manager_details",
 			DocumentID: uid,
 			Body:       strings.NewReader(string(esDocument)),
 			Refresh:    "true",
@@ -341,15 +381,47 @@ func (e *ElasticSearchExporter) SaveRiskReport(risks data.RiskCollection) error 
 
 		if res.IsError() {
 			ctrlLog.Info("[%s] Error indexing document ID=%v", res.Status(), s)
-			return errors.New(fmt.Sprint("http error, code ", res.StatusCode))
+			continue
 		} else {
 			// Deserialize the response into a map.
 			var r map[string]interface{}
 			if err = json.NewDecoder(res.Body).Decode(&r); err != nil {
 				ctrlLog.Info("Error parsing the response body: %s", err)
 			} else {
-				fmt.Println("OK")
+				fmt.Println("Detail OK")
+				report = append(report, esDoc)
 			}
+		}
+	}
+
+	var esDoc consumers.RiskReport
+	esDoc.ReportDetail = report
+	esDoc.CreateTimestamp = currentTimeData
+	esDocument, err = json.Marshal(esDoc)
+	if err != nil {
+		return err
+	}
+	dId := "Package-Report_" + currentTimeData
+	res, err = esapi.IndexRequest{
+		Index:      "risk_manager_report",
+		DocumentID: dId,
+		Body:       strings.NewReader(string(esDocument)),
+		Refresh:    "true",
+	}.Do(context.Background(), e.Client)
+	if err != nil {
+		ctrlLog.Error(err, "Error getting response")
+		return err
+	}
+
+	if res.IsError() {
+		ctrlLog.Info("[%s] Error indexing document ID=%v", res.Status(), dId)
+	} else {
+		// Deserialize the response into a map.
+		var r map[string]interface{}
+		if err = json.NewDecoder(res.Body).Decode(&r); err != nil {
+			ctrlLog.Info("Error parsing the response body: %s", err)
+		} else {
+			fmt.Println("Report OK")
 		}
 	}
 
