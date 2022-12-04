@@ -118,10 +118,10 @@ func (s *Server) Analyze(option AnalyzeOption) {
 	}
 
 	if option.OpenSearchEnabled {
-		if s.Workloads.Risks == nil || len(s.Workloads.Risks) == 0 {
-			fmt.Println("not vuln save to openSearch")
-			return
-		}
+		//if s.Workloads.Risks == nil || len(s.Workloads.Risks) == 0 {
+		//	fmt.Println("not vuln save to openSearch")
+		//	return
+		//}
 		err := s.osExporter.SaveRiskReport(s.Workloads.Risks)
 		if err != nil {
 			logger.Errorf("os SaveRiskReport error: %v", err)
@@ -129,10 +129,10 @@ func (s *Server) Analyze(option AnalyzeOption) {
 	}
 
 	if option.ElasticSearchEnabled {
-		if s.Workloads.Risks == nil || len(s.Workloads.Risks) == 0 {
-			fmt.Println("not vuln save to ElasticSearch")
-			return
-		}
+		//if s.Workloads.Risks == nil || len(s.Workloads.Risks) == 0 {
+		//	fmt.Println("not vuln save to ElasticSearch")
+		//	return
+		//}
 		err := s.esExporter.SaveRiskReport(s.Workloads.Risks)
 		if err != nil {
 			logger.Errorf("es SaveRiskReport error: %v", err)
