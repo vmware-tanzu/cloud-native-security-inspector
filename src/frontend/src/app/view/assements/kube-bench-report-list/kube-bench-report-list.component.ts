@@ -148,9 +148,8 @@ export class KubeBenchReportListComponent implements OnInit {
     this.router.navigateByUrl(`assessments/kube-bench/test-view/${kube._id}`)
   }
 
-  getKubeBenchReportList(filter: {key:string, value: string, size?: number, from?:number}) {
+  getKubeBenchReportList(filter: {key:string, value: string, size?: number, from?:number, reset: boolean}) {
     this.dgLoading = true
-    let reset = false
     const query: any = { 
       size: filter.size ? filter.size :10,
       from: filter.from ? filter.from: 0
@@ -159,16 +158,17 @@ export class KubeBenchReportListComponent implements OnInit {
       if (!this.oldKey) {
         this.oldKey = filter.key
         this.oldValue = filter.value
-        reset = true
+        this.pagination.page.size = 10
+        filter.reset = true
       } else {
         if (this.oldKey === filter.key) {
           if (this.oldValue === filter.value) {
-            reset = false
+            filter.reset = false
           } else {
-            reset = true
+            filter.reset = true
           }
         } else {
-          reset = true
+          filter.reset = true
         }
       }
       if (filter.value) {
@@ -182,17 +182,33 @@ export class KubeBenchReportListComponent implements OnInit {
       }
     }
     function callBack(data: any, that: any) {
-      if (reset) {
+      let index = query.from-1;
+      if (filter.reset) {
         that.kubeBenchReportList = []        
         that.pagination.page.current = 1
-        that.pagination.page.size = that.defaultSize
-        that.pagination.page.from = that.from        
+        // that.pagination.page.size = 10
+        // that.pagination.page.from = that.from        
         that.kubeBenchReportList = data.hits.hits
+        that.pagination.lastPage = that.pageMaxCount        
         that.pagination.page.change
       } else {
         data.hits.hits.forEach((el: any) => {
-          that.kubeBenchReportList.push(el)
-        });
+          if (query && data.hits.total.value) {          
+            if ((query.from + query.size) <= data.hits.total.value) {
+              for (index < query.from + query.size; index++;) {
+                that.kubeBenchReportList[index] = el
+                break
+              }
+            } else {
+              for (index < data.hits.total.value; index++;) {
+                that.kubeBenchReportList[index] = el
+                break
+              }
+            }
+          } else {
+            that.kubeBenchReportList.push(el)
+          }
+        })
       }
       that.dgLoading = false
     }
@@ -201,21 +217,44 @@ export class KubeBenchReportListComponent implements OnInit {
 
   // change handler
   pageChange(event: any) {
-    this.dgLoading = true
     if (event.page.current <= 1) {// size change
       if (event.page.size !== this.defaultSize) {
-        this.getKubeBenchReportList({key: this.oldKey, value: this.oldValue, size: event.page.size})
+        this.getKubeBenchReportList(
+          {key: this.oldKey, value: this.oldValue, size: event.page.size, from: 0, reset: true})
       } else {
-        this.dgLoading = false
       }
     } else {// page change
-      if (event.page.size !== this.defaultSize) {
-        this.getKubeBenchReportList({key: this.oldKey, value: this.oldValue, size: event.page.size, from: event.page.from})
+
+      if (event.page.size === 10 && this.defaultSize === 10) {// default
+        if (event.page.current === this.pageMaxCount) {
+          //lastpage
+          this.getKubeBenchReportList(
+            {key: this.oldKey, value: this.oldValue, size: event.page.size, from: event.page.size * (this.pageMaxCount - 1), reset: false}
+            )
+        } else {
+          // pre / next
+          this.getKubeBenchReportList(
+            {key: this.oldKey, value: this.oldValue, size: event.page.size, from: event.page.from, reset: false}
+          )
+        }
       } else {
-        this.getKubeBenchReportList({key: this.oldKey, value: this.oldValue, from: event.page.from })
+        // size and current change
+        if (this.defaultSize === event.page.size) {
+          // current change
+          this.getKubeBenchReportList(
+            {key: this.oldKey, value: this.oldValue, size: event.page.size, from: event.page.from, reset: false})
+        } else {
+          // size change
+          this.pagination.currentPage = 1  
+          event.page.size = 10
+          this.getKubeBenchReportList(
+            {key: this.oldKey, value: this.oldValue, size: event.page.size, from: 0, reset: true})
+        }
       }
 
     }
+    this.defaultSize = event.page.size
+
   }
 
   createTimeSort() {

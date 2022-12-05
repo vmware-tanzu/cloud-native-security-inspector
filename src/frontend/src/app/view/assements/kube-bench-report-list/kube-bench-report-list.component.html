@@ -17,7 +17,7 @@
       <clr-icon shape="filter-grid" class="is-solid" (click)="kubeTypeFilterFlag = !kubeTypeFilterFlag"></clr-icon>
       <div class="filter-warp" *ngIf="kubeTypeFilterFlag">
         <clr-icon style="position: absolute; right: 10px; top: 10px;" shape="window-close" (click)="kubeTypeFilterFlag=false"></clr-icon>
-        <app-dg-filter label="kube" labelKey="text" [pageSize]="defaultSize" (updateListHandler)="getKubeBenchReportList($event)">
+        <app-dg-filter label="kube" labelKey="text" [pageSize]="10" (updateListHandler)="getKubeBenchReportList($event)">
         </app-dg-filter>
       </div>
     </clr-dg-column>
@@ -42,17 +42,17 @@
     <clr-dg-column [clrDgSortBy]="'_source.total_info'">{{'Kube_bench_list.inform'|translate}}</clr-dg-column>
   
     <clr-dg-row *clrDgItems="let kube of kubeBenchReportList">
-      <clr-dg-cell>{{kube._source.id}}</clr-dg-cell>
-      <clr-dg-cell>
+      <clr-dg-cell *ngIf="kube">{{kube._source.id}}</clr-dg-cell>
+      <clr-dg-cell *ngIf="kube">
         <a href="javascript:;" (click)="toKubeBenchReportTests(kube)" >
           <clr-icon shape="pop-out"></clr-icon>
           {{kube._id}}
         </a>
       </clr-dg-cell>
-      <clr-dg-cell>{{kube._source.text}}</clr-dg-cell>
-      <clr-dg-cell>{{kube._source.node_type}}</clr-dg-cell>
-      <clr-dg-cell>{{kube._source.createTime | date: 'medium'}}</clr-dg-cell>
-      <clr-dg-cell>
+      <clr-dg-cell *ngIf="kube">{{kube._source.text}}</clr-dg-cell>
+      <clr-dg-cell *ngIf="kube">{{kube._source.node_type}}</clr-dg-cell>
+      <clr-dg-cell *ngIf="kube">{{kube._source.createTime | date: 'medium'}}</clr-dg-cell>
+      <clr-dg-cell *ngIf="kube">
         <a href="..." class="label clickable" style="border-color: #266900;">
           {{'Kube_bench_list.passed'|translate}}
           
@@ -61,7 +61,7 @@
           </span>
         </a>
       </clr-dg-cell>
-      <clr-dg-cell>
+      <clr-dg-cell *ngIf="kube">
         <a href="..." class="label clickable" style="border-color: #A32100;">
           {{'Kube_bench_list.failed'|translate}}
           
@@ -71,7 +71,7 @@
         </a>
 
       </clr-dg-cell>
-      <clr-dg-cell>
+      <clr-dg-cell *ngIf="kube">
         <a href="..." class="label clickable" style="border-color: #EFD603;">
           {{'Kube_bench_list.warned'|translate}}
           
@@ -81,7 +81,7 @@
         </a>
 
       </clr-dg-cell>
-      <clr-dg-cell>
+      <clr-dg-cell *ngIf="kube">
         <a href="..." class="label clickable" style="border-color: #49AFd9;">
           {{'Kube_bench_list.inform'|translate}}
           

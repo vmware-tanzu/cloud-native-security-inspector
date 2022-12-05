@@ -89,7 +89,7 @@ export class ReportViewComponent implements OnInit, OnDestroy {
           this.shardService.reportslist = data.items
         }
         this.continues = data.metadata.continue
-        this.pageMaxCount = (data.metadata.remainingItemCount + this.shardService.reportslist.length) / this.defaultSize
+        this.pageMaxCount = Math.ceil((data.metadata.remainingItemCount + this.shardService.reportslist.length) / this.defaultSize)
         this.dgLoading = false
       }
     )

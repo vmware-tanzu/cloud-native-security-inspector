@@ -168,7 +168,6 @@
           <clr-dg-column >Namespace</clr-dg-column>
           <clr-dg-column >Type</clr-dg-column>
           <clr-dg-column >Passed</clr-dg-column>
-          <clr-dg-column >{{'Report_Detail.action_enforcements'| translate}}</clr-dg-column>
 
           <clr-dg-row *ngFor="let workload of currentReport.workloadAssessments" [clrDgItem]="workload">
             <clr-dg-cell>
@@ -178,21 +177,6 @@
             <clr-dg-cell>{{workload.workload?.metadata.namespace}}</clr-dg-cell>
             <clr-dg-cell>{{workload.workload?.metadata.kind}}</clr-dg-cell>
             <clr-dg-cell>{{workload.passed}}</clr-dg-cell>
-            <clr-dg-cell>
-              <clr-signpost *ngIf="!workload.passed">
-                <clr-signpost-content *clrIfOpen>
-                  <ul class="list">
-                    <li *ngFor="let item of workload.actionEnforcements">
-                      <b>Type:  </b>
-                      <span>{{item.action.action}}</span>
-                      <br>
-                      <b>Result:  </b>
-                      <span>{{item.result.status}}</span>
-                    </li>
-                  </ul>
-                </clr-signpost-content>
-            </clr-signpost>
-            </clr-dg-cell>
           </clr-dg-row>
         </clr-datagrid>
       </section>

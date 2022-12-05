@@ -23,31 +23,31 @@
     <clr-dg-column >{{'Risk_view.numberOfVulnerabilities'|translate}}</clr-dg-column>
   
     <clr-dg-row *clrDgItems="let kube of riskList">
-      <clr-dg-cell >
+      <clr-dg-cell *ngIf="kube" >
         <a style="cursor: pointer;" (click)="showDetail(kube)" href="javascript:;">
           <clr-icon style="color: skyblue" shape="pop-out"></clr-icon>
           {{kube._source.uid}}
         </a>
       </clr-dg-cell>
-      <clr-dg-cell>
+      <clr-dg-cell *ngIf="kube" >
         {{kube._source.name}}
       </clr-dg-cell>
 
-      <clr-dg-cell>
+      <clr-dg-cell *ngIf="kube" >
         {{kube._source.namespace}}
       </clr-dg-cell>
-      <clr-dg-cell>
+      <clr-dg-cell *ngIf="kube" >
         {{kube._source.kind}}
       </clr-dg-cell>
 
-      <clr-dg-cell>{{kube._source.createTime | date: 'medium'}}</clr-dg-cell>
-      <clr-dg-cell>
+      <clr-dg-cell *ngIf="kube" >{{kube._source.createTime | date: 'medium'}}</clr-dg-cell>
+      <clr-dg-cell *ngIf="kube" >
         {{kube.risk_number}}
       </clr-dg-cell>
     </clr-dg-row>
   
     <clr-dg-footer>
-      <clr-dg-pagination #pagination [clrDgPageSize]="defaultSize" [clrDgLastPage]="pageMaxCount">
+      <clr-dg-pagination #pagination [clrDgPageSize]="10" [clrDgLastPage]="pageMaxCount">
           <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Reports per page</clr-dg-page-size>
           {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
           of {{pagination.totalItems}} reports
