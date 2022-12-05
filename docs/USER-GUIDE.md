@@ -74,6 +74,9 @@ You also need to specify the endpoint of Harbor and the scan interval.
 This field is optional. If it is configured, replicate rules are set up in Harbor and images from 
 the known registries can be automatically replicated to Harbor.
 
+Currently, Harbor support 11 different image registries across the globe.
+Navigate to this [page](https://goharbor.io/docs/2.5.0/administration/configuring-replication/create-replication-endpoints/) to check the details.
+
 | Field Name           | Field Type  | Description                                                                  |
 |----------------------|-------------|------------------------------------------------------------------------------|
 | provider             | string      | The provider of the registry, currently supports the adapter lists in Harbor |
@@ -488,5 +491,4 @@ please modify the npm reference source in Dockerfile.portal
 
 ```shell
 $ npm --registry https://registry.npm.taobao.org install
-  
 ```

@@ -320,4 +320,4 @@ We support inspecting the insights from 3 different perspectives.
 
 <img src="pictures/insight-workload-list.png">
 
-For the detailed explanation of the insights, please check [User Guide](USER-GUIDE.md)
+For the detailed explanation of the insights, please check [User Guide](USER-GUIDE.md).

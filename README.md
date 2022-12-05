@@ -116,4 +116,4 @@ Email: narrows@vmware.com
 
 
 ## License
-Cloud Native Security Inspector is available under the [Apache 2 license](LICENSE)
+Cloud Native Security Inspector is available under the [Apache 2 license](LICENSE).
