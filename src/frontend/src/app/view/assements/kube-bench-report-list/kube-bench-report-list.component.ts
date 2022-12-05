@@ -184,7 +184,7 @@ export class KubeBenchReportListComponent implements OnInit {
       let index = query.from-1;
       if (filter.reset) {
         that.kubeBenchReportList = []        
-        // that.pagination.page.current = 1
+        that.pagination.page.current = 1
         that.pagination.page.size = 10
         // that.pagination.page.from = that.from        
         that.kubeBenchReportList = data.hits.hits
