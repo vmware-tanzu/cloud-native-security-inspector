@@ -92,7 +92,8 @@
     "isInit": "是否初始化",
     "failures": "安全扫描未通过",
     "cause": "Cause",
-    "error_message": "Error Message"
+    "error_message": "Error Message",
+    "pod_list": "Pods列表"
   },
   "Risk_view": {
     "numberOfVulnerabilities": "漏洞数量"

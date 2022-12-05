@@ -92,7 +92,8 @@
     "isInit": "IsInit",
     "failures": "Failures",
     "cause": "Cause",
-    "error_message": "Error Message"
+    "error_message": "Error Message",
+    "pod_list": "Pods List"
 
   },
   "Risk_view": {

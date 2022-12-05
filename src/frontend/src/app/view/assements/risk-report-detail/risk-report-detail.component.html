@@ -5,38 +5,50 @@
 
 <div class="card detail-bg">
   <clr-accordion clrAccordionMultiPanel="true" >
-    <clr-accordion-panel >
-      <clr-accordion-title>{{'Report_Detail.title'|translate}}</clr-accordion-title>
+    <clr-accordion-panel [clrAccordionPanelOpen]='true'>
+      <clr-accordion-title>{{'Report_Detail.pod_list'|translate}}</clr-accordion-title>
       <clr-accordion-content *clrIfExpanded>
-        <ul class="list" *ngIf="detailInfo._source">
-          <li>
-            <b>UID: </b>
-            <span>{{detailInfo._source.uid}}</span>
-          </li>
-          <li>
-            <b>{{'CommonlyUse.name'|translate}}: </b>
-            <span>{{detailInfo._source.name}}</span>
-          </li>
-          <li>
-            <b>{{'CommonlyUse.namespace'|translate}}: </b>
-            <span>{{detailInfo._source.namespace}}</span>
-          </li>
-          <li>
-            <b>Kind: </b>
-            <span>{{detailInfo._source.kind}}</span>
-          </li>
-          <li>
-            <b>{{'CommonlyUse.create_time'|translate}}: </b>
-            <span>{{detailInfo._source.createTime | date: 'medium'}}</span>
-          </li>
-        </ul>
+        <div class="echarts-loading" *ngIf="echartsLoading">
+          <span class="spinner spinner-lg">
+            Loading...
+          </span>
+        </div>
+        <div id="pod-list" style="width: 1200px;height:400px; overflow: hidden;"> </div>
+
+        <clr-datagrid class="report-datagrid" *ngIf="detailInfo._source && detailInfo._source.ReportDetail.length > 0 ">
+          <clr-dg-column [clrDgField]="'uid'">UID</clr-dg-column>
+          <clr-dg-column [clrDgField]="'name'">{{'CommonlyUse.name'|translate}}</clr-dg-column>
+          <clr-dg-column [clrDgField]="'namespace'">{{'CommonlyUse.namespace'|translate}}</clr-dg-column>
+          <!-- <clr-dg-column >Kind</clr-dg-column> -->
+          <clr-dg-column [clrDgSortBy]="'createTime'">{{'CommonlyUse.create_time'|translate}}</clr-dg-column>
+          
+
+          <clr-dg-row *clrDgItems="let detail of detailInfo._source.ReportDetail" [clrDgItem]="detail">
+            <clr-dg-cell>
+              <a style="cursor: pointer;" (click)="showDetail(detail)" href="javascript:;">
+                <clr-icon style="color: skyblue" shape="pop-out"></clr-icon>
+                {{detail.uid}}
+              </a></clr-dg-cell>
+            <clr-dg-cell>{{detail.name}}</clr-dg-cell>
+            <clr-dg-cell>{{detail.namespace}}</clr-dg-cell>
+            <clr-dg-cell>{{detail.createTime | date: 'medium'}}</clr-dg-cell>
+          </clr-dg-row>
+
+          <clr-dg-footer>
+            <clr-dg-pagination #pagination [clrDgPageSize]="10">
+                <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">item per page</clr-dg-page-size>
+                {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                of {{pagination.totalItems}} items
+            </clr-dg-pagination>
+        </clr-dg-footer>
+        </clr-datagrid>
       </clr-accordion-content>
     </clr-accordion-panel>
 
-    <clr-accordion-panel >
+    <clr-accordion-panel *ngIf="detailList.length > 0">
       <clr-accordion-title>{{'CommonlyUse.details' | translate}}</clr-accordion-title>
       <clr-accordion-content *clrIfExpanded>
-        <clr-datagrid class="datagrid" *ngIf="detailInfo._source && detailInfo._source.Detail.length > 0 ">
+        <clr-datagrid class="datagrid">
           <clr-dg-column [clrDgField]="'score'">score</clr-dg-column>
           <clr-dg-column [clrDgField]="'scale'">scale</clr-dg-column>
           <clr-dg-column [clrDgField]="'vuln.package'">package</clr-dg-column>
@@ -45,7 +57,7 @@
           <clr-dg-column [clrDgField]="'reason'">{{'Kube_bench_list.reason'|translate}}</clr-dg-column>
           <clr-dg-column >{{'CommonlyUse.description'|translate}}</clr-dg-column>
 
-          <clr-dg-row *clrDgItems="let detail of detailInfo._source.Detail" [clrDgItem]="detail">
+          <clr-dg-row *clrDgItems="let detail of detailList" [clrDgItem]="detail">
             <clr-dg-cell>{{detail.score}}</clr-dg-cell>
             <clr-dg-cell>{{detail.scale}}</clr-dg-cell>
             <clr-dg-cell>{{detail.vuln.package}}</clr-dg-cell>

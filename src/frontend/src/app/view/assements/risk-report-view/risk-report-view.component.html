@@ -10,10 +10,6 @@
 
   <clr-datagrid  [clrDgLoading]="dgLoading" (clrDgRefresh)="pageChange($event)">
     <clr-dg-column >ID</clr-dg-column>
-    <clr-dg-column >{{'CommonlyUse.name'|translate}}</clr-dg-column>
-    <clr-dg-column >{{'CommonlyUse.namespace'|translate}}</clr-dg-column>
-    <clr-dg-column >Kind</clr-dg-column>
-
     <clr-dg-column >
       <div class="sort">
         {{'CommonlyUse.create_time'|translate}}
@@ -26,10 +22,10 @@
       <clr-dg-cell *ngIf="kube" >
         <a style="cursor: pointer;" (click)="showDetail(kube)" href="javascript:;">
           <clr-icon style="color: skyblue" shape="pop-out"></clr-icon>
-          {{kube._source.uid}}
+          {{kube._id}}
         </a>
       </clr-dg-cell>
-      <clr-dg-cell *ngIf="kube" >
+      <!-- <clr-dg-cell *ngIf="kube" >
         {{kube._source.name}}
       </clr-dg-cell>
 
@@ -38,7 +34,7 @@
       </clr-dg-cell>
       <clr-dg-cell *ngIf="kube" >
         {{kube._source.kind}}
-      </clr-dg-cell>
+      </clr-dg-cell> -->
 
       <clr-dg-cell *ngIf="kube" >{{kube._source.createTime | date: 'medium'}}</clr-dg-cell>
       <clr-dg-cell *ngIf="kube" >

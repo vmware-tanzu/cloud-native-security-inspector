@@ -88,7 +88,7 @@ export class KubeBenchReportListComponent implements OnInit {
           {
             value: tp.doc_count,
             itemStyle: {
-              color: color[index]
+              color: color[index] ? color[index] : '#566FC6'
             }
           },
         )
