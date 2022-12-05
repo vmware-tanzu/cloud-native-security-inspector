@@ -1,5 +1,5 @@
 # User Guide
-  - [1. To start using Cloud Native Security Inspector](#1-to-start-using-cloud-native-security-inspector)
+  - [1. To start using Cloud Native Security Inspector](#1-to-start-using-cloud-native-security-inspector-cnsi)
     - [1.1 With portal (recommended)](#11-with-portal-recommended)
       - [1.1.1 Configurations](#111-configurations)
         - [Secret](#secret)
@@ -32,20 +32,7 @@
 ### 1.1 With portal (recommended)
 #### 1.1.1 Configurations
 
-1. Get Kubernetes node IP
-
-```shell
-$ kubectl get nodes -o wide
-
-NAME        STATUS   ROLES           AGE   VERSION   INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION       CONTAINER-RUNTIME
-junhao-vm   Ready    control-plane   52d   v1.24.2   10.117.32.162   <none>        Ubuntu 18.04.6 LTS   4.15.0-189-generic   containerd://1.6.6
-```
-2. In the browser address bar enter:
-  ```shell
-    http://10.117.32.162:30150
-  ```
-
-3. Create a Secret first, then create a Setting. The Setting is mainly about Harbor related configurations.
+Currently, we need one Secret, one setting and one Policy to be configured. Then CNSI can work properly.
 
 ###### Secret
 Create a secret for Harbor so that Cloud-Native-Security-Inspector can talk to Harbor with the credentials.
@@ -60,7 +47,7 @@ The secret you created will be referred by the setting. If you have already had 
 | Namespace     | string | The secret's namespace |
 
 ##### Setting
-Click on "Credential Name" and choose the secret you've created in previous step. 
+Click on "Credential Name" and choose the secret you've created in the previous step. 
 You also need to specify the endpoint of Harbor and the scan interval.
 
 <img src="./docs/pictures/create-setting.png">
@@ -78,11 +65,11 @@ You also need to specify the endpoint of Harbor and the scan interval.
 | Schedule             | string      | The cron expression to be configured in Harbor to specify the CVE update interval |
 | skipTLSVerify        | boolean     | Whether need to skip the TLS verify                                               |
 
-
+<img src="./docs/pictures/setting-known-registry.png">
 
 ###### KnownRegistry
 This field is optional. If it is configured, replicate rules are set up in Harbor and images from 
-KnowRegistries can be automatically replicated to Harbor.
+the known registries can be automatically replicated to Harbor.
 
 | Field Name           | Field Type  | Description                                                                  |
 |----------------------|-------------|------------------------------------------------------------------------------|
@@ -93,8 +80,7 @@ KnowRegistries can be automatically replicated to Harbor.
 | Credential Namespace | string      | The namespace of the credential of KnownRegistry                             |
 | skipTLSVerify        | boolean     | Whether need to skip the TLS verify                                          |
 
-  <img src="./docs/setting-cache.png">
-
+<img src="./docs/pictures/setting-cache.png">
 
 ###### Cache
 This filed is optional. If it is configured. Cloud-Native-Security-Inspector can use the external Redis you specified here to cache the security data from Harbor.
@@ -106,10 +92,11 @@ This filed is optional. If it is configured. Cloud-Native-Security-Inspector can
 | skipTLSVerify | boolean     | SkipTLSVerify indicates whether skip the TLS verification. Only active when 'redis' scheme is configured |
   
 
+Once the Setting is done, you can create an inspection policy according to your security requirements.
+By defining the inspection policy, users can specify their security expectations including scan interval, security baseline,
+and the workloads or namespaces that should be scanned.
 
-  4.  Once the Setting is all set. Open the policy menu and define the inspection policy according to your security requirements. By defining the inspection policy, users can specify their security expectations including scan interval, security baseline, and the workloads or namespaces that should be scanned.
-  <img src="./docs/policy-inspection-setting.png">
-
+<img src="./docs/pictures/policy-inspection-setting.png">
 
 #### Policy
 ###### Inspection Settings
@@ -127,7 +114,7 @@ This filed is optional. If it is configured. Cloud-Native-Security-Inspector can
 | OpenSearch      | multiple configs  | Enable this to leverage OpenSearch to store the time-series assessment reports       |
 | ElasticSearch   | multiple configs  | Enable this to leverage ElasticSearch to store the time-series assessment reports    |
 
-<img src="./docs/policy-standard-setting.png">
+<img src="./docs/pictures/policy-label-selector.png">
 
 ###### Baselines
 | Field Name | Field Type | Description                              |
@@ -141,11 +128,12 @@ NamespaceSelector is to specify which namespaces should be scanned
 ###### Workload Labels Selectors
 NamespaceSelector is to specify which workloads should be scanned
 
-  <img src="./docs/policy-assessment.png">
+<img src="./docs/pictures/policy-report-setting.png">
 
 ###### Assessment Settings
 
-You can choose whether the assessment reports are generated after each scanning. In additional to that, you can config the format and live time of the reports.
+You can choose whether the assessment reports are generated in the K8s cluster as CRD after each scanning.
+In additional to that, you can config the format and live time of the reports.
 
 | Field Name      | Field Type | Description                                                                       |
 |-----------------|------------|-----------------------------------------------------------------------------------|
@@ -161,33 +149,48 @@ If violations are found by the scanning, you can choose if quarantine the worklo
 | Kind       | string     | Kind of action. Now the only choice is quarantine_vulnerable_workload |
 
  
-  4.  After the inspection policy created, inspection scanning will be triggered according to your configuration.  You can navigate to assessments menu to see the security posture and risk trends of the cluster.
+After the inspection policy created, inspection scanning will be triggered according to your configuration.  You can navigate to assessments menu to see the security posture and risk trends of the cluster.
 #### 1.1.2 Assessments
-  A line chart will be generated based on the latest 10 assessment reports.
 
-  <img src="./docs/report.png">
-  By clicking the button in action column of each report, you can view the details of the report.
-  <img src="./docs/report-detail.png">
+We can view the reports of the scanner we chose.
+
+##### Image scanning reports
+A line chart will be generated based on the latest n assessment reports, such as:
+
+<img src="./docs/pictures/report-harbor-scanner.png">
+
+If there are vulnerabilities be found, the chart would be like:
+
+<img src="./docs/pictures/report-harbor-scanner-more.png">
+
+By clicking the button in action column of each report, you can view the details of the report.
+<img src="./docs/pictures/report-harbor-detail.png">
+
+##### Kubebench scanning reports
+<img src="./docs/pictures/report-kubebench-scanner.png">
+<img src="./docs/pictures/report-kubebench-detail.png">
+
+##### Risk scanning reports
+<img src="./docs/pictures/report-risk-scanner.png">
+<img src="./docs/pictures/report-risk-detail.png">
 
 #### 1.1.3 Insight
-In insight menu, the security information is clustered by different aspects to help the security auditor know the security posture clearly. 
+In the insight menu, the security information is clustered by different perspectives to help the
+security auditor know the security posture clearly. 
 ##### Cluster
-  Security data gathered by cluster.
-  <img src="./docs/cluster-summry.png">
-
-  <img src="./docs/cluster-violations.png">
+If you have configured a lot of workloads, the cluster insight could be like:
+<img src="./docs/pictures/insight-cluster-summary-more.png">
+<img src="docs/insight-cluster-violations-more.png">
 
 ##### Namespace
-  Security data gathered by namespace.
-    <img src="./docs/namespace-summry.png">
-    <img src="./docs/namespace-violations.png">
+If you have configured a lot of workloads, the namespace insight could be like:
+<img src="./docs/pictures/insight-namespace-summry-more.png">
+<img src="./docs/pictures/insight-namespace-violations-more.png">
 
 ##### Workload
-  Displays all the workload that have been scanned by the inspector.
-    <img src="./docs/workload.png">
-
+If you have configured a lot of workloads, the workload insight could be like:
   Click the workload's name to view the details.
-    <img src="./docs/workload-detail.png">
+<img src="./docs/pictures/insight-workload-list-more.png">
 
 ### 1.2 With CLI
 #### 1.2.1 Settings
@@ -238,11 +241,11 @@ You should define an Opaque secret that has accessKey and accessSecret fields in
 data property, the value of accessKey is the base64 encoded harbor username and the
 value of accessSecret is the base64 encoded harbor password.
 
-
 knowRegistries field is optional when your cluster workloads images are managed
 in the data source harbor, otherwise, you need to configure your private
-registries here used for harbor replication. You can update the yaml file like below to define a
-Harbor(https://10.78.177.224) as the data source:
+registries here used for harbor replication. You can update the yaml file like below to 
+define a Harbor as the data source:
+
 <details>
   <summary>Example Setting</summary>
 
@@ -299,35 +302,43 @@ Then users need to create inspection policies to define their security requireme
 apiVersion: goharbor.goharbor.io/v1alpha1
 kind: InspectionPolicy
 metadata:
-  name: inspectionpolicy-sample
+  name: demo-policy
 spec:
-  settingsName: "sample-setting"
   enabled: true
-  workNamespace: cronjobs
-  schedule: "*/1 * * * *"
-  strategy:
-    historyLimit: 5
-    suspend: false
-    concurrencyRule: "Forbid"
   inspector:
     image: projects.registry.vmware.com/cnsi/inspector:0.1
     imagePullPolicy: IfNotPresent
+    imagePullSecrets: []
+    kubebenchImage: projects.registry.vmware.com/cnsi/kubebench:0.1
+    riskImage: projects.registry.vmware.com/cnsi/risk:0.1
   inspection:
+    assessment:
+      elasticSearchEnabled: false
+      format: YAML
+      generate: true
+      liveTime: 3600
+      managedBy: true
+      openSearchAddr: https://opensearch-cluster-master.default:9200
+      openSearchEnabled: true
+      openSearchPasswd: admin
+      openSearchUser: admin
+    baselines:
+      - baseline: High
+        kind: vulnerability
+        scheme: application/vnd.security.vulnerability.report; version=1.1
+        version: v1.1
     namespaceSelector:
       matchLabels:
         goharbor.io/watch: "true"
-    assessment:
-      generate: true
-      format: "YAML"
-      liveTime: 3600
-      managedBy: true
-    baselines:
-      - kind: "vulnerability"
-        baseline: "High"
-        version: "v1.1"
-        scheme: "application/vnd.security.vulnerability.report; version=1.1"
     actions:
-      - kind: "quarantine_vulnerable_workload"
+      - kind: quarantine_vulnerable_workload
+  schedule: '*/3 * * * *'
+  settingsName: demo-setting
+  strategy:
+    concurrencyRule: Forbid
+    historyLimit: 5
+    suspend: false
+  workNamespace: cronjobs
 ```
 
 ```shell
@@ -336,18 +347,23 @@ $ kubectl label ns workload goharbor.io/watch="true"
 $ kubectl apply -f goharbor_v1alpha1_inspectionpolicy.yaml
 ```
 ##### 1.2.2.1 Actions
-If the `actions` field is not specified, no action will be performed on violation workloads. The following actions are supported by policies.
-- quarantine_vulnerable_workload
+If the `actions` field is not specified, no action will be performed on violation workloads. The following actions are supported by policies. 
 
-  For now, Cloud-Native-Security-Inspector supports only `quarantine_vulnerable_workload` type action. 
+###### quarantine_vulnerable_workload 
+
+For now, Cloud-Native-Security-Inspector supports only `quarantine_vulnerable_workload` type action. 
   
-  When violation is detected on workloads, Cloud-Native-Security-Inspector will create a network policy with "deny-all" rules for the namespace if not exist. The violation pods will be labeled `goharbor.io/controller: "TSI"` and `goharbor.io/inspection: "risk'` to match the pod selector on network policy and the pods will be quarantined.
+When violation is detected on workloads, Cloud-Native-Security-Inspector will create a network
+policy with "deny-all" rules for the namespace if not exist. The violation pods will be
+labeled `goharbor.io/controller: "TSI"` and `goharbor.io/inspection: "risk'` to match
+the pod selector on network policy and the pods will be quarantined.
 
-  When the violation pods turns good, the labels will be removed from the pods. And the quarantine will be revoked.
+When the violation pods turns good, the labels will be removed from the pods. And the
+quarantine will be revoked.
 
-- TBD
+###### TBD
+More actions will be supported in the future.
 
-  More actions will be supported in the future.
 #### 1.2.3 Assessment report
 After the InspectionPolicy has been applied, you can find a cronjob will be generated:
 ```
@@ -357,20 +373,26 @@ cronjobs    inspectionpolicy-samplekbnpq   */1 * * * *   False     0        36s 
 ```
 
 The value of "LAST SCHEDULE" represents if the job has been triggered.
-If the job has already been executed, an assessment report will be generated by the scan. You can check the assessment report.
-
+If the job has already been executed, an assessment report will be generated.
+You can list the assessment report.
 
 ```shell
-$ kubectl get assessmentreport -A
-cronjobs    assessment-report-20220815-1613-01   3m47s
-cronjobs    assessment-report-20220815-1614-01   2m47s
-cronjobs    assessment-report-20220815-1615-01   107s
-cronjobs    assessment-report-20220815-1616-01   47s
-
+➜  ~  kubectl get assessmentreport -A
+NAMESPACE   NAME                                 AGE
+cronjobs    assessment-report-20221205-0221-03   58m
+cronjobs    assessment-report-20221205-0224-01   55m
+cronjobs    assessment-report-20221205-0227-02   52m
+cronjobs    assessment-report-20221205-0230-02   49m
+cronjobs    assessment-report-20221205-0233-01   46m
+cronjobs    assessment-report-20221205-0236-01   43m
+...
+cronjobs    assessment-report-20221205-0318-02   74s
 ```
 
-```shell
-$ kubectl get assessmentreport -n cronjobs    assessment-report-20220815-1613-01  -oyaml
+You can also check the details of one certain assessment report:
+
+```
+➜ ~ kubectl get assessmentreport -n cronjobs assessment-report-20221205-0318-02 -oyaml
 ```
 <details>
   <summary>Example AssessmentReport</summary>
@@ -380,150 +402,76 @@ apiVersion: goharbor.goharbor.io/v1alpha1
 kind: AssessmentReport
 metadata:
   annotations:
-    goharbor.io/creation-timestamp: "1660579981"
-    goharbor.io/inspection-policy: inspectionpolicy-sample
-  creationTimestamp: "2022-08-15T16:13:01Z"
+    goharbor.io/creation-timestamp: "1670210282"
+    goharbor.io/inspection-policy: demo-policy
+  creationTimestamp: "2022-12-05T03:18:03Z"
   generation: 1
-  name: assessment-report-20220815-1613-01
+  name: assessment-report-20221205-0318-02
   namespace: cronjobs
   ownerReferences:
-  - apiVersion: goharbor.goharbor.io/v1alpha1
-    blockOwnerDeletion: true
-    controller: true
-    kind: InspectionPolicy
-    name: inspectionpolicy-sample
-    uid: d4e5b0da-92b9-4869-b7a8-5de789bb750a
-  resourceVersion: "1853517"
-  uid: dee499e0-fe2e-4893-b75c-b2ad9221fe3b
+    - apiVersion: goharbor.goharbor.io/v1alpha1
+      blockOwnerDeletion: true
+      controller: true
+      kind: InspectionPolicy
+      name: demo-policy
+      uid: 9d4ab334-02d2-4134-9ffb-20c6d1a0df3c
+  resourceVersion: "1341801"
+  uid: 1398d2d4-b853-4917-b7d1-5e6b1d5dca36
 spec:
   inspectionConfiguration:
     actions:
-    - kind: quarantine_vulnerable_workload
+      - ignore: {}
+        kind: quarantine_vulnerable_workload
     assessment:
+      elasticSearchAddr: ""
+      elasticSearchCert: ""
+      elasticSearchEnabled: false
+      elasticSearchPasswd: ""
+      elasticSearchUser: ""
       format: YAML
       generate: true
       liveTime: 3600
       managedBy: true
+      openSearchAddr: https://opensearch-cluster-master.default:9200
+      openSearchCert: ""
+      openSearchEnabled: true
+      openSearchPasswd: admin
+      openSearchUser: admin
     baselines:
-    - baseline: High
-      kind: vulnerability
-      scheme: application/vnd.security.vulnerability.report; version=1.1
-      version: v1.1
+      - baseline: High
+        kind: vulnerability
+        scheme: application/vnd.security.vulnerability.report; version=1.1
+        version: v1.1
     namespaceSelector:
       matchLabels:
         goharbor.io/watch: "true"
+    workloadSelector: {}
   namespaceAssessments:
-  - namespace:
-      name: workload
-    workloadAssessments:
-    - passed: true
-      workload:
-        metadata:
-          apiVersion: apps/v1
-          kind: Deployment
-          name: mongo-sample
-          namespace: workload
-          uid: 0969e78b-b2d1-4e0c-89fc-dafcfeb03ad3
-        pods:
-        - containers:
-          - id: containerd://3d3baffb19c7254bf7506668d32b9cfdb32601349bf30373ce305793444e26d6
-            image: tsi-harbor.com/tsi/mongo:4.2.8
-            imageID: tsi-harbor.com/tsi/mongo@sha256:14468b12f721906390c118a38c33caf218c089b751b2f205b2567f99716ae1e9
-            isInit: false
-            name: mongo
-          metadata:
-            apiVersion: v1
-            kind: Pod
-            name: mongo-sample-5f74f65857-s78cg
-            namespace: workload
-            resourceVersion: "1603282"
-            uid: 78db9642-6f49-416f-a5ca-77ef2d3eac51
-    - passed: true
-      workload:
-        metadata:
-          apiVersion: apps/v1
-          kind: Deployment
-          name: nginx-sample
-          namespace: workload
-          uid: fcdcecf6-a260-4027-bf81-c21e27e02819
-        pods:
-        - containers:
-          - id: containerd://d96d753d1299d74f3a9ab615afd6c893e684eb1f1ec063953acdaa48ab3fd5cc
-            image: tsi-harbor.com/tsi/mongo:4.2.8
-            imageID: tsi-harbor.com/tsi/mongo@sha256:14468b12f721906390c118a38c33caf218c089b751b2f205b2567f99716ae1e9
-            isInit: false
-            name: nginx
-          metadata:
-            apiVersion: v1
-            kind: Pod
-            name: nginx-sample-7dbcf874cd-bvsl5
-            namespace: workload
-            resourceVersion: "1603283"
-            uid: 8b698433-7afd-4206-a5ce-3c1e8b8e4bf7
-    - passed: true
-      workload:
-        metadata:
-          apiVersion: apps/v1
-          kind: Deployment
-          name: nginx-sample-zzzz
-          namespace: workload
-          uid: c57ef745-1a24-4672-b833-36490f011aa2
-        pods:
-        - containers:
-          - id: containerd://cb9c5bf08c2301b7f8b9a54d93a9b765548e0b5b4f296b511615d365bb2ec4f2
-            image: 10.78.177.224/tsi/mongo:4.2.8
-            imageID: 10.78.177.224/tsi/mongo@sha256:14468b12f721906390c118a38c33caf218c089b751b2f205b2567f99716ae1e9
-            isInit: false
-            name: nginx
-          metadata:
-            apiVersion: v1
-            kind: Pod
-            name: nginx-sample-zzzz-5c9d76488c-fzqgn
-            namespace: workload
-            resourceVersion: "1602942"
-            uid: a438bc75-dd84-4027-b64b-f637f860b8da
-    - actionEnforcements:
-      - action:
-          kind: quarantine_vulnerable_workload
-        result:
-          status: applied
-      failures:
-      - assessmentError:
-          cause: Compliance check failed
-          error: expect vulnerability severity <= High but got Critical
-        baseline:
-          baseline: High
-          kind: vulnerability
-          scheme: application/vnd.security.vulnerability.report; version=1.1
-          version: v1.1
-        container:
-          id: containerd://c320fde90dc9c74734c34a6fabadb0d841224e10b269e9dc86523a1bf0aa92ea
-          image: tsi-harbor.com/tsi/zookeeper:3.8.0
-          imageID: tsi-harbor.com/tsi/zookeeper@sha256:7699553f4e6df82c52c246bed60970dc4a96a91fdcea8a27a638d6a8444ff0af
-          isInit: false
-          name: zookeeper
-      passed: false
-      workload:
-        metadata:
-          apiVersion: apps/v1
-          kind: Deployment
-          name: zookeeper-sample
-          namespace: workload
-          uid: 35f8518b-4b8b-4f8f-bd59-a573efd50f69
-        pods:
-        - containers:
-          - id: containerd://c320fde90dc9c74734c34a6fabadb0d841224e10b269e9dc86523a1bf0aa92ea
-            image: tsi-harbor.com/tsi/zookeeper:3.8.0
-            imageID: tsi-harbor.com/tsi/zookeeper@sha256:7699553f4e6df82c52c246bed60970dc4a96a91fdcea8a27a638d6a8444ff0af
-            isInit: false
-            name: zookeeper
-          metadata:
-            apiVersion: v1
-            kind: Pod
-            name: zookeeper-sample-8586d648b4-v6nk5
-            namespace: workload
-            resourceVersion: "1700139"
-            uid: feecbb61-9632-45f4-b9e3-9da3537c35cf
+    - namespace:
+        name: workloads
+      workloadAssessments:
+        - passed: true
+          workload:
+            metadata:
+              apiVersion: apps/v1
+              kind: Deployment
+              name: nginx-sample
+              namespace: workloads
+              uid: 4dcf0f46-4fbb-4c01-ae84-ea67fe592c6e
+            pods:
+              - containers:
+                  - id: docker://08ab9e795f23eb21ceddb4c19300a7229f1e59348bd7d5c769ea587a8f885a52
+                    image: 10.212.47.157/cnsi-test/nginx-slim:0.26
+                    imageID: docker-pullable://10.212.47.157/cnsi-test/nginx-slim@sha256:f67828dbd791ec61f95ecb37e91caefae32a96a18b78f656e602a4f7fb493409
+                    isInit: false
+                    name: nginx
+                metadata:
+                  apiVersion: v1
+                  kind: Pod
+                  name: nginx-sample-6bcd9f8d57-crx9s
+                  namespace: workloads
+                  resourceVersion: "391681"
+                  uid: 5a362921-ab0a-47c7-b05b-e57203ff20c7
 ```
 </details>
 
@@ -533,7 +481,7 @@ spec:
 If you encounter the problem of installing npm dependencies during the portal building process,
 please modify the npm reference source in Dockerfile.portal
 
-  <img src="docs/npm-error.png" />
+  <img src="docs/pictures/npm-error.png" />
 
 ```shell
 $ npm --registry https://registry.npm.taobao.org install

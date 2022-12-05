@@ -318,6 +318,6 @@ We support inspecting the insights from 3 different perspectives.
 
 #### workload perspective
 
-<img src="docs/pictures/insight-workload-list-details.png">
+<img src="docs/pictures/insight-workload-list.png">
 
 For the detailed explanation of the insights, please check [User Guide](USER-GUIDE.md)
