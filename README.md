@@ -15,12 +15,17 @@ Cloud Native Security Inspector is an open source cloud native runtime security 
 
 
 ## Architecture
-  <img src="./docs/architecture.png">  
+  <img src="./docs/pictures/architecture.png">  
 
 **Cloud Native Security Inspector** consists of the following 3 components:
 1. Controller Manager
-1. Inspector
-1. Portal
+2. Inspector
+3. Portal
+
+In regard to inspector, currently we support 3 different kinds of inspectors:
+1. [Harbor vulnerability scanner](https://goharbor.io/docs/main/administration/vulnerability-scanning/).
+2. An inspector based on [Kube-bench](https://github.com/aquasecurity/kube-bench).
+3. Risk inspector contributed by [Arksec](https://arksec.cn/).
 
 ## Demo
 [Video Demo](https://youtu.be/IMxU0UWo-DU) - Demo for Cloud Native Security Inspector features
@@ -32,8 +37,7 @@ Cloud Native Security Inspector is an open source cloud native runtime security 
 - [kubectl](https://kubernetes.io/docs/reference/kubectl/) and docker commands are ready to use.
 
 ## Deployment & Run
-Follow the instructions below to deploy Cloud Native Security Inspector.   
-Refer to the [documentation](USER-GUIDE.md) for more details on how to use Cloud Native Security Inspector.  
+Follow the instructions below to deploy the Cloud Native Security Inspector.
 There are two deployment options:
 - Using pre-built images
 - Building images from scratch  
@@ -94,16 +98,21 @@ NAME                                             TYPE       CLUSTER-IP     EXTER
 cloud-native-security-inspector-portal-service   NodePort   10.98.232.35   <none>        3800:32541/TCP   44h
 ```
 
-If you are using KIND to deploy Kubernetes, in order to visit the portal successfully, please make the NodePort (by default: 30150) of the portal has been exposed to the host machine correctly.  For more details please refer to [KIND documentation](https://kind.sigs.k8s.io/docs/user/quick-start/#mapping-ports-to-the-host-machine).
+If you are using KIND to deploy Kubernetes, in order to visit the portal successfully, please make sure the NodePort (by default: 30150) of the portal has been exposed to the host machine correctly. 
+For more details please refer to [KIND documentation](https://kind.sigs.k8s.io/docs/user/quick-start/#mapping-ports-to-the-host-machine).
+
+### Run
+- Refer to the [Tutorial](docs/TUTORIAL.md) for a quick guidance.
+- Refer to the [User Guide](docs/USER-GUIDE.md) for more details on how to use Cloud Native Security Inspector.
 
 ### Uninstalling
 To uninstall Cloud Native Security Inspector, use the following command:
 ```shell
 $ ./deploy.sh uninstall 
 ```
-For more details, please refer to the [user guide](USER-GUIDE.md).
+For more details, please refer to the [User Guide](docs/USER-GUIDE.md).
 ## Contact us
-Email: narrows @ vmware.com  
+Email: narrows@vmware.com  
 
 
 ## License
