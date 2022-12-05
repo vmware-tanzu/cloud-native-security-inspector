@@ -174,7 +174,7 @@ By clicking the button in action column of each report, you can view the details
 <img src="./pictures/report-kubebench-detail.png">
 
 ##### Risk scanning reports
-This report lists all the pods along with pod name,namespace under which it is running,
+This report lists all the pods along with pod name, namespace under which it is running,
 as well as the number of vulnerabilities contained.
 
 <img src="./pictures/report-risk-scanner.png">
