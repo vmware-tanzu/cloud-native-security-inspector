@@ -37,7 +37,7 @@ Currently, we need one Secret, one setting and one Policy to be configured. Then
 ###### Secret
 Create a secret for Harbor so that Cloud-Native-Security-Inspector can talk to Harbor with the credentials.
 The secret you created will be referred by the setting. If you have already had the K8s secret, you can skip creating one and move forward to next step.
-<img src="./docs/pictures/create-secret.png">
+<img src="./pictures/create-secret.png">
 
 | Field Name    | Type   | Description            |
 |---------------|--------|------------------------|
@@ -50,7 +50,7 @@ The secret you created will be referred by the setting. If you have already had 
 Click on "Credential Name" and choose the secret you've created in the previous step. 
 You also need to specify the endpoint of Harbor and the scan interval.
 
-<img src="./docs/pictures/create-setting.png">
+<img src="./pictures/create-setting.png">
 
 ###### Required Fields
 
@@ -65,7 +65,7 @@ You also need to specify the endpoint of Harbor and the scan interval.
 | Schedule             | string      | The cron expression to be configured in Harbor to specify the CVE update interval |
 | skipTLSVerify        | boolean     | Whether need to skip the TLS verify                                               |
 
-<img src="./docs/pictures/setting-known-registry.png">
+<img src="./pictures/setting-known-registry.png">
 
 ###### KnownRegistry
 This field is optional. If it is configured, replicate rules are set up in Harbor and images from 
@@ -80,7 +80,7 @@ the known registries can be automatically replicated to Harbor.
 | Credential Namespace | string      | The namespace of the credential of KnownRegistry                             |
 | skipTLSVerify        | boolean     | Whether need to skip the TLS verify                                          |
 
-<img src="./docs/pictures/setting-cache.png">
+<img src="./pictures/setting-cache.png">
 
 ###### Cache
 This filed is optional. If it is configured. Cloud-Native-Security-Inspector can use the external Redis you specified here to cache the security data from Harbor.
@@ -96,7 +96,7 @@ Once the Setting is done, you can create an inspection policy according to your 
 By defining the inspection policy, users can specify their security expectations including scan interval, security baseline,
 and the workloads or namespaces that should be scanned.
 
-<img src="./docs/pictures/policy-inspection-setting.png">
+<img src="./pictures/policy-inspection-setting.png">
 
 #### Policy
 ###### Inspection Settings
@@ -114,7 +114,7 @@ and the workloads or namespaces that should be scanned.
 | OpenSearch      | multiple configs  | Enable this to leverage OpenSearch to store the time-series assessment reports       |
 | ElasticSearch   | multiple configs  | Enable this to leverage ElasticSearch to store the time-series assessment reports    |
 
-<img src="./docs/pictures/policy-label-selector.png">
+<img src="./pictures/policy-label-selector.png">
 
 ###### Baselines
 | Field Name | Field Type | Description                              |
@@ -128,7 +128,7 @@ NamespaceSelector is to specify which namespaces should be scanned
 ###### Workload Labels Selectors
 NamespaceSelector is to specify which workloads should be scanned
 
-<img src="./docs/pictures/policy-report-setting.png">
+<img src="./pictures/policy-report-setting.png">
 
 ###### Assessment Settings
 
@@ -157,40 +157,40 @@ We can view the reports of the scanner we chose.
 ##### Image scanning reports
 A line chart will be generated based on the latest n assessment reports, such as:
 
-<img src="./docs/pictures/report-harbor-scanner.png">
+<img src="./pictures/report-harbor-scanner.png">
 
 If there are vulnerabilities be found, the chart would be like:
 
-<img src="./docs/pictures/report-harbor-scanner-more.png">
+<img src="./pictures/report-harbor-scanner-more.png">
 
 By clicking the button in action column of each report, you can view the details of the report.
-<img src="./docs/pictures/report-harbor-detail.png">
+<img src="./pictures/report-harbor-detail.png">
 
 ##### Kubebench scanning reports
-<img src="./docs/pictures/report-kubebench-scanner.png">
-<img src="./docs/pictures/report-kubebench-detail.png">
+<img src="./pictures/report-kubebench-scanner.png">
+<img src="./pictures/report-kubebench-detail.png">
 
 ##### Risk scanning reports
-<img src="./docs/pictures/report-risk-scanner.png">
-<img src="./docs/pictures/report-risk-detail.png">
+<img src="./pictures/report-risk-scanner.png">
+<img src="./pictures/report-risk-detail.png">
 
 #### 1.1.3 Insight
 In the insight menu, the security information is clustered by different perspectives to help the
 security auditor know the security posture clearly. 
 ##### Cluster
 If you have configured a lot of workloads, the cluster insight could be like:
-<img src="./docs/pictures/insight-cluster-summary-more.png">
+<img src="./pictures/insight-cluster-summary-more.png">
 <img src="docs/insight-cluster-violations-more.png">
 
 ##### Namespace
 If you have configured a lot of workloads, the namespace insight could be like:
-<img src="./docs/pictures/insight-namespace-summry-more.png">
-<img src="./docs/pictures/insight-namespace-violations-more.png">
+<img src="./pictures/insight-namespace-summry-more.png">
+<img src="./pictures/insight-namespace-violations-more.png">
 
 ##### Workload
 If you have configured a lot of workloads, the workload insight could be like:
   Click the workload's name to view the details.
-<img src="./docs/pictures/insight-workload-list-more.png">
+<img src="./pictures/insight-workload-list-more.png">
 
 ### 1.2 With CLI
 #### 1.2.1 Settings
@@ -481,7 +481,7 @@ spec:
 If you encounter the problem of installing npm dependencies during the portal building process,
 please modify the npm reference source in Dockerfile.portal
 
-  <img src="docs/pictures/npm-error.png" />
+  <img src="./pictures/npm-error.png" />
 
 ```shell
 $ npm --registry https://registry.npm.taobao.org install

@@ -116,7 +116,7 @@ We will configure this opensearch endpoint in the CNSI's portal.
 ### Create a Setting
 Now type `<your_node_ip>:30150` on the browser of your laptop (which must have
 network access to your CentOS node). You will see the CNSI portal UI:
-<img src="./docs/pictures/initial-ui.png">
+<img src="./pictures/initial-ui.png">
 
 However, the UI is empty for now, you need to start from the Setting and the Policy.
 
@@ -127,17 +127,17 @@ TLS verification needs to be skipped as everything is running in private certs.
 
 Now set the secrets of the harbor instance:
 
-<img src="./docs/pictures/create-secret.png">
+<img src="./pictures/create-secret.png">
 
 You need to change the access key and secret to your **admin's** account.
 
 Then create a new Setting:
-<img src="./docs/pictures/create-setting.png">
+<img src="./pictures/create-setting.png">
 Remember to change the Harbor endpoint to yours.
 
 Then verify that the setting is in healthy status:
 
-<img src="./docs/pictures/setting-healthy.png">
+<img src="./pictures/setting-healthy.png">
 
 ### Create a Workload which will be inspected
 
