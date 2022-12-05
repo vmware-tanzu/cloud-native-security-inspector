@@ -183,7 +183,7 @@ security auditor know the security posture clearly.
 ##### Cluster
 If you have configured a lot of workloads, the cluster insight could be like:
 <img src="./pictures/insight-cluster-summary-more.png">
-<img src="docs/insight-cluster-violations-more.png">
+<img src="./pictures/insight-cluster-violations-more.png">
 
 ##### Namespace
 If you have configured a lot of workloads, the namespace insight could be like:
