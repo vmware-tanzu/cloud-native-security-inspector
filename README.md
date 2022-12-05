@@ -102,15 +102,15 @@ If you are using KIND to deploy Kubernetes, in order to visit the portal success
 For more details please refer to [KIND documentation](https://kind.sigs.k8s.io/docs/user/quick-start/#mapping-ports-to-the-host-machine).
 
 ### Run
-- Refer to the [tutorial](TUTORIAL.md) for a quick guidance.
-- Refer to the [documentation](USER-GUIDE.md) for more details on how to use Cloud Native Security Inspector.
+- Refer to the [Tutorial](docs/TUTORIAL.md) for a quick guidance.
+- Refer to the [User Guide](docs/USER-GUIDE.md) for more details on how to use Cloud Native Security Inspector.
 
 ### Uninstalling
 To uninstall Cloud Native Security Inspector, use the following command:
 ```shell
 $ ./deploy.sh uninstall 
 ```
-For more details, please refer to the [user guide](USER-GUIDE.md).
+For more details, please refer to the [User Guide](docs/USER-GUIDE.md).
 ## Contact us
 Email: narrows@vmware.com  
 
