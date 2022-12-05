@@ -185,7 +185,7 @@ export class KubeBenchReportListComponent implements OnInit {
       if (filter.reset) {
         that.kubeBenchReportList = []        
         that.pagination.page.current = 1
-        that.pagination.page.size = 10
+        // that.pagination.page.size = 10
         // that.pagination.page.from = that.from        
         that.kubeBenchReportList = data.hits.hits
         that.pagination.lastPage = that.pageMaxCount        
@@ -246,6 +246,7 @@ export class KubeBenchReportListComponent implements OnInit {
         } else {
           // size change
           this.pagination.currentPage = 1  
+          event.page.size = 10
           this.getKubeBenchReportList(
             {key: this.oldKey, value: this.oldValue, size: event.page.size, from: 0, reset: true})
         }
