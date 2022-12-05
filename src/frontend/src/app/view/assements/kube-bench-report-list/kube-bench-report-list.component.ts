@@ -158,6 +158,7 @@ export class KubeBenchReportListComponent implements OnInit {
       if (!this.oldKey) {
         this.oldKey = filter.key
         this.oldValue = filter.value
+        this.pagination.page.size = 10
         filter.reset = true
       } else {
         if (this.oldKey === filter.key) {
@@ -216,7 +217,6 @@ export class KubeBenchReportListComponent implements OnInit {
 
   // change handler
   pageChange(event: any) {
-
     if (event.page.current <= 1) {// size change
       if (event.page.size !== this.defaultSize) {
         this.getKubeBenchReportList(
