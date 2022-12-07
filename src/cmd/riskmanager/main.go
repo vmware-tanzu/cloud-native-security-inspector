@@ -97,7 +97,7 @@ func main() {
 				inspectionPolicy.Spec.Inspection.Assessment.OpenSearchPasswd)
 
 			if osClient == nil {
-				log.Info("OpenSearch client is nil", nil, nil)
+				log.Info("OpenSearch client is nil")
 				os.Exit(1)
 			}
 

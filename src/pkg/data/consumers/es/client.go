@@ -33,7 +33,7 @@ func NewClient(cert []byte, addr string, username string, passwd string) *elasti
 		var err error
 		client, err = elasticsearch.NewClient(cfg)
 		if err != nil {
-			log.Log.Info("ElasticSearch client is nil", nil, nil)
+			log.Log.Info("ElasticSearch client is nil")
 			ctrlLog.V(0).Error(err, "Error creating the Client of ElasticSearch")
 		}
 	}
