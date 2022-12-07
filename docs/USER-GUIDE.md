@@ -331,7 +331,7 @@ spec:
       generate: true
       liveTime: 3600
       managedBy: true
-      openSearchAddr: https://opensearch-cluster-master.default:9200
+      openSearchAddr: https://opensearch-cluster-master.opensearch:9200
       openSearchEnabled: true
       openSearchPasswd: admin
       openSearchUser: admin
@@ -445,7 +445,7 @@ spec:
       generate: true
       liveTime: 3600
       managedBy: true
-      openSearchAddr: https://opensearch-cluster-master.default:9200
+      openSearchAddr: https://opensearch-cluster-master.opensearch:9200
       openSearchCert: ""
       openSearchEnabled: true
       openSearchPasswd: admin
