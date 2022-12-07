@@ -27,7 +27,7 @@ func NewClient(cert []byte, addr string, username string, passwd string) *opense
 			Password:  passwd,
 		})
 		if err != nil {
-			log.Log.Info("Opensearch client is nil", nil, nil)
+			log.Log.Info("Opensearch client is nil")
 			panic(err)
 		}
 	}

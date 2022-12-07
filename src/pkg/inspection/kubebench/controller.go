@@ -159,11 +159,11 @@ func exportReportToES(controlsCollection []*check.Controls, policy *v1alpha1.Ins
 	logger.Info("ES config: ", "clientArgs.username", clientArgs.username)
 	client := es.NewClient(clientArgs.cert, clientArgs.addr, clientArgs.username, clientArgs.passwd)
 	if client == nil {
-		logger.Info("ES client is nil", nil, nil)
+		logger.Info("ES client is nil")
 	}
 
 	if err := es.TestClient(); err != nil {
-		logger.Info("client test error", nil, nil)
+		logger.Info("client test error")
 		return err
 	}
 	exporter := es.ElasticSearchExporter{}
@@ -198,7 +198,7 @@ func exportReportToOpenSearch(controlsCollection []*check.Controls, policy *v1al
 	logger.Info("OpenSearch config: ", "clientArgs.username", clientArgs.username)
 	client := osearch.NewClient(clientArgs.cert, clientArgs.addr, clientArgs.username, clientArgs.passwd)
 	if client == nil {
-		logger.Info("ES client is nil", nil, nil)
+		logger.Info("ES client is nil")
 	}
 
 	exporter := osearch.OpenSearchExporter{}
