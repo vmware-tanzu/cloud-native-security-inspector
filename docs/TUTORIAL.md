@@ -77,40 +77,24 @@ replicaset.apps/cnsi-controller-manager-7c756fd8d8                  1         1 
 
 Now you are able to access the CNSI portal through clusterIp:30150, because the portal is a NodePort service.
 
+Now verify the OpenSearch service is deployed properly:
 ```
 ➜  ~  kubectl get all -n opensearch
 NAME                              READY   STATUS    RESTARTS   AGE
-pod/opensearch-cluster-master-0   1/1     Running   0          2m40s
+pod/opensearch-cluster-master-0   1/1     Running   0          119s
+pod/opensearch-cluster-master-1   1/1     Running   0          119s
+pod/opensearch-cluster-master-2   1/1     Running   0          119s
 
-NAME                                         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                         AGE
-service/opensearch-cluster-master            NodePort    10.105.223.105   <none>        9200:32705/TCP,9300:31004/TCP   2m40s
-service/opensearch-cluster-master-headless   ClusterIP   None             <none>        9200/TCP,9300/TCP               2m40s
+NAME                                         TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)             AGE
+service/opensearch-cluster-master            ClusterIP   10.108.254.0   <none>        9200/TCP,9300/TCP   11m
+service/opensearch-cluster-master-headless   ClusterIP   None           <none>        9200/TCP,9300/TCP   11m
 
 NAME                                         READY   AGE
-statefulset.apps/opensearch-cluster-master   1/1     2m40s
+statefulset.apps/opensearch-cluster-master   3/3     11m
 ```
-The default username and password are "admin".
-```
-➜  ~  curl -XGET https://10.186.2.130:32705 -u 'admin:admin' --insecure
-{
-  "name" : "opensearch-cluster-master-0",
-  "cluster_name" : "opensearch-cluster",
-  "cluster_uuid" : "ABlUQ9GGS3y0jYKJ1s5QJw",
-  "version" : {
-    "distribution" : "opensearch",
-    "number" : "2.4.0",
-    "build_type" : "tar",
-    "build_hash" : "744ca260b892d119be8164f48d92b8810bd7801c",
-    "build_date" : "2022-11-15T04:42:29.671309257Z",
-    "build_snapshot" : false,
-    "lucene_version" : "9.4.1",
-    "minimum_wire_compatibility_version" : "7.10.0",
-    "minimum_index_compatibility_version" : "7.0.0"
-  },
-  "tagline" : "The OpenSearch Project: https://opensearch.org/"
-}
-```
-We will configure this opensearch endpoint in the CNSI's portal.
+The OpenSearch endpoint is `opensearch-cluster-master.opensearch:9200`.
+
+We will configure this OpenSearch endpoint in the CNSI's portal.
 
 ## Inspect the workload with CNSI
 ### Create a Setting

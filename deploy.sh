@@ -24,7 +24,7 @@ function install_opensearch() {
     check_helm
     helm repo add opensearch https://opensearch-project.github.io/helm-charts/
     helm repo update
-    helm install opensearch-deployment-for-narrows opensearch/opensearch --version 2.8.0
+    helm install opensearch-deployment-for-narrows opensearch/opensearch -n opensearch --version 2.8.0 --create-namespace
     success "OpenSearch installed"
 }
 
@@ -32,7 +32,7 @@ function uninstall_opensearch() {
     note "Uninstalling opensearch"
     check_helm
     helm repo add opensearch https://opensearch-project.github.io/helm-charts/
-    helm uninstall opensearch-deployment-for-narrows || :
+    helm uninstall opensearch-deployment-for-narrows -n opensearch || :
     success "OpenSearch uninstalled"
 }
 
