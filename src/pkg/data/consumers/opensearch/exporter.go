@@ -290,7 +290,7 @@ func (o *OpenSearchExporter) listIndex(name string) ([]OpenSearchIndex, error) {
 	}
 	defer res.Body.Close()
 	var r map[string]interface{}
-	var esIndices []OpenSearchIndex
+	var osIndices []OpenSearchIndex
 	if res.IsError() {
 		if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
 			log.Log.Info("Error parsing the response body")
@@ -306,13 +306,14 @@ func (o *OpenSearchExporter) listIndex(name string) ([]OpenSearchIndex, error) {
 			log.Log.Info("Error parsing the response body")
 		} else {
 			// Print the response status.
+			log.Log.Info("find index response", "response", r)
 			for _, i := range r {
-				esIndices = append(esIndices, OpenSearchIndex{i["index"].(string), i["health"].(string),
+				osIndices = append(osIndices, OpenSearchIndex{i["index"].(string), i["health"].(string),
 					i["docs.count"].(string)})
 			}
 		}
 	}
-	return esIndices, nil
+	return osIndices, nil
 }
 
 // setupIndex is to create an index with predefine mapping in OpenSearch for CNSI
