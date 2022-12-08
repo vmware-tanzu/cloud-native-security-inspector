@@ -48,7 +48,7 @@
     "Assessments": {
       "title": "Assessments",
       "report_view": "Reports",
-      "Kube_bench": "kubebench scanning reports",
+      "Kube_bench": "Kubebench scanning reports",
       "image_nspector_reports": "Image scanning reports",
       "risk": "Risk scanning reports"
     },
