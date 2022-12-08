@@ -5,8 +5,10 @@
       Loading...
     </span>
   </div>
-  <div id="main" style="width: 1400px;height:400px;">
-  
+  <div id="main" style="width: 1400px;height:400px;"></div>
+  <div style="display: flex; width: 1400px;height:400px;">
+    <div id="work-node"  style="width: 50%; flex: 1;"></div>
+    <div id="k8s-policy" style="width: 50%; flex: 1;"></div>
   </div>
 
   <clr-datagrid [clrDgLoading]="dgLoading" (clrDgRefresh)="pageChange($event)">
