@@ -5,11 +5,11 @@
 .sddc-header {
   padding: 20px;
 }
-.icon-button clr-icon {
+.icon-button cds-icon {
   color: #fff;
   margin-right: 15px;
   cursor: pointer;
 }
-.icon-button clr-icon:hover {
+.icon-button cds-icon:hover {
   color: hsl(198, 80%, 46%);
 }

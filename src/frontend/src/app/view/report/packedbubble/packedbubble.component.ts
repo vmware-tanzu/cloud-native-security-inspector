@@ -87,8 +87,8 @@ export class PackedbubbleComponent implements OnInit {
               label: '',
               data: [0, 0],
               backgroundColor: [
-                '#3BA272',
-                '#EE6666'
+                '#EE6666',
+                '#3BA272'
               ]
             }
           ]

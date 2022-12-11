@@ -34,8 +34,8 @@
           <li>
             <b>Passed:</b>
             <span>
-              <clr-icon *ngIf="!shardService.currentWorkload.workload.passed" shape="times-circle" style="color: red;" class="is-solid"></clr-icon>
-              <clr-icon *ngIf="shardService.currentWorkload.workload.passed" shape="success-standard" style="color: green;" class="is-solid"></clr-icon>
+              <cds-icon *ngIf="!shardService.currentWorkload.workload.passed" shape="times-circle" style="color: red;" class="is-solid"></cds-icon>
+              <cds-icon *ngIf="shardService.currentWorkload.workload.passed" shape="success-standard" style="color: green;" class="is-solid"></cds-icon>
               {{shardService.currentWorkload.workload.passed}}
             </span>
           </li>

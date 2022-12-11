@@ -2,7 +2,7 @@
   <div class="sddc-header">
     <h2 class="sddc-title">
       <a href="javascript:;" [routerLink]='["/policy"]'>
-        <clr-icon shape="angle" class="angle-top"></clr-icon>
+        <cds-icon shape="angle" class="angle-top"></cds-icon>
       </a>
       {{'Policy.title'|translate}}</h2>
   </div>
@@ -27,7 +27,7 @@
           <div>
             <span>{{schedule}}</span>
             <button (click)="isCornUpdateModal=true" type="button" class="btn btn-icon btn-primary" aria-label="home">
-              <clr-icon  shape="pencil"></clr-icon>
+              <cds-icon class="pencil" shape="pencil"></cds-icon>
           </button>
           </div>
         </div>
@@ -54,13 +54,13 @@
           <label>{{'CommonlyUse.scanInspector'|translate}}:</label>
           <clr-combobox formControlName="image" name="image" clrMulti="true" required>
             <ng-container *clrOptionSelected="let selected">
-              <clr-icon shape="network-globe"></clr-icon> {{selected}}
+              <cds-icon shape="network-globe"></cds-icon> {{selected}}
             </ng-container>
             <clr-options>
               <clr-option *clrOptionItems="let image of imageList;" [clrValue]="image.name">
                   {{image.name}}
                 <div style="display: flex; position: relative;">
-                  <clr-icon style="position: absolute; left: -20px; top: 5px;" shape="network-globe"></clr-icon>
+                  <cds-icon style="position: absolute; left: -20px; top: 5px;" shape="network-globe"></cds-icon>
                   <span>{{image.url}}</span>  
                 </div>
               </clr-option>
@@ -120,10 +120,10 @@
                 {{'CommonlyUse.test'| translate}}
               </button>
               <span  *ngIf="checkES === 'passed'">
-                <clr-icon class="passed" shape="check-circle" ></clr-icon> Successful
+                <cds-icon class="passed" shape="check-circle" ></cds-icon> Successful
               </span>
               <span  *ngIf="checkES === 'not passed'" class="not-passed" >
-                <clr-icon  shape="times" class="not-passed"></clr-icon> Failed
+                <cds-icon  shape="times" class="not-passed"></cds-icon> Failed
               </span>
             </div> -->
           </div>
@@ -164,10 +164,10 @@
                 {{'CommonlyUse.test'| translate}}
               </button>
               <span  *ngIf="checkES === 'passed'">
-                <clr-icon class="passed" shape="check-circle" ></clr-icon> Successful
+                <cds-icon class="passed" shape="check-circle" ></cds-icon> Successful
               </span>
               <span  *ngIf="checkES === 'not passed'" class="not-passed" >
-                <clr-icon  shape="times" class="not-passed"></clr-icon> Failed
+                <cds-icon  shape="times" class="not-passed"></cds-icon> Failed
               </span>
             </div>
           </div>
@@ -189,18 +189,21 @@
       <clr-step-content *clrIfExpanded>
         <div class="baselines">
           <h4>{{'Policy.baselines'|translate}}
-            <clr-icon (click)="policySettingAddItem('baseline')" style="color:hsl(198, 80%, 46%)" shape="plus-circle" class="is-solid"></clr-icon>
+            <cds-icon (click)="policySettingAddItem('baseline')" style="color:hsl(198, 80%, 46%)" shape="plus-circle" class="is-solid"></cds-icon>
           </h4>
           <ul class="list">
             <li *ngFor="let item of baselines, let i = index">
               <!-- <clr-input-container class="w-230">
                 <label>{{'Policy.kind'|translate}}:   
-                  <clr-icon (click)="policySettingremoveItem('baseline', i)" style="color: hsl(9, 100%, 43%);" *ngIf="i!==0" shape="minus-circle" class="is-solid"></clr-icon>
+                  <cds-icon (click)="policySettingremoveItem('baseline', i)" style="color: hsl(9, 100%, 43%);" *ngIf="i!==0" shape="minus-circle" class="is-solid"></cds-icon>
                 </label>
                 <input style="color: #999;" clrInput placeholder="" name="kind" disabled [(ngModel)]="item.kind" [ngModelOptions]="{standalone: true}" />
               </clr-input-container> -->
               <clr-select-container class="w-230" *ngIf="policyForm.get('inspectionResult')?.get('generate')?.value">
-                <label class="w-200">{{'Policy.baseline'|translate}}</label>
+                <label class="w-200">
+                  {{'Policy.baseline'|translate}}
+                  <cds-icon (click)="policySettingremoveItem('baseline', i)" style="color: hsl(9, 100%, 43%);" *ngIf="i!==0" shape="minus-circle" class="is-solid"></cds-icon>
+                </label>
                 <select clrSelect name="baseline" [(ngModel)]="item.baseline" [ngModelOptions]="{standalone: true}">
                   <option value="Low">Low</option>
                   <option value="Medium">Medium</option>
@@ -223,13 +226,13 @@
   
         <div class="actions w-auto">
           <h4>{{'Policy.namespace'|translate}}
-            <clr-icon (click)="policySettingAddItem('namespacelabels')" style="color:hsl(198, 80%, 46%)" shape="plus-circle" class="is-solid"></clr-icon>
+            <cds-icon (click)="policySettingAddItem('namespacelabels')" style="color:hsl(198, 80%, 46%)" shape="plus-circle" class="is-solid"></cds-icon>
           </h4>
           <ul class="list">
             <li *ngFor="let item of namespacelabels,let i = index;">
               <clr-input-container class="w-230">
                 <label>{{'Policy.key'| translate}}:   
-                  <clr-icon (click)="policySettingremoveItem('namespacelabels', i)" style="color: hsl(9, 100%, 43%);"shape="minus-circle" class="is-solid"></clr-icon>
+                  <cds-icon (click)="policySettingremoveItem('namespacelabels', i)" style="color: hsl(9, 100%, 43%);"shape="minus-circle" class="is-solid"></cds-icon>
                 </label>
                 <input clrInput placeholder="" name="liveTime" [(ngModel)]="item.key" [ngModelOptions]="{standalone: true}"/>
               </clr-input-container>
@@ -245,13 +248,13 @@
   
         <div class="actions w-auto">
           <h4>{{'Policy.workload'|translate}}
-            <clr-icon (click)="policySettingAddItem('workloadlabels')" style="color:hsl(198, 80%, 46%)" shape="plus-circle" class="is-solid"></clr-icon>
+            <cds-icon (click)="policySettingAddItem('workloadlabels')" style="color:hsl(198, 80%, 46%)" shape="plus-circle" class="is-solid"></cds-icon>
           </h4>
           <ul class="list">
             <li *ngFor="let item of workloadlabels,let i = index;">
               <clr-input-container class="w-230">
                 <label>{{'Policy.key'| translate}}:   
-                  <clr-icon (click)="policySettingremoveItem('workloadlabels', i)" style="color: hsl(9, 100%, 43%);"shape="minus-circle" class="is-solid"></clr-icon>
+                  <cds-icon (click)="policySettingremoveItem('workloadlabels', i)" style="color: hsl(9, 100%, 43%);"shape="minus-circle" class="is-solid"></cds-icon>
                 </label>
                 <input clrInput placeholder="" name="liveTime" [(ngModel)]="item.key" [ngModelOptions]="{standalone: true}"/>
               </clr-input-container>
@@ -312,13 +315,13 @@
                 <input  type="checkbox" clrToggle name="actions" formControlName="actions" />
               </clr-toggle-wrapper>
             </clr-toggle-container> 
-            <!-- <clr-icon (click)="policySettingAddItem('action')" style="color:hsl(198, 80%, 46%)" shape="plus-circle" class="is-solid"></clr-icon> -->
+            <!-- <cds-icon (click)="policySettingAddItem('action')" style="color:hsl(198, 80%, 46%)" shape="plus-circle" class="is-solid"></cds-icon> -->
           </h4>
           <ul class="list" style="list-style:none; margin-left: 0;" *ngIf="policyForm.get('inspectionResult')?.get('actions')?.value">
             <li *ngFor="let item of actions,let i = index;">
               <clr-input-container class="w-230">
                 <label>{{'Policy.kind'|translate}}:   
-                  <clr-icon (click)="policySettingremoveItem('action', i)" style="color: hsl(9, 100%, 43%);" *ngIf="i!==0" shape="minus-circle" class="is-solid"></clr-icon>
+                  <cds-icon (click)="policySettingremoveItem('action', i)" style="color: hsl(9, 100%, 43%);" *ngIf="i!==0" shape="minus-circle" class="is-solid"></cds-icon>
                 </label>
                 <input style="color: #999;" clrInput placeholder="" name="liveTime" [(ngModel)]="item.kind" [ngModelOptions]="{standalone: true}" disabled/>
               </clr-input-container>
@@ -337,13 +340,13 @@
           <div class="alert-item static">
             
               <div class="alert-icon-wrapper">
-                  <clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
+                  <cds-icon class="alert-icon" shape="exclamation-circle"></cds-icon>
               </div>
               <span class="alert-text">
                   {{messageContent}}
               </span>
               <button (click)="messageFlag =''" type="button" class="close" aria-label="Close">
-                <clr-icon aria-hidden="true" shape="close"></clr-icon>
+                <cds-icon aria-hidden="true" shape="close"></cds-icon>
             </button>
           </div>
       </div>
@@ -352,13 +355,13 @@
     <div class="alert-items">
         <div class="alert-item static">
             <div class="alert-icon-wrapper">
-                <clr-icon class="alert-icon" shape="check-circle"></clr-icon>
+                <cds-icon class="alert-icon" shape="check-circle"></cds-icon>
             </div>
             <span class="alert-text">
               {{messageContent}}
             </span>
             <button type="button" (click)="messageFlag =''" class="close" aria-label="Close">
-              <clr-icon aria-hidden="true" shape="close"></clr-icon>
+              <cds-icon aria-hidden="true" shape="close"></cds-icon>
           </button>
         </div>
     </div>
@@ -371,7 +374,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button aria-label="Close" class="close" type="button">
-                    <!-- <clr-icon aria-hidden="true" shape="close"></clr-icon> -->
+                    <!-- <cds-icon aria-hidden="true" shape="close"></cds-icon> -->
                 </button>
                 <h3 class="modal-title">{{'Policy.schedule_settings'|translate}}
                 </h3>

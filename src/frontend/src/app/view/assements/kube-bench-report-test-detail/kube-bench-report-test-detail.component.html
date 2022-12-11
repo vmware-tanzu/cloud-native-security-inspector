@@ -1,7 +1,7 @@
 <div class="report">
   <h2>
     <a href="javascript:;" [routerLink]='["/assessments/kube-bench/test-view/" + report_id]'>
-      <clr-icon shape="angle" class="angle-top"></clr-icon>
+      <cds-icon shape="angle" class="angle-top"></cds-icon>
     </a>
     {{title}}</h2>
   <div class="echarts-loading" *ngIf="echartsLoading">
@@ -30,19 +30,19 @@
       </clr-dg-cell>
       <clr-dg-cell>
         <span class="status pass" *ngIf="kube.status === 'PASS'">
-          <clr-icon shape="check-circle" class="is_solid"></clr-icon>
+          <cds-icon shape="check-circle" class="is_solid"></cds-icon>
           {{kube.status}}
         </span>
         <span class="status fail" *ngIf="kube.status === 'FAIl'">
-          <clr-icon shape="exclamation-circle" class="is_solid"></clr-icon>
+          <cds-icon shape="exclamation-circle" class="is_solid"></cds-icon>
           {{kube.status}}
         </span>
         <span class="status warn" *ngIf="kube.status === 'WARN'">
-          <clr-icon shape="exclamation-triangle" class="is_solid"></clr-icon>
+          <cds-icon shape="exclamation-triangle" class="is_solid"></cds-icon>
           {{kube.status}}
         </span>
         <span class="status info" *ngIf="kube.status === 'INFO'">
-          <clr-icon shape="info-circle" class="is_solid"></clr-icon>
+          <cds-icon shape="info-circle" class="is_solid"></cds-icon>
           {{kube.status}}
         </span>
       </clr-dg-cell>

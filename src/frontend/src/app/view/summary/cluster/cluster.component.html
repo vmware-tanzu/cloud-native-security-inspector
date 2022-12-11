@@ -15,11 +15,11 @@
         <span class="title"> Status</span>
         <span class="content">
           <span class="success" *ngIf="shardService.nodeInfo.status === 'running' || shardService.nodeInfo.status === 'Active'">
-            <clr-icon shape="success-standard" class="is-solid"></clr-icon>
+            <cds-icon shape="success-standard" class="is-solid"></cds-icon>
             {{shardService.nodeInfo.status}}
           </span>
           <span class="error" *ngIf="shardService.nodeInfo.status === 'falid'">
-            <clr-icon shape="error-standard" class="is-solid"></clr-icon>
+            <cds-icon shape="error-standard" class="is-solid"></cds-icon>
             {{shardService.nodeInfo.status}}
           </span>
         </span>
@@ -36,13 +36,13 @@
         <span class="title">{{'Cluster.nodes_resource'|translate}}:</span>
         <div class="content">
           <div class="success">
-            <label ><clr-icon shape="cpu" class="is-solid"></clr-icon>CPU: </label>
+            <label ><cds-icon shape="cpu" class="is-solid"></cds-icon>CPU: </label>
             
             <span class="success">{{'Cluster.capacity'|translate}}: <b>{{shardService.nodesInfo.cpu.capacity}}</b> </span>
             <span class="success"> {{'Cluster.allocatable'|translate}}: <b>{{shardService.nodesInfo.cpu.allocatable}}</b></span>
           </div>
           <div class="success">
-            <label ><clr-icon shape="memory" class="is-solid"></clr-icon>{{'Cluster.memory'|translate}}:</label>
+            <label ><cds-icon shape="memory" class="is-solid"></cds-icon>{{'Cluster.memory'|translate}}:</label>
             <span class="success">{{'Cluster.capacity'|translate}}: <b>{{shardService.nodesInfo.memory.capacity}}Ki </b> </span>
             <span class="success"> {{'Cluster.allocatable'|translate}}: <b>{{shardService.nodesInfo.memory.allocatable}}Ki</b></span>
           </div>

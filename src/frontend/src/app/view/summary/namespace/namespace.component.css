@@ -35,7 +35,7 @@
 .cluster .left ul li div.success {
   margin-right: 10px;
 }
-.cluster .left ul li div.success clr-icon {
+.cluster .left ul li div.success cds-icon {
   color: #3BA272;
   position: relative;
   top: -1px;
@@ -44,13 +44,13 @@
 .cluster .left ul li span.content span.success {
   margin-right: 10px;
 }
-.cluster .left ul li span.content span.success clr-icon {
+.cluster .left ul li span.content span.success cds-icon {
   color: #3BA272;
   position: relative;
   top: -1px;
   margin-right: 6px;
 }
-.cluster .left ul li span.content span.error clr-icon {
+.cluster .left ul li span.content span.error cds-icon {
   color: #EE6666;
   position: relative;
   top: -1px;

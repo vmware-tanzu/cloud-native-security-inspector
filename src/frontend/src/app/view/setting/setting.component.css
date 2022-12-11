@@ -54,7 +54,7 @@
   width: 30px;
   height: 30px;
 }
-.setting-page clr-tabs::ng-deep .schedule button clr-icon {
+.setting-page clr-tabs::ng-deep .schedule button cds-icon {
   position: relative;
   top: -3px;
   left: -5px;
@@ -105,11 +105,11 @@
 .setting-page clr-tabs::ng-deep form::ng-deep .clr-form-control .clr-control-label {
   width: 200px !important;
 }
-.setting-page clr-tabs::ng-deep .icon-button clr-icon {
+.setting-page clr-tabs::ng-deep .icon-button cds-icon {
   color: #fff;
   margin-right: 15px;
   cursor: pointer;
 }
-.setting-page clr-tabs::ng-deep .icon-button clr-icon:hover {
+.setting-page clr-tabs::ng-deep .icon-button cds-icon:hover {
   color: hsl(198, 80%, 46%);
 }

@@ -9,7 +9,7 @@
     {{'Policy.policy'|translate}}</h2>
 </div>
 <button *ngIf="policyList.length < 1" style="margin-left: 20px;" class="btn btn-primary btn-sm create" routerLink="/modify-policy/create">
-  <clr-icon shape="plus"></clr-icon>
+  <cds-icon shape="plus"></cds-icon>
   {{'CommonlyUse.new'|translate}}</button>
 <clr-datagrid [clrDgLoading]="policyLoading">
   <clr-dg-column>{{'CommonlyUse.name' | translate}}</clr-dg-column>
@@ -33,8 +33,8 @@
         {{policy.spec.inspector?.imagePullPolicy}}      </clr-dg-cell>
       <clr-dg-cell>
         <div class="icon-button">
-          <clr-icon shape="note" *ngIf="noteIconFlag" (click)="modifyPolicy()"></clr-icon>
-          <clr-icon shape="trash" (click)="deleteModalHandler(policy.metadata?.name)"></clr-icon>
+          <cds-icon shape="note" *ngIf="noteIconFlag" (click)="modifyPolicy()"></cds-icon>
+          <cds-icon shape="trash" (click)="deleteModalHandler(policy.metadata?.name)"></cds-icon>
 
         </div>
       </clr-dg-cell>
@@ -52,7 +52,7 @@
       <div class="modal-content">
           <div class="modal-header">
               <button aria-label="Close" (click)="deleteModal = false" class="close" type="button">
-                  <clr-icon aria-hidden="true" shape="close"></clr-icon>
+                  <cds-icon aria-hidden="true" shape="close"></cds-icon>
               </button>
               <h3 class="modal-title">{{'CommonlyUse.delete' | translate}}</h3>
           </div>
@@ -67,7 +67,7 @@
             <div class="alert-items">
                 <div class="alert-item static">
                     <div class="alert-icon-wrapper">
-                        <clr-icon class="alert-icon" shape="info-circle"></clr-icon>
+                        <cds-icon class="alert-icon" shape="info-circle"></cds-icon>
                     </div>
                     <span class="alert-text">
                       {{messageContent}}
@@ -75,7 +75,7 @@
                 </div>
             </div>
             <button type="button" class="close" aria-label="Close">
-                <clr-icon aria-hidden="true" (click)="messageFlag = false" shape="close"></clr-icon>
+                <cds-icon aria-hidden="true" (click)="messageFlag = false" shape="close"></cds-icon>
             </button>
         </div>
       </div>

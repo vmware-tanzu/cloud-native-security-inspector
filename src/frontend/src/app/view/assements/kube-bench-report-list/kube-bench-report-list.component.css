@@ -37,6 +37,6 @@ clr-datagrid::ng-deep .sort {
   flex: 1;
   justify-content: space-between;
 }
-clr-datagrid::ng-deep .sort clr-icon.oder {
+clr-datagrid::ng-deep .sort cds-icon.oder {
   transform: rotate(180deg);
 }

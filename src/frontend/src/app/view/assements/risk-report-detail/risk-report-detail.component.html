@@ -15,7 +15,7 @@
         </div>
         <div id="pod-list" style="width: 1200px;height:400px; overflow: hidden;"> </div>
 
-        <clr-datagrid class="report-datagrid" *ngIf="detailInfo._source && detailInfo._source.ReportDetail.length > 0 ">
+        <clr-datagrid class="report-datagrid" *ngIf="detailInfo._source && detailInfo._source.ReportDetail && detailInfo._source.ReportDetail.length > 0 ">
           <clr-dg-column [clrDgField]="'uid'">UID</clr-dg-column>
           <clr-dg-column [clrDgField]="'name'">{{'CommonlyUse.name'|translate}}</clr-dg-column>
           <clr-dg-column [clrDgField]="'namespace'">{{'CommonlyUse.namespace'|translate}}</clr-dg-column>
@@ -26,7 +26,7 @@
           <clr-dg-row *clrDgItems="let detail of detailInfo._source.ReportDetail" [clrDgItem]="detail">
             <clr-dg-cell>
               <a style="cursor: pointer;" (click)="showDetail(detail)" href="javascript:;">
-                <clr-icon style="color: skyblue" shape="pop-out"></clr-icon>
+                <cds-icon style="color: skyblue" shape="pop-out"></cds-icon>
                 {{detail.uid}}
               </a></clr-dg-cell>
             <clr-dg-cell>{{detail.name}}</clr-dg-cell>

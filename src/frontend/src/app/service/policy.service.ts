@@ -20,6 +20,11 @@ export class PolicyService {
     return this.http.get<AssessmentReportType>(this.environment.api.goharbor + `/assessmentreports?limit=${limit}&continue=${continues}`)
   }
 
+  getAllAssessmentreports() :Observable<AssessmentReportType>{
+    return this.http.get<AssessmentReportType>(this.environment.api.goharbor + `/assessmentreports`)
+  }
+
+
   getNamespaceAssessmentreports(namespace: string ='default', limit:number = 10, continues:string='') :Observable<AssessmentReportType>{
     return this.http.get<AssessmentReportType>(this.environment.api.goharbor + `/namespaces/${namespace}/assessmentreports?limit=${limit}&continue=${continues}`)
   }

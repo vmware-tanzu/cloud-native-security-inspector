@@ -13,7 +13,7 @@
     <clr-dg-column >
       <div class="sort">
         {{'CommonlyUse.create_time'|translate}}
-        <!-- <clr-icon shape="arrow"></clr-icon>   -->
+        <!-- <cds-icon shape="arrow"></cds-icon>   -->
       </div>
     </clr-dg-column>
     <clr-dg-column >{{'Risk_view.numberOfVulnerabilities'|translate}}</clr-dg-column>
@@ -21,7 +21,7 @@
     <clr-dg-row *clrDgItems="let kube of riskList">
       <clr-dg-cell *ngIf="kube" >
         <a style="cursor: pointer;" (click)="showDetail(kube)" href="javascript:;">
-          <clr-icon style="color: skyblue" shape="pop-out"></clr-icon>
+          <cds-icon style="color: skyblue" shape="pop-out"></cds-icon>
           {{kube._id}}
         </a>
       </clr-dg-cell>

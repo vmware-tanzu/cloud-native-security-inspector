@@ -51,7 +51,7 @@
   width: 30px;
   height: 30px;
 }
-.create-sddc-form::ng-deep .schedule button clr-icon {
+.create-sddc-form::ng-deep .schedule button cds-icon {
   position: relative;
   top: -3px;
   left: -5px;
@@ -102,12 +102,12 @@
 .create-sddc-form::ng-deep .clr-form-control .clr-control-label {
   width: 200px !important;
 }
-.create-sddc-form::ng-deep .icon-button clr-icon {
+.create-sddc-form::ng-deep .icon-button cds-icon {
   color: #fff;
   margin-right: 15px;
   cursor: pointer;
 }
-.create-sddc-form::ng-deep .icon-button clr-icon:hover {
+.create-sddc-form::ng-deep .icon-button cds-icon:hover {
   color: hsl(198, 80%, 46%);
 }
 .create-sddc-form::ng-deep .w-230 .clr-control-container .clr-input-wrapper input,

@@ -48,7 +48,7 @@ export class RiskReportDetailComponent implements OnInit {
     "#f4e001",
     "#f0805a",
     "#26c0c0"]
-    this.detailInfo._source.ReportDetail.forEach((tp: {Detail: any[], name: string}, index: number) => {
+    this.detailInfo._source.ReportDetail && this.detailInfo._source.ReportDetail.forEach((tp: {Detail: any[], name: string}, index: number) => {
       // Display up to 100 items
       if (xAxis.length < 101) {
         xAxis.push({

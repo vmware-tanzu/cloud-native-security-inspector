@@ -6,7 +6,7 @@
 <clr-vertical-nav [clrVerticalNavCollapsible]="true">
   <clr-vertical-nav-group
           routerLinkActive="active">
-      <clr-icon shape="line-chart" clrVerticalNavIcon></clr-icon>
+      <cds-icon shape="line-chart" clrVerticalNavIcon></cds-icon>
       {{'Nav.Assessments.title'| translate}}
       <clr-vertical-nav-group-children>
         <a clrVerticalNavLink
@@ -34,7 +34,7 @@
   </clr-vertical-nav-group>
   <clr-vertical-nav-group
           routerLinkActive="active">
-      <clr-icon shape="organization" clrVerticalNavIcon></clr-icon>
+      <cds-icon shape="organization" clrVerticalNavIcon></cds-icon>
       {{'Nav.Insight.title'| translate}}
       <clr-vertical-nav-group-children>
           <a clrVerticalNavLink
@@ -57,16 +57,16 @@
       </clr-vertical-nav-group-children>
   </clr-vertical-nav-group>
   <a clrVerticalNavLink [routerLink]="['/policy']" routerLinkActive='active'>
-    <clr-icon clrVerticalNavIcon shape="file-settings" ></clr-icon>
+    <cds-icon clrVerticalNavIcon shape="file-settings" ></cds-icon>
     <b>{{'Nav.Policy.title'| translate}}</b>
   </a>
   <a clrVerticalNavLink [routerLink]="['/setting']" routerLinkActive='active'>
-    <clr-icon clrVerticalNavIcon shape="cog" ></clr-icon>
+    <cds-icon clrVerticalNavIcon shape="cog" ></cds-icon>
     <b>{{'Nav.Setting.title'| translate}}</b>
   </a>
   <!-- <clr-vertical-nav-group
           routerLinkActive="active">
-      <clr-icon shape="cog" clrVerticalNavIcon></clr-icon>
+      <cds-icon shape="cog" clrVerticalNavIcon></cds-icon>
       Setting
       <clr-vertical-nav-group-children>
           <a clrVerticalNavLink

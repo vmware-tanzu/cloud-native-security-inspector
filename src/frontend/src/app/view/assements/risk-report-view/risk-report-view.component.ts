@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import * as moment from 'moment';
 import { AssessmentService } from 'src/app/service/assessment.service';
 import { echarts, LineSeriesOption } from 'src/app/shard/shard/echarts';
 type ECOption = echarts.ComposeOption<LineSeriesOption>
@@ -47,6 +48,49 @@ export class RiskReportViewComponent implements OnInit {
   }
   // echarts render 
   echartsRender(dateList: any, valueList: any) {
+    const sortArr  = JSON.parse(JSON.stringify(valueList))
+    sortArr.sort(function (a: number, b: number) {
+      return a-b;
+    }); 
+    let yAxis: any = {
+      min: -1,
+      max: 30,
+      splitLine: {
+        show: true,
+        lineStyle: {
+          type: 'dashed',
+          color: "#55b9b4"
+        }
+      }
+    }
+    if (sortArr[0] !==0 && sortArr[0] !== sortArr[sortArr.length-1]) {
+      yAxis = {
+        min: sortArr[0],
+        max: sortArr[sortArr.length-1],
+        interval: 25,
+        splitLine: {
+          show: true,
+          lineStyle: {
+            type: 'dashed',
+            color: "#55b9b4"
+          }
+        }
+      }
+    } else if (sortArr[0] !==0) {
+      yAxis = {
+        min: sortArr[sortArr.length-1] - 50,
+        max: sortArr[sortArr.length-1] + 50,
+        interval: 25,
+        splitLine: {
+          show: true,
+          lineStyle: {
+            type: 'dashed',
+            color: "#55b9b4"
+          }
+        }
+      }
+    }
+    
     this.echartsOption = {
       // Make gradient line here
       visualMap: [
@@ -77,7 +121,7 @@ export class RiskReportViewComponent implements OnInit {
         }
       ],
       yAxis: [
-        {}
+        yAxis
       ],
       grid: [
         {}
@@ -136,7 +180,7 @@ export class RiskReportViewComponent implements OnInit {
         });
       }
       el['risk_number'] = risk_number
-      dateList.push(el._source.createTime)
+      dateList.push(moment(el._source.createTime).format('LLL'))
       valueList.push(el.risk_number)
 
       if (query && max) {          
@@ -232,7 +276,7 @@ export class RiskReportViewComponent implements OnInit {
   
           that.riskList.forEach((el: any) => {
             if (el.risk_number) {
-              dateList.push(el._source.createTime)
+              dateList.push(moment(el._source.createTime).format('LLL'))
               valueList.push(el.risk_number)
             }
           })

@@ -44,17 +44,17 @@
   font-size: 32px;
   font-weight: 700;
 }
-.cluster-page clr-tabs::ng-deep .report .data div span.value clr-icon {
+.cluster-page clr-tabs::ng-deep .report .data div span.value cds-icon {
   width: 30px;
   height: 30px;
 }
-.cluster-page clr-tabs::ng-deep .report .data div.normal clr-icon {
+.cluster-page clr-tabs::ng-deep .report .data div.normal cds-icon {
   color: #3BA272;
 }
-.cluster-page clr-tabs::ng-deep .report .data div.abnormal-but-compliant clr-icon {
+.cluster-page clr-tabs::ng-deep .report .data div.abnormal-but-compliant cds-icon {
   color: yellow;
 }
-.cluster-page clr-tabs::ng-deep .report .data div.abnormal clr-icon {
+.cluster-page clr-tabs::ng-deep .report .data div.abnormal cds-icon {
   color: #EE6666;
 }
 .cluster-page clr-tabs::ng-deep::ng-deep clr-dg-column {

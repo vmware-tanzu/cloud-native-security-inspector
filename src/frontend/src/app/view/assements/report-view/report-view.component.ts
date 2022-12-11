@@ -9,6 +9,11 @@ import { PolicyService } from 'src/app/service/policy.service';
 import { ShardService } from 'src/app/service/shard.service'
 import { LineComponent } from '../../report/line/line.component';
 import { ReportViewDetailComponent } from '../report-view-detail/report-view-detail.component'
+import { echarts, LineSeriesOption } from 'src/app/shard/shard/echarts';
+import * as moment from 'moment';
+type ECOption = echarts.ComposeOption<LineSeriesOption>
+
+
 @Component({
   selector: 'app-report-view',
   templateUrl: './report-view.component.html',
@@ -24,8 +29,14 @@ export class ReportViewComponent implements OnInit, OnDestroy {
   public pageMaxCount = 1
   public continues = ''
   public defaultSize = 10
+  public lastPage = 1
   public dgLoading = false
   namespaceFilterFlag = false
+
+  // charts
+  echartsOption!: ECOption
+  myChart!: any
+
   constructor(
     public shardService:ShardService,
     public policyService:PolicyService,
@@ -33,14 +44,55 @@ export class ReportViewComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.timer = setInterval(() => {
-      if (this.shardService.reportLineChartOption.series[0].data.length > 0) {
-        clearInterval(this.timer)
+    this.echartsInit()
+    // this.timer = setInterval(() => {
+    //   if (this.shardService.reportLineChartOption.series[0].data.length > 0) {
+    //     clearInterval(this.timer)
+    //   }
+    //   if (this.reportline) {
+    //     this.reportline.render()        
+    //   }
+    // },100)   
+    this.policyService.getAllAssessmentreports().subscribe(
+      data => {
+        let lineDate: string[] = []
+        let dataValue = []
+        if (data.items && data.items.length > 10) {
+          const result = data.items.splice(data.items.length - 10)
+          result.forEach(el => {
+            let abCount = 0
+            el.metadata.creationTimestamp = moment(el.metadata.creationTimestamp).format('LLL')
+            lineDate.push(el.metadata.creationTimestamp)
+
+            el.spec.namespaceAssessments.forEach(namespace => {
+              namespace.workloadAssessments.forEach(workload => {
+                if (workload.failures) {
+                  abCount+=workload.failures.length
+                }
+              });
+            })
+            dataValue.push(abCount)
+          })
+        } else {
+          let abCount = 0
+          data.items.forEach(el => {
+            el.metadata.creationTimestamp = moment(el.metadata.creationTimestamp).format('LLL')
+            lineDate.push(el.metadata.creationTimestamp)
+
+            el.spec.namespaceAssessments.forEach(namespace => {
+              namespace.workloadAssessments.forEach(workload => {
+                if (workload.failures) {
+                  abCount+=workload.failures.length
+                }
+              });
+            })
+          })
+          dataValue.push(abCount)
+        }    
+        this.echartsRender(lineDate, dataValue)
       }
-      if (this.reportline) {
-        this.reportline.render()        
-      }
-    },100)   
+    )
+
   }
 
   ngOnDestroy(): void {}
@@ -73,6 +125,29 @@ export class ReportViewComponent implements OnInit, OnDestroy {
 
   pageChange(event: any) {
     this.dgLoading = true
+    // to last page
+    if (this.pagination.lastPage !== 1 && event.page.current === this.pagination.lastPage) {
+      if (this.lastPage === this.pagination.lastPage - 1) {
+        this.policyService.getAssessmentreports(event.page.size, this.continues).subscribe(
+          data => {
+            if (this.continues) {
+              this.shardService.reportslist = [...this.shardService.reportslist , ...data.items]
+            } else {
+              this.shardService.reportslist = data.items
+            }
+            this.continues = data.metadata.continue
+            this.pageMaxCount = Math.ceil((data.metadata.remainingItemCount + this.shardService.reportslist.length) / this.defaultSize)
+            this.dgLoading = false
+            this.lastPage = event.page.current    
+          }
+        )
+        return
+      } else {
+        event.page.current = this.lastPage
+        this.pagination.currentPage = this.lastPage
+        return
+      }
+    }
     if (event.page.current <= 1) {
       this.continues = ''
     }
@@ -81,6 +156,7 @@ export class ReportViewComponent implements OnInit, OnDestroy {
       this.continues = ''
     }
     this.defaultSize = event.page.size;
+    
     this.policyService.getAssessmentreports(event.page.size, this.continues).subscribe(
       data => {
         if (this.continues) {
@@ -91,6 +167,24 @@ export class ReportViewComponent implements OnInit, OnDestroy {
         this.continues = data.metadata.continue
         this.pageMaxCount = Math.ceil((data.metadata.remainingItemCount + this.shardService.reportslist.length) / this.defaultSize)
         this.dgLoading = false
+        this.lastPage = event.page.current
+      }
+    )
+  }
+
+  getAssessmentreports(event: any) {
+    this.dgLoading = true
+    this.policyService.getAssessmentreports(event.page.size, this.continues).subscribe(
+      data => {
+        if (this.continues) {
+          this.shardService.reportslist = [...this.shardService.reportslist , ...data.items]
+        } else {
+          this.shardService.reportslist = data.items
+        }
+        this.continues = data.metadata.continue
+        this.pageMaxCount = Math.ceil((data.metadata.remainingItemCount + this.shardService.reportslist.length) / this.defaultSize)
+        this.dgLoading = false
+        this.lastPage = event.page.current
       }
     )
   }
@@ -104,5 +198,88 @@ export class ReportViewComponent implements OnInit, OnDestroy {
         continue;
       }      
     }
+  }
+
+  // init
+  echartsInit() {
+    const chartDom = document.getElementById('report-line')!;
+    this.myChart = echarts.init(chartDom);
+  }
+
+  // echarts render 
+  echartsRender(dateList: any, valueList: any) {
+    const sortArr  = JSON.parse(JSON.stringify(valueList))
+    sortArr.sort(function (a: number, b: number) {
+      return a-b;
+    }); 
+    let yAxis = {
+      min: -1,
+      max: 30,
+      splitLine: {
+        show: true,
+        lineStyle: {
+          type: 'dashed',
+          color: "#55b9b4"
+        }
+      }
+    }
+    if (sortArr[0] !==0 && sortArr[0] !== sortArr[sortArr.length-1]) {
+      yAxis = {
+        min: sortArr[0],
+        max: sortArr[sortArr.length-1],
+        splitLine: {
+          show: true,
+          lineStyle: {
+            type: 'dashed',
+            color: "#55b9b4"
+          }
+        }  
+      }
+    }
+    this.echartsOption = {
+      // Make gradient line here
+      visualMap: [
+        {
+          show: false,
+          type: 'continuous',
+          seriesIndex: 0,
+          min: 0,
+          max: 400
+        }
+      ],
+    
+      title: [
+        {
+          left: 'center',
+          text: 'Number of Vulnerable Containers',
+          textStyle: {
+            color: '#fff'
+          }
+        }
+      ],
+      tooltip: {
+        trigger: 'axis'
+      },
+      xAxis: [
+        {
+          data: dateList
+        }
+      ],
+      yAxis: [
+        yAxis
+      ],
+      grid: [
+        {}
+      ],
+      series: [
+        {
+          type: 'line',
+          showSymbol: false,
+          data: valueList
+        }
+      ]
+    }
+    this.myChart.clear()
+    this.echartsOption && this.myChart.setOption(this.echartsOption);
   }
 }

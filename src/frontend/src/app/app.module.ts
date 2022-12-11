@@ -47,6 +47,76 @@ import { KubeBenchReportTestDetailComponent } from './view/assements/kube-bench-
 import { KubeBenchReportComponent } from './view/assements/kube-bench-report/kube-bench-report.component';
 import { RiskReportViewComponent } from './view/assements/risk-report-view/risk-report-view.component';
 import { RiskReportDetailComponent } from './view/assements/risk-report-detail/risk-report-detail.component'
+import '@cds/core/icon/register.js';
+import { 
+  ClarityIcons,
+  worldIcon,
+  searchIcon,
+  bellIcon,
+  helpIcon,
+  userIcon,
+  lineChartIcon,
+  organizationIcon,
+  cogIcon,
+  fileSettingsIcon,
+  timesCircleIcon,
+  clockIcon,
+  filterGridIcon,
+  windowCloseIcon,
+  arrowIcon,
+  popOutIcon,
+  angleIcon,
+  checkCircleIcon,
+  exclamationCircleIcon,
+  exclamationTriangleIcon,
+  infoCircleIcon,
+  barsIcon,
+  detailsIcon,
+  successStandardIcon,
+  plusIcon,
+  noteIcon,
+  trashIcon,
+  pencilIcon,
+  networkGlobeIcon,
+  timesIcon,
+  plusCircleIcon,
+  minusCircleIcon
+} from '@cds/core/icon';
+
+ClarityIcons.addIcons(
+  userIcon,
+  worldIcon,
+  searchIcon,
+  bellIcon,
+  helpIcon,
+  lineChartIcon,
+  organizationIcon,
+  cogIcon,
+  fileSettingsIcon,
+  timesCircleIcon,
+  clockIcon,
+  filterGridIcon,
+  windowCloseIcon,
+  arrowIcon,
+  popOutIcon,
+  angleIcon,
+  checkCircleIcon,
+  exclamationCircleIcon,
+  exclamationTriangleIcon,
+  infoCircleIcon,
+  barsIcon,
+  detailsIcon,
+  successStandardIcon,
+  plusIcon,
+  noteIcon,
+  trashIcon,
+  pencilIcon,
+  networkGlobeIcon,
+  timesIcon,
+  plusCircleIcon,
+  minusCircleIcon
+);
+
 
 @NgModule({
   declarations: [

@@ -6,28 +6,28 @@
     </span>
   </div>
   <div id="main" style="width: 1400px;height:400px;"></div>
-  <div style="display: flex; width: 1400px;height:400px;">
+  <!-- <div style="display: flex; width: 1400px;height:400px;">
     <div id="work-node"  style="width: 50%; flex: 1;"></div>
     <div id="k8s-policy" style="width: 50%; flex: 1;"></div>
-  </div>
+  </div> -->
 
   <clr-datagrid [clrDgLoading]="dgLoading" (clrDgRefresh)="pageChange($event)">
     <clr-dg-column >{{'CommonlyUse.typeId'|translate}}</clr-dg-column>
     <clr-dg-column >{{'CommonlyUse.name'|translate}}</clr-dg-column>
     <clr-dg-column class="namespace-filter">
       {{'CommonlyUse.type'|translate}}
-      <clr-icon shape="filter-grid" class="is-solid" (click)="kubeTypeFilterFlag = !kubeTypeFilterFlag"></clr-icon>
+      <cds-icon shape="filter-grid" class="is-solid" (click)="kubeTypeFilterFlag = !kubeTypeFilterFlag"></cds-icon>
       <div class="filter-warp" *ngIf="kubeTypeFilterFlag">
-        <clr-icon style="position: absolute; right: 10px; top: 10px;" shape="window-close" (click)="kubeTypeFilterFlag=false"></clr-icon>
+        <cds-icon style="position: absolute; right: 10px; top: 10px;" shape="window-close" (click)="kubeTypeFilterFlag=false"></cds-icon>
         <app-dg-filter label="kube" labelKey="text" [pageSize]="10" (updateListHandler)="getKubeBenchReportList($event)">
         </app-dg-filter>
       </div>
     </clr-dg-column>
     <clr-dg-column class="namespace-filter">
       {{'Kube_bench_list.node_type'|translate}}     
-     <clr-icon shape="filter-grid" class="is-solid" (click)="kubeNodeTypeFilterFlag = !kubeNodeTypeFilterFlag"></clr-icon>
+     <cds-icon shape="filter-grid" class="is-solid" (click)="kubeNodeTypeFilterFlag = !kubeNodeTypeFilterFlag"></cds-icon>
       <div class="filter-warp" *ngIf="kubeNodeTypeFilterFlag">
-        <clr-icon style="position: absolute; right: 10px; top: 10px;" shape="window-close" (click)="kubeNodeTypeFilterFlag=false"></clr-icon>
+        <cds-icon style="position: absolute; right: 10px; top: 10px;" shape="window-close" (click)="kubeNodeTypeFilterFlag=false"></cds-icon>
         <app-dg-filter label="kube" labelKey="node_type" [pageSize]="defaultSize" (updateListHandler)="getKubeBenchReportList($event)">
         </app-dg-filter>
       </div>
@@ -35,7 +35,7 @@
     <clr-dg-column >
       <div class="sort">
         {{'CommonlyUse.create_time'|translate}}
-        <clr-icon (click)="createTimeSort()" shape="arrow" [class]="{oder: isOder}"></clr-icon>  
+        <cds-icon (click)="createTimeSort()" shape="arrow" [class]="{oder: isOder}"></cds-icon>  
       </div>
     </clr-dg-column>
     <clr-dg-column [clrDgSortBy]="'_source.total_pass'">{{'Kube_bench_list.passed'|translate}}</clr-dg-column>
@@ -47,7 +47,7 @@
       <clr-dg-cell *ngIf="kube">{{kube._source.id}}</clr-dg-cell>
       <clr-dg-cell *ngIf="kube">
         <a href="javascript:;" (click)="toKubeBenchReportTests(kube)" >
-          <clr-icon shape="pop-out"></clr-icon>
+          <cds-icon shape="pop-out"></cds-icon>
           {{kube._id}}
         </a>
       </clr-dg-cell>

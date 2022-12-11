@@ -7,15 +7,16 @@
   <h2>
     
     {{'Report_View.title'|translate}}</h2>
-  <app-line id='report-line' #reportline [chartOptions]="shardService.reportLineChartOption"></app-line>
+  <!-- <app-line id='report-line' #reportline [chartOptions]="shardService.reportLineChartOption"></app-line> -->
+    <div id="report-line" style="flex: 1;height:450px; overflow: hidden;"> </div>
 
   <clr-datagrid (clrDgRefresh)="pageChange($event)">
     <clr-dg-column [clrDgField]="'metadata.namespace'">{{'CommonlyUse.name'|translate}}</clr-dg-column>
     <clr-dg-column class="namespace-filter">
       {{'CommonlyUse.namespace'|translate}}
-      <clr-icon shape="filter-grid" class="is-solid" (click)="namespaceFilterFlag = !namespaceFilterFlag"></clr-icon>
+      <cds-icon shape="filter-grid" class="is-solid" (click)="namespaceFilterFlag = !namespaceFilterFlag"></cds-icon>
       <div class="filter-warp" *ngIf="namespaceFilterFlag">
-        <clr-icon style="position: absolute; right: 10px; top: 10px;" shape="window-close" (click)="namespaceFilterFlag=false"></clr-icon>
+        <cds-icon style="position: absolute; right: 10px; top: 10px;" shape="window-close" (click)="namespaceFilterFlag=false"></cds-icon>
         <app-dg-filter [pageSize]="defaultSize" [continues]="continues">
         </app-dg-filter>
       </div>
@@ -26,7 +27,7 @@
     <clr-dg-row *clrDgItems="let report of shardService.reportslist">
       <clr-dg-cell>
         <a href="javascript:;" (click)="toReport(report)" >
-          <clr-icon style="color: skyblue; cursor: pointer;" shape="pop-out"></clr-icon>
+          <cds-icon style="color: skyblue; cursor: pointer;" shape="pop-out"></cds-icon>
           {{report.metadata.name}}
         </a>
       </clr-dg-cell>
@@ -37,7 +38,7 @@
 
     </clr-dg-row>
     <clr-dg-footer>
-      <clr-dg-pagination #pagination [clrDgPageSize]="defaultSize" [clrDgLastPage]="pageMaxCount">
+      <clr-dg-pagination #pagination [clrDgPageInputDisabled]="true" [clrDgPageSize]="defaultSize" [clrDgLastPage]="pageMaxCount">
           <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Reports per page</clr-dg-page-size>
           {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
           of {{pagination.totalItems}} reports

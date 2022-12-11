@@ -21,11 +21,11 @@
       <li *ngIf="!all">
         <span class="title">{{'CommonlyUse.status'|translate}}</span>
         <span class="content" *ngIf="shardService.currentNamespaceInfo?.status === 'Active'">
-          <clr-icon style="color: #3BA272;" shape="success-standard" class="is-solid"></clr-icon>
+          <cds-icon style="color: #3BA272;" shape="success-standard" class="is-solid"></cds-icon>
           {{shardService.currentNamespaceInfo ? shardService.currentNamespaceInfo.status : ''}}
         </span>
         <span class="content" *ngIf="shardService.currentNamespaceInfo && shardService.currentNamespaceInfo?.status !== 'Active'">
-          <clr-icon style="color: #EE6666;" shape="error-standard" class="is-solid"></clr-icon>
+          <cds-icon style="color: #EE6666;" shape="error-standard" class="is-solid"></cds-icon>
           {{shardService.currentNamespaceInfo ? shardService.currentNamespaceInfo.status : ''}}
         </span>
       </li>

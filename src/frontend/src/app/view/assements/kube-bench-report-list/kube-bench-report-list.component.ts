@@ -128,6 +128,14 @@ export class KubeBenchReportListComponent implements OnInit {
         },
         yAxis: {
           type: 'value',
+          axisLabel: {formatter: '{value} PCS'},
+          splitLine: {
+            show: true,
+            lineStyle: {
+              type: 'dashed',
+              color: "#55b9b4"
+            }
+          }    
         },
         series: [
           {
@@ -166,12 +174,12 @@ export class KubeBenchReportListComponent implements OnInit {
     }
 
     this.echartsInit('main', 'myChart')
-    this.echartsInit('work-node', 'workNodeChart')
-    this.echartsInit('k8s-policy', 'k8sPolicyChart')
+    // this.echartsInit('work-node', 'workNodeChart')
+    // this.echartsInit('k8s-policy', 'k8sPolicyChart')
     this.initKubeBenchReportList()
     this.initKubeBenchReportTypes()
-    this.getTextTypeTenReports('Worker Node Security Configuration')
-    this.getTextTypeTenReports('Kubernetes Policies')
+    // this.getTextTypeTenReports('Worker Node Security Configuration')
+    // this.getTextTypeTenReports('Kubernetes Policies')
   }
   // get list
   toKubeBenchReportTests(kube: any) {    
