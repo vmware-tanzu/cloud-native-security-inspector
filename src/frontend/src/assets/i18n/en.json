@@ -189,13 +189,13 @@
     "addKnown": "Add Known Registry",
     "removeKnown": "Remove Known Registry",
     "inspectionSetting": "Inspection Setting",
-    "inspectionDesc": "Basic configuration items, the following contents are all required items.",
+    "inspectionDesc": "Basic configuration items (mandatory)",
     "InspectionStandard": "Inspection standard Setting",
-    "InspectionStandardDesc": "Inspections baseline criteria and filters conform to selector settings.",
+    "InspectionStandardDesc": "Inspections baseline criteria and filters conform to selector settings",
     "InspectionResult": "Inspection Result Setting",
-    "InspectionResultDesc": "Inspection Results and Action Configuration.",
-    "known_registriesDesc": "Register with other harbors, not required.",
-    "cacheDesc": "Cache related configuration, not required."
+    "InspectionResultDesc": "Inspection Results and Action Configuration",
+    "known_registriesDesc": "Register with other harbors (optional)",
+    "cacheDesc": "Cache related configuration (optional)"
   },
   "cornJob": {
     "Weekly": "Run once a week at midnight on Sunday morning",

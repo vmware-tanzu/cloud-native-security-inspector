@@ -188,13 +188,13 @@
     "addKnown": "添加注册表",
     "removeKnown": "删除注册表",
     "inspectionSetting": "检查设置",
-    "inspectionDesc": "基本配置项，以下内容全为必填项",
+    "inspectionDesc": "基本配置项（必填）",
     "InspectionStandard": "检验标准配置",
     "InspectionStandardDesc": "检查基线标准和过滤器符合选择器设置",
     "InspectionResult": "检查结果设置",
     "InspectionResultDesc": "检查结果和动作配置",
-    "known_registriesDesc": "注册其他harbor地址，非必填",
-    "cacheDesc": "缓存相关配置，非必填"
+    "known_registriesDesc": "注册其他harbor地址（可选）",
+    "cacheDesc": "缓存相关配置（可选）"
   },
   "cornJob": {
     "Weekly": "每周在周日早上的0点运行一次",
