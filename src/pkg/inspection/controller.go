@@ -371,7 +371,7 @@ func exportReportToOpenSearch(report *v1alpha1.AssessmentReport, policy *v1alpha
 		policy.Spec.Inspection.Assessment.OpenSearchUser,
 		policy.Spec.Inspection.Assessment.OpenSearchPasswd)
 	if client == nil {
-		logger.Info("OpenSearch client is nil", nil, nil)
+		logger.Info("OpenSearch client is nil")
 	}
 	exporter := osearch.OpenSearchExporter{Client: client, Logger: logger}
 	err := exporter.NewExporter(client, "assessment_report")
@@ -404,11 +404,11 @@ func exportReportToES(report *v1alpha1.AssessmentReport, policy *v1alpha1.Inspec
 	logger.Info("ES config: ", "clientArgs.username", clientArgs.username)
 	client := es.NewClient(clientArgs.cert, clientArgs.addr, clientArgs.username, clientArgs.passwd)
 	if client == nil {
-		logger.Info("ES client is nil", nil, nil)
+		logger.Info("ES client is nil")
 	}
 
 	if err := es.TestClient(); err != nil {
-		logger.Info("client test error", nil, nil)
+		logger.Info("client test error")
 		return err
 	}
 	exporter := es.ElasticSearchExporter{Client: client, Logger: logger}
