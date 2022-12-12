@@ -287,18 +287,17 @@ func (r *InspectionPolicyReconciler) ensureWorkNamespace(ctx context.Context, po
 	var namespace corev1.Namespace
 	err := r.Client.Get(ctx, client.ObjectKey{Name: *ns}, &namespace)
 	// No error, return now.
-	// For none NOTFOUND error, directly return.
-	// For NOTFOUND error, if the work namespace has been set, error should also been returned.
-	if err == nil || !apierrors.IsNotFound(err) || policy.Spec.WorkNamespace != nil {
+	// For non-NOTFOUND error, directly return.
+	if err == nil || !apierrors.IsNotFound(err) {
 		return ns, err
 	}
 
 	// Create namespace now with policy name and set the workNamespace.
 	newOne := &corev1.Namespace{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: policy.Name,
+			Name: *ns,
 			Labels: map[string]string{
-				labelOwnerKey: policy.Name,
+				labelOwnerKey: *ns,
 			},
 		},
 	}

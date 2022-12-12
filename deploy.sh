@@ -24,7 +24,7 @@ function install_opensearch() {
     check_helm
     helm repo add opensearch https://opensearch-project.github.io/helm-charts/
     helm repo update
-    helm install opensearch-deployment-for-narrows opensearch/opensearch -n opensearch --version 2.8.0 --create-namespace
+    helm install opensearch-deployment-for-narrows opensearch/opensearch -n opensearch --version 2.8.0 --create-namespace --set persistence.enabled=false
     success "OpenSearch installed"
 }
 
