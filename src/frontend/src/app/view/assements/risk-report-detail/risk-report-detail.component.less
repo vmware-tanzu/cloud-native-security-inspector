@@ -26,3 +26,25 @@
     }
   }
 }
+.report-datagrid {
+  &::ng-deep {
+    .datagrid-column,.datagrid-cell {
+      &:nth-of-type(3) {
+        flex: none;
+      }
+      &:nth-of-type(4) {
+        margin-left: 20px;
+      }
+
+    }
+  }
+}
+.echarts-loading {
+  position: relative;
+  width: 1400px;
+  .spinner {
+    position: absolute;
+    left: 40%;
+    top: 200px;
+  }
+}

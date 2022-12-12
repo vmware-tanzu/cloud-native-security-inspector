@@ -126,12 +126,12 @@ form::ng-deep .test-icon span {
 form::ng-deep .test-icon span.not-passed {
   color: red;
 }
-form::ng-deep .test-icon clr-icon {
+form::ng-deep .test-icon cds-icon {
   width: 20px;
   height: 20px;
   color: green;
 }
-form::ng-deep .test-icon clr-icon.not-passed {
+form::ng-deep .test-icon cds-icon.not-passed {
   color: red;
 }
 form::ng-deep .w-230 .clr-control-container .clr-input-wrapper input,
@@ -208,7 +208,7 @@ form .schedule button {
   width: 30px;
   height: 30px;
 }
-form .schedule button clr-icon {
+form .schedule button cds-icon {
   position: relative;
   top: -3px;
   left: -5px;

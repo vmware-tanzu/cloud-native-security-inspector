@@ -24,7 +24,7 @@
             <div class="data">
               <a class="card clickable">
                 <div class="card-block normal">
-                  <clr-icon style="width: 25px; height: 25px;" shape="check-circle" class="is-solid"></clr-icon>
+                  <cds-icon style="width: 25px; height: 25px;" shape="check-circle" class="is-solid"></cds-icon>
                   <div class="pre">
                     <div class="pro" *ngIf="shardService.showAbnormal + shardService.showNormal !== 0" [style]="{width: shardService.showNormal/(shardService.showAbnormal + shardService.showNormal)*100 + 'px'}"></div>
                   </div>
@@ -43,7 +43,7 @@
               </a>
               <a class="card clickable">
                 <div class="card-block abnormal">
-                  <clr-icon style="width: 25px; height: 25px;" shape="exclamation-circle" class="is-solid"></clr-icon>
+                  <cds-icon style="width: 25px; height: 25px;" shape="exclamation-circle" class="is-solid"></cds-icon>
                     <div class="pre">
                       <div class="pro" *ngIf="shardService.showAbnormal + shardService.showNormal !== 0" [style]="{width: shardService.showAbnormal/(shardService.showAbnormal + shardService.showNormal)*100 + 'px'}"></div>
                     </div>
@@ -99,7 +99,7 @@
                   <clr-dg-cell>
                     <a href="javascript:;" (click)="toWorkload(violation)" >
                       {{violation.workload.workload.metadata.name}}
-                      <clr-icon shape="pop-out"></clr-icon>
+                      <cds-icon shape="pop-out"></cds-icon>
                     </a>
                   </clr-dg-cell>
                   <clr-dg-cell>{{violation.workload.workload.metadata.namespace}}</clr-dg-cell>

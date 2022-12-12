@@ -8,8 +8,8 @@
     <div  (click)="showTimeListFlag = true">
       {{timePicker.hour.value}}:{{timePicker.minute.value}}
     </div>
-    <clr-icon *ngIf="timePicker.hour.value || timePicker.minute.value" (click)="resetTime()" class="times" shape="times-circle"></clr-icon>
-    <clr-icon *ngIf="!timePicker.hour.value && !timePicker.minute.value" (click)="showTimeListFlag = false" class="clock" shape="alarm-clock"></clr-icon>
+    <cds-icon *ngIf="timePicker.hour.value || timePicker.minute.value" (click)="resetTime()" class="times" shape="times-circle"></cds-icon>
+    <cds-icon *ngIf="!timePicker.hour.value && !timePicker.minute.value" (click)="showTimeListFlag = false" class="clock" shape="alarm-clock"></cds-icon>
   </div>
   <div class="drow-content" *ngIf="showTimeListFlag">
     <div class="time-list">

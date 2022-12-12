@@ -185,7 +185,7 @@
         <h5>Pods:  </h5>
         <div *ngFor="let item of workloadInfo.workload.pods">
           <h4>
-            <clr-icon shape="info-circle"></clr-icon>
+            <cds-icon shape="info-circle"></cds-icon>
             {{'CommonlyUse.information' | translate}}</h4>
           <ul class="list">
             <li>
@@ -206,7 +206,7 @@
             </li>
           </ul>
           <h4>
-            <clr-icon shape="bars"></clr-icon>
+            <cds-icon shape="bars"></cds-icon>
             {{'CommonlyUse.containers' | translate}}</h4>
 
           <clr-datagrid>
@@ -226,7 +226,7 @@
           </clr-datagrid>
 
           <h4 *ngIf="item.detail && item.detail.length > 0 ">
-            <clr-icon shape="details"></clr-icon>
+            <cds-icon shape="details"></cds-icon>
             {{'CommonlyUse.details' | translate}}</h4>
           <clr-datagrid *ngIf="item.detail && item.detail.length > 0 ">
             <clr-dg-column [clrDgField]="'score'">score</clr-dg-column>

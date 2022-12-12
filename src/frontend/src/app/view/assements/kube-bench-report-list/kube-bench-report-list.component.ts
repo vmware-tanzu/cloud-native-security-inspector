@@ -1,8 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AssessmentService } from 'src/app/service/assessment.service'
-import { echarts, BarSeriesOption } from 'src/app/shard/shard/echarts';
+import { echarts, BarSeriesOption, LineSeriesOption } from 'src/app/shard/shard/echarts';
 type ECOption = echarts.ComposeOption<BarSeriesOption>
+type LineOption = echarts.ComposeOption<LineSeriesOption>
 @Component({
   selector: 'app-kube-bench-report-list',
   templateUrl: './kube-bench-report-list.component.html',
@@ -12,6 +13,12 @@ export class KubeBenchReportListComponent implements OnInit {
   @ViewChild('pagination') pagination:any
   // chart
   myChart!: any
+  workNodeChart!: any
+  k8sPolicyChart!: any
+  echartsOption!: ECOption
+  k8sechartsOption!: LineOption
+  workechartsOption!: LineOption
+
   echartsLoading = true
   // filter
   kubeTypeFilterFlag = false
@@ -21,6 +28,8 @@ export class KubeBenchReportListComponent implements OnInit {
   // sort
   isOder = false
   // default data
+  client = ''
+  ca = ''
   dgLoading = false
   defaultSize = 10
   from = 0
@@ -33,18 +42,15 @@ export class KubeBenchReportListComponent implements OnInit {
     private assessmentService: AssessmentService
   ) { }
 
-  echartsOption!: ECOption
   ngOnInit(): void {
-    this.echartsInit()
-    this.initKubeBenchReportList()
-    this.initKubeBenchReportTypes()
+    this.init()
   }
   // init
-  echartsInit() {
-    const chartDom = document.getElementById('main')!;
-    this.myChart = echarts.init(chartDom);
+  echartsInit(id: string, chart: 'myChart'| 'workNodeChart' | 'k8sPolicyChart') {
+    const chartDom = document.getElementById(id)!;
+    this[chart] = echarts.init(chartDom);
   }
-
+  
   initKubeBenchReportList() {
     this.dgLoading = true
     const query: any = { 
@@ -88,7 +94,7 @@ export class KubeBenchReportListComponent implements OnInit {
           {
             value: tp.doc_count,
             itemStyle: {
-              color: color[index]
+              color: color[index] ? color[index] : '#566FC6'
             }
           },
         )
@@ -122,6 +128,14 @@ export class KubeBenchReportListComponent implements OnInit {
         },
         yAxis: {
           type: 'value',
+          axisLabel: {formatter: '{value} PCS'},
+          splitLine: {
+            show: true,
+            lineStyle: {
+              type: 'dashed',
+              color: "#55b9b4"
+            }
+          }    
         },
         series: [
           {
@@ -141,6 +155,31 @@ export class KubeBenchReportListComponent implements OnInit {
       that.echartsLoading = false
     }
     this.extractKubeBenchApi(query, callBack)
+  }
+
+  init() {
+    const opensearchbase: any = localStorage.getItem('cnsi-open-search')
+    const elasticsearchbase: any = localStorage.getItem('cnsi-elastic-search')
+    const opensearchInfoJson = window.atob(opensearchbase)
+    const elasticsearchInfoJson = window.atob(elasticsearchbase)
+    const opensearchInfo = JSON.parse(opensearchInfoJson.slice(24))   
+    const elasticsearchInfo = JSON.parse(elasticsearchInfoJson.slice(24))  
+    if (opensearchInfo.url) {
+      this.client = 'opensearch'
+      this.opensearchInfo = opensearchInfo
+    } else {
+      this.opensearchInfo = elasticsearchInfo
+      this.client = 'elasticsearch'
+      this.ca = elasticsearchInfo.ca
+    }
+
+    this.echartsInit('main', 'myChart')
+    // this.echartsInit('work-node', 'workNodeChart')
+    // this.echartsInit('k8s-policy', 'k8sPolicyChart')
+    this.initKubeBenchReportList()
+    this.initKubeBenchReportTypes()
+    // this.getTextTypeTenReports('Worker Node Security Configuration')
+    // this.getTextTypeTenReports('Kubernetes Policies')
   }
   // get list
   toKubeBenchReportTests(kube: any) {    
@@ -287,25 +326,8 @@ export class KubeBenchReportListComponent implements OnInit {
   // extract function 
   extractKubeBenchApi(query: any, callback: Function) {
     this.dgLoading = true
-    const opensearchbase: any = localStorage.getItem('cnsi-open-search')
-    const elasticsearchbase: any = localStorage.getItem('cnsi-elastic-search')
-    const opensearchInfoJson = window.atob(opensearchbase)
-    const elasticsearchInfoJson = window.atob(elasticsearchbase)
-
-    const opensearchInfo = JSON.parse(opensearchInfoJson.slice(24))   
-    const elasticsearchInfo = JSON.parse(elasticsearchInfoJson.slice(24))  
-    let client = ''
-    let ca = ''
-    if (opensearchInfo.url || elasticsearchInfo.url) {
-      if (opensearchInfo.url) {
-        client = 'opensearch'
-        this.opensearchInfo = opensearchInfo
-      } else {
-        this.opensearchInfo = elasticsearchInfo
-        client = 'elasticsearch'
-        ca = elasticsearchInfo.ca
-      }
-      this.assessmentService.getKubeBenchReport({url: this.opensearchInfo.url, index: 'cis_report', username: this.opensearchInfo.user, password: this.opensearchInfo.pswd, query, client, ca}).subscribe(
+    if (this.opensearchInfo.url) {
+      this.assessmentService.getKubeBenchReport({url: this.opensearchInfo.url, index: 'cis_report', username: this.opensearchInfo.user, password: this.opensearchInfo.pswd, query, client: this.client, ca:this.ca}).subscribe(
         data => {
           callback(data, this)
           this.pageMaxCount = Math.ceil(data.hits.total.value / this.defaultSize)
@@ -315,5 +337,138 @@ export class KubeBenchReportListComponent implements OnInit {
     } else {
       this.dgLoading = false
     }
+  }
+
+  // draw charts
+  drawCharts (data: any, title: string): LineOption {
+    const hits = data.hits.hits
+    const xAxis: {value: string, textStyle: {color: string}}[] = []
+    const infoList: number[] = []
+    const passList: number[] = []
+    const warnList: number[] = []
+    const failList: number[] = []
+    hits.forEach((hit: {_source: {createTime: string, total_pass: number, total_fail: number, total_warn: number, total_info: number}}) => {
+      xAxis.push({
+        value: hit._source.createTime,
+        textStyle: {
+          color: '#fff'
+        }
+      })
+      infoList.push(hit._source.total_info)
+      passList.push(hit._source.total_pass)
+      warnList.push(hit._source.total_warn)
+      failList.push(hit._source.total_fail)
+    });
+
+    return {
+      title: {
+        text: title,
+        textStyle: {
+          color: '#fff',
+          overflow: 'truncate',
+          width: '170'
+        }
+      },
+      tooltip: {
+        trigger: 'axis'
+      },
+      legend: {
+        textStyle: {
+          color: "#ffffff"
+        },
+        data: ['Inform', 'Passed', 'Warned', 'Failed']
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+      toolbox: {
+        feature: {
+          saveAsImage: {}
+        }
+      },
+      xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: xAxis
+      },
+      yAxis: {
+        type: 'value'
+      },
+      series: [
+        {
+          name: 'Inform',
+          type: 'line',
+          stack: 'Total',
+          data: infoList
+        },
+        {
+          name: 'Passed',
+          type: 'line',
+          stack: 'Total',
+          data: passList
+        },
+        {
+          name: 'Warned',
+          type: 'line',
+          stack: 'Total',
+          data: warnList
+        },
+        {
+          name: 'Failed',
+          type: 'line',
+          stack: 'Total',
+          data: failList
+        }
+      ]
+    };
+  }
+
+  //Get nearly 10 reports of each type according to text classification
+  getTextTypeTenReports(text: string) {
+    const query = {
+      query: {
+        match: {
+          text: text
+        }
+      },
+      from: 0,
+      size: 10,
+      sort: [
+        {
+          createTime: {
+            order: "desc"
+          }
+        }
+      ]       
+    }
+
+    this.assessmentService.getKubeBenchReport({url: this.opensearchInfo.url, index: 'cis_report', username: this.opensearchInfo.user, password: this.opensearchInfo.pswd, query, client: this.client, ca:this.ca}).subscribe(
+      data => {
+        console.log('da', data);
+ 
+
+        switch (text) {
+          case 'Worker Node Security Configuration':
+            this.workechartsOption = this.drawCharts(data, 'Worker Node Security Configuration');
+            this.workNodeChart.clear()
+            this.workechartsOption && this.workNodeChart.setOption(this.workechartsOption);
+            break;
+        
+          case 'Kubernetes Policies':
+            this.k8sechartsOption = this.workechartsOption = this.drawCharts(data, 'Kubernetes Policies');
+
+            this.k8sPolicyChart.clear()
+            this.k8sechartsOption && this.k8sPolicyChart.setOption(this.k8sechartsOption);
+
+            break
+          default:
+            break;
+        }
+      }
+    )
+    
   }
 }

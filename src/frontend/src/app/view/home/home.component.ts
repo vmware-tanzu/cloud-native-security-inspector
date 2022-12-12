@@ -202,7 +202,7 @@ export class HomeComponent implements OnInit {
 
         this.shardService.reportLineChartOption.xAxis = lineDate1.splice(lineDate.length-9, lineDate.length)
         this.shardService.clusterLineChartOption.xAxis = lineDate2.splice(lineDate.length-9, lineDate.length)
-        this.shardService.reportLineChartOption.series[0].data = abnormalLineData.splice(abnormalLineData.length-9, abnormalLineData.length)
+        this.shardService.reportLineChartOption.series = abnormalLineData.splice(abnormalLineData.length-9, abnormalLineData.length)
         this.shardService.clusterLineChartOption.series[0].data = normal.splice(normal.length-10, normal.length)
         this.shardService.clusterLineChartOption.series[1].data = abnormal.splice(abnormal.length-10, abnormal.length)
         this.shardService.clusterLineChartOption.series[2].data = sumworkload.splice(sumworkload.length-10, sumworkload.length)

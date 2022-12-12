@@ -1,7 +1,7 @@
 <div class="report">
   <h2>
     <a href="javascript:;" [routerLink]='["/assessments/kube-bench"]'>
-      <clr-icon shape="angle" class="angle-top"></clr-icon>
+      <cds-icon shape="angle" class="angle-top"></cds-icon>
     </a>
     
     {{title}}</h2>
@@ -26,12 +26,12 @@
       </clr-dg-cell>
       <clr-dg-cell>
                 <a href="javascript:;" (click)="toKubeBenchReportTestResult(kube)" >
-                  <clr-icon shape="pop-out"></clr-icon>
+                  <cds-icon shape="pop-out"></cds-icon>
           {{kube.desc}}
         </a>
       </clr-dg-cell>
       <clr-dg-cell>
-        <a href="..." class="label clickable" style="border-color: #266900;">
+        <a href="javascript:;" class="label clickable" style="border-color: #266900;">
           {{'Kube_bench_list.passed'|translate}}
           
           <span class="badge" style="background-color: #266900; color: #fff;">
@@ -40,7 +40,7 @@
         </a>
       </clr-dg-cell>
       <clr-dg-cell>
-        <a href="..." class="label clickable" style="border-color: #A32100;">
+        <a href="javascript:;" class="label clickable" style="border-color: #A32100;">
           {{'Kube_bench_list.failed'|translate}}
           
           <span class="badge" style="background-color: #A32100; color: #fff;">
@@ -50,7 +50,7 @@
 
       </clr-dg-cell>
       <clr-dg-cell>
-        <a href="..." class="label clickable" style="border-color: #EFD603;">
+        <a href="javascript:;" class="label clickable" style="border-color: #EFD603;">
           {{'Kube_bench_list.warned'|translate}}
           
           <span class="badge" style="background-color: #EFD603; color: #313131;">
@@ -60,7 +60,7 @@
 
       </clr-dg-cell>
       <clr-dg-cell>
-        <a href="..." class="label clickable" style="border-color: #49AFd9;">
+        <a href="javascript:;" class="label clickable" style="border-color: #49AFd9;">
           {{'Kube_bench_list.inform'|translate}}
           
           <span class="badge" style="background-color: #49AFd9; color: #fff;">

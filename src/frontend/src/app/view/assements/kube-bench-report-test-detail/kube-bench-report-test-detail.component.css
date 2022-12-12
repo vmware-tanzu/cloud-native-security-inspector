@@ -16,24 +16,24 @@
 .report .status.pass {
   color: #91CB74;
 }
-.report .status.pass clr-icon {
+.report .status.pass cds-icon {
   color: #91CB74;
 }
 .report .status.fail {
   color: #EE6666;
 }
-.report .status.fail clr-icon {
+.report .status.fail cds-icon {
   color: #EE6666;
 }
 .report .status.info {
   color: #5470C6;
 }
-.report .status.info clr-icon {
+.report .status.info cds-icon {
   color: #5470C6;
 }
 .report .status.warn {
   color: #FAC858;
 }
-.report .status.warn clr-icon {
+.report .status.warn cds-icon {
   color: #FAC858;
 }

@@ -232,7 +232,10 @@ export class HarborSettingPageComponent implements OnInit {
         this.messageContent = 'Settings created and applied successfully!' 
         this.updateDisabled = true   
         this.createButtonFlag = false
-        this.router.navigateByUrl('/setting')
+        this.router.navigate(
+          ['/setting'],
+          { queryParams: { secret: false } }
+        );
       },
       err => {
         this.messageHarborFlag = 'fail'

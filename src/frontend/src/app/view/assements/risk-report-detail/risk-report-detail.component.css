@@ -26,3 +26,20 @@
 .datagrid::ng-deep .datagrid-cell:nth-of-type(6) {
   margin-left: 10px;
 }
+.report-datagrid::ng-deep .datagrid-column:nth-of-type(3),
+.report-datagrid::ng-deep .datagrid-cell:nth-of-type(3) {
+  flex: none;
+}
+.report-datagrid::ng-deep .datagrid-column:nth-of-type(4),
+.report-datagrid::ng-deep .datagrid-cell:nth-of-type(4) {
+  margin-left: 20px;
+}
+.echarts-loading {
+  position: relative;
+  width: 1400px;
+}
+.echarts-loading .spinner {
+  position: absolute;
+  left: 40%;
+  top: 200px;
+}

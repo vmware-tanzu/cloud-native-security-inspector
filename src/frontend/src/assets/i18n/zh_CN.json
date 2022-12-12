@@ -78,7 +78,7 @@
     "assessment": "Assessment",
     "format": "Format",
     "generate": "Generate报告",
-    "live_time": "LiveTime",
+    "live_time": "Live Time",
     "managedBy": "ManagedBy",
     "baselines": "Baselines",
     "baseline": "Baseline",
@@ -92,7 +92,8 @@
     "isInit": "是否初始化",
     "failures": "安全扫描未通过",
     "cause": "Cause",
-    "error_message": "Error Message"
+    "error_message": "Error Message",
+    "pod_list": "Pods列表"
   },
   "Risk_view": {
     "numberOfVulnerabilities": "漏洞数量"
@@ -176,7 +177,7 @@
     "accessSecret": "访问秘密",
     "skipTLSVerify": "跳过TLS验证",
     "address": "地址",
-    "livingTime": "LivingTime",
+    "livingTime": "Living Time",
     "secretNamespace": "私有数据命名空间",
     "secretName": "私有数据名称",
     "RequiredFields": "必填项",

@@ -9,7 +9,7 @@ import { CornComponent } from '../corn/corn.component';
 import { HarborService } from '../../service/harbor.service'
 import { ShardService } from '../../service/shard.service'
 import { HarborModel, SecretModel, knownRegistrieType } from 'src/app/service/harbor-model-type';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 @Component({
   selector: 'app-setting',
   templateUrl: './setting.component.html',
@@ -25,6 +25,7 @@ export class SettingComponent implements OnInit, OnDestroy {
   public isCornUpdateModal = false
   public secretModalFlag = false
   public noteIconFlag = true;
+  public isSecret = true
   public secretForm!: UntypedFormGroup;
 
   public messageHarborFlag = false;
@@ -38,6 +39,7 @@ export class SettingComponent implements OnInit, OnDestroy {
     private harborService: HarborService,
     public shardService: ShardService,
     private router: Router,
+    private route: ActivatedRoute
   ) {
     this.secretForm = this.formBuilder.group({
       secret_accessKey: ['', Validators.required],
@@ -53,7 +55,12 @@ export class SettingComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.getSecrets()
+    const secret = this.route.snapshot.queryParamMap.get('secret')
+    if (secret === 'false') {
+      this.isSecret = false
+    } else {
+      this.getSecrets()
+    }
     this.createTimer = setInterval(() => {
       this.getHarbor()      
     }, 1000)

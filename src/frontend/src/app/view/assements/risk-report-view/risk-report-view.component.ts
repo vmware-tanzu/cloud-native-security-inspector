@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import * as moment from 'moment';
 import { AssessmentService } from 'src/app/service/assessment.service';
 import { echarts, LineSeriesOption } from 'src/app/shard/shard/echarts';
 type ECOption = echarts.ComposeOption<LineSeriesOption>
@@ -47,6 +48,49 @@ export class RiskReportViewComponent implements OnInit {
   }
   // echarts render 
   echartsRender(dateList: any, valueList: any) {
+    const sortArr  = JSON.parse(JSON.stringify(valueList))
+    sortArr.sort(function (a: number, b: number) {
+      return a-b;
+    }); 
+    let yAxis: any = {
+      min: -1,
+      max: 30,
+      splitLine: {
+        show: true,
+        lineStyle: {
+          type: 'dashed',
+          color: "#55b9b4"
+        }
+      }
+    }
+    if (sortArr[0] !==0 && sortArr[0] !== sortArr[sortArr.length-1]) {
+      yAxis = {
+        min: sortArr[0],
+        max: sortArr[sortArr.length-1],
+        interval: 25,
+        splitLine: {
+          show: true,
+          lineStyle: {
+            type: 'dashed',
+            color: "#55b9b4"
+          }
+        }
+      }
+    } else if (sortArr[0] !==0) {
+      yAxis = {
+        min: sortArr[sortArr.length-1] - 50,
+        max: sortArr[sortArr.length-1] + 50,
+        interval: 25,
+        splitLine: {
+          show: true,
+          lineStyle: {
+            type: 'dashed',
+            color: "#55b9b4"
+          }
+        }
+      }
+    }
+    
     this.echartsOption = {
       // Make gradient line here
       visualMap: [
@@ -77,7 +121,7 @@ export class RiskReportViewComponent implements OnInit {
         }
       ],
       yAxis: [
-        {}
+        yAxis
       ],
       grid: [
         {}
@@ -109,7 +153,7 @@ export class RiskReportViewComponent implements OnInit {
     let ca = ''
     if (opensearchInfo.url) {
       this.opensearchInfo = opensearchInfo
-      this.assessmentService.getKubeBenchReport({url: this.opensearchInfo.url, index: 'risk_manager_details', username: this.opensearchInfo.user, password: this.opensearchInfo.pswd, query, client, ca}).subscribe(
+      this.assessmentService.getKubeBenchReport({url: this.opensearchInfo.url, index: 'risk_manager_report', username: this.opensearchInfo.user, password: this.opensearchInfo.pswd, query, client, ca}).subscribe(
         data => {
           callback(data, this, query)
           this.pageMaxCount = Math.ceil( data.hits.total.value / this.defaultSize)
@@ -127,28 +171,36 @@ export class RiskReportViewComponent implements OnInit {
     const dateList: any = []
     const valueList: any = []
     let index = query.from-1;
+
     data.hits.hits.forEach((el: any) => {
-      if (el._source.uid) {
-        el.risk_number = el._source.Detail.length
-        dateList.push(el._source.createTime)
-        valueList.push(el.risk_number)
-        if (query && max) {          
-          if ((query.from + query.size) <= max) {
-            for (index < query.from + query.size; index++;) {
-              that.riskList[index] = el
-              break
-            }
-          } else {
-            for (index < max; index++;) {
-              that.riskList[index] = el
-              break
-            }
+      let risk_number = 0
+      if (el._source.ReportDetail && el._source.ReportDetail.length > 0) {
+        el._source.ReportDetail.forEach((re: any) => {
+          risk_number+=re.Detail.length
+        });
+      }
+      el['risk_number'] = risk_number
+      dateList.push(moment(el._source.createTime).format('LLL'))
+      valueList.push(el.risk_number)
+
+      if (query && max) {          
+        if ((query.from + query.size) <= max) {
+          for (index < query.from + query.size; index++;) {
+            that.riskList[index] = el
+            break
           }
         } else {
-          that.riskList.push(el)
+          for (index < max; index++;) {
+            that.riskList[index] = el
+            break
+          }
         }
+      } else {
+        that.riskList.push(el)
       }
-    });     
+    }); 
+    
+    
     if (that.echartsLoading) {
       that.echartsRender(dateList, valueList)
       that.echartsLoading = false       
@@ -202,7 +254,17 @@ export class RiskReportViewComponent implements OnInit {
     function callBack(data: any, that: any, query: any) {
       if (reset) {
         that.riskList = []        
-        that.riskList = data.hits.hits
+        data.hits.hits.forEach((item: any) => {
+          let risk_number = 0
+          if (item._source.ReportDetail && item._source.ReportDetail.length > 0) {
+            item._source.ReportDetail.forEach((re: any) => {
+              risk_number+=re.Detail.length
+            });
+          }
+          item['risk_number'] = risk_number
+          that.riskList.push(item)
+        });
+
         that.pageMaxCount = Math.ceil( data.hits.total.value / query.size)
         that.pagination.lastPage = that.pageMaxCount        
         that.pagination.page.change   
@@ -212,10 +274,9 @@ export class RiskReportViewComponent implements OnInit {
           const dateList: any = []
           const valueList: any = []
   
-          data.hits.hits.forEach((el: any) => {
-            if (el._source.uid) {
-              el.risk_number = el._source.Detail.length
-              dateList.push(el._source.createTime)
+          that.riskList.forEach((el: any) => {
+            if (el.risk_number) {
+              dateList.push(moment(el._source.createTime).format('LLL'))
               valueList.push(el.risk_number)
             }
           })
