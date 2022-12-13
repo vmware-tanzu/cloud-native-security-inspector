@@ -72,3 +72,14 @@ func (suite *TypesSuite) TestTag() {
 
 	suite.Equal("v1.21.1", ID.Tag())
 }
+
+func (suite *TypesSuite) TestOmittedRegistryCase() {
+	image := "mariadb:10"
+	imageID := "mariadb@sha256:8c15c3def7ae1bb408c96d322a3cc0346dba9921964d8f9897312fe17e127b90"
+	ID := ParseArtifactIDFrom(image, imageID)
+	suite.Equal("10", ID.tag)
+	suite.Equal("library", ID.Namespace())
+	suite.Equal("docker.io", ID.Registry())
+	suite.Equal("mariadb", ID.Repository())
+	suite.Equal("sha256:8c15c3def7ae1bb408c96d322a3cc0346dba9921964d8f9897312fe17e127b90", ID.Digest())
+}
