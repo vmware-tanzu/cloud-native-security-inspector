@@ -40,6 +40,11 @@ func ParseArtifactIDFrom(image, imageID string) ArtifactID {
 		}
 	}
 
+	if !strings.Contains(fullRepo, "/") {
+		// The omitted registry means docker.io
+		fullRepo = fmt.Sprintf("docker.io/%s", fullRepo)
+	}
+
 	// Digest format repo@sha256:.
 	if i1 := strings.LastIndex(image, "@"); i1 != -1 {
 		fullRepo = fullRepo[:i1]
