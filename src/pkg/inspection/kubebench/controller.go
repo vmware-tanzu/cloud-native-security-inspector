@@ -28,7 +28,8 @@ type controller struct {
 }
 
 var (
-	cfgDir  = "cmd/kubebench/cfg"
+	cfgDir = "cmd/kubebench/cfg"
+	//cfgDir  = "/Users/zsimon/Projects/cnsi/20221214/cloud-native-security-inspector/src/cmd/kubebench/cfg"
 	cfgFile string
 )
 

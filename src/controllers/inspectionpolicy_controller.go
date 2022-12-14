@@ -38,8 +38,9 @@ const (
 // InspectionPolicyReconciler reconciles a InspectionPolicy object
 type InspectionPolicyReconciler struct {
 	client.Client
-	Scheme *runtime.Scheme
-	logger logr.Logger
+	Scheme    *runtime.Scheme
+	logger    logr.Logger
+	nodeCount int
 }
 
 //+kubebuilder:rbac:groups=goharbor.goharbor.io,resources=inspectionpolicies,verbs=get;list;watch;create;update;patch;delete
@@ -64,6 +65,13 @@ func (r *InspectionPolicyReconciler) Reconcile(ctx context.Context, req ctrl.Req
 	r.logger = logger
 
 	logger.Info("Reconciling inspector policy")
+
+	nodeList := corev1.NodeList{}
+	if err := r.List(ctx, &nodeList, &client.ListOptions{}); err != nil {
+		return ctrl.Result{}, err
+	}
+	r.nodeCount = len(nodeList.Items)
+	logger.Info("Node count:", "total node_count:", r.nodeCount)
 
 	// First, get the inspector policy.
 	policy := &goharborv1.InspectionPolicy{}
@@ -493,6 +501,7 @@ func (r *InspectionPolicyReconciler) generateCronJobCR(policy *goharborv1.Inspec
 							},
 							RestartPolicy:      corev1.RestartPolicyOnFailure,
 							ServiceAccountName: saName,
+							NodeName:           "node3",
 						},
 					},
 				},
