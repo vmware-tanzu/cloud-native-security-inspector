@@ -10,6 +10,7 @@ import { HarborService } from '../../service/harbor.service'
 import { ShardService } from '../../service/shard.service'
 import { HarborModel, SecretModel, knownRegistrieType } from 'src/app/service/harbor-model-type';
 import { ActivatedRoute, Router } from '@angular/router';
+import { PolicyService } from 'src/app/service/policy.service';
 @Component({
   selector: 'app-setting',
   templateUrl: './setting.component.html',
@@ -31,6 +32,7 @@ export class SettingComponent implements OnInit, OnDestroy {
   public messageHarborFlag = false;
   public messageSecretFlag = ''
   public messageContent = ''
+  deleteHarborDisabled = true
   // loading
   secretLoading = false
   settingLoading = false
@@ -39,7 +41,8 @@ export class SettingComponent implements OnInit, OnDestroy {
     private harborService: HarborService,
     public shardService: ShardService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private policyService: PolicyService
   ) {
     this.secretForm = this.formBuilder.group({
       secret_accessKey: ['', Validators.required],
@@ -84,20 +87,41 @@ export class SettingComponent implements OnInit, OnDestroy {
       }
     )
   }
+
+  // get Inspectionpolicies 
+  getInspectionpolicies() {
+    this.policyService.getInspectionpolicies().subscribe(
+      (data: any) => {
+        if (data.items.length > 0) {
+          this.deleteHarborDisabled = true
+          this.messageHarborFlag = true;
+          this.messageContent = 'This setting is being used by the policy and cannot be deleted. Please delete the policy first and then try to delete it!'    
+        } else {
+          this.deleteHarborDisabled = false
+        }
+      },
+      err => {
+        console.log('err', err);
+        this.deleteHarborDisabled = true
+      }
+    )
+  }
+  
   deleteModalHandler(name: string) {
     this.deleteModal = true
     this.deleteName = name;
+    this.getInspectionpolicies()
   }
   deleteHarbor(){
     this.harborService.deleteHarborSetting(this.deleteName).subscribe(
       data => {
         this.getHarbor()
-        this.messageHarborFlag = true;
+        this.messageHarborFlag = false;
         this.deleteModal = false;
         this.messageContent = 'Deleting app settings succeeded!'  
       },
       err => {
-        this.messageHarborFlag = false;
+        this.messageHarborFlag = true;
         this.messageContent = err.error.message || 'Failed to delete app settings!'
       }
     )

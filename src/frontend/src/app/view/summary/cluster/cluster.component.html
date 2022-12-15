@@ -7,23 +7,6 @@
   <div class="left">
     <h3>{{'Nav.Insight.cluster' | translate}} {{'CommonlyUse.summary' | translate}}</h3>
     <ul>
-      <!-- <li>
-        <span class="title"> Name</span>
-        <span class="content"></span>
-      </li>
-      <li>
-        <span class="title"> Status</span>
-        <span class="content">
-          <span class="success" *ngIf="shardService.nodeInfo.status === 'running' || shardService.nodeInfo.status === 'Active'">
-            <cds-icon shape="success-standard" class="is-solid"></cds-icon>
-            {{shardService.nodeInfo.status}}
-          </span>
-          <span class="error" *ngIf="shardService.nodeInfo.status === 'falid'">
-            <cds-icon shape="error-standard" class="is-solid"></cds-icon>
-            {{shardService.nodeInfo.status}}
-          </span>
-        </span>
-      </li> -->
       <li>
         <span class="title">{{'Cluster.kubernetes_version'|translate}}</span>
         <span class="content">{{shardService.nodesInfo.version}}</span>

@@ -45,7 +45,7 @@
       </clr-accordion-content>
     </clr-accordion-panel>
 
-    <clr-accordion-panel *ngIf="detailList.length > 0">
+    <clr-accordion-panel [clrAccordionPanelOpen]='true' *ngIf="detailList.length > 0">
       <clr-accordion-title>{{'CommonlyUse.details' | translate}}</clr-accordion-title>
       <clr-accordion-content *clrIfExpanded>
         <clr-datagrid class="datagrid">
