@@ -21,15 +21,15 @@ type Controller interface {
 }
 
 type controller struct {
-	kc     client.Client
-	logger logr.Logger
-	scheme *runtime.Scheme
-	ready  bool
+	kc       client.Client
+	logger   logr.Logger
+	scheme   *runtime.Scheme
+	ready    bool
+	hostname string
 }
 
 var (
-	cfgDir = "cmd/kubebench/cfg"
-	//cfgDir  = "/Users/zsimon/Projects/cnsi/20221214/cloud-native-security-inspector/src/cmd/kubebench/cfg"
+	cfgDir  = "cmd/kubebench/cfg"
 	cfgFile string
 )
 
@@ -96,6 +96,12 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 
 	c.logger.Info("== Running node checks ==")
 	runChecks(check.NODE, loadConfig(check.NODE, bv), detecetedKubeVersion)
+	c.logger.Info(fmt.Sprintf("== Results of node checks:  %v", len(controlsCollection)))
+	for _, control := range controlsCollection {
+		b, _ := control.JSON()
+		c.logger.Info(fmt.Sprintf("b %v", string(b)))
+	}
+	c.logger.Info("------------------------------------------------------------------")
 
 	// Policies is only valid for CIS 1.5 and later,
 	// this a gatekeeper for previous versions.
@@ -126,13 +132,13 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 	}
 
 	if policy.Spec.Inspection.Assessment.ElasticSearchEnabled {
-		if err := exportReportToES(controlsCollection, policy, c.logger); err != nil {
+		if err := exportReportToES(controlsCollection, policy, c.logger, c.hostname); err != nil {
 			c.logger.Error(err, "error exporting to Elasticsearch")
 			return err
 		}
 	}
 	if policy.Spec.Inspection.Assessment.OpenSearchEnabled {
-		if err := exportReportToOpenSearch(controlsCollection, policy, c.logger); err != nil {
+		if err := exportReportToOpenSearch(controlsCollection, policy, c.logger, c.hostname); err != nil {
 			c.logger.Error(err, "error exporting to Opensearch")
 			return err
 		}
@@ -140,7 +146,7 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 	return nil
 }
 
-func exportReportToES(controlsCollection []*check.Controls, policy *v1alpha1.InspectionPolicy, logger logr.Logger) error {
+func exportReportToES(controlsCollection []*check.Controls, policy *v1alpha1.InspectionPolicy, logger logr.Logger, hostname string) error {
 	cert := []byte(policy.Spec.Inspection.Assessment.ElasticSearchCert)
 
 	type args struct {
@@ -179,7 +185,7 @@ func exportReportToES(controlsCollection []*check.Controls, policy *v1alpha1.Ins
 	return nil
 }
 
-func exportReportToOpenSearch(controlsCollection []*check.Controls, policy *v1alpha1.InspectionPolicy, logger logr.Logger) error {
+func exportReportToOpenSearch(controlsCollection []*check.Controls, policy *v1alpha1.InspectionPolicy, logger logr.Logger, hostname string) error {
 	cert := []byte(policy.Spec.Inspection.Assessment.ElasticSearchCert)
 
 	type args struct {
@@ -197,13 +203,14 @@ func exportReportToOpenSearch(controlsCollection []*check.Controls, policy *v1al
 	}
 	logger.Info("OpenSearch config: ", "addr", clientArgs.addr)
 	logger.Info("OpenSearch config: ", "clientArgs.username", clientArgs.username)
+	logger.Info("controlsCollection length: ", "controlsCollection", len(controlsCollection))
 	client := osearch.NewClient(clientArgs.cert, clientArgs.addr, clientArgs.username, clientArgs.passwd)
 	if client == nil {
 		logger.Info("ES client is nil")
 	}
 
 	exporter := osearch.OpenSearchExporter{}
-	err := exporter.NewExporter(client, "cis_report")
+	err := exporter.WithHostname(hostname).NewExporter(client, "cis_report")
 	if err != nil {
 		return err
 	}
@@ -222,6 +229,12 @@ func NewController() *controller {
 // WithK8sClient sets k8s client.
 func (c *controller) WithK8sClient(cli client.Client) *controller {
 	c.kc = cli
+	return c
+}
+
+// WithHostname sets hostname.
+func (c *controller) WithHostname(hostname string) *controller {
+	c.hostname = hostname
 	return c
 }
 

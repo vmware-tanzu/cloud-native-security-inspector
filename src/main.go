@@ -4,8 +4,7 @@ package main
 
 import (
 	"flag"
-	"os"
-
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
 	// to ensure that exec-entrypoint and runtime can make use of them.
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
@@ -48,7 +47,7 @@ func main() {
 	opts.BindFlags(flag.CommandLine)
 	flag.Parse()
 
-	ctrl.SetLogger(zap.New(zap.UseFlagOptions(&opts)))
+	log.Info("Starting main...")
 
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
 		Scheme:                 scheme,
@@ -59,57 +58,40 @@ func main() {
 		LeaderElectionID:       "0c59c3f7.goharbor.io",
 	})
 	if err != nil {
-		setupLog.Error(err, "unable to start manager")
-		os.Exit(1)
+		log.Fatalf("unable to start manager, error: %s", err)
 	}
 
 	if err = (&controllers.SettingReconciler{
 		Client: mgr.GetClient(),
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "Setting")
-		os.Exit(1)
+		log.Fatalf("unable to create controller, error: %s", err)
 	}
 
 	if err = (&controllers.InspectionPolicyReconciler{
 		Client: mgr.GetClient(),
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "InspectionPolicy")
-		os.Exit(1)
+		log.Fatalf("unable to create controller, error: %s", err)
 	}
-
-	/* No need so far
-	if err = (&controllers.InspectionReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "Inspection")
-		os.Exit(1)
-	}
-	*/
 
 	if err = (&controllers.AssessmentReportReconciler{
 		Client: mgr.GetClient(),
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "AssessmentReport")
-		os.Exit(1)
+		log.Fatalf("unable to create controller, error: %s", err)
 	}
 	//+kubebuilder:scaffold:builder
 
 	if err := mgr.AddHealthzCheck("healthz", healthz.Ping); err != nil {
-		setupLog.Error(err, "unable to set up health check")
-		os.Exit(1)
+		log.Fatalf("unable to set up health check, , error: %s", err)
 	}
 	if err := mgr.AddReadyzCheck("readyz", healthz.Ping); err != nil {
-		setupLog.Error(err, "unable to set up ready check")
-		os.Exit(1)
+		log.Fatalf("unable to set up ready check, error: %s", err)
 	}
 
 	setupLog.Info("starting k8s-security-inspector manager")
 	if err := mgr.Start(ctrl.SetupSignalHandler()); err != nil {
-		setupLog.Error(err, "problem running manager")
-		os.Exit(1)
+		log.Fatalf("problem running manager, error: %s", err)
 	}
 }

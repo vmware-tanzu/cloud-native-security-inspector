@@ -11,6 +11,7 @@ import (
 	api "github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/inspection/data"
+	"k8s.io/apiserver/pkg/storage/names"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 	"strconv"
@@ -29,6 +30,7 @@ type OpenSearchExporter struct {
 	Client    *opensearch.Client
 	Logger    logr.Logger
 	indexName string
+	hostname  string
 }
 
 type OpenSearchIndex struct {
@@ -194,6 +196,7 @@ func (o *OpenSearchExporter) SaveCIS(controlsCollection []*check.Controls) error
 	for _, control := range controlsCollection {
 		var report consumers.CISReport
 		report.CreateTimestamp = currentTimeData
+		report.NodeName = o.hostname
 		report.Controls = *control
 		doc, err := json.Marshal(report)
 
@@ -203,7 +206,7 @@ func (o *OpenSearchExporter) SaveCIS(controlsCollection []*check.Controls) error
 
 		res, err = opensearchapi.IndexRequest{
 			Index:      o.indexName,
-			DocumentID: "kubebench-Report_" + currentTimeData + "__" + control.ID,
+			DocumentID: "kubebench-Report_" + o.hostname + "_" + currentTimeData + "_" + names.SimpleNameGenerator.GenerateName(""),
 			Body:       strings.NewReader(string(doc)),
 			Refresh:    "true",
 		}.Do(context.Background(), o.Client)
@@ -294,6 +297,7 @@ func (o *OpenSearchExporter) setupIndex() error {
 			  "detected_version":        { "type": "text", "analyzer": "english" },
 			  "text": { "type": "keyword" },
 			  "node_type":  { "type": "keyword" },
+              "node_name": {"type": "keyword"},
 			  "section":       { "type": "keyword" },
 			  "type":       { "type": "keyword" },
 			  "pass":       { "type": "keyword" },
@@ -383,4 +387,10 @@ func (o *OpenSearchExporter) indexExists(name string) (bool, error) {
 		}
 		return false, nil
 	}
+}
+
+// WithHostname sets hostname.
+func (o *OpenSearchExporter) WithHostname(hostname string) *OpenSearchExporter {
+	o.hostname = hostname
+	return o
 }

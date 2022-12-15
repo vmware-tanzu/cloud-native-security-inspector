@@ -1,0 +1,10 @@
+# Copyright 2022 VMware, Inc.
+# SPDX-License-Identifier: Apache-2.0
+# Use distroless as minimal base image to package the manager binary
+# Refer to https://github.com/GoogleContainerTools/distroless for more details
+FROM projects.registry.vmware.com/cnsi/distroless/static:nonroot
+WORKDIR /
+COPY  bin/manager .
+USER 65532:65532
+
+ENTRYPOINT ["/manager"]

@@ -241,7 +241,9 @@ func findConfigFile(candidates []string) string {
 			return c
 		}
 		if !os.IsNotExist(err) {
-			exitWithError(fmt.Errorf("error looking for file %s: %v", c, err))
+			//exitWithError(fmt.Errorf("error looking for file %s: %v", c, err))
+			glog.V(1).Info(fmt.Sprintf("error looking for file %s: %v", c, err))
+			return ""
 		}
 	}
 
