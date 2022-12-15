@@ -354,6 +354,7 @@ func (r *InspectionPolicyReconciler) ensureRBAC(ctx context.Context, ns string) 
 		if !apierrors.IsNotFound(err) {
 			return errors.Wrapf(err, "failed to get cluster rolebinding: %s", roleBindingName)
 		} else {
+			// This means that the crb doesn't exist, will creat later
 			needToCreateCrb = true
 		}
 	} else {
@@ -361,9 +362,12 @@ func (r *InspectionPolicyReconciler) ensureRBAC(ctx context.Context, ns string) 
 			return errors.Errorf("the crb %s should always have 1 subject but got %v", roleBindingName, len(crb.Subjects))
 		}
 		if crb.Subjects[0].Namespace == ns {
+			// The crb exist and the linked service account is in the same namespace with the policy's latest workspace,
+			// then we need to do nothing here.
 			return nil
 		}
-		// Otherwise needToCreateCrb is false here, but the namespace are different, so we need to update the existing crb
+		// Otherwise, the crb's linked service account is in the old namespace, so we need to update the existing crb to point
+		// to the newest service account, in the new workspace.
 	}
 	ncrb := &rbacv1.ClusterRoleBinding{
 		ObjectMeta: metav1.ObjectMeta{
@@ -382,13 +386,14 @@ func (r *InspectionPolicyReconciler) ensureRBAC(ctx context.Context, ns string) 
 			},
 		},
 	}
+	// Here either we need to create the crb or update the old one. The no-need-to-do-anything case has been handled.
 	if needToCreateCrb {
 		if err := r.Client.Create(ctx, ncrb); err != nil {
-			return errors.Wrapf(err, "failed to update crb %s", roleBindingName)
+			return errors.Wrapf(err, "failed to create crb %s", roleBindingName)
 		}
 	} else {
 		if err := r.Client.Update(ctx, ncrb); err != nil {
-			return errors.Wrapf(err, "failed to create crb: %s", roleBindingName)
+			return errors.Wrapf(err, "failed to update crb: %s", roleBindingName)
 		}
 	}
 	return nil
