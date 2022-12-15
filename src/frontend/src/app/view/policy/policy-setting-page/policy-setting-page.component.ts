@@ -160,7 +160,7 @@ export class PolicySettingPageComponent implements OnInit {
         elasticSearchCert: [''],
         openSearchEnabled: [true],
         openSearchAddrHeader: ['https://'],
-        openSearchAddr: ['opensearch-cluster-master.default:9200'],
+        openSearchAddr: ['opensearch-cluster-master.opensearch:9200'],
         openSearchUser: ['admin'],
         openSearchPasswd: ['admin'],
       }),
