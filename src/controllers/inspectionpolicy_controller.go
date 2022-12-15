@@ -343,40 +343,59 @@ func (r *InspectionPolicyReconciler) ensureRBAC(ctx context.Context, ns string) 
 			return errors.Wrapf(err, "create service account %s:%s", ns, saName)
 		}
 	}
-
 	// Make sure the role binding is existing
 	crb := &rbacv1.ClusterRoleBinding{}
-	if err := r.Client.Get(ctx, client.ObjectKey{
+	err := r.Client.Get(ctx, client.ObjectKey{
 		Name: roleBindingName,
-	}, crb); err != nil {
+	}, crb)
+
+	needToCreateCrb := false
+	if err != nil {
 		if !apierrors.IsNotFound(err) {
-			return errors.Wrapf(err, "get cluster rolebinding: %s", roleBindingName)
+			return errors.Wrapf(err, "failed to get cluster rolebinding: %s", roleBindingName)
+		} else {
+			// This means that the crb doesn't exist, will creat later
+			needToCreateCrb = true
 		}
-
-		// Create it.
-		ncrb := &rbacv1.ClusterRoleBinding{
-			ObjectMeta: metav1.ObjectMeta{
-				Name: roleBindingName,
-			},
-			RoleRef: rbacv1.RoleRef{
-				APIGroup: crole.APIVersion[:strings.LastIndex(crole.APIVersion, "/")],
-				Kind:     crole.Kind,
-				Name:     crole.Name,
-			},
-			Subjects: []rbacv1.Subject{
-				{
-					Kind:      sa.Kind,
-					Namespace: ns,
-					Name:      saName,
-				},
-			},
+	} else {
+		if len(crb.Subjects) != 1 {
+			return errors.Errorf("the crb %s should always have 1 subject but got %v", roleBindingName, len(crb.Subjects))
 		}
-
+		if crb.Subjects[0].Namespace == ns {
+			// The crb exist and the linked service account is in the same namespace with the policy's latest workspace,
+			// then we need to do nothing here.
+			return nil
+		}
+		// Otherwise, the crb's linked service account is in the old namespace, so we need to update the existing crb to point
+		// to the newest service account, in the new workspace.
+	}
+	ncrb := &rbacv1.ClusterRoleBinding{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: roleBindingName,
+		},
+		RoleRef: rbacv1.RoleRef{
+			APIGroup: crole.APIVersion[:strings.LastIndex(crole.APIVersion, "/")],
+			Kind:     crole.Kind,
+			Name:     crole.Name,
+		},
+		Subjects: []rbacv1.Subject{
+			{
+				Kind:      sa.Kind,
+				Namespace: ns,
+				Name:      saName,
+			},
+		},
+	}
+	// Here either we need to create the crb or update the old one. The no-need-to-do-anything case has been handled.
+	if needToCreateCrb {
 		if err := r.Client.Create(ctx, ncrb); err != nil {
-			return errors.Wrapf(err, "create cluster role binding: %s", roleBindingName)
+			return errors.Wrapf(err, "failed to create crb %s", roleBindingName)
+		}
+	} else {
+		if err := r.Client.Update(ctx, ncrb); err != nil {
+			return errors.Wrapf(err, "failed to update crb: %s", roleBindingName)
 		}
 	}
-
 	return nil
 }
 
