@@ -32,6 +32,30 @@
   left: 50%;
   top: 150px;
 }
+.chart-warp {
+  width: 1400px;
+  height: 400px;
+  padding-bottom: 20px;
+  box-sizing: content-box;
+  position: relative;
+}
+.chart-warp .circle {
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+}
+.chart-warp .circle span {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid #fff;
+  margin-right: 10px;
+  cursor: pointer;
+}
+.chart-warp .circle span.active {
+  background-color: #fff;
+}
 clr-datagrid::ng-deep .sort {
   display: flex;
   flex: 1;

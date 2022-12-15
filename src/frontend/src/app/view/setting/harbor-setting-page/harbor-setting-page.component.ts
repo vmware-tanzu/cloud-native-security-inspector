@@ -271,7 +271,10 @@ export class HarborSettingPageComponent implements OnInit {
       data => {
         this.messageHarborFlag = 'success'
         this.messageContent = 'Update and apply settings successfully!' 
-        this.router.navigateByUrl('/setting')
+        this.router.navigate(
+          ['/setting'],
+          { queryParams: { secret: false } }
+        );
       },
       err => {
         this.messageHarborFlag = 'fail'
