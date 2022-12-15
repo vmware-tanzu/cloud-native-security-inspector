@@ -619,8 +619,14 @@ func (in *InspectionPolicyStatus) DeepCopyInto(out *InspectionPolicyStatus) {
 	}
 	if in.KubebenchExecutor != nil {
 		in, out := &in.KubebenchExecutor, &out.KubebenchExecutor
-		*out = new(corev1.ObjectReference)
-		**out = **in
+		*out = make([]*corev1.ObjectReference, len(*in))
+		for i := range *in {
+			if (*in)[i] != nil {
+				in, out := &(*in)[i], &(*out)[i]
+				*out = new(corev1.ObjectReference)
+				**out = **in
+			}
+		}
 	}
 	if in.RiskExecutor != nil {
 		in, out := &in.RiskExecutor, &out.RiskExecutor

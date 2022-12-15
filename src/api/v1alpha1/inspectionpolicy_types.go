@@ -245,7 +245,7 @@ type InspectionPolicyStatus struct {
 
 	// KubebenchExecutor of this policy. It is always an object reference to the underlying cronjob.
 	// +kubebuilder:validation:Optional
-	KubebenchExecutor *corev1.ObjectReference `json:"kubebenchExecutor"`
+	KubebenchExecutor []*corev1.ObjectReference `json:"kubebenchExecutor"`
 
 	// RiskExecutor of this policy. It is always an object reference to the underlying cronjob.
 	// +kubebuilder:validation:Optional
