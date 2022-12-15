@@ -6,7 +6,7 @@ KUBECTLCMD=$(shell which kubectl)
 SWAGGER := $(DOCKERCMD) run --rm -it -v $(HOME):$(HOME) -w $(shell pwd) quay.io/goswagger/swagger
 
 REGISTRY ?= projects.registry.vmware.com/cnsi
-IMG_TAG = 0.1
+IMG_TAG = 0.2
 # Image URL to use all building/pushing image targets
 IMG_MANAGER ?= $(REGISTRY)/manager:$(IMG_TAG)
 IMG_CMD_INSPECTOR ?= $(REGISTRY)/inspector:$(IMG_TAG)
@@ -133,9 +133,7 @@ deploy-without-portal: manifests kustomize ## Deploy controller to the K8s clust
 #uninstall:
 
 remove_clusterrolebinding:
-    clean = $(shell kubectl delete clusterrolebinding cnsi-inspector-rolebinding)
-    clean = $(shell kubectl delete clusterrolebinding cnsi-manager-rolebinding)
-    clean = $(shell kubectl delete clusterrolebinding cnsi-proxy-rolebinding)
+	$(shell kubectl delete clusterrolebinding cnsi-inspector-rolebinding)
 
 undeploy: remove_clusterrolebinding ## Undeploy controller from the K8s cluster specified in ~/.kube/config.
 	$(KUSTOMIZE) build config/default | kubectl delete -f -
