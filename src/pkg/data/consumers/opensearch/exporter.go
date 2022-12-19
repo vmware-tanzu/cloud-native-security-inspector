@@ -393,10 +393,10 @@ func (o *OpenSearchExporter) setupIndex() error {
 			  "score":         { "type": "keyword" },
 			  "scale":         { "type": "keyword" },
 			  "reason":        { "type": "text" },
-              "package":       { "type": "keyword" },
-              "version":       { "type": "keyword" },
-              "fix_version":   { "type": "keyword" },
-              "description":   { "type": "text" },
+                          "package":       { "type": "keyword" },
+                          "version":       { "type": "keyword" },
+                          "fix_version":   { "type": "keyword" },
+                          "description":   { "type": "text" },
 			  "createTime":    { "type": "date" }
 				}
 			}
@@ -412,10 +412,10 @@ func (o *OpenSearchExporter) setupIndex() error {
 			  "score":         { "type": "keyword" },
 			  "scale":         { "type": "keyword" },
 			  "reason":        { "type": "text" },
-              "package":       { "type": "keyword" },
-              "version":       { "type": "keyword" },
-              "fix_version":   { "type": "keyword" },
-              "description":   { "type": "text" },
+                          "package":       { "type": "keyword" },
+                          "version":       { "type": "keyword" },
+                          "fix_version":   { "type": "keyword" },
+                          "description":   { "type": "text" },
 			  "createTime":    { "type": "date" }
 				}
 			}
