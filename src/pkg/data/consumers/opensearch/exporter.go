@@ -39,8 +39,8 @@ type OpenSearchIndex struct {
 
 func (o *OpenSearchExporter) NewExporter(client *opensearch.Client, indexName string) error {
 	if client == nil {
-		log.Log.Info("ElasticSearch client error", errors.New("Invalid ElasticSearch client"), nil)
-		return errors.Errorf("ElasticSearch client error: %s", errors.New("Invalid ElasticSearch client"))
+		log.Log.Info("OpenSearch client error", errors.New("Invalid OpenSearch client"), nil)
+		return errors.Errorf("OpenSearch client error: %s", errors.New("Invalid OpenSearch client"))
 	}
 	o.Client = client
 	o.indexName = indexName
