@@ -1916,9 +1916,14 @@ rules:
   - watch
 - apiGroups:
   - apps
-  - ""
   resources:
   - deployments
+  verbs:
+  - list
+  - get
+- apiGroups:
+  - ""
+  resources:
   - services
   - nodes
   verbs:
