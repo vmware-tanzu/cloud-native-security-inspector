@@ -306,7 +306,6 @@ func (o *OpenSearchExporter) listIndex(name string) ([]OpenSearchIndex, error) {
 			log.Log.Info("Error parsing the response body")
 		} else {
 			// Print the response status.
-			log.Log.Info("find index response", "response", r)
 			for _, i := range r {
 				var (
 					index    string
@@ -316,7 +315,6 @@ func (o *OpenSearchExporter) listIndex(name string) ([]OpenSearchIndex, error) {
 				index, _ = i["index"].(string)
 				health, _ = i["health"].(string)
 				docCount, _ = i["docs.count"].(string)
-				log.Log.Info("index info", "index", index, "health", health, "docs.count", docCount)
 				osIndices = append(osIndices, OpenSearchIndex{index, health, docCount})
 			}
 		}
