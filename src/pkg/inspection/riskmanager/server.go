@@ -72,8 +72,6 @@ func (s *Server) postResource(c *gin.Context) {
 		return
 	}
 
-	//fmt.Printf("receive resource type: %s \n", v.Type)
-
 	images := v.GetImages()
 	for _, i := range images {
 		if _, ok := s.Images[i.UUID()]; !ok {
@@ -102,7 +100,6 @@ func (s *Server) Analyze(option AnalyzeOption) {
 		s.Clear()
 	}()
 
-	//var v data.RiskCollection = make(map[string][]*data.RiskItem)
 	for _, t := range s.Images {
 		report, err := t.FetchHarborReport(s.adapter)
 		if err != nil {
@@ -118,10 +115,6 @@ func (s *Server) Analyze(option AnalyzeOption) {
 	}
 
 	if option.OpenSearchEnabled {
-		if s.Workloads.Risks == nil || len(s.Workloads.Risks) == 0 {
-			fmt.Println("not vuln save to openSearch")
-			return
-		}
 		err := s.osExporter.SaveRiskReport(s.Workloads.Risks)
 		if err != nil {
 			logger.Errorf("os SaveRiskReport error: %v", err)
@@ -129,10 +122,6 @@ func (s *Server) Analyze(option AnalyzeOption) {
 	}
 
 	if option.ElasticSearchEnabled {
-		if s.Workloads.Risks == nil || len(s.Workloads.Risks) == 0 {
-			fmt.Println("not vuln save to ElasticSearch")
-			return
-		}
 		err := s.esExporter.SaveRiskReport(s.Workloads.Risks)
 		if err != nil {
 			logger.Errorf("es SaveRiskReport error: %v", err)

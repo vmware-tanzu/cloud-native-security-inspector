@@ -107,6 +107,7 @@ func main() {
 				log.Error(err, "new os export risk_manager_details")
 				os.Exit(1)
 			}
+			_ = osExporter.NewExporter(osClient, "risk_manager_report")
 		}
 
 		var esExporter es.ElasticSearchExporter
@@ -131,6 +132,7 @@ func main() {
 				//Error Handling
 				os.Exit(1)
 			}
+			_ = esExporter.NewExporter(esClient, "risk_manager_report")
 		}
 
 		server := riskmanager.NewServer(&osExporter, &esExporter).WithAdapter(provider)

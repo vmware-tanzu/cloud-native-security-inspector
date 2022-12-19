@@ -133,7 +133,9 @@ func (o *OpenSearchExporter) SaveRiskReport(risks data.RiskCollection) error {
 		res        *opensearchapi.Response
 		err        error
 		esDocument []byte
+		report     []consumers.RiskDetail
 	)
+
 	currentTimeData := time.Now().Format(time.RFC3339)
 	for s, items := range risks {
 		split := strings.Split(s, ":")
@@ -144,9 +146,9 @@ func (o *OpenSearchExporter) SaveRiskReport(risks data.RiskCollection) error {
 		kind := split[0]
 		name := split[1]
 		namespace := split[2]
-		uid := fmt.Sprintf("%s_%s", split[3], currentTimeData)
+		uid := split[3]
 
-		var esDoc consumers.RiskReport
+		var esDoc consumers.RiskDetail
 		esDoc.Kind = kind
 		esDoc.Name = name
 		esDoc.Namespace = namespace
@@ -158,7 +160,7 @@ func (o *OpenSearchExporter) SaveRiskReport(risks data.RiskCollection) error {
 			return err
 		}
 		res, err = opensearchapi.IndexRequest{
-			Index:      o.indexName,
+			Index:      "risk_manager_details",
 			DocumentID: uid,
 			Body:       strings.NewReader(string(esDocument)),
 			Refresh:    "true",
@@ -169,16 +171,48 @@ func (o *OpenSearchExporter) SaveRiskReport(risks data.RiskCollection) error {
 		}
 
 		if res.IsError() {
-			ctrlLog.Info("[%s] Error indexing document ID=%v", res.Status(), s)
-			return errors.New(fmt.Sprint("http error, code ", res.StatusCode))
+			ctrlLog.Info("[%s] Error indexing document ID=%v", res.Status(), uid)
+			continue
 		} else {
 			// Deserialize the response into a map.
 			var r map[string]interface{}
 			if err = json.NewDecoder(res.Body).Decode(&r); err != nil {
 				ctrlLog.Info("Error parsing the response body: %s", err)
 			} else {
-				fmt.Println("OK")
+				fmt.Println("Detail OK")
+				report = append(report, esDoc)
 			}
+		}
+	}
+
+	var esDoc consumers.RiskReport
+	esDoc.ReportDetail = report
+	esDoc.CreateTimestamp = currentTimeData
+	esDocument, err = json.Marshal(esDoc)
+	if err != nil {
+		return err
+	}
+	dId := "Package-Report_" + currentTimeData
+	res, err = opensearchapi.IndexRequest{
+		Index:      "risk_manager_report",
+		DocumentID: dId,
+		Body:       strings.NewReader(string(esDocument)),
+		Refresh:    "true",
+	}.Do(context.Background(), o.Client)
+	if err != nil {
+		ctrlLog.Error(err, "Error getting response")
+		return err
+	}
+
+	if res.IsError() {
+		ctrlLog.Info("[%s] Error indexing document ID=%v", res.Status(), dId)
+	} else {
+		// Deserialize the response into a map.
+		var r map[string]interface{}
+		if err = json.NewDecoder(res.Body).Decode(&r); err != nil {
+			ctrlLog.Info("Error parsing the response body: %s", err)
+		} else {
+			fmt.Println("Report OK")
 		}
 	}
 
@@ -256,7 +290,7 @@ func (o *OpenSearchExporter) listIndex(name string) ([]OpenSearchIndex, error) {
 	}
 	defer res.Body.Close()
 	var r map[string]interface{}
-	var esIndices []OpenSearchIndex
+	var osIndices []OpenSearchIndex
 	if res.IsError() {
 		if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
 			log.Log.Info("Error parsing the response body")
@@ -273,12 +307,19 @@ func (o *OpenSearchExporter) listIndex(name string) ([]OpenSearchIndex, error) {
 		} else {
 			// Print the response status.
 			for _, i := range r {
-				esIndices = append(esIndices, OpenSearchIndex{i["index"].(string), i["health"].(string),
-					i["docs.count"].(string)})
+				var (
+					index    string
+					health   string
+					docCount string
+				)
+				index, _ = i["index"].(string)
+				health, _ = i["health"].(string)
+				docCount, _ = i["docs.count"].(string)
+				osIndices = append(osIndices, OpenSearchIndex{index, health, docCount})
 			}
 		}
 	}
-	return esIndices, nil
+	return osIndices, nil
 }
 
 // setupIndex is to create an index with predefine mapping in OpenSearch for CNSI
@@ -350,10 +391,29 @@ func (o *OpenSearchExporter) setupIndex() error {
 			  "score":         { "type": "keyword" },
 			  "scale":         { "type": "keyword" },
 			  "reason":        { "type": "text" },
-              "package":       { "type": "keyword" },
-              "version":       { "type": "keyword" },
-              "fix_version":   { "type": "keyword" },
-              "description":   { "type": "text" },
+                          "package":       { "type": "keyword" },
+                          "version":       { "type": "keyword" },
+                          "fix_version":   { "type": "keyword" },
+                          "description":   { "type": "text" },
+			  "createTime":    { "type": "date" }
+				}
+			}
+		}`
+	} else if o.indexName == "risk_manager_report" {
+		mapping = `{
+		"mappings": {
+			"properties": {
+			  "kind":          { "type": "keyword" },
+			  "name":          { "type": "keyword" },
+			  "namespace":     { "type": "keyword" },
+			  "uid":           { "type": "keyword" },
+			  "score":         { "type": "keyword" },
+			  "scale":         { "type": "keyword" },
+			  "reason":        { "type": "text" },
+                          "package":       { "type": "keyword" },
+                          "version":       { "type": "keyword" },
+                          "fix_version":   { "type": "keyword" },
+                          "description":   { "type": "text" },
 			  "createTime":    { "type": "date" }
 				}
 			}
