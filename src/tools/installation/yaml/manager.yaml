@@ -1914,6 +1914,21 @@ rules:
   - patch
   - update
   - watch
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  verbs:
+  - list
+  - get
+- apiGroups:
+  - ""
+  resources:
+  - services
+  - nodes
+  verbs:
+  - list
+  - get
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
