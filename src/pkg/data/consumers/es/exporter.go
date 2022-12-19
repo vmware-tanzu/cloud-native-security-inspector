@@ -192,10 +192,10 @@ func (e *ElasticSearchExporter) setupIndex() error {
 			  "score":         { "type": "keyword" },
 			  "scale":         { "type": "keyword" },
 			  "reason":        { "type": "text" },
-              "package":       { "type": "keyword" },
-              "version":       { "type": "keyword" },
-              "fix_version":   { "type": "keyword" },
-              "description":   { "type": "text" },
+                          "package":       { "type": "keyword" },
+                          "version":       { "type": "keyword" },
+                          "fix_version":   { "type": "keyword" },
+                          "description":   { "type": "text" },
 			  "createTime":    { "type": "date" }
 				}
 			}
@@ -211,10 +211,10 @@ func (e *ElasticSearchExporter) setupIndex() error {
 			  "score":         { "type": "keyword" },
 			  "scale":         { "type": "keyword" },
 			  "reason":        { "type": "text" },
-              "package":       { "type": "keyword" },
-              "version":       { "type": "keyword" },
-              "fix_version":   { "type": "keyword" },
-              "description":   { "type": "text" },
+                          "package":       { "type": "keyword" },
+                          "version":       { "type": "keyword" },
+                          "fix_version":   { "type": "keyword" },
+                          "description":   { "type": "text" },
 			  "createTime":    { "type": "date" }
 				}
 			}
