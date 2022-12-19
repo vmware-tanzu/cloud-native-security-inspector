@@ -102,7 +102,7 @@ docker-build-portal:
 	$(DOCKERCMD) build -t ${PORTAl} -f Dockerfile.portal .
 
 docker-build-risk: build-risk ## Build docker image with risk cmd.
-	$(DOCKERCMD) build -t ${RISK} -f Dockerfile.riskmanager.local .
+	$(DOCKERCMD) build -t ${RISK} -f Dockerfile.riskmanager .
 
 docker-push: ## Push docker images with the manager.
 	$(DOCKERCMD) push ${IMG_MANAGER}
