@@ -5,13 +5,12 @@ import (
 	"encoding/json"
 	"encoding/pem"
 	"fmt"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
 	"time"
-
-	"github.com/golang/glog"
 )
 
 type KubeVersion struct {
@@ -33,7 +32,7 @@ func (k *KubeVersion) BaseVersion() string {
 }
 
 func getKubeVersionFromRESTAPI() (*KubeVersion, error) {
-	glog.V(2).Info("Try to get version from Rest API")
+	log.Info("Try to get version from Rest API")
 	k8sVersionURL := getKubernetesURL()
 	serviceaccount := "/var/run/secrets/kubernetes.io/serviceaccount"
 	cacertfile := fmt.Sprintf("%s/ca.crt", serviceaccount)
@@ -41,20 +40,20 @@ func getKubeVersionFromRESTAPI() (*KubeVersion, error) {
 
 	tlsCert, err := loadCertificate(cacertfile)
 	if err != nil {
-		glog.V(2).Infof("Failed loading certificate Error: %s", err)
+		log.Infof("Failed loading certificate Error: %s", err)
 		return nil, err
 	}
 
 	tb, err := ioutil.ReadFile(tokenfile)
 	if err != nil {
-		glog.V(2).Infof("Failed reading token file Error: %s", err)
+		log.Infof("Failed reading token file Error: %s", err)
 		return nil, err
 	}
 	token := strings.TrimSpace(string(tb))
 
 	data, err := getWebDataWithRetry(k8sVersionURL, token, tlsCert)
 	if err != nil {
-		glog.V(2).Infof("Failed to get data Error: %s", err)
+		log.Infof("Failed to get data Error: %s", err)
 		return nil, err
 	}
 
@@ -97,12 +96,12 @@ type VersionResponse struct {
 
 func extractVersion(data []byte) (*KubeVersion, error) {
 	vrObj := &VersionResponse{}
-	glog.V(2).Info(fmt.Sprintf("vd: %s\n", string(data)))
+	log.Info(fmt.Sprintf("vd: %s\n", string(data)))
 	err := json.Unmarshal(data, vrObj)
 	if err != nil {
 		return nil, err
 	}
-	glog.V(2).Info(fmt.Sprintf("vrObj: %#v\n", vrObj))
+	log.Info(fmt.Sprintf("vrObj: %#v\n", vrObj))
 
 	return &KubeVersion{
 		Major:      vrObj.Major,
@@ -112,7 +111,7 @@ func extractVersion(data []byte) (*KubeVersion, error) {
 }
 
 func getWebData(srvURL, token string, cacert *tls.Certificate) ([]byte, error) {
-	glog.V(2).Info(fmt.Sprintf("getWebData srvURL: %s\n", srvURL))
+	log.Info(fmt.Sprintf("getWebData srvURL: %s\n", srvURL))
 
 	tlsConf := &tls.Config{
 		Certificates:       []tls.Certificate{*cacert},
@@ -132,13 +131,13 @@ func getWebData(srvURL, token string, cacert *tls.Certificate) ([]byte, error) {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		glog.V(2).Info(fmt.Sprintf("HTTP ERROR: %v\n", err))
+		log.Info(fmt.Sprintf("HTTP ERROR: %v\n", err))
 		return nil, err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		glog.V(2).Info(fmt.Sprintf("URL:[%s], StatusCode:[%d] \n Headers: %#v\n", srvURL, resp.StatusCode, resp.Header))
+		log.Info(fmt.Sprintf("URL:[%s], StatusCode:[%d] \n Headers: %#v\n", srvURL, resp.StatusCode, resp.Header))
 		err = fmt.Errorf("URL:[%s], StatusCode:[%d]", srvURL, resp.StatusCode)
 		return nil, err
 	}
@@ -158,7 +157,7 @@ func loadCertificate(certFile string) (*tls.Certificate, error) {
 		return nil, fmt.Errorf("unable to Decode certificate")
 	}
 
-	glog.V(2).Info("Loading CA certificate")
+	log.Info("Loading CA certificate")
 	tlsCert.Certificate = append(tlsCert.Certificate, block.Bytes)
 	return &tlsCert, nil
 }
@@ -176,7 +175,7 @@ func getKubernetesURL() string {
 			return fmt.Sprintf("https://%s:%s/version", k8sHost, k8sPort)
 		}
 
-		glog.V(2).Info("KUBE_BENCH_K8S_ENV is set, but environment variables KUBERNETES_SERVICE_HOST or KUBERNETES_SERVICE_PORT_HTTPS are not set")
+		log.Info("KUBE_BENCH_K8S_ENV is set, but environment variables KUBERNETES_SERVICE_HOST or KUBERNETES_SERVICE_PORT_HTTPS are not set")
 	}
 
 	return k8sVersionURL

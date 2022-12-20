@@ -16,7 +16,6 @@ require (
 	github.com/goark/go-cvss v1.3.0
 	github.com/goharbor/go-client v0.25.0
 	github.com/goharbor/harbor/src v0.0.0-20221115123844-ea27197a8227
-	github.com/golang/glog v1.0.0
 	github.com/gomodule/redigo v2.0.0+incompatible
 	github.com/onsi/ginkgo v1.16.5
 	github.com/onsi/gomega v1.24.1
@@ -74,6 +73,7 @@ require (
 	github.com/gocraft/work v0.5.1 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang-jwt/jwt/v4 v4.2.0 // indirect
+	github.com/golang/glog v1.0.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/gnostic v0.5.7-v3refs // indirect

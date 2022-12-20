@@ -9,7 +9,6 @@ import (
 
 	"strings"
 
-	"github.com/go-logr/logr"
 	"github.com/pkg/errors"
 	goharborv1 "github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
@@ -51,7 +50,6 @@ const (
 type InspectionPolicyReconciler struct {
 	client.Client
 	Scheme   *runtime.Scheme
-	logger   logr.Logger
 	nodeList []string
 	pathList []string
 }
@@ -157,7 +155,7 @@ func (r *InspectionPolicyReconciler) Reconcile(ctx context.Context, req ctrl.Req
 
 func (r *InspectionPolicyReconciler) cronjobForKubebench(ctx context.Context, policy *goharborv1.InspectionPolicy) (bool, error) {
 	if policy.Spec.Inspector.KubebenchImage == "" {
-		log.Error(nil, "unable to find KubebenchImage in policy")
+		log.Info(nil, "the user doesn't involve KubebenchImage in policy")
 		return false, nil
 	}
 	if err := r.checkKubebenchCronJob(ctx, policy); err != nil {
@@ -448,10 +446,6 @@ func (r *InspectionPolicyReconciler) isCronjobCountReady(policy *goharborv1.Insp
 
 func (r *InspectionPolicyReconciler) updatePolicyStatusForKubebench(ctx context.Context,
 	policy *goharborv1.InspectionPolicy, jl batchv1beta1.CronJobList) error {
-	//policy.Status.Status = goharborv1.PolicyStandby
-	//if *policy.Spec.Strategy.Suspend {
-	//	policy.Status.Status = goharborv1.PolicySuspend
-	//}
 	log.Info("Update status of inspection policy for kubebench", "status", policy.Status.Status)
 	for _, job := range jl.Items {
 		ref, err := reference.GetReference(r.Scheme, &job)
@@ -498,7 +492,7 @@ func (r *InspectionPolicyReconciler) checkKubebenchCronJob(ctx context.Context, 
 			}
 			for _, cr := range crList {
 				if err := r.Client.Create(ctx, &cr); err != nil {
-					log.Error(err, "Unable to create cronjob for kubebench", "cronjob", cr.Name)
+					log.Error(err, "unable to create cronjob for kubebench", "cronjob", cr.Name)
 					return err
 				}
 			}
@@ -546,28 +540,6 @@ func (r *InspectionPolicyReconciler) checkCronJob(ctx context.Context, policy *g
 		if len(jl.Items) == 0 {
 			return nil, nil
 		}
-
-		// If duplicated cronjob of this type has been found, return the new one and delete others.
-		//if len(jl.Items) > 1 {
-		//	// Clean up?
-		//	var mostRecent *batchv1beta1.CronJob
-		//	for _, cj := range jl.Items {
-		//		if mostRecent == nil {
-		//			mostRecent = &cj
-		//			continue
-		//		}
-		//		// Comparison.
-		//		if mostRecent.CreationTimestamp.Before(&cj.CreationTimestamp) {
-		//			// Delete the old one first.
-		//			if err := r.Delete(ctx, mostRecent); err != nil {
-		//				r.logger.Error(err, "unable to clean the duplicated old underlying cron job", "cronjob", mostRecent)
-		//			}
-		//			mostRecent = &cj
-		//		}
-		//	}
-		//
-		//	return mostRecent, nil
-		//}
 
 		return &jl.Items[0], nil
 	}
@@ -620,7 +592,7 @@ func (r *InspectionPolicyReconciler) generateKubebenchCronJobCR(policy *goharbor
 			Env: []corev1.EnvVar{{Name: "hostname", Value: node}},
 		}
 		r.addVolumeMountsToContainer(&container)
-		log.Info(fmt.Sprintf("Container list:%v", container))
+		log.Info(fmt.Sprintf("added volumemount for container: %v", container))
 		cronjobName := randomName(policy.Name) + "-" + name + "-" + node
 		// no more than 52 characters for cronjobName
 		if len(cronjobName) > 52 {
@@ -684,8 +656,8 @@ func (r *InspectionPolicyReconciler) generateKubebenchCronJobCR(policy *goharbor
 		}
 
 		cj.Annotations[lastAppliedAnnotation] = string(jdata)
-		log.Info(fmt.Sprintf("Kubebench Cronjob:%v", (*cj).Name))
-		log.Info(fmt.Sprintf("Kubebench Cronjob Node name::%v", (*cj).Spec.JobTemplate.Spec.Template.Spec.NodeName))
+		log.Info(fmt.Sprintf("Kubebench Cronjob: %v", (*cj).Name))
+		log.Info(fmt.Sprintf("Kubebench Cronjob Node name: %v", (*cj).Spec.JobTemplate.Spec.Template.Spec.NodeName))
 		cronjobList = append(cronjobList, *cj)
 	}
 

@@ -2,15 +2,13 @@ package kubebench
 
 import (
 	"fmt"
+	"github.com/aquasecurity/kube-bench/check"
+	"github.com/spf13/viper"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	ctrl "sigs.k8s.io/controller-runtime"
 	"strings"
-
-	"github.com/aquasecurity/kube-bench/check"
-	"github.com/golang/glog"
-	"github.com/spf13/viper"
 )
 
 var (
@@ -22,10 +20,8 @@ var (
 	policiesFile         = "policies.yaml"
 	managedservicesFile  = "managedservices.yaml"
 	defaultKubeVersion   = "1.18"
-	exitCode             int
 	skipIds              string
 	controlsCollection   []*check.Controls
-	log                  = ctrl.Log.WithName("kubebench")
 )
 
 type FilterOpts struct {
@@ -75,7 +71,7 @@ func runChecks(nodetype check.NodeType, testYamlFile, detectedVersion string) {
 		exitWithError(fmt.Errorf("error opening %s test file: %v", testYamlFile, err))
 	}
 
-	glog.V(1).Info(fmt.Sprintf("Using test file: %s\n", testYamlFile))
+	log.Info(fmt.Sprintf("Using test file: %s\n", testYamlFile))
 
 	// Get the viper config for this section of tests
 	typeConf := viper.Sub(string(nodetype))
@@ -88,7 +84,7 @@ func runChecks(nodetype check.NodeType, testYamlFile, detectedVersion string) {
 	binmap, err := getBinaries(typeConf, nodetype)
 	// Checks that the executables we need for the section are running.
 	if err != nil {
-		glog.V(1).Info(fmt.Sprintf("failed to get a set of executables needed for tests: %v", err))
+		log.Info(fmt.Sprintf("failed to get a set of executables needed for tests: %v", err))
 	}
 
 	confmap := getFiles(typeConf, "config")
@@ -138,7 +134,7 @@ func generateDefaultEnvAudit(controls *check.Controls, binSubs []string) {
 						if len(binSubs) == 1 {
 							binPath = binSubs[0]
 						} else {
-							glog.V(1).Infof("AuditEnv not explicit for check (%s), where bin path cannot be determined", checkItem.ID)
+							log.Infof("AuditEnv not explicit for check (%s), where bin path cannot be determined", checkItem.ID)
 						}
 
 						if test.Env != "" && checkItem.AuditEnv == "" {
@@ -165,22 +161,6 @@ func parseSkipIds(skipIds string) map[string]bool {
 func colorPrint(state check.State, s string) {
 	colors[state].Printf("[%s] ", state)
 	fmt.Printf("%s", s)
-}
-
-func printSummary(summary check.Summary, sectionName string) {
-	var res check.State
-	if summary.Fail > 0 {
-		res = check.FAIL
-	} else if summary.Warn > 0 {
-		res = check.WARN
-	} else {
-		res = check.PASS
-	}
-
-	colors[res].Printf("== Summary %s ==\n", sectionName)
-	fmt.Printf("%d checks PASS\n%d checks FAIL\n%d checks WARN\n%d checks INFO\n\n",
-		summary.Pass, summary.Fail, summary.Warn, summary.Info,
-	)
 }
 
 // loadConfig finds the correct config dir based on the kubernetes version,
@@ -221,13 +201,13 @@ func mergeConfig(path string) error {
 	err := viper.MergeInConfig()
 	if err != nil {
 		if os.IsNotExist(err) {
-			glog.V(2).Info(fmt.Sprintf("No version-specific config.yaml file in %s", path))
+			log.Info(fmt.Sprintf("No version-specific config.yaml file in %s", path))
 		} else {
 			return fmt.Errorf("couldn't read config file %s: %v", path+"/config.yaml", err)
 		}
 	}
 
-	glog.V(1).Info(fmt.Sprintf("Using config file: %s\n", viper.ConfigFileUsed()))
+	log.Info(fmt.Sprintf("Using config file: %s\n", viper.ConfigFileUsed()))
 
 	return nil
 }
@@ -235,16 +215,16 @@ func mergeConfig(path string) error {
 func mapToBenchmarkVersion(kubeToBenchmarkMap map[string]string, kv string) (string, error) {
 	kvOriginal := kv
 	cisVersion, found := kubeToBenchmarkMap[kv]
-	glog.V(2).Info(fmt.Sprintf("mapToBenchmarkVersion for k8sVersion: %q cisVersion: %q found: %t\n", kv, cisVersion, found))
+	log.Info(fmt.Sprintf("mapToBenchmarkVersion for k8sVersion: %q cisVersion: %q found: %t\n", kv, cisVersion, found))
 	for !found && (kv != defaultKubeVersion && !isEmpty(kv)) {
 		kv = decrementVersion(kv)
 		cisVersion, found = kubeToBenchmarkMap[kv]
-		glog.V(2).Info(fmt.Sprintf("mapToBenchmarkVersion for k8sVersion: %q cisVersion: %q found: %t\n", kv, cisVersion, found))
+		log.Info(fmt.Sprintf("mapToBenchmarkVersion for k8sVersion: %q cisVersion: %q found: %t\n", kv, cisVersion, found))
 	}
 
 	if !found {
-		glog.V(1).Info(fmt.Sprintf("mapToBenchmarkVersion unable to find a match for: %q", kvOriginal))
-		glog.V(3).Info(fmt.Sprintf("mapToBenchmarkVersion kubeToBenchmarkMap: %#v", kubeToBenchmarkMap))
+		log.Info(fmt.Sprintf("mapToBenchmarkVersion unable to find a match for: %q", kvOriginal))
+		log.Info(fmt.Sprintf("mapToBenchmarkVersion kubeToBenchmarkMap: %#v", kubeToBenchmarkMap))
 		return "", fmt.Errorf("unable to find a matching Benchmark Version match for kubernetes version: %s", kvOriginal)
 	}
 
@@ -272,7 +252,7 @@ func loadTargetMapping(v *viper.Viper) (map[string][]string, error) {
 func getBenchmarkVersion(kubeVersion, benchmarkVersion string, platform Platform, v *viper.Viper) (bv string, err error) {
 	detecetedKubeVersion = "none"
 	if !isEmpty(kubeVersion) && !isEmpty(benchmarkVersion) {
-		return "", fmt.Errorf("It is an error to specify both --version and --benchmark flags")
+		return "", fmt.Errorf("it is an error to specify both --version and --benchmark flags")
 	}
 	if isEmpty(benchmarkVersion) && isEmpty(kubeVersion) && !isEmpty(platform.Name) {
 		benchmarkVersion = getPlatformBenchmarkVersion(platform)
@@ -301,10 +281,10 @@ func getBenchmarkVersion(kubeVersion, benchmarkVersion string, platform Platform
 			return "", err
 		}
 
-		glog.V(2).Info(fmt.Sprintf("Mapped Kubernetes version: %s to Benchmark version: %s", kubeVersion, benchmarkVersion))
+		log.Info(fmt.Sprintf("Mapped Kubernetes version: %s to Benchmark version: %s", kubeVersion, benchmarkVersion))
 	}
 
-	glog.V(1).Info(fmt.Sprintf("Kubernetes version: %q to Benchmark version: %q", kubeVersion, benchmarkVersion))
+	log.Info(fmt.Sprintf("Kubernetes version: %q to Benchmark version: %q", kubeVersion, benchmarkVersion))
 	return benchmarkVersion, nil
 }
 
@@ -319,24 +299,24 @@ func isEtcd() bool {
 }
 
 func isThisNodeRunning(nodeType check.NodeType) bool {
-	glog.V(3).Infof("Checking if the current node is running %s components", nodeType)
+	log.Infof("Checking if the current node is running %s components", nodeType)
 	nodeTypeConf := viper.Sub(string(nodeType))
 	if nodeTypeConf == nil {
-		glog.V(2).Infof("No config for %s components found", nodeType)
+		log.Infof("No config for %s components found", nodeType)
 		return false
 	}
 
 	components, err := getBinariesFunc(nodeTypeConf, nodeType)
 	if err != nil {
-		glog.V(2).Infof("Failed to find %s binaries: %v", nodeType, err)
+		log.Infof("Failed to find %s binaries: %v", nodeType, err)
 		return false
 	}
 	if len(components) == 0 {
-		glog.V(2).Infof("No %s binaries specified", nodeType)
+		log.Infof("No %s binaries specified", nodeType)
 		return false
 	}
 
-	glog.V(2).Infof("Node is running %s components", nodeType)
+	log.Infof("Node is running %s components", nodeType)
 	return true
 }
 
@@ -349,7 +329,7 @@ func validTargets(benchmarkVersion string, targets []string, v *viper.Viper) (bo
 	}
 	providedTargets, found := benchmarkVersionToTargetsMap[benchmarkVersion]
 	if !found {
-		return false, fmt.Errorf("No targets configured for %s", benchmarkVersion)
+		return false, fmt.Errorf("no targets configured for %s", benchmarkVersion)
 	}
 
 	for _, pt := range targets {
