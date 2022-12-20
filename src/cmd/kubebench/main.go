@@ -4,7 +4,6 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"github.com/golang/glog"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/inspection/kubebench"
 	"go.uber.org/zap/zapcore"
@@ -41,8 +40,7 @@ func main() {
 	}
 	opts.BindFlags(flag.CommandLine)
 	flag.Parse()
-	log.Info("")
-	glog.V(2).Info("kube-bench scanning....")
+	log.Info("kube-bench scanning....")
 
 	ctrl.SetLogger(zap.New(zap.UseFlagOptions(&opts)))
 

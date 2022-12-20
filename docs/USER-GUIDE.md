@@ -319,11 +319,11 @@ metadata:
 spec:
   enabled: true
   inspector:
-    image: projects.registry.vmware.com/cnsi/inspector:0.1
+    image: projects.registry.vmware.com/cnsi/inspector:0.2
     imagePullPolicy: IfNotPresent
     imagePullSecrets: []
-    kubebenchImage: projects.registry.vmware.com/cnsi/kubebench:0.1
-    riskImage: projects.registry.vmware.com/cnsi/risk:0.1
+    kubebenchImage: projects.registry.vmware.com/cnsi/kubebench:0.2
+    riskImage: projects.registry.vmware.com/cnsi/risk:0.2
   inspection:
     assessment:
       elasticSearchEnabled: false
