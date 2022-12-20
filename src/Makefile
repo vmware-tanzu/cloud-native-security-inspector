@@ -50,7 +50,7 @@ help: ## Display this help.
 ##@ Development
 
 manifests: controller-gen ## Generate WebhookConfiguration, ClusterRole and CustomResourceDefinition objects.
-	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=manager-role webhook paths="./..." output:crd:artifacts:config=config/crd/bases
+	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=cnsi-manager-role webhook paths="./..." output:crd:artifacts:config=config/crd/bases
 
 generate: controller-gen ## Generate code containing DeepCopy, DeepCopyInto, and DeepCopyObject method implementations.
 	$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./..."
@@ -130,10 +130,8 @@ deploy-without-portal: manifests kustomize ## Deploy controller to the K8s clust
 	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG_MANAGER}
 	$(KUSTOMIZE) build config/default | kubectl apply -f -
 
-#uninstall:
-
 remove_clusterrolebinding:
-	$(shell kubectl delete clusterrolebinding cnsi-inspector-rolebinding)
+	$(KUBECTLCMD) delete clusterrolebinding cnsi-inspector-rolebinding --ignore-not-found=true
 
 undeploy: remove_clusterrolebinding ## Undeploy controller from the K8s cluster specified in ~/.kube/config.
 	$(KUSTOMIZE) build config/default | kubectl delete -f -
@@ -147,13 +145,14 @@ portal: namespace
 
 # To install and uninstall CNSI components without golang and kustomize required. Probably this is the recommended commands for users currently.
 install: portal
+	$(KUBECTLCMD) apply -f config/crd/bases
 	$(KUBECTLCMD) apply -f tools/installation/yaml/manager.yaml
-	$(KUBECTLCMD) apply -f tools/installation/yaml/crd.yaml
+	$(KUBECTLCMD) apply -f config/rbac/role.yaml
 
 uninstall: remove_clusterrolebinding
-	$(KUBECTLCMD) delete -f tools/installation/yaml/crd.yaml --ignore-not-found=true
+	$(KUBECTLCMD) delete -f config/crd/bases --ignore-not-found=true
 	$(KUBECTLCMD) delete -f tools/installation/yaml/manager.yaml --ignore-not-found=true
-
+	$(KUBECTLCMD) delete -f config/rbac/role.yaml --ignore-not-found=true
 
 CONTROLLER_GEN = $(shell pwd)/bin/controller-gen
 controller-gen: tidy ## Download controller-gen locally if necessary.
