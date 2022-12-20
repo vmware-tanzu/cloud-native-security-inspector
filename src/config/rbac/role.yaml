@@ -57,6 +57,13 @@ rules:
 - apiGroups:
   - apps
   resources:
+  - deployments
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - apps
+  resources:
   - replicasets
   verbs:
   - create
@@ -86,6 +93,13 @@ rules:
   - get
   - list
   - watch
+- apiGroups:
+  - ""
+  resources:
+  - services
+  verbs:
+  - get
+  - list
 - apiGroups:
   - goharbor.goharbor.io
   resources:
@@ -226,18 +240,3 @@ rules:
   - patch
   - update
   - watch
-- apiGroups:
-  - apps
-  resources:
-  - deployments
-  verbs:
-  - list
-  - get
-- apiGroups:
-  - ""
-  resources:
-  - services
-  - nodes
-  verbs:
-  - list
-  - get
