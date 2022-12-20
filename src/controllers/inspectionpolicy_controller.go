@@ -29,7 +29,7 @@ import (
 
 const (
 	defaultImage                    = "projects.registry.vmware.com/cnsi/inspector"
-	defaultImageTag                 = "0.1"
+	defaultImageTag                 = "0.2"
 	labelOwnerKey                   = "goharbor.io/policy-working-for"
 	labelTypeKey                    = "cnsi/inspector-type"
 	lastAppliedAnnotation           = "goharbor.io/last-applied-spec"

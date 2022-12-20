@@ -141,7 +141,7 @@ describe('PolicySettingPageComponent', () => {
                 }
               },
               "inspector": {
-                "image": "projects.registry.vmware.com/cnsi/inspector:0.1",
+                "image": "projects.registry.vmware.com/cnsi/inspector:0.2",
                 "imagePullPolicy": "IfNotPresent",
                 "imagePullSecrets": []
               },

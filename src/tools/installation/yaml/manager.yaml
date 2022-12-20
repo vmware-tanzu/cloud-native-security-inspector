@@ -2068,7 +2068,7 @@ spec:
         - --leader-elect
         command:
         - /manager
-        image: projects.registry.vmware.com/cnsi/manager:0.1
+        image: projects.registry.vmware.com/cnsi/manager:0.2
         livenessProbe:
           httpGet:
             path: /healthz

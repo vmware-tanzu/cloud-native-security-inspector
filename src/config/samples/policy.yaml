@@ -12,8 +12,8 @@ spec:
     suspend: false
     concurrencyRule: "Forbid"
   inspector:
-    image: projects.registry.vmware.com/cnsi/inspector:0.1
-    kubebenchImage: projects.registry.vmware.com/cnsi/kubebench:0.1
+    image: projects.registry.vmware.com/cnsi/inspector:0.2
+    kubebenchImage: projects.registry.vmware.com/cnsi/kubebench:0.2
     imagePullPolicy: Always
   inspection:
     namespaceSelector:
