@@ -4,60 +4,9 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import {
-  Chart,
-  ArcElement,
-  LineElement,
-  BarElement,
-  PointElement,
-  BarController,
-  BubbleController,
-  DoughnutController,
-  LineController,
-  PieController,
-  PolarAreaController,
-  RadarController,
-  ScatterController,
-  CategoryScale,
-  LinearScale,
-  LogarithmicScale,
-  RadialLinearScale,
-  TimeScale,
-  TimeSeriesScale,
-  Decimation,
-  Filler,
-  Legend,
-  Title,
-  Tooltip,
-  SubTitle
-} from 'chart.js';
+import { echarts, PieSeriesOption } from 'src/app/shard/shard/echarts';
+type ECOption = echarts.ComposeOption<PieSeriesOption>
 
-Chart.register(
-  ArcElement,
-  LineElement,
-  BarElement,
-  PointElement,
-  BarController,
-  BubbleController,
-  DoughnutController,
-  LineController,
-  PieController,
-  PolarAreaController,
-  RadarController,
-  ScatterController,
-  CategoryScale,
-  LinearScale,
-  LogarithmicScale,
-  RadialLinearScale,
-  TimeScale,
-  TimeSeriesScale,
-  Decimation,
-  Filler,
-  Legend,
-  Title,
-  Tooltip,
-  SubTitle
-);
 @Component({
   selector: 'app-packedbubble',
   templateUrl: './packedbubble.component.html',
@@ -66,46 +15,62 @@ Chart.register(
 export class PackedbubbleComponent implements OnInit {
   normal = 0
   abnormal = 0
-  compliant = 0
   myChart:any
-  constructor() { }
+  chartOptions!:ECOption
+  constructor(
+  ) { }
   ngOnInit(): void {
-    this.newReport('polarArea')
+    this.chartInit()
   }
-  newReport(DomID: string) {
-    const canvas: HTMLCanvasElement = document.getElementById(DomID) as HTMLCanvasElement;
-    const ctx: any = canvas.getContext('2d');
-    this.myChart = new Chart(ctx, {
-      type: 'polarArea',
-      data: {
-          labels: [
-            'Abnormal',
-            "Normal"
-          ],
-          datasets: [
-            {
-              label: '',
-              data: [0, 0],
-              backgroundColor: [
-                '#EE6666',
-                '#3BA272'
-              ]
-            }
-          ]
+  newReport() {
+    this.chartOptions = {
+      title: {
+        text: '',
+        subtext: '',
+        left: 'center'
       },
-      options: {
-          responsive: false,
-          scales: {
-          },
-      }
-    });    
+      tooltip: {
+        trigger: 'item'
+      },
+      legend: {
+        orient: 'horizontal',
+        left: 'center',
+        itemWidth: 50,
+        textStyle: {
+          color: "#ffffff"
+        }
+      },
+      series: [
+        {
+          name: 'Workloads From',
+          type: 'pie',
+          radius: '50%',
+          data: [
+            { value: this.abnormal, name: 'AbNormal', itemStyle: {color: '#EE6666'}},
+            { value: this.normal, name: 'Normal', itemStyle: {color: '#3BA272'} },
+          ],
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: 'rgba(0, 0, 0, 0.5)'
+            }
+          }
+        }
+      ]
+    };
+    this.myChart.clear()
+    this.chartOptions && this.myChart.setOption(this.chartOptions);
   }
 
-   getSeries (normal=0, abnormal=0, compliant=0):any {
-    this.normal = normal
-    this.abnormal = abnormal
-    this.compliant = compliant    
-    this.myChart.data.datasets[0].data = [this.abnormal, this.normal]
-    this.myChart.update()    
-   }
+  getSeries (normal=0, abnormal=0):any {
+  this.normal = normal
+  this.abnormal = abnormal
+  this.newReport()    
+  }
+
+  chartInit() {
+    const canvas = document.getElementById('polarArea') as HTMLDivElement;
+    this.myChart = echarts.init(canvas);
+  }
 }

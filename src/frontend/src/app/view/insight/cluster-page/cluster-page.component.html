@@ -92,7 +92,7 @@
                 <clr-dg-column [clrDgField]="'namespace'">{{'CommonlyUse.namespace'|translate}}</clr-dg-column>
                 <clr-dg-column [clrDgField]="'workload.workload.metadata.kind'">{{'CommonlyUse.type'|translate}}</clr-dg-column>
                 <clr-dg-column [clrDgField]="'workload.workload.pods.length'">{{'CommonlyUse.containers_total'|translate}}  </clr-dg-column>
-                <clr-dg-column [clrDgSortBy]="'workload.workload.metadata.apiVersion'">{{'CommonlyUse.api_version'|translate}}</clr-dg-column>
+                <!-- <clr-dg-column [clrDgSortBy]="'workload.workload.metadata.apiVersion'">{{'CommonlyUse.api_version'|translate}}</clr-dg-column> -->
               
                 <clr-dg-row *clrDgItems="let violation of shardService.violationList">
                   <clr-dg-cell>
@@ -104,7 +104,7 @@
                   <clr-dg-cell>{{violation.namespace}}</clr-dg-cell>
                   <clr-dg-cell>{{violation.workload.workload.metadata.kind}}</clr-dg-cell>
                   <clr-dg-cell>{{violation.workload.workload.pods.length}}</clr-dg-cell>
-                  <clr-dg-cell>{{violation.workload.workload.metadata.apiVersion}}</clr-dg-cell>
+                  <!-- <clr-dg-cell>{{violation.workload.workload.metadata.apiVersion}}</clr-dg-cell> -->
                 </clr-dg-row>
               
                 <clr-dg-footer>
