@@ -18,7 +18,7 @@ export class KubeBenchReportListComponent implements OnInit {
   echartsOption!: ECOption
   k8sechartsOption!: LineOption
   workechartsOption!: LineOption
-
+  currentChart = 'work-node'
   echartsLoading = true
   // filter
   kubeTypeFilterFlag = false
@@ -26,7 +26,7 @@ export class KubeBenchReportListComponent implements OnInit {
   oldKey = ''
   oldValue = ''
   // sort
-  isOder = false
+  isOder = true
   // default data
   client = ''
   ca = ''
@@ -55,7 +55,14 @@ export class KubeBenchReportListComponent implements OnInit {
     this.dgLoading = true
     const query: any = { 
       size: this.defaultSize,
-      from: this.from
+      from: this.from,
+      sort: [
+        {
+          createTime: {
+            order: "desc"
+          }
+        }
+      ]
     };
     function callBack(data: any, that: any) {
       that.echartsLoading = false
@@ -167,18 +174,20 @@ export class KubeBenchReportListComponent implements OnInit {
     if (opensearchInfo.url) {
       this.client = 'opensearch'
       this.opensearchInfo = opensearchInfo
-    } else {
+    } else if (elasticsearchInfo.url) {
       this.opensearchInfo = elasticsearchInfo
       this.client = 'elasticsearch'
       this.ca = elasticsearchInfo.ca
+    } else {
+      this.dgLoading = false
+      this.echartsLoading = true
     }
 
-    this.echartsInit('main', 'myChart')
-    // this.echartsInit('work-node', 'workNodeChart')
-    // this.echartsInit('k8s-policy', 'k8sPolicyChart')
+    this.echartsInit('work-node', 'workNodeChart')
+    this.echartsInit('k8s-policy', 'k8sPolicyChart')
     this.initKubeBenchReportList()
-    this.initKubeBenchReportTypes()
-    // this.getTextTypeTenReports('Worker Node Security Configuration')
+    // this.initKubeBenchReportTypes()
+    this.getTextTypeTenReports('Worker Node Security Configuration')
     // this.getTextTypeTenReports('Kubernetes Policies')
   }
   // get list
@@ -191,7 +200,14 @@ export class KubeBenchReportListComponent implements OnInit {
     this.dgLoading = true
     const query: any = { 
       size: filter.size ? filter.size :10,
-      from: filter.from ? filter.from: 0
+      from: filter.from ? filter.from: 0,
+      sort: [
+        {
+          createTime: {
+            order: "desc"
+          }
+        }
+      ]
     };
     if (filter.key) {
       if (!this.oldKey) {
@@ -252,6 +268,22 @@ export class KubeBenchReportListComponent implements OnInit {
       that.dgLoading = false
     }
     this.extractKubeBenchApi(query, callBack)
+  }
+
+  // switch E charts
+  cutEchart(text: 'work-node'| 'policy') {
+    this.currentChart = text
+    switch (text) {
+      case 'work-node':
+        this.getTextTypeTenReports('Worker Node Security Configuration')
+        break;
+      case 'policy':
+        this.getTextTypeTenReports('Kubernetes Policies')  
+
+        break;
+      default:
+        break;
+    }
   }
 
   // change handler
@@ -365,8 +397,8 @@ export class KubeBenchReportListComponent implements OnInit {
         text: title,
         textStyle: {
           color: '#fff',
-          overflow: 'truncate',
-          width: '170'
+          // overflow: 'truncate',
+          // width: '170'
         }
       },
       tooltip: {
@@ -395,7 +427,14 @@ export class KubeBenchReportListComponent implements OnInit {
         data: xAxis
       },
       yAxis: {
-        type: 'value'
+        type: 'value',
+        splitLine: {
+          show: true,
+          lineStyle: {
+            type: 'dashed',
+            color: "#55b9b4"
+          }
+        }
       },
       series: [
         {

@@ -80,7 +80,9 @@ import {
   networkGlobeIcon,
   timesIcon,
   plusCircleIcon,
-  minusCircleIcon
+  minusCircleIcon,
+  cpuIcon,
+  memoryIcon
 } from '@cds/core/icon';
 
 ClarityIcons.addIcons(
@@ -114,7 +116,9 @@ ClarityIcons.addIcons(
   networkGlobeIcon,
   timesIcon,
   plusCircleIcon,
-  minusCircleIcon
+  minusCircleIcon,
+  cpuIcon,
+  memoryIcon
 );
 
 
