@@ -13,6 +13,7 @@ import (
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/inspection/data"
 	"io"
+	"k8s.io/apiserver/pkg/storage/names"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 	"strconv"
@@ -81,6 +82,7 @@ type ElasticSearchExporter struct {
 	Client    *elasticsearch.Client
 	Logger    logr.Logger
 	indexName string
+	hostname  string
 }
 
 func (e *ElasticSearchExporter) NewExporter(client *elasticsearch.Client, indexName string) error {
@@ -136,6 +138,7 @@ func (e *ElasticSearchExporter) setupIndex() error {
 			  "detected_version":        { "type": "text", "analyzer": "english" },
 			  "text": { "type": "keyword" },
 			  "node_type":  { "type": "keyword" },
+              "node_name": {"type": "keyword"},
 			  "section":       { "type": "keyword" },
 			  "type":       { "type": "keyword" },
 			  "pass":       { "type": "keyword" },
@@ -298,10 +301,12 @@ func (e *ElasticSearchExporter) deleteIndex(index []string) error {
 // SaveCIS implements Exporter
 func (e ElasticSearchExporter) SaveCIS(controlsCollection []*check.Controls) error {
 	currentTimeData := time.Now().Format(time.RFC3339)
+
 	var res *esapi.Response
 	for _, control := range controlsCollection {
 		var report consumers.CISReport
 		report.CreateTimestamp = currentTimeData
+		report.NodeName = e.hostname
 		report.Controls = *control
 		doc, err := json.Marshal(report)
 		if err != nil {
@@ -310,7 +315,7 @@ func (e ElasticSearchExporter) SaveCIS(controlsCollection []*check.Controls) err
 
 		res, err = esapi.IndexRequest{
 			Index:      e.indexName,
-			DocumentID: "kubebench-Report_" + currentTimeData + "__" + control.ID,
+			DocumentID: "kubebench-Report_" + e.hostname + "_" + currentTimeData + "_" + names.SimpleNameGenerator.GenerateName(""),
 			Body:       strings.NewReader(string(doc)),
 			Refresh:    "true",
 		}.Do(context.Background(), e.Client)
@@ -596,5 +601,11 @@ func (e ElasticSearchExporter) log(message string, err error, keysAndValues ...i
 
 func (e *ElasticSearchExporter) WithLogger(logger logr.Logger) *ElasticSearchExporter {
 	e.Logger = logger.WithName("exporter")
+	return e
+}
+
+// WithHostname sets hostname.
+func (e *ElasticSearchExporter) WithHostname(hostname string) *ElasticSearchExporter {
+	e.hostname = hostname
 	return e
 }

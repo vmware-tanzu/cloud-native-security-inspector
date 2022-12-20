@@ -8,7 +8,7 @@ import (
 
 func TestCreateIndex(t *testing.T) {
 	client := NewClient([]byte("a"), "", "admin", "admin")
-	exporter := OpenSearchExporter{client, logr.Logger{}, "go-test-index1"}
+	exporter := OpenSearchExporter{client, logr.Logger{}, "go-test-index1", "host01"}
 	exporter.NewExporter(client, "go-test-index1")
 }
 

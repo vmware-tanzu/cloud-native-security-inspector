@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
+	"github.com/golang/glog"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/inspection/kubebench"
 	"go.uber.org/zap/zapcore"
@@ -39,7 +41,8 @@ func main() {
 	}
 	opts.BindFlags(flag.CommandLine)
 	flag.Parse()
-	log.Info("kube-bench scanning....")
+	log.Info("")
+	glog.V(2).Info("kube-bench scanning....")
 
 	ctrl.SetLogger(zap.New(zap.UseFlagOptions(&opts)))
 
@@ -60,11 +63,14 @@ func main() {
 		log.Error(err, "unable to retrieve the specified inspection policy")
 		os.Exit(1)
 	}
+	hostname := os.Getenv("hostname")
+	log.Info(fmt.Sprintf("Kubebench scanner running on host:%v", hostname))
 
 	runner := kubebench.NewController().
 		WithScheme(scheme).
 		WithLogger(log).
 		WithK8sClient(k8sClient).
+		WithHostname(hostname).
 		CTRL()
 
 	if err := runner.Run(ctx, inspectionPolicy); err != nil {

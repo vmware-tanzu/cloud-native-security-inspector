@@ -42,6 +42,7 @@ type AssessmentReportDoc struct {
 type CISReport struct {
 	check.Controls
 	CreateTimestamp string `json:"createTime"`
+	NodeName        string `json:"node_name"`
 }
 
 //type Controls struct {

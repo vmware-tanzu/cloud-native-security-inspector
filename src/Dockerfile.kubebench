@@ -21,7 +21,7 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o kubebench cmd/kubebench
 
 # Use distroless as minimal base image to package the manager binary
 # Refer to https://github.com/GoogleContainerTools/distroless for more details
-FROM projects.registry.vmware.com/cnsi/distroless/static:nonroot
+FROM ubuntu:22.04
 WORKDIR /
 COPY --from=builder /workspace/kubebench .
 # RUN mkdir -p cmd/kubebench
