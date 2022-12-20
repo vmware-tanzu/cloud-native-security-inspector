@@ -94,7 +94,7 @@
       <clr-accordion-content *clrIfExpanded>
         <ul class="list warp-1" *ngFor="let item of shardService.currentWorkload.workload.workload.pods">
           <li>
-            <b>PodName: </b>
+            <b>Pod Name: </b>
             <span>
               {{item.metadata.name}}
             </span>
@@ -106,7 +106,7 @@
             </span>
           </li>
           <li>
-            <b>PodNamespace: </b>
+            <b>Pod Namespace: </b>
             <span>
               {{item.metadata.namespace}}
             </span>

@@ -28,12 +28,13 @@ export class HomeComponent implements OnInit {
   }
 
   getAssessmentreports() {
-    this.policyService.getAssessmentreports(10).subscribe(
+    this.policyService.getAllAssessmentreports().subscribe(
       data => {
+        data.items = data.items.splice(data.items.length - 10)
         this.shardService.namespacChartLineOption.xAxis = []
         this.shardService.namespacChartLineOption.series[0].data = []
         this.shardService.clusterChartBarOptions.series[0] = [{
-          name: 'workload amount',
+          name: 'Number of Workloads',
           color: 'skyblue',
           data: []
         }]
@@ -75,7 +76,13 @@ export class HomeComponent implements OnInit {
                 name: 'Job',
                 workloadList: [],
                 violationList: []
-              }
+              },
+              {
+                name: 'Pod',
+                workloadList: [],
+                violationList: []
+              },
+              
             ],
             violationList: [],
             normal: 0,
@@ -97,7 +104,13 @@ export class HomeComponent implements OnInit {
         this.shardService.violationList = []
         this.shardService.newReport?.spec.namespaceAssessments.forEach(el => {
           const index = this.shardService.namespacChartLineOption.xAxis.findIndex((ns: string)=> ns === el.namespace.name)
-          this.shardService.namespacChartLineOption.series[0].data[index] = el.workloadAssessments.length
+          this.shardService.namespacChartLineOption.series[0].data[index] = el.workloadAssessments.reduce((n, wk) => {
+            if (wk.passed !== true) {
+              return n+=1
+            } else {
+              return n
+            }
+          }, 0)
           if (workloadNamespance[el.namespace.name]) {
             el.workloadAssessments.forEach(workload => {
               const newWorkload = {
@@ -150,8 +163,6 @@ export class HomeComponent implements OnInit {
             // workloadNamespance[el.name].normal+ workloadNamespance[el.name].compliant + workloadNamespance[el.name].abnormal
             workloadNamespance[el.name].normal+ workloadNamespance[el.name].abnormal
           )
-
-
           el.workloads = workloadNamespance[el.name]
           this.shardService.namespacChartLineOption.series[0].data.push(workloadNamespance[el.name].abnormal)     
           this.shardService.allNormal += workloadNamespance[el.name].normal
