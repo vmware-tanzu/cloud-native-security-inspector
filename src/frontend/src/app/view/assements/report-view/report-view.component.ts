@@ -25,7 +25,6 @@ export class ReportViewComponent implements OnInit, OnDestroy {
   @ViewChild('pagination') pagination!:any
   public pageSizeOptions = [10, 20, 50, 100, 500];
   public showDetailFlag = false
-  private timer:any
   public pageMaxCount = 1
   public continues = ''
   public defaultSize = 10
