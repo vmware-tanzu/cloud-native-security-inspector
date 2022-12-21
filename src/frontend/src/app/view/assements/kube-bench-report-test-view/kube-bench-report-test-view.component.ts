@@ -27,6 +27,7 @@ export class KubeBenchReportTestViewComponent implements OnInit, OnDestroy {
   echartsInit() {
     const chartDom = document.getElementById('test-view')!;
     this.myChart = echarts.init(chartDom);
+
   }
 
   getLocalhostData() {
@@ -116,5 +117,8 @@ export class KubeBenchReportTestViewComponent implements OnInit, OnDestroy {
     // sessionStorage.removeItem(this.testId)
   }
 
+  getEchartSourceData() {
+
+  }
 
 }
