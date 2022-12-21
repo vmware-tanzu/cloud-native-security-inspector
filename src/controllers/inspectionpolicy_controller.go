@@ -13,7 +13,6 @@ import (
 	goharborv1 "github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
 	batchv1 "k8s.io/api/batch/v1"
-	batchv1beta1 "k8s.io/api/batch/v1beta1"
 	corev1 "k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
@@ -176,8 +175,8 @@ func (r *InspectionPolicyReconciler) cronjobForInspection(ctx context.Context, p
 	} else if cronjobType == goharborv1.CronjobRisk && policy.Spec.Inspector.RiskImage == "" {
 		return false, nil
 	}
-	var cj *batchv1beta1.CronJob
-	var cjCR *batchv1beta1.CronJob
+	var cj *batchv1.CronJob
+	var cjCR *batchv1.CronJob
 	var err error
 
 	// Check whether the underlying cronjob resource is existing or not.
@@ -200,7 +199,7 @@ func (r *InspectionPolicyReconciler) cronjobForInspection(ctx context.Context, p
 			return false, err
 		}
 		// Retrieve again for further usage?
-		var ncj batchv1beta1.CronJob
+		var ncj batchv1.CronJob
 		if err := r.Client.Get(ctx, client.ObjectKey{
 			Namespace: cjCR.Namespace,
 			Name:      cjCR.Name,
@@ -283,7 +282,7 @@ func (r *InspectionPolicyReconciler) SetupWithManager(mgr ctrl.Manager) error {
 }
 
 // changed indicates if the resource has changed.
-func (r *InspectionPolicyReconciler) changed(current *batchv1beta1.CronJob, now *batchv1beta1.CronJob) bool {
+func (r *InspectionPolicyReconciler) changed(current *batchv1.CronJob, now *batchv1.CronJob) bool {
 	cur := current.Annotations[lastAppliedAnnotation]
 	n := now.Annotations[lastAppliedAnnotation]
 
@@ -447,7 +446,7 @@ func (r *InspectionPolicyReconciler) isCronjobCountReady(policy *goharborv1.Insp
 }
 
 func (r *InspectionPolicyReconciler) updatePolicyStatusForKubebench(ctx context.Context,
-	policy *goharborv1.InspectionPolicy, jl batchv1beta1.CronJobList) error {
+	policy *goharborv1.InspectionPolicy, jl batchv1.CronJobList) error {
 	log.Info("Update status of inspection policy for kubebench", "status", policy.Status.Status)
 	for _, job := range jl.Items {
 		ref, err := reference.GetReference(r.Scheme, &job)
@@ -466,7 +465,7 @@ func (r *InspectionPolicyReconciler) updatePolicyStatusForKubebench(ctx context.
 }
 
 func (r *InspectionPolicyReconciler) checkKubebenchCronJob(ctx context.Context, policy *goharborv1.InspectionPolicy) error {
-	var jl batchv1beta1.CronJobList
+	var jl batchv1.CronJobList
 	if err := r.List(ctx, &jl, client.MatchingLabels{labelOwnerKey: policy.Name, labelTypeKey: goharborv1.CronjobKubebench}); err != nil {
 		return err
 	}
@@ -509,7 +508,7 @@ func (r *InspectionPolicyReconciler) checkKubebenchCronJob(ctx context.Context, 
 }
 
 func (r *InspectionPolicyReconciler) checkCronJob(ctx context.Context, policy *goharborv1.InspectionPolicy,
-	cronjobType string) (*batchv1beta1.CronJob, error) {
+	cronjobType string) (*batchv1.CronJob, error) {
 	var exec *corev1.ObjectReference
 	if cronjobType == goharborv1.CronjobInpsection {
 		exec = policy.Status.InspectionExecutor
@@ -523,7 +522,7 @@ func (r *InspectionPolicyReconciler) checkCronJob(ctx context.Context, policy *g
 			Namespace: exec.Namespace,
 			Name:      exec.Name,
 		}
-		var cronJob batchv1beta1.CronJob
+		var cronJob batchv1.CronJob
 		if err := r.Client.Get(ctx, nsName, &cronJob); err != nil {
 			log.Error(err, "unable to get the underlying cronjob", "cronjob", nsName)
 			// Ignore the NOTFOUND error.
@@ -533,7 +532,7 @@ func (r *InspectionPolicyReconciler) checkCronJob(ctx context.Context, policy *g
 		return &cronJob, nil
 	} else {
 		// Try to list it.
-		var jl batchv1beta1.CronJobList
+		var jl batchv1.CronJobList
 		if err := r.List(ctx, &jl, client.MatchingLabels{labelOwnerKey: policy.Name, labelTypeKey: cronjobType}); err != nil {
 			return nil, err
 		}
@@ -574,12 +573,12 @@ func (r *InspectionPolicyReconciler) addVolumeToPodSpec(podSpec *corev1.PodSpec)
 	}
 }
 
-func (r *InspectionPolicyReconciler) generateKubebenchCronJobCR(policy *goharborv1.InspectionPolicy) ([]batchv1beta1.CronJob, error) {
+func (r *InspectionPolicyReconciler) generateKubebenchCronJobCR(policy *goharborv1.InspectionPolicy) ([]batchv1.CronJob, error) {
 	var fl int32 = 1
 	name := "kubebench"
 	command := "/kubebench"
 	image := getImage(policy, goharborv1.CronjobKubebench)
-	var cronjobList []batchv1beta1.CronJob
+	var cronjobList []batchv1.CronJob
 
 	for _, node := range r.nodeList {
 		container := corev1.Container{
@@ -622,15 +621,15 @@ func (r *InspectionPolicyReconciler) generateKubebenchCronJobCR(policy *goharbor
 		}
 		r.addVolumeToPodSpec(&podSpec)
 
-		cj := &batchv1beta1.CronJob{
+		cj := &batchv1.CronJob{
 			ObjectMeta: meta,
-			Spec: batchv1beta1.CronJobSpec{
+			Spec: batchv1.CronJobSpec{
 				Schedule:                   policy.Spec.Schedule,
-				ConcurrencyPolicy:          batchv1beta1.ConcurrencyPolicy(policy.Spec.Strategy.ConcurrencyRule),
+				ConcurrencyPolicy:          batchv1.ConcurrencyPolicy(policy.Spec.Strategy.ConcurrencyRule),
 				Suspend:                    policy.Spec.Strategy.Suspend,
 				SuccessfulJobsHistoryLimit: policy.Spec.Strategy.HistoryLimit,
 				FailedJobsHistoryLimit:     &fl,
-				JobTemplate: batchv1beta1.JobTemplateSpec{
+				JobTemplate: batchv1.JobTemplateSpec{
 					Spec: batchv1.JobSpec{
 						Template: corev1.PodTemplateSpec{
 							Spec: podSpec,
@@ -666,7 +665,7 @@ func (r *InspectionPolicyReconciler) generateKubebenchCronJobCR(policy *goharbor
 	return cronjobList, nil
 }
 
-func (r *InspectionPolicyReconciler) generateCronJobCR(policy *goharborv1.InspectionPolicy, cronjobType string) (*batchv1beta1.CronJob, error) {
+func (r *InspectionPolicyReconciler) generateCronJobCR(policy *goharborv1.InspectionPolicy, cronjobType string) (*batchv1.CronJob, error) {
 	var fl int32 = 1
 	var name, image, command string
 	if cronjobType == goharborv1.CronjobInpsection {
@@ -681,7 +680,7 @@ func (r *InspectionPolicyReconciler) generateCronJobCR(policy *goharborv1.Inspec
 	}
 	image = getImage(policy, cronjobType)
 
-	cj := &batchv1beta1.CronJob{
+	cj := &batchv1.CronJob{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      randomName(policy.Name) + "--" + name,
 			Namespace: *policy.Spec.WorkNamespace,
@@ -691,13 +690,13 @@ func (r *InspectionPolicyReconciler) generateCronJobCR(policy *goharborv1.Inspec
 			},
 			Annotations: make(map[string]string),
 		},
-		Spec: batchv1beta1.CronJobSpec{
+		Spec: batchv1.CronJobSpec{
 			Schedule:                   policy.Spec.Schedule,
-			ConcurrencyPolicy:          batchv1beta1.ConcurrencyPolicy(policy.Spec.Strategy.ConcurrencyRule),
+			ConcurrencyPolicy:          batchv1.ConcurrencyPolicy(policy.Spec.Strategy.ConcurrencyRule),
 			Suspend:                    policy.Spec.Strategy.Suspend,
 			SuccessfulJobsHistoryLimit: policy.Spec.Strategy.HistoryLimit,
 			FailedJobsHistoryLimit:     &fl,
-			JobTemplate: batchv1beta1.JobTemplateSpec{
+			JobTemplate: batchv1.JobTemplateSpec{
 				Spec: batchv1.JobSpec{
 					Template: corev1.PodTemplateSpec{
 						Spec: corev1.PodSpec{
