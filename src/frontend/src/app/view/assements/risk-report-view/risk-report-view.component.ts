@@ -53,7 +53,7 @@ export class RiskReportViewComponent implements OnInit {
       return a-b;
     }); 
     let yAxis: any = {
-      min: -1,
+      min: 0,
       max: 30,
       splitLine: {
         show: true,
@@ -117,6 +117,7 @@ export class RiskReportViewComponent implements OnInit {
       },
       xAxis: [
         {
+          type: 'category',
           data: dateList
         }
       ],

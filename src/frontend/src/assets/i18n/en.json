@@ -208,6 +208,7 @@
   "Kube_bench_list": {
     "title": "Kube Bench Reports",
     "node_type": "Node Type",
+    "node_name": "Node Name",
     "passed": "Passed",
     "failed": "Failed",
     "warned": "Warned",
