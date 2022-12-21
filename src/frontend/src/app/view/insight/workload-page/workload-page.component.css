@@ -27,17 +27,12 @@
   transition: background-color 2;
 }
 .workload .report-detai-bg .report-detai {
-  position: absolute;
-  right: -700px;
-  top: 0;
-  width: 700px;
   height: auto;
   min-height: 100vh;
   opacity: 0;
   transition: right 5s, opacity 2s;
 }
 .workload .report-detai-bg .report-detai.show {
-  right: 0;
   opacity: 1;
   transition: right 5s, opacity 2s;
 }
@@ -55,4 +50,25 @@
 }
 .workload::ng-deep clr-datagrid clr-dg-footer .pagination-description {
   color: #fff;
+}
+.workload #box {
+  flex: 1;
+}
+.workload #box #resize {
+  width: 5px;
+  height: 100%;
+  cursor: w-resize;
+  float: left;
+  position: relative;
+  left: 0px;
+  background-color: #21333B;
+}
+.workload #box #right {
+  width: 445px;
+  float: right;
+}
+.workload #box #left {
+  float: left;
+  width: calc(100% - 450px);
+  height: 100%;
 }

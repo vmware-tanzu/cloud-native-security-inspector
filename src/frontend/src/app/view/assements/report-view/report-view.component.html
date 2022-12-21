@@ -10,7 +10,7 @@
   <!-- <app-line id='report-line' #reportline [chartOptions]="shardService.reportLineChartOption"></app-line> -->
     <div id="report-line" style="flex: 1;height:450px; overflow: hidden;"> </div>
 
-  <clr-datagrid (clrDgRefresh)="pageChange($event)">
+  <clr-datagrid style="height: 450px; overflow: auto;" (clrDgRefresh)="pageChange($event)">
     <clr-dg-column [clrDgField]="'metadata.namespace'">{{'CommonlyUse.name'|translate}}</clr-dg-column>
     <clr-dg-column class="namespace-filter">
       {{'CommonlyUse.namespace'|translate}}
@@ -46,8 +46,10 @@
   </clr-dg-footer>
   
   </clr-datagrid>
-  <div class="report-detai-bg" (click)='showDetail($event)' [hidden]="!(shardService.currentReport && showDetail)">
-    <div class="report-detai" [ngClass]="{'show': showDetailFlag}" >
+  <div id="box" class="report-detai-bg" (click)='showDetail($event)' [hidden]="!(shardService.currentReport && showDetail)">
+    <div id="left" class="report-detai-left"></div>
+    <div id="resize"></div>
+    <div id="right" class="report-detai" [ngClass]="{'show': showDetailFlag}" >
       <app-report-view-detail #reportDetail></app-report-view-detail>
     </div>
   </div>
