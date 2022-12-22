@@ -35,7 +35,7 @@ func main() {
 
 	flag.StringVar(&policy, "policy", "", "name of the inspection policy")
 	flag.Parse()
-	log.Infof("policy name %", policy)
+	log.Infof("policy name %s", policy)
 	log.Info("inspector scanning")
 
 	k8sClient, err := client.New(ctrl.GetConfigOrDie(), client.Options{

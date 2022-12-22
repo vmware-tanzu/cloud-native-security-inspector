@@ -105,13 +105,13 @@ func (o *OpenSearchExporter) Save(doc api.AssessmentReport) error {
 					}
 
 					if res.IsError() {
-						log.Info("[%s] Error indexing document ID=%v", res.Status(), doc.GenerateName)
+						log.Infof("[%s] Error indexing document ID=%v", res.Status(), doc.GenerateName)
 						return errors.New(fmt.Sprint("http error, code ", res.StatusCode))
 					} else {
 						// Deserialize the response into a map.
 						var r map[string]interface{}
 						if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
-							log.Info("Error parsing the response body: %s", err)
+							log.Infof("Error parsing the response body: %s", err)
 						} else {
 							log.Info("Successfully decode the response")
 						}
@@ -168,13 +168,13 @@ func (o *OpenSearchExporter) SaveRiskReport(risks data.RiskCollection) error {
 		}
 
 		if res.IsError() {
-			log.Info("[%s] Error indexing document ID=%v", res.Status(), uid)
+			log.Infof("[%s] Error indexing document ID=%v", res.Status(), uid)
 			continue
 		} else {
 			// Deserialize the response into a map.
 			var r map[string]interface{}
 			if err = json.NewDecoder(res.Body).Decode(&r); err != nil {
-				log.Error("Error parsing the response body: %s", err)
+				log.Errorf("Error parsing the response body: %s", err)
 			} else {
 				log.Info("Detail OK")
 				report = append(report, esDoc)
@@ -202,12 +202,12 @@ func (o *OpenSearchExporter) SaveRiskReport(risks data.RiskCollection) error {
 	}
 
 	if res.IsError() {
-		log.Info("[%s] Error indexing document ID=%v", res.Status(), dId)
+		log.Infof("[%s] Error indexing document ID=%v", res.Status(), dId)
 	} else {
 		// Deserialize the response into a map.
 		var r map[string]interface{}
 		if err = json.NewDecoder(res.Body).Decode(&r); err != nil {
-			log.Error("Error parsing the response body: %s", err)
+			log.Errorf("Error parsing the response body: %s", err)
 		} else {
 			log.Info("Report OK")
 		}
@@ -245,13 +245,13 @@ func (o *OpenSearchExporter) SaveCIS(controlsCollection []*check.Controls) error
 		}
 
 		if res.IsError() {
-			log.Info("[%s] Error indexing document ID=%v", res.Status(), "name-name")
+			log.Infof("[%s] Error indexing document ID=%v", res.Status(), "name-name")
 			return errors.New(fmt.Sprint("http error, code ", res.StatusCode))
 		} else {
 			// Deserialize the response into a map.
 			var r map[string]interface{}
 			if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
-				log.Info("Error parsing the response body: %s", err)
+				log.Infof("Error parsing the response body: %s", err)
 			} else {
 				log.Info("Successfully decode the response")
 			}

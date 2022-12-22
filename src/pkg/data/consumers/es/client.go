@@ -59,8 +59,8 @@ func TestClient() error {
 		return err
 	}
 	// Print client and server version numbers.
-	log.Info("Client: %s", elasticsearch.Version)
-	log.Info("Server: %s", r["version"].(map[string]interface{})["number"])
+	log.Infof("Client: %s", elasticsearch.Version)
+	log.Infof("Server: %s", r["version"].(map[string]interface{})["number"])
 	log.Info(strings.Repeat("~", 37))
 	return nil
 }

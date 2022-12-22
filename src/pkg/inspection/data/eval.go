@@ -52,7 +52,7 @@ func (d *DefaultEvaluator) getExposureRisk(i *ResourceItem, w *Workloads, v *vul
 				}
 			}
 		} else {
-			log.Error("error to decode %s \n", v.CVSSDetails.VectorV3)
+			log.Errorf("error to decode %s \n", v.CVSSDetails.VectorV3)
 		}
 	}
 
@@ -96,7 +96,7 @@ func (d *DefaultEvaluator) getPrivilegeRisk(i *ResourceItem, w *Workloads, v *vu
 				}
 			}
 		} else {
-			log.Error("error to decode %s \n", v.CVSSDetails.VectorV3)
+			log.Errorf("error to decode %s \n", v.CVSSDetails.VectorV3)
 		}
 	}
 

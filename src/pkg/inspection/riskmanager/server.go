@@ -67,7 +67,7 @@ func (s *Server) postResource(c *gin.Context) {
 	// Call BindJSON to bind the received JSON to
 	// newAlbum.
 	if err := c.BindJSON(&v); err != nil {
-		log.Info("bind json err: %v \n", err)
+		log.Infof("bind json err: %v \n", err)
 		c.IndentedJSON(http.StatusBadRequest, err)
 		return
 	}
@@ -106,7 +106,7 @@ func (s *Server) Analyze(option AnalyzeOption) {
 			log.Errorf("get vuln reprot error: %v", err)
 			continue
 		} else {
-			log.Info("vuln len: %d \n", len(report.Vulnerabilities))
+			log.Infof("vuln len: %d \n", len(report.Vulnerabilities))
 		}
 
 		for _, r := range t.Related {
@@ -179,7 +179,7 @@ func (s *Server) Run(address string) {
 	router.POST("/analyze", s.postAnalyze)
 	router.POST("/resource", s.postResource)
 	log.Info("Server run at:")
-	log.Info("-  Local:   %s/ \r\n", address)
+	log.Infof("-  Local:   %s/ \r\n", address)
 	err := router.Run(address)
 	if err != nil {
 		panic(fmt.Sprintf("ListenAndServe err: %v", err))

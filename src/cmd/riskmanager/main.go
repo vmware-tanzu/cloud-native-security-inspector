@@ -78,8 +78,8 @@ func main() {
 		log.Info("mode server-only")
 		var osExporter osearch.OpenSearchExporter
 		if inspectionPolicy.Spec.Inspection.Assessment.OpenSearchEnabled {
-			log.Info("OS config addr: %s \n", inspectionPolicy.Spec.Inspection.Assessment.OpenSearchAddr)
-			log.Info("OS config username: %s \n", inspectionPolicy.Spec.Inspection.Assessment.OpenSearchUser)
+			log.Infof("OS config addr: %s \n", inspectionPolicy.Spec.Inspection.Assessment.OpenSearchAddr)
+			log.Infof("OS config username: %s \n", inspectionPolicy.Spec.Inspection.Assessment.OpenSearchUser)
 			osClient := osearch.NewClient([]byte{},
 				inspectionPolicy.Spec.Inspection.Assessment.OpenSearchAddr,
 				inspectionPolicy.Spec.Inspection.Assessment.OpenSearchUser,
@@ -102,7 +102,7 @@ func main() {
 		var esExporter es.ElasticSearchExporter
 		if inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchEnabled {
 			cert := []byte(inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchCert)
-			log.Info("ES config addr: %s \n", inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchAddr)
+			log.Infof("ES config addr: %s \n", inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchAddr)
 			esClient := es.NewClient(
 				cert,
 				inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchAddr,

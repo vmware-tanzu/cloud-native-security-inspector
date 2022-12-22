@@ -260,7 +260,7 @@ func (e *ElasticSearchExporter) listIndex(name string) ([]ElasticSearchIndex, er
 	var esIndices []ElasticSearchIndex
 	if res.IsError() {
 		if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
-			log.Info("Error parsing the response body: %s", err)
+			log.Infof("Error parsing the response body: %s", err)
 		} else {
 			errRes := r["error"]
 			r = errRes.(map[string]interface{})
@@ -270,7 +270,7 @@ func (e *ElasticSearchExporter) listIndex(name string) ([]ElasticSearchIndex, er
 		// Deserialize the response into a map.
 		var r []map[string]interface{}
 		if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
-			log.Info("Error parsing the response body: %s", err)
+			log.Infof("Error parsing the response body: %s", err)
 		} else {
 			// Print the response status.
 			for _, i := range r {
@@ -321,13 +321,13 @@ func (e ElasticSearchExporter) SaveCIS(controlsCollection []*check.Controls) err
 		}
 
 		if res.IsError() {
-			log.Info("[%s] Error indexing document ID=%v", res.Status(), "name-name")
+			log.Infof("[%s] Error indexing document ID=%v", res.Status(), "name-name")
 			return errors.New(fmt.Sprint("http error, code ", res.StatusCode))
 		} else {
 			// Deserialize the response into a map.
 			var r map[string]interface{}
 			if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
-				log.Info("Error parsing the response body: %s", err)
+				log.Infof("Error parsing the response body: %s", err)
 			} else {
 				log.Info("Decode successfully!")
 			}
@@ -381,13 +381,13 @@ func (e *ElasticSearchExporter) SaveRiskReport(risks data.RiskCollection) error 
 		}
 
 		if res.IsError() {
-			log.Info("[%s] Error indexing document ID=%v", res.Status(), s)
+			log.Infof("[%s] Error indexing document ID=%v", res.Status(), s)
 			continue
 		} else {
 			// Deserialize the response into a map.
 			var r map[string]interface{}
 			if err = json.NewDecoder(res.Body).Decode(&r); err != nil {
-				log.Error("Error parsing the response body: %s", err)
+				log.Errorf("Error parsing the response body: %s", err)
 			} else {
 				log.Info("Detail OK")
 				report = append(report, esDoc)
@@ -415,12 +415,12 @@ func (e *ElasticSearchExporter) SaveRiskReport(risks data.RiskCollection) error 
 	}
 
 	if res.IsError() {
-		log.Info("[%s] Error indexing document ID=%v", res.Status(), dId)
+		log.Infof("[%s] Error indexing document ID=%v", res.Status(), dId)
 	} else {
 		// Deserialize the response into a map.
 		var r map[string]interface{}
 		if err = json.NewDecoder(res.Body).Decode(&r); err != nil {
-			log.Error("Error parsing the response body: %s", err)
+			log.Errorf("Error parsing the response body: %s", err)
 		} else {
 			log.Info("Report OK")
 		}
@@ -481,13 +481,13 @@ func (e ElasticSearchExporter) Save(doc api.AssessmentReport) error {
 					}
 
 					if res.IsError() {
-						log.Info("[%s] Error indexing document ID=%v", res.Status(), doc.GenerateName)
+						log.Infof("[%s] Error indexing document ID=%v", res.Status(), doc.GenerateName)
 						return errors.New(fmt.Sprint("http error, code ", res.StatusCode))
 					} else {
 						// Deserialize the response into a map.
 						var r map[string]interface{}
 						if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
-							log.Info("Error parsing the response body: %s", err)
+							log.Infof("Error parsing the response body: %s", err)
 						} else {
 							log.Info("Successfully decode the response")
 						}

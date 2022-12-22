@@ -46,8 +46,8 @@ func (c *RiskController) Run(ctx context.Context, policy *v1alpha1.InspectionPol
 	if conf.StandAlone {
 		var osExporter osearch.OpenSearchExporter
 		if policy.Spec.Inspection.Assessment.OpenSearchEnabled {
-			log.Info("OS config addr: %s \n", policy.Spec.Inspection.Assessment.OpenSearchAddr)
-			log.Info("OS config username: %s \n", policy.Spec.Inspection.Assessment.OpenSearchUser)
+			log.Infof("OS config addr: %s \n", policy.Spec.Inspection.Assessment.OpenSearchAddr)
+			log.Infof("OS config username: %s \n", policy.Spec.Inspection.Assessment.OpenSearchUser)
 			osClient := osearch.NewClient([]byte{},
 				policy.Spec.Inspection.Assessment.OpenSearchAddr,
 				policy.Spec.Inspection.Assessment.OpenSearchUser,
@@ -69,7 +69,7 @@ func (c *RiskController) Run(ctx context.Context, policy *v1alpha1.InspectionPol
 		var esExporter es.ElasticSearchExporter
 		if policy.Spec.Inspection.Assessment.ElasticSearchEnabled {
 			cert := []byte(policy.Spec.Inspection.Assessment.ElasticSearchCert)
-			log.Info("ES config addr: %s \n", policy.Spec.Inspection.Assessment.ElasticSearchAddr)
+			log.Infof("ES config addr: %s \n", policy.Spec.Inspection.Assessment.ElasticSearchAddr)
 			//log.Info("ES config username: %s \n", policy.Spec.Inspection.Assessment.ElasticSearchPasswd)
 			esClient := es.NewClient(
 				cert,
@@ -172,9 +172,9 @@ func (c *RiskController) Run(ctx context.Context, policy *v1alpha1.InspectionPol
 	httpClient := NewClient(conf)
 
 	for _, v := range allResources {
-		log.Info("resource name: %s, type: %s \n", v.ObjectMeta.Name, v.Type)
+		log.Infof("resource name: %s, type: %s \n", v.ObjectMeta.Name, v.Type)
 		if v.IsPod() {
-			log.Info("pod name: %s, namespace: %s \n", v.Pod.GetName(), v.Pod.GetNamespace())
+			log.Infof("pod name: %s, namespace: %s \n", v.Pod.GetName(), v.Pod.GetNamespace())
 		}
 		err = httpClient.
 			PostResource(v)
