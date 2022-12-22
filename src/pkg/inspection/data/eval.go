@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/goark/go-cvss/v3/metric"
 	"github.com/goharbor/harbor/src/pkg/scan/vuln"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
 )
 
 // Evaluator Interface
@@ -51,7 +52,7 @@ func (d *DefaultEvaluator) getExposureRisk(i *ResourceItem, w *Workloads, v *vul
 				}
 			}
 		} else {
-			fmt.Printf("error to decode %s \n", v.CVSSDetails.VectorV3)
+			log.Errorf("error to decode %s \n", v.CVSSDetails.VectorV3)
 		}
 	}
 
@@ -95,7 +96,7 @@ func (d *DefaultEvaluator) getPrivilegeRisk(i *ResourceItem, w *Workloads, v *vu
 				}
 			}
 		} else {
-			fmt.Printf("error to decode %s \n", v.CVSSDetails.VectorV3)
+			log.Errorf("error to decode %s \n", v.CVSSDetails.VectorV3)
 		}
 	}
 

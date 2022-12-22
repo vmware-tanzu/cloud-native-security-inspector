@@ -4,28 +4,27 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/go-logr/logr"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
 	"net/http"
 )
 
-// Client client to post requests
+// Client to post requests
 type Client struct {
-	conf   *Config
-	logger logr.Logger
+	conf *Config
 }
 
 // NewClient new client
-func NewClient(conf *Config, logger logr.Logger) *Client {
+func NewClient(conf *Config) *Client {
 	if conf == nil {
 		conf = DefaultConfig()
 	}
-	return &Client{conf: conf, logger: logger}
+	return &Client{conf: conf}
 }
 
 // IsAnalyzeRunning get analyze status
 func (c *Client) IsAnalyzeRunning() (bool, error) {
 	requestURL := fmt.Sprintf(fmt.Sprintf("%s/status", c.conf.Server))
-	fmt.Printf("get to: %s \n", requestURL)
+	log.Infof("get to: %s \n", requestURL)
 	res, err := http.Get(requestURL)
 	if err != nil {
 		return false, err
@@ -39,7 +38,7 @@ func (c *Client) IsAnalyzeRunning() (bool, error) {
 		return false, err
 	}
 
-	fmt.Printf("analyze running: %v \n", target.IsRunning)
+	log.Infof("analyze running: %v \n", target.IsRunning)
 
 	return target.IsRunning, nil
 }
@@ -47,7 +46,7 @@ func (c *Client) IsAnalyzeRunning() (bool, error) {
 // PostAnalyze ask server to analyze resources
 func (c *Client) PostAnalyze(a AnalyzeOption) error {
 	requestURL := fmt.Sprintf(fmt.Sprintf("%s/analyze", c.conf.Server))
-	fmt.Printf("post to: %s \n", requestURL)
+	log.Infof("post to: %s \n", requestURL)
 
 	if jsonData, err := json.Marshal(a); err == nil {
 		request, error := http.NewRequest("POST", requestURL, bytes.NewBuffer(jsonData))
@@ -67,7 +66,7 @@ func (c *Client) PostAnalyze(a AnalyzeOption) error {
 
 func (c *Client) PostResource(a interface{}) error {
 	requestURL := fmt.Sprintf(fmt.Sprintf("%s/resource", c.conf.Server))
-	fmt.Printf("post to: %s \n", requestURL)
+	log.Infof("post to: %s \n", requestURL)
 
 	if jsonData, err := json.Marshal(a); err == nil {
 		request, _ := http.NewRequest("POST", requestURL, bytes.NewBuffer(jsonData))
@@ -81,7 +80,7 @@ func (c *Client) PostResource(a interface{}) error {
 
 		response.Body.Close()
 	} else {
-		fmt.Printf("json marshal err: %v \n", err)
+		log.Infof("json marshal err: %v \n", err)
 	}
 
 	return nil
@@ -90,7 +89,7 @@ func (c *Client) PostResource(a interface{}) error {
 // SendExitInstruction send exit instruction
 func (c *Client) SendExitInstruction() error {
 	requestURL := fmt.Sprintf(fmt.Sprintf("%s/exit", c.conf.Server))
-	fmt.Printf("get to: %s \n", requestURL)
+	log.Infof("get to: %s \n", requestURL)
 	res, err := http.Get(requestURL)
 	if err != nil {
 		return err

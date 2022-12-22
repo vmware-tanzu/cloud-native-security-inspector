@@ -3,8 +3,8 @@ package consumers
 import (
 	"crypto/tls"
 	"github.com/opensearch-project/opensearch-go"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
 	"net/http"
-	"sigs.k8s.io/controller-runtime/pkg/log"
 	"sync"
 )
 
@@ -27,7 +27,7 @@ func NewClient(cert []byte, addr string, username string, passwd string) *opense
 			Password:  passwd,
 		})
 		if err != nil {
-			log.Log.Info("Opensearch client is nil")
+			log.Info("Opensearch client is nil")
 			panic(err)
 		}
 	}

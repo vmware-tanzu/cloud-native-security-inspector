@@ -593,7 +593,7 @@ func (r *InspectionPolicyReconciler) generateKubebenchCronJobCR(policy *goharbor
 			Env: []corev1.EnvVar{{Name: "hostname", Value: node}},
 		}
 		r.addVolumeMountsToContainer(&container)
-		log.Info(fmt.Sprintf("added volumemount for container: %v", container))
+		log.Infof("added volumemount for container: %v", container)
 		cronjobName := randomName(policy.Name) + "-" + name + "-" + node
 		// no more than 52 characters for cronjobName
 		if len(cronjobName) > 52 {
@@ -657,8 +657,8 @@ func (r *InspectionPolicyReconciler) generateKubebenchCronJobCR(policy *goharbor
 		}
 
 		cj.Annotations[lastAppliedAnnotation] = string(jdata)
-		log.Info(fmt.Sprintf("Kubebench Cronjob: %v", (*cj).Name))
-		log.Info(fmt.Sprintf("Kubebench Cronjob Node name: %v", (*cj).Spec.JobTemplate.Spec.Template.Spec.NodeName))
+		log.Infof("Kubebench Cronjob: %v", (*cj).Name)
+		log.Infof("Kubebench Cronjob Node name: %v", (*cj).Spec.JobTemplate.Spec.Template.Spec.NodeName)
 		cronjobList = append(cronjobList, *cj)
 	}
 

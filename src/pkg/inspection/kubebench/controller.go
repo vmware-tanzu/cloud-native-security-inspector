@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 	"github.com/aquasecurity/kube-bench/check"
-	"github.com/go-logr/logr"
 	"github.com/spf13/viper"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
 	es "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers/es"
 	osearch "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers/opensearch"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -22,7 +22,6 @@ type Controller interface {
 
 type controller struct {
 	kc       client.Client
-	logger   logr.Logger
 	scheme   *runtime.Scheme
 	ready    bool
 	hostname string
@@ -37,18 +36,18 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 	viper.SetConfigName("config") // name of config file (without extension)
 	viper.AddConfigPath(cfgDir)
 
-	c.logger.Info("Scan using kube-bench")
+	log.Info("Scan using kube-bench")
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
 			// Config file not found; ignore error for now to prevent commands
 			// which don't need the config file exiting.
-			c.logger.Info("Cannot find the config file")
+			log.Info("Cannot find the config file")
 			os.Exit(1)
 		} else {
 			// Config file was found but another error was produced
-			colorPrint(check.FAIL, fmt.Sprintf("Failed to read config file: %v\n", err))
-			c.logger.Info("Config file found, but some error occurred")
+			log.Errorf("Failed to read config file: %v\n", err)
+			log.Info("Config file found, but some error occurred")
 			os.Exit(1)
 		}
 	}
@@ -56,97 +55,97 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 	var kubeVersion, benchmarkVersion string
 	bv, err := getBenchmarkVersion(kubeVersion, benchmarkVersion, getPlatformInfo(), viper.GetViper())
 	if err != nil {
-		c.logger.Error(err, "Unable to determine benchmark version")
+		log.Error(err, "Unable to determine benchmark version")
 		exitWithError(fmt.Errorf("unable to determine benchmark version: %v", err))
 	}
-	c.logger.Info("Running checks for benchmark")
+	log.Info("Running checks for benchmark")
 
 	if isMaster() {
-		c.logger.Info("== Running master checks ==")
+		log.Info("== Running master checks ==")
 		runChecks(check.MASTER, loadConfig(check.MASTER, bv), detecetedKubeVersion)
 
 		// Control Plane is only valid for CIS 1.5 and later,
 		// this a gatekeeper for previous versions
 		valid, err := validTargets(bv, []string{string(check.CONTROLPLANE)}, viper.GetViper())
 		if err != nil {
-			c.logger.Error(err, "error validating targets")
+			log.Error(err, "error validating targets")
 			exitWithError(fmt.Errorf("error validating targets: %v", err))
 		}
 		if valid {
-			c.logger.Info("== Running control plane checks ==")
+			log.Info("== Running control plane checks ==")
 			runChecks(check.CONTROLPLANE, loadConfig(check.CONTROLPLANE, bv), detecetedKubeVersion)
 		}
 	} else {
-		c.logger.Info("== Skipping master checks ==")
+		log.Info("== Skipping master checks ==")
 	}
 
 	// Etcd is only valid for CIS 1.5 and later,
 	// this a gatekeeper for previous versions.
 	valid, err := validTargets(bv, []string{string(check.ETCD)}, viper.GetViper())
 	if err != nil {
-		c.logger.Error(err, "error validating targets")
+		log.Error(err, "error validating targets")
 		exitWithError(fmt.Errorf("error validating targets: %v", err))
 	}
 	if valid && isEtcd() {
-		c.logger.Info("== Running etcd checks ==")
+		log.Info("== Running etcd checks ==")
 		runChecks(check.ETCD, loadConfig(check.ETCD, bv), detecetedKubeVersion)
 	} else {
-		c.logger.Info("== Skipping etcd checks ==")
+		log.Info("== Skipping etcd checks ==")
 	}
 
-	c.logger.Info("== Running node checks ==")
+	log.Info("== Running node checks ==")
 	runChecks(check.NODE, loadConfig(check.NODE, bv), detecetedKubeVersion)
-	c.logger.Info(fmt.Sprintf("== Results of node checks:  %v", len(controlsCollection)))
+	log.Debugf("== Results of node checks:  %v", len(controlsCollection))
 	for _, control := range controlsCollection {
 		b, _ := control.JSON()
-		c.logger.Info(fmt.Sprintf("b %v", string(b)))
+		log.Debugf("b %v", string(b))
 	}
-	c.logger.Info("------------------------------------------------------------------")
+	log.Info("------------------------------------------------------------------")
 
 	// Policies is only valid for CIS 1.5 and later,
 	// this a gatekeeper for previous versions.
 	valid, err = validTargets(bv, []string{string(check.POLICIES)}, viper.GetViper())
 	if err != nil {
-		c.logger.Error(err, "error validating targets")
+		log.Error(err, "error validating targets")
 		exitWithError(fmt.Errorf("error validating targets: %v", err))
 	}
 	if valid {
-		c.logger.Info("== Running policies checks ==")
+		log.Info("== Running policies checks ==")
 		runChecks(check.POLICIES, loadConfig(check.POLICIES, bv), detecetedKubeVersion)
 	} else {
-		c.logger.Info("== Skipping policies checks ==")
+		log.Info("== Skipping policies checks ==")
 	}
 
 	// Managedservices is only valid for GKE 1.0 and later,
 	// this a gatekeeper for previous versions.
 	valid, err = validTargets(bv, []string{string(check.MANAGEDSERVICES)}, viper.GetViper())
 	if err != nil {
-		c.logger.Error(err, "error validating targets")
+		log.Error(err, "error validating targets")
 		exitWithError(fmt.Errorf("error validating targets: %v", err))
 	}
 	if valid {
-		c.logger.Info("== Running managed services checks ==")
+		log.Info("== Running managed services checks ==")
 		runChecks(check.MANAGEDSERVICES, loadConfig(check.MANAGEDSERVICES, bv), detecetedKubeVersion)
 	} else {
-		c.logger.Info("== Skipping managed services checks ==")
+		log.Info("== Skipping managed services checks ==")
 	}
 
 	if policy.Spec.Inspection.Assessment.ElasticSearchEnabled {
-		if err := exportReportToES(controlsCollection, policy, c.logger, c.hostname); err != nil {
-			c.logger.Error(err, "error exporting to Elasticsearch")
+		if err := exportReportToES(controlsCollection, policy, c.hostname); err != nil {
+			log.Error(err, "error exporting to Elasticsearch")
 			return err
 		}
 	}
 	if policy.Spec.Inspection.Assessment.OpenSearchEnabled {
-		if err := exportReportToOpenSearch(controlsCollection, policy, c.logger, c.hostname); err != nil {
-			c.logger.Error(err, "error exporting to Opensearch")
+		if err := exportReportToOpenSearch(controlsCollection, policy, c.hostname); err != nil {
+			log.Error(err, "error exporting to Opensearch")
 			return err
 		}
 	}
 	return nil
 }
 
-func exportReportToES(controlsCollection []*check.Controls, policy *v1alpha1.InspectionPolicy, logger logr.Logger, hostname string) error {
+func exportReportToES(controlsCollection []*check.Controls, policy *v1alpha1.InspectionPolicy, hostname string) error {
 	cert := []byte(policy.Spec.Inspection.Assessment.ElasticSearchCert)
 
 	type args struct {
@@ -162,15 +161,15 @@ func exportReportToES(controlsCollection []*check.Controls, policy *v1alpha1.Ins
 		policy.Spec.Inspection.Assessment.ElasticSearchUser,
 		policy.Spec.Inspection.Assessment.ElasticSearchPasswd,
 	}
-	logger.Info("ES config: ", "addr", clientArgs.addr)
-	logger.Info("ES config: ", "clientArgs.username", clientArgs.username)
+	log.Info("ES config: ", "addr", clientArgs.addr)
+	log.Info("ES config: ", "clientArgs.username", clientArgs.username)
 	client := es.NewClient(clientArgs.cert, clientArgs.addr, clientArgs.username, clientArgs.passwd)
 	if client == nil {
-		logger.Info("ES client is nil")
+		log.Info("ES client is nil")
 	}
 
 	if err := es.TestClient(); err != nil {
-		logger.Info("client test error")
+		log.Info("client test error")
 		return err
 	}
 	exporter := es.ElasticSearchExporter{}
@@ -185,7 +184,7 @@ func exportReportToES(controlsCollection []*check.Controls, policy *v1alpha1.Ins
 	return nil
 }
 
-func exportReportToOpenSearch(controlsCollection []*check.Controls, policy *v1alpha1.InspectionPolicy, logger logr.Logger, hostname string) error {
+func exportReportToOpenSearch(controlsCollection []*check.Controls, policy *v1alpha1.InspectionPolicy, hostname string) error {
 	cert := []byte(policy.Spec.Inspection.Assessment.ElasticSearchCert)
 
 	type args struct {
@@ -201,12 +200,12 @@ func exportReportToOpenSearch(controlsCollection []*check.Controls, policy *v1al
 		policy.Spec.Inspection.Assessment.OpenSearchUser,
 		policy.Spec.Inspection.Assessment.OpenSearchPasswd,
 	}
-	logger.Info("OpenSearch config: ", "addr", clientArgs.addr)
-	logger.Info("OpenSearch config: ", "clientArgs.username", clientArgs.username)
-	logger.Info("controlsCollection length: ", "controlsCollection", len(controlsCollection))
+	log.Info("OpenSearch config: ", "addr", clientArgs.addr)
+	log.Info("OpenSearch config: ", "clientArgs.username", clientArgs.username)
+	log.Info("controlsCollection length: ", "controlsCollection", len(controlsCollection))
 	client := osearch.NewClient(clientArgs.cert, clientArgs.addr, clientArgs.username, clientArgs.passwd)
 	if client == nil {
-		logger.Info("ES client is nil")
+		log.Info("ES client is nil")
 	}
 
 	exporter := osearch.OpenSearchExporter{}
@@ -235,12 +234,6 @@ func (c *controller) WithK8sClient(cli client.Client) *controller {
 // WithHostname sets hostname.
 func (c *controller) WithHostname(hostname string) *controller {
 	c.hostname = hostname
-	return c
-}
-
-// WithLogger sets logger.
-func (c *controller) WithLogger(logger logr.Logger) *controller {
-	c.logger = logger
 	return c
 }
 

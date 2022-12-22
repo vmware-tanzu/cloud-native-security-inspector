@@ -3,13 +3,12 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
 	es "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers/es"
 	osearch "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers/opensearch"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/providers"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/inspection/riskmanager"
-	"go.uber.org/zap/zapcore"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
@@ -17,11 +16,9 @@ import (
 	"os"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 )
 
 var (
-	log     = ctrl.Log.WithName("inspector")
 	scheme  = runtime.NewScheme()
 	rootCtx = context.Background()
 )
@@ -39,15 +36,7 @@ func main() {
 	var mode string
 	flag.StringVar(&mode, "mode", "standalone", "running mode")
 	flag.StringVar(&policy, "policy", "", "name of the inspection policy")
-	opts := zap.Options{
-		Development:     true,
-		Level:           zapcore.DebugLevel,
-		StacktraceLevel: zapcore.DebugLevel,
-	}
-	opts.BindFlags(flag.CommandLine)
 	flag.Parse()
-
-	ctrl.SetLogger(zap.New(zap.UseFlagOptions(&opts)))
 
 	k8sClient, err := client.New(ctrl.GetConfigOrDie(), client.Options{
 		Scheme: scheme,
@@ -86,11 +75,11 @@ func main() {
 
 		conf := riskmanager.ReadEnvConfig()
 
-		fmt.Println("mode server-only")
+		log.Info("mode server-only")
 		var osExporter osearch.OpenSearchExporter
 		if inspectionPolicy.Spec.Inspection.Assessment.OpenSearchEnabled {
-			fmt.Printf("OS config addr: %s \n", inspectionPolicy.Spec.Inspection.Assessment.OpenSearchAddr)
-			fmt.Printf("OS config username: %s \n", inspectionPolicy.Spec.Inspection.Assessment.OpenSearchUser)
+			log.Infof("OS config addr: %s \n", inspectionPolicy.Spec.Inspection.Assessment.OpenSearchAddr)
+			log.Infof("OS config username: %s \n", inspectionPolicy.Spec.Inspection.Assessment.OpenSearchUser)
 			osClient := osearch.NewClient([]byte{},
 				inspectionPolicy.Spec.Inspection.Assessment.OpenSearchAddr,
 				inspectionPolicy.Spec.Inspection.Assessment.OpenSearchUser,
@@ -101,7 +90,7 @@ func main() {
 				os.Exit(1)
 			}
 
-			osExporter = osearch.OpenSearchExporter{Client: osClient, Logger: log}
+			osExporter = osearch.OpenSearchExporter{Client: osClient}
 			err = osExporter.NewExporter(osClient, conf.DetailIndex)
 			if err != nil {
 				log.Error(err, "new os export risk_manager_details")
@@ -113,19 +102,18 @@ func main() {
 		var esExporter es.ElasticSearchExporter
 		if inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchEnabled {
 			cert := []byte(inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchCert)
-			fmt.Printf("ES config addr: %s \n", inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchAddr)
-			//fmt.Printf("ES config username: %s", inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchPasswd)
+			log.Infof("ES config addr: %s \n", inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchAddr)
 			esClient := es.NewClient(
 				cert,
 				inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchAddr,
 				inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchUser,
 				inspectionPolicy.Spec.Inspection.Assessment.ElasticSearchPasswd)
 			if esClient == nil {
-				fmt.Println("ES client is nil")
+				log.Info("ES client is nil")
 				os.Exit(1)
 			}
 
-			esExporter = es.ElasticSearchExporter{Client: esClient, Logger: log}
+			esExporter = es.ElasticSearchExporter{Client: esClient}
 			err = esExporter.NewExporter(esClient, conf.DetailIndex)
 			if err != nil {
 				log.Error(err, "new es export risk_manager_details")
@@ -140,7 +128,6 @@ func main() {
 	} else {
 		runner := riskmanager.NewController().
 			WithScheme(scheme).
-			WithLogger(log).
 			WithK8sClient(k8sClient).
 			CTRL()
 

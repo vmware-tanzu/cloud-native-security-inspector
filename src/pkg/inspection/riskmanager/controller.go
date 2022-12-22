@@ -2,11 +2,10 @@ package riskmanager
 
 import (
 	"context"
-	"fmt"
-	"github.com/go-logr/logr"
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
 	es "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers/es"
 	osearch "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers/opensearch"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/inspection"
@@ -24,9 +23,8 @@ type Controller interface {
 	Run(ctx context.Context, policy *v1alpha1.InspectionPolicy) error
 }
 
-type controller struct {
+type RiskController struct {
 	kc     client.Client
-	logger logr.Logger
 	scheme *runtime.Scheme
 	ready  bool
 
@@ -34,11 +32,10 @@ type controller struct {
 }
 
 var (
-	cfgDir  = "./cfg/"
-	cfgFile string
+	cfgDir = "./cfg/"
 )
 
-func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy) error {
+func (c *RiskController) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy) error {
 	viper.SetConfigName("config") // name of config file (without extension)
 	viper.AddConfigPath(cfgDir)
 	// check server is running
@@ -49,22 +46,22 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 	if conf.StandAlone {
 		var osExporter osearch.OpenSearchExporter
 		if policy.Spec.Inspection.Assessment.OpenSearchEnabled {
-			fmt.Printf("OS config addr: %s \n", policy.Spec.Inspection.Assessment.OpenSearchAddr)
-			fmt.Printf("OS config username: %s \n", policy.Spec.Inspection.Assessment.OpenSearchUser)
+			log.Infof("OS config addr: %s \n", policy.Spec.Inspection.Assessment.OpenSearchAddr)
+			log.Infof("OS config username: %s \n", policy.Spec.Inspection.Assessment.OpenSearchUser)
 			osClient := osearch.NewClient([]byte{},
 				policy.Spec.Inspection.Assessment.OpenSearchAddr,
 				policy.Spec.Inspection.Assessment.OpenSearchUser,
 				policy.Spec.Inspection.Assessment.OpenSearchPasswd)
 
 			if osClient == nil {
-				fmt.Println("OpenSearch client is nil")
+				log.Info("OpenSearch client is nil")
 				return nil
 			}
 
-			osExporter = osearch.OpenSearchExporter{Client: osClient, Logger: logr.Logger{}}
+			osExporter = osearch.OpenSearchExporter{Client: osClient}
 			err := osExporter.NewExporter(osClient, conf.DetailIndex)
 			if err != nil {
-				c.logger.Error(err, "new os export risk_manager_details")
+				log.Error(err, "new os export risk_manager_details")
 				return err
 			}
 		}
@@ -72,22 +69,22 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 		var esExporter es.ElasticSearchExporter
 		if policy.Spec.Inspection.Assessment.ElasticSearchEnabled {
 			cert := []byte(policy.Spec.Inspection.Assessment.ElasticSearchCert)
-			fmt.Printf("ES config addr: %s \n", policy.Spec.Inspection.Assessment.ElasticSearchAddr)
-			//fmt.Printf("ES config username: %s \n", policy.Spec.Inspection.Assessment.ElasticSearchPasswd)
+			log.Infof("ES config addr: %s \n", policy.Spec.Inspection.Assessment.ElasticSearchAddr)
+			//log.Info("ES config username: %s \n", policy.Spec.Inspection.Assessment.ElasticSearchPasswd)
 			esClient := es.NewClient(
 				cert,
 				policy.Spec.Inspection.Assessment.ElasticSearchAddr,
 				policy.Spec.Inspection.Assessment.ElasticSearchUser,
 				policy.Spec.Inspection.Assessment.ElasticSearchPasswd)
 			if esClient == nil {
-				fmt.Println("ES client is nil")
+				log.Info("ES client is nil")
 				return nil
 			}
 
-			esExporter = es.ElasticSearchExporter{Client: esClient, Logger: logr.Logger{}}
+			esExporter = es.ElasticSearchExporter{Client: esClient}
 			err := esExporter.NewExporter(esClient, conf.DetailIndex)
 			if err != nil {
-				c.logger.Error(err, "new es export risk_manager_details")
+				log.Error(err, "new es export risk_manager_details")
 				return err
 			}
 		}
@@ -108,7 +105,7 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 	// Nothing to handle
 	// Just in case.
 	if len(nsl) == 0 {
-		c.logger.V(1).Info("no namespaces found")
+		log.Info("no namespaces found")
 		return nil
 	}
 
@@ -129,7 +126,7 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 				}
 			}
 		} else {
-			c.logger.Error(err, "list pods")
+			log.Error(err, "list pods")
 		}
 		// Get Deployment
 		var deploys v1.DeploymentList
@@ -141,7 +138,7 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 				allResources = append(allResources, resource)
 			}
 		} else {
-			c.logger.Error(err, "list deployments")
+			log.Error(err, "list deployments")
 		}
 		// Get Service
 		var services corev1.ServiceList
@@ -153,7 +150,7 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 				allResources = append(allResources, resource)
 			}
 		} else {
-			c.logger.Error(err, "list services")
+			log.Error(err, "list services")
 		}
 
 	}
@@ -167,22 +164,22 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 				resource.SetNode(&node)
 				allResources = append(allResources, resource)
 			} else {
-				c.logger.Error(err, "get node")
+				log.Error(err, "get node")
 			}
 		}
 	}
 
-	httpClient := NewClient(conf, c.logger)
+	httpClient := NewClient(conf)
 
 	for _, v := range allResources {
-		fmt.Printf("resource name: %s, type: %s \n", v.ObjectMeta.Name, v.Type)
+		log.Infof("resource name: %s, type: %s \n", v.ObjectMeta.Name, v.Type)
 		if v.IsPod() {
-			fmt.Printf("pod name: %s, namespace: %s \n", v.Pod.GetName(), v.Pod.GetNamespace())
+			log.Infof("pod name: %s, namespace: %s \n", v.Pod.GetName(), v.Pod.GetNamespace())
 		}
 		err = httpClient.
 			PostResource(v)
 		if err != nil {
-			c.logger.Error(err, "cannot post resource")
+			log.Error(err, "cannot post resource")
 		}
 	}
 
@@ -194,14 +191,14 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 	if err = httpClient.PostAnalyze(option); err == nil {
 		for {
 			if ok, err := httpClient.IsAnalyzeRunning(); err != nil {
-				c.logger.Error(err, "failed to fetch status")
+				log.Error(err, "failed to fetch status")
 				time.Sleep(1 * time.Second)
 			} else if ok {
-				c.logger.Info("the analyze is running")
+				log.Info("the analyze is running")
 				time.Sleep(30 * time.Second)
 			} else if !ok {
 				_ = httpClient.SendExitInstruction()
-				c.logger.Info("the analyze is done")
+				log.Info("the analyze is done")
 				break
 			}
 		}
@@ -210,49 +207,42 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 	return nil
 }
 
-// NewController news a controller.
-func NewController() *controller {
-	return &controller{}
+// NewController news a RiskController.
+func NewController() *RiskController {
+	return &RiskController{}
 }
 
 // WithK8sClient sets k8s client.
-func (c *controller) WithK8sClient(cli client.Client) *controller {
+func (c *RiskController) WithK8sClient(cli client.Client) *RiskController {
 	c.kc = cli
 	return c
 }
 
-// WithLogger sets logger.
-func (c *controller) WithLogger(logger logr.Logger) *controller {
-	c.logger = logger
-	return c
-}
-
 // WithScheme sets runtime scheme.
-func (c *controller) WithScheme(scheme *runtime.Scheme) *controller {
+func (c *RiskController) WithScheme(scheme *runtime.Scheme) *RiskController {
 	c.scheme = scheme
 	return c
 }
 
-// CTRL returns controller interface.
-func (c *controller) CTRL() Controller {
+// CTRL returns RiskController interface.
+func (c *RiskController) CTRL() Controller {
 	c.scanner = inspection.NewScanner().
 		WithScheme(c.scheme).
 		UseClient(c.kc).
-		SetLogger(c.logger).
 		Complete()
 
-	// Mark controller is ready.
+	// Mark RiskController is ready.
 	c.ready = true
 
 	return c
 }
 
-func (c *controller) checkServerRunning() {
+func (c *RiskController) checkServerRunning() {
 	conf := ReadEnvConfig()
-	httpClient := NewClient(conf, c.logger)
+	httpClient := NewClient(conf)
 	for {
 		if _, err := httpClient.IsAnalyzeRunning(); err != nil {
-			fmt.Println("Server Starting, waiting ...")
+			log.Info("Server Starting, waiting ...")
 			time.Sleep(3 * time.Second)
 		} else {
 			break

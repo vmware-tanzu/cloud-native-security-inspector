@@ -3,21 +3,18 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/inspection/kubebench"
-	"go.uber.org/zap/zapcore"
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	"os"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 )
 
 var (
-	log     = ctrl.Log.WithName("kubebench")
 	scheme  = runtime.NewScheme()
 	rootCtx = context.Background()
 )
@@ -33,16 +30,9 @@ func init() {
 func main() {
 	var policy string
 	flag.StringVar(&policy, "policy", "", "name of the inspection policy")
-	opts := zap.Options{
-		Development:     true,
-		Level:           zapcore.DebugLevel,
-		StacktraceLevel: zapcore.ErrorLevel,
-	}
-	opts.BindFlags(flag.CommandLine)
 	flag.Parse()
-	log.Info("kube-bench scanning....")
-
-	ctrl.SetLogger(zap.New(zap.UseFlagOptions(&opts)))
+	log.Infof("policy name %s", policy)
+	log.Info("kube-bench scanning...")
 
 	k8sClient, err := client.New(ctrl.GetConfigOrDie(), client.Options{
 		Scheme: scheme,
@@ -62,11 +52,10 @@ func main() {
 		os.Exit(1)
 	}
 	hostname := os.Getenv("hostname")
-	log.Info(fmt.Sprintf("Kubebench scanner running on host:%v", hostname))
+	log.Infof("Kubebench scanner running on host:%v", hostname)
 
 	runner := kubebench.NewController().
 		WithScheme(scheme).
-		WithLogger(log).
 		WithK8sClient(k8sClient).
 		WithHostname(hostname).
 		CTRL()

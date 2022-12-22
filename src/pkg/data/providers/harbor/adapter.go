@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/goharbor/harbor/src/pkg/scan/vuln"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
 	"io"
 	"net/http"
 	"net/url"
@@ -33,7 +34,6 @@ import (
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/errs"
 	v1 "k8s.io/api/core/v1"
 	k8client "sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/log"
 )
 
 // Adapter for handling data from Harbor.
@@ -75,10 +75,7 @@ func (a *Adapter) Read(ctx context.Context, id core.ArtifactID, options ...data.
 			return stores, nil
 		}
 
-		// Just log error and directly get data from the provider.
-		// Get logger from context.
-		logger := log.FromContext(ctx)
-		logger.Error(err, "read data from cache")
+		log.Error(err, "read data from cache")
 	}
 
 	// Retrieve data from harbor.
@@ -149,8 +146,7 @@ func (a *Adapter) Read(ctx context.Context, id core.ArtifactID, options ...data.
 		err = a.cache.Write(ctx, id, stores)
 		if err != nil {
 			// just need to log error
-			logger := log.FromContext(ctx)
-			logger.Error(err, "write data to cache")
+			log.Error(err, "write data to cache")
 		}
 	}
 
@@ -572,20 +568,20 @@ func (a *Adapter) scanOnPush(ctx context.Context) error {
 }
 
 func (a *Adapter) GetVulnerabilitiesList(ctx context.Context, id core.ArtifactID, skipVerify bool) (*vuln.Report, error) {
-	fmt.Printf("ProjectName: %s \n", id.Namespace())
-	fmt.Printf("RepositoryName: %s \n", id.Repository())
-	fmt.Printf("Reference: %s \n", id.Digest())
-	fmt.Printf("Registry: %s \n", id.Registry())
+	log.Infof("ProjectName: %s \n", id.Namespace())
+	log.Infof("RepositoryName: %s \n", id.Repository())
+	log.Infof("Reference: %s \n", id.Digest())
+	log.Infof("Registry: %s \n", id.Registry())
 
 	xAcceptVulnerabilities := core.DataSchemeVulnerability
 	for _, scheme := range DefaultSchemes {
 		requestURL := fmt.Sprintf("%s://%s/api/v2.0/projects/%s/repositories/%s/artifacts/%s/additions/vulnerabilities",
 			scheme, id.Registry(), id.Namespace(), id.Repository(), id.Digest())
-		fmt.Printf("requestURL: %s \n", requestURL)
+		log.Infof("requestURL: %s \n", requestURL)
 
 		request, err := http.NewRequest("GET", requestURL, bytes.NewBuffer(nil))
 		if err != nil {
-			fmt.Printf("new request err: %v \n", err)
+			log.Infof("new request err: %v \n", err)
 			continue
 		}
 		request.Header.Set("X-Accept-Vulnerabilities", xAcceptVulnerabilities)
@@ -599,32 +595,18 @@ func (a *Adapter) GetVulnerabilitiesList(ctx context.Context, id core.ArtifactID
 		}
 		res, err := client.Do(request)
 		if err != nil {
-			fmt.Printf("find vulnerabilities err: %v \n", err)
+			log.Errorf("find vulnerabilities err: %v \n", err)
 			continue
 		}
 		var report map[string]*vuln.Report
 		err = json.NewDecoder(res.Body).Decode(&report)
 		if err != nil {
 			body, _ := io.ReadAll(res.Body)
-			fmt.Printf("vuln report json unmarshal: (%s) \n", string(body))
+			log.Errorf("vuln report json unmarshal: (%s) \n", string(body))
 			continue
 		}
 		return report[xAcceptVulnerabilities], nil
 	}
 
 	return nil, errors.New("not find report")
-	//addition, err := a.cli.V2().Artifact.GetVulnerabilitiesAddition(ctx, &artifact.GetVulnerabilitiesAdditionParams{
-	//	ProjectName:            id.Namespace(),
-	//	RepositoryName:         id.Repository(),
-	//	Reference:              id.Digest(),
-	//	XAcceptVulnerabilities: &xAcceptVulnerabilities,
-	//})
-	//if err != nil {
-	//	return nil, errors.Wrapf(err, "failed to get image: %s vuln report", id.String())
-	//}
-	//
-	//fmt.Printf("report: %s", addition.GetPayload())
-
-	//err = json.Unmarshal([]byte(addition.GetPayload()), &report)
-	//return report, errors.Wrapf(err, "vuln report json unmarshal: %s", addition.GetPayload())
 }

@@ -3,7 +3,7 @@ package riskmanager
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/goharbor/harbor/src/jobservice/logger"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
 	es "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers/es"
 	consumers "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers/opensearch"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/providers"
@@ -61,13 +61,13 @@ func (s *Server) WithAdapter(Adapter providers.Adapter) *Server {
 
 // postAlbums adds an album from JSON received in the request body.
 func (s *Server) postResource(c *gin.Context) {
-	fmt.Println("come in postResource request")
+	log.Info("come in postResource request")
 	var v data.ResourceItem
 
 	// Call BindJSON to bind the received JSON to
 	// newAlbum.
 	if err := c.BindJSON(&v); err != nil {
-		fmt.Printf("bind json err: %v \n", err)
+		log.Infof("bind json err: %v \n", err)
 		c.IndentedJSON(http.StatusBadRequest, err)
 		return
 	}
@@ -93,7 +93,7 @@ func (s *Server) Clear() {
 }
 
 func (s *Server) Analyze(option AnalyzeOption) {
-	fmt.Println("come in Analyze request")
+	log.Info("come in Analyze request")
 	s.IsRunning = true
 	defer func() {
 		s.IsRunning = false
@@ -103,10 +103,10 @@ func (s *Server) Analyze(option AnalyzeOption) {
 	for _, t := range s.Images {
 		report, err := t.FetchHarborReport(s.adapter)
 		if err != nil {
-			logger.Errorf("get vuln reprot error: %v", err)
+			log.Errorf("get vuln reprot error: %v", err)
 			continue
 		} else {
-			fmt.Printf("vuln len: %d \n", len(report.Vulnerabilities))
+			log.Infof("vuln len: %d \n", len(report.Vulnerabilities))
 		}
 
 		for _, r := range t.Related {
@@ -117,21 +117,21 @@ func (s *Server) Analyze(option AnalyzeOption) {
 	if option.OpenSearchEnabled {
 		err := s.osExporter.SaveRiskReport(s.Workloads.Risks)
 		if err != nil {
-			logger.Errorf("os SaveRiskReport error: %v", err)
+			log.Errorf("os SaveRiskReport error: %v", err)
 		}
 	}
 
 	if option.ElasticSearchEnabled {
 		err := s.esExporter.SaveRiskReport(s.Workloads.Risks)
 		if err != nil {
-			logger.Errorf("es SaveRiskReport error: %v", err)
+			log.Errorf("es SaveRiskReport error: %v", err)
 		}
 	}
 }
 
 // postAnalyze adds an album from JSON received in the request body.
 func (s *Server) postAnalyze(c *gin.Context) {
-	fmt.Println("come in postAnalyze request")
+	log.Info("come in postAnalyze request")
 	var v AnalyzeOption
 
 	// Call BindJSON to bind the received JSON to
@@ -161,7 +161,7 @@ func (s *Server) getRisks(c *gin.Context) {
 }
 
 func (s *Server) getExit(c *gin.Context) {
-	fmt.Println("receive exit instruction, start exit")
+	log.Info("receive exit instruction, start exit")
 	c.IndentedJSON(http.StatusOK, "ok")
 	defer func() {
 		time.Sleep(3 * time.Second)
@@ -178,8 +178,8 @@ func (s *Server) Run(address string) {
 	router.GET("/exit", s.getExit)
 	router.POST("/analyze", s.postAnalyze)
 	router.POST("/resource", s.postResource)
-	fmt.Println("Server run at:")
-	fmt.Printf("-  Local:   %s/ \r\n", address)
+	log.Info("Server run at:")
+	log.Infof("-  Local:   %s/ \r\n", address)
 	err := router.Run(address)
 	if err != nil {
 		panic(fmt.Sprintf("ListenAndServe err: %v", err))

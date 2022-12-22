@@ -7,22 +7,19 @@ import (
 	"github.com/aquasecurity/kube-bench/check"
 	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/elastic/go-elasticsearch/v8/esapi"
-	"github.com/go-logr/logr"
 	"github.com/pkg/errors"
 	api "github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/inspection/data"
 	"io"
 	"k8s.io/apiserver/pkg/storage/names"
-	ctrl "sigs.k8s.io/controller-runtime"
-	"sigs.k8s.io/controller-runtime/pkg/log"
 	"strconv"
 	"strings"
 	"time"
 )
 
 var (
-	ctrlLog   = ctrl.Log.WithName("ElasticSearchExporter")
 	indexName = "assessment_report"
 )
 
@@ -80,14 +77,13 @@ type Hit struct {
 // ElasticSearchExporter ElasticSearch exporter implements output_datasource.Exporter
 type ElasticSearchExporter struct {
 	Client    *elasticsearch.Client
-	Logger    logr.Logger
 	indexName string
 	hostname  string
 }
 
 func (e *ElasticSearchExporter) NewExporter(client *elasticsearch.Client, indexName string) error {
 	if client == nil {
-		e.log("ElasticSearch client error", errors.New("Invalid ElasticSearch client"), nil)
+		log.Error("ElasticSearch client error", errors.New("Invalid ElasticSearch client"), nil)
 		return errors.Errorf("ElasticSearch client error: %s", errors.New("Invalid ElasticSearch client"))
 	}
 	e.Client = client
@@ -264,7 +260,7 @@ func (e *ElasticSearchExporter) listIndex(name string) ([]ElasticSearchIndex, er
 	var esIndices []ElasticSearchIndex
 	if res.IsError() {
 		if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
-			ctrlLog.Info("Error parsing the response body: %s", err)
+			log.Infof("Error parsing the response body: %s", err)
 		} else {
 			errRes := r["error"]
 			r = errRes.(map[string]interface{})
@@ -274,7 +270,7 @@ func (e *ElasticSearchExporter) listIndex(name string) ([]ElasticSearchIndex, er
 		// Deserialize the response into a map.
 		var r []map[string]interface{}
 		if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
-			ctrlLog.Info("Error parsing the response body: %s", err)
+			log.Infof("Error parsing the response body: %s", err)
 		} else {
 			// Print the response status.
 			for _, i := range r {
@@ -320,20 +316,20 @@ func (e ElasticSearchExporter) SaveCIS(controlsCollection []*check.Controls) err
 			Refresh:    "true",
 		}.Do(context.Background(), e.Client)
 		if err != nil {
-			ctrlLog.Error(err, "Error getting response")
+			log.Error(err, "Error getting response")
 			return err
 		}
 
 		if res.IsError() {
-			ctrlLog.Info("[%s] Error indexing document ID=%v", res.Status(), "name-name")
+			log.Infof("[%s] Error indexing document ID=%v", res.Status(), "name-name")
 			return errors.New(fmt.Sprint("http error, code ", res.StatusCode))
 		} else {
 			// Deserialize the response into a map.
 			var r map[string]interface{}
 			if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
-				ctrlLog.Info("Error parsing the response body: %s", err)
+				log.Infof("Error parsing the response body: %s", err)
 			} else {
-				ctrlLog.Info("Decode successfully!")
+				log.Info("Decode successfully!")
 			}
 		}
 
@@ -354,7 +350,7 @@ func (e *ElasticSearchExporter) SaveRiskReport(risks data.RiskCollection) error 
 	for s, items := range risks {
 		split := strings.Split(s, ":")
 		if len(split) != 4 {
-			ctrlLog.Info("key non-standard:" + s)
+			log.Info("key non-standard:" + s)
 			continue
 		}
 		kind := split[0]
@@ -380,20 +376,20 @@ func (e *ElasticSearchExporter) SaveRiskReport(risks data.RiskCollection) error 
 			Refresh:    "true",
 		}.Do(context.Background(), e.Client)
 		if err != nil {
-			ctrlLog.Error(err, "Error getting response")
+			log.Error(err, "Error getting response")
 			return err
 		}
 
 		if res.IsError() {
-			ctrlLog.Info("[%s] Error indexing document ID=%v", res.Status(), s)
+			log.Infof("[%s] Error indexing document ID=%v", res.Status(), s)
 			continue
 		} else {
 			// Deserialize the response into a map.
 			var r map[string]interface{}
 			if err = json.NewDecoder(res.Body).Decode(&r); err != nil {
-				ctrlLog.Info("Error parsing the response body: %s", err)
+				log.Errorf("Error parsing the response body: %s", err)
 			} else {
-				fmt.Println("Detail OK")
+				log.Info("Detail OK")
 				report = append(report, esDoc)
 			}
 		}
@@ -414,19 +410,19 @@ func (e *ElasticSearchExporter) SaveRiskReport(risks data.RiskCollection) error 
 		Refresh:    "true",
 	}.Do(context.Background(), e.Client)
 	if err != nil {
-		ctrlLog.Error(err, "Error getting response")
+		log.Error(err, "Error getting response")
 		return err
 	}
 
 	if res.IsError() {
-		ctrlLog.Info("[%s] Error indexing document ID=%v", res.Status(), dId)
+		log.Infof("[%s] Error indexing document ID=%v", res.Status(), dId)
 	} else {
 		// Deserialize the response into a map.
 		var r map[string]interface{}
 		if err = json.NewDecoder(res.Body).Decode(&r); err != nil {
-			ctrlLog.Info("Error parsing the response body: %s", err)
+			log.Errorf("Error parsing the response body: %s", err)
 		} else {
-			fmt.Println("Report OK")
+			log.Info("Report OK")
 		}
 	}
 
@@ -480,20 +476,20 @@ func (e ElasticSearchExporter) Save(doc api.AssessmentReport) error {
 						Refresh:    "true",
 					}.Do(context.Background(), e.Client)
 					if err != nil {
-						ctrlLog.Error(err, "Error getting response")
+						log.Error(err, "Error getting response")
 						return err
 					}
 
 					if res.IsError() {
-						ctrlLog.Info("[%s] Error indexing document ID=%v", res.Status(), doc.GenerateName)
+						log.Infof("[%s] Error indexing document ID=%v", res.Status(), doc.GenerateName)
 						return errors.New(fmt.Sprint("http error, code ", res.StatusCode))
 					} else {
 						// Deserialize the response into a map.
 						var r map[string]interface{}
 						if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
-							ctrlLog.Info("Error parsing the response body: %s", err)
+							log.Infof("Error parsing the response body: %s", err)
 						} else {
-							ctrlLog.Info("Successfully decode the response")
+							log.Info("Successfully decode the response")
 						}
 					}
 				}
@@ -574,7 +570,7 @@ func (e ElasticSearchExporter) Search(query string, after ...string) ([]consumer
 		results.Hits = append(results.Hits, &h)
 	}
 	var reportList []consumers.AssessmentReportDoc
-	log.Log.Info("Results hits: ", len(results.Hits))
+	log.Info("Results hits: ", len(results.Hits))
 	for _, ret := range results.Hits {
 		reportList = append(reportList, ret.AssessmentReportDoc)
 	}
@@ -588,20 +584,6 @@ func (e ElasticSearchExporter) getContainerUsedMost() (api.AssessmentReportList,
 // List implements Exporter
 func (e ElasticSearchExporter) List() (api.AssessmentReportList, error) {
 	return api.AssessmentReportList{}, nil
-}
-func (e ElasticSearchExporter) log(message string, err error, keysAndValues ...interface{}) {
-	if err != nil {
-		e.Logger.Error(err, message, keysAndValues...)
-		return
-	}
-
-	e.Logger.Info(message, keysAndValues...)
-	return
-}
-
-func (e *ElasticSearchExporter) WithLogger(logger logr.Logger) *ElasticSearchExporter {
-	e.Logger = logger.WithName("exporter")
-	return e
 }
 
 // WithHostname sets hostname.

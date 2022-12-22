@@ -9,26 +9,21 @@ import (
 	"github.com/opensearch-project/opensearch-go/opensearchapi"
 	"github.com/pkg/errors"
 	api "github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/inspection/data"
 	"k8s.io/apiserver/pkg/storage/names"
-	ctrl "sigs.k8s.io/controller-runtime"
-	"sigs.k8s.io/controller-runtime/pkg/log"
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/go-logr/logr"
 )
 
 var (
-	ctrlLog   = ctrl.Log.WithName("OpenSearchExporter")
 	indexName = "assessment_report"
 )
 
 type OpenSearchExporter struct {
 	Client    *opensearch.Client
-	Logger    logr.Logger
 	indexName string
 	hostname  string
 }
@@ -41,7 +36,7 @@ type OpenSearchIndex struct {
 
 func (o *OpenSearchExporter) NewExporter(client *opensearch.Client, indexName string) error {
 	if client == nil {
-		log.Log.Info("OpenSearch client error", errors.New("Invalid OpenSearch client"), nil)
+		log.Info("OpenSearch client error", errors.New("Invalid OpenSearch client"), nil)
 		return errors.Errorf("OpenSearch client error: %s", errors.New("Invalid OpenSearch client"))
 	}
 	o.Client = client
@@ -105,20 +100,20 @@ func (o *OpenSearchExporter) Save(doc api.AssessmentReport) error {
 						Refresh:    "true",
 					}.Do(context.Background(), o.Client)
 					if err != nil {
-						ctrlLog.Error(err, "Error getting response")
+						log.Error(err, "Error getting response")
 						return err
 					}
 
 					if res.IsError() {
-						ctrlLog.Info("[%s] Error indexing document ID=%v", res.Status(), doc.GenerateName)
+						log.Infof("[%s] Error indexing document ID=%v", res.Status(), doc.GenerateName)
 						return errors.New(fmt.Sprint("http error, code ", res.StatusCode))
 					} else {
 						// Deserialize the response into a map.
 						var r map[string]interface{}
 						if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
-							ctrlLog.Info("Error parsing the response body: %s", err)
+							log.Infof("Error parsing the response body: %s", err)
 						} else {
-							ctrlLog.Info("Successfully decode the response")
+							log.Info("Successfully decode the response")
 						}
 					}
 				}
@@ -142,7 +137,7 @@ func (o *OpenSearchExporter) SaveRiskReport(risks data.RiskCollection) error {
 	for s, items := range risks {
 		split := strings.Split(s, ":")
 		if len(split) != 4 {
-			ctrlLog.Info("key non-standard:" + s)
+			log.Info("key non-standard:" + s)
 			continue
 		}
 		kind := split[0]
@@ -168,20 +163,20 @@ func (o *OpenSearchExporter) SaveRiskReport(risks data.RiskCollection) error {
 			Refresh:    "true",
 		}.Do(context.Background(), o.Client)
 		if err != nil {
-			ctrlLog.Error(err, "Error getting response")
+			log.Error(err, "Error getting response")
 			return err
 		}
 
 		if res.IsError() {
-			ctrlLog.Info("[%s] Error indexing document ID=%v", res.Status(), uid)
+			log.Infof("[%s] Error indexing document ID=%v", res.Status(), uid)
 			continue
 		} else {
 			// Deserialize the response into a map.
 			var r map[string]interface{}
 			if err = json.NewDecoder(res.Body).Decode(&r); err != nil {
-				ctrlLog.Info("Error parsing the response body: %s", err)
+				log.Errorf("Error parsing the response body: %s", err)
 			} else {
-				fmt.Println("Detail OK")
+				log.Info("Detail OK")
 				report = append(report, esDoc)
 			}
 		}
@@ -202,19 +197,19 @@ func (o *OpenSearchExporter) SaveRiskReport(risks data.RiskCollection) error {
 		Refresh:    "true",
 	}.Do(context.Background(), o.Client)
 	if err != nil {
-		ctrlLog.Error(err, "Error getting response")
+		log.Error(err, "Error getting response")
 		return err
 	}
 
 	if res.IsError() {
-		ctrlLog.Info("[%s] Error indexing document ID=%v", res.Status(), dId)
+		log.Infof("[%s] Error indexing document ID=%v", res.Status(), dId)
 	} else {
 		// Deserialize the response into a map.
 		var r map[string]interface{}
 		if err = json.NewDecoder(res.Body).Decode(&r); err != nil {
-			ctrlLog.Info("Error parsing the response body: %s", err)
+			log.Errorf("Error parsing the response body: %s", err)
 		} else {
-			fmt.Println("Report OK")
+			log.Info("Report OK")
 		}
 	}
 
@@ -245,20 +240,20 @@ func (o *OpenSearchExporter) SaveCIS(controlsCollection []*check.Controls) error
 			Refresh:    "true",
 		}.Do(context.Background(), o.Client)
 		if err != nil {
-			ctrlLog.Error(err, "Error getting response")
+			log.Error(err, "Error getting response")
 			return err
 		}
 
 		if res.IsError() {
-			ctrlLog.Info("[%s] Error indexing document ID=%v", res.Status(), "name-name")
+			log.Infof("[%s] Error indexing document ID=%v", res.Status(), "name-name")
 			return errors.New(fmt.Sprint("http error, code ", res.StatusCode))
 		} else {
 			// Deserialize the response into a map.
 			var r map[string]interface{}
 			if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
-				ctrlLog.Info("Error parsing the response body: %s", err)
+				log.Infof("Error parsing the response body: %s", err)
 			} else {
-				ctrlLog.Info("Successfully decode the response")
+				log.Info("Successfully decode the response")
 			}
 		}
 
@@ -296,7 +291,7 @@ func (o *OpenSearchExporter) listIndex(name string) ([]OpenSearchIndex, error) {
 	var osIndices []OpenSearchIndex
 	if res.IsError() {
 		if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
-			log.Log.Info("Error parsing the response body")
+			log.Info("Error parsing the response body")
 		} else {
 			errRes := r["error"]
 			r = errRes.(map[string]interface{})
@@ -306,7 +301,7 @@ func (o *OpenSearchExporter) listIndex(name string) ([]OpenSearchIndex, error) {
 		// Deserialize the response into a map.
 		var r []map[string]interface{}
 		if err := json.NewDecoder(res.Body).Decode(&r); err != nil {
-			log.Log.Info("Error parsing the response body")
+			log.Info("Error parsing the response body")
 		} else {
 			// Print the response status.
 			for _, i := range r {
