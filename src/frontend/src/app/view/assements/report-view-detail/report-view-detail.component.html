@@ -4,6 +4,8 @@
 -->
 
 <div class="card detail-bg">
+  <div id="resize"></div>
+
   <clr-accordion clrAccordionMultiPanel="true" >
     <clr-accordion-panel >
       <clr-accordion-title>{{'Report_Detail.title'|translate}}</clr-accordion-title>
@@ -152,7 +154,7 @@
       </clr-accordion-content>
     </clr-accordion-panel>
 
-    <clr-accordion-panel *ngIf="shardService.currentReport?.spec">
+    <clr-accordion-panel [clrAccordionPanelOpen]='true' *ngIf="shardService.currentReport?.spec">
       <clr-accordion-title>{{'Report_Detail.namespace_assessments'| translate}}</clr-accordion-title>
       <clr-accordion-content *clrIfExpanded>
         <ul class="nav" role="tablist">
@@ -164,8 +166,6 @@
       <section>
         <clr-datagrid style="height:  200px; overflow:  auto;">
           <clr-dg-column [clrDgField]="'attributes.pool'">Name</clr-dg-column>
-          <clr-dg-column >Uid</clr-dg-column>
-          <clr-dg-column >Namespace</clr-dg-column>
           <clr-dg-column >Type</clr-dg-column>
           <clr-dg-column >Passed</clr-dg-column>
 
@@ -173,8 +173,6 @@
             <clr-dg-cell>
               <a href="javascript:;" (click)="getRisk(workload)">{{workload.workload?.metadata.name}}</a>
             </clr-dg-cell>
-            <clr-dg-cell>{{workload.workload?.metadata.uid}}</clr-dg-cell>
-            <clr-dg-cell>{{workload.workload?.metadata.namespace}}</clr-dg-cell>
             <clr-dg-cell>{{workload.workload?.metadata.kind}}</clr-dg-cell>
             <clr-dg-cell>{{workload.passed}}</clr-dg-cell>
           </clr-dg-row>

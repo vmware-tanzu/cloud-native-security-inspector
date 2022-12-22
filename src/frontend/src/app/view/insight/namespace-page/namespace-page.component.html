@@ -90,10 +90,10 @@
               <app-namesapce-histogram #namespaceHistogram [chartOptions]="shardService.workloadChartbarOption"></app-namesapce-histogram>
               <clr-datagrid>
                 <clr-dg-column [clrDgField]="'workload.workload.metadata.name'">{{'CommonlyUse.name'|translate}}</clr-dg-column>
-                <clr-dg-column [clrDgField]="'workload.workload.metadata.namespace'">{{'CommonlyUse.namespace'|translate}}</clr-dg-column>
+                <!-- <clr-dg-column [clrDgField]="'workload.workload.metadata.namespace'">{{'CommonlyUse.namespace'|translate}}</clr-dg-column> -->
                 <clr-dg-column [clrDgField]="'workload.workload.pods.length'">{{'CommonlyUse.type'|translate}}</clr-dg-column>
                 <clr-dg-column [clrDgField]="'workload.workload.metadata.apiVersion'">{{'CommonlyUse.containers_total'|translate}}  </clr-dg-column>
-                <clr-dg-column [clrDgSortBy]="'created_at'">{{'CommonlyUse.api_version'|translate}}</clr-dg-column>
+                <!-- <clr-dg-column [clrDgSortBy]="'created_at'">{{'CommonlyUse.api_version'|translate}}</clr-dg-column> -->
               
                 <clr-dg-row *clrDgItems="let violation of shardService.currentNamespaceviolationList">
                   <clr-dg-cell>
@@ -102,10 +102,10 @@
                       <cds-icon shape="pop-out"></cds-icon>
                     </a>
                   </clr-dg-cell>
-                  <clr-dg-cell>{{violation.workload.workload.metadata.namespace}}</clr-dg-cell>
+                  <!-- <clr-dg-cell>{{violation.workload.workload.metadata.namespace}}</clr-dg-cell> -->
                   <clr-dg-cell>{{violation.workload.workload.metadata.kind}}</clr-dg-cell>
                   <clr-dg-cell>{{violation.workload.workload.pods.length}}</clr-dg-cell>
-                  <clr-dg-cell>{{violation.workload.workload.metadata.apiVersion}}</clr-dg-cell>
+                  <!-- <clr-dg-cell>{{violation.workload.workload.metadata.apiVersion}}</clr-dg-cell> -->
                 </clr-dg-row>
 
                 <clr-dg-footer>

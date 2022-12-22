@@ -5,7 +5,7 @@ import {
   LineChart,
   LineSeriesOption,
   PieChart,
-  PieSeriesOption
+  PieSeriesOption,
 } from 'echarts/charts';
 import {
   TitleComponent,

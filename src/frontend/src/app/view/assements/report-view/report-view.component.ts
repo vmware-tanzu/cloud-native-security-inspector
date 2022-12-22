@@ -25,7 +25,6 @@ export class ReportViewComponent implements OnInit, OnDestroy {
   @ViewChild('pagination') pagination!:any
   public pageSizeOptions = [10, 20, 50, 100, 500];
   public showDetailFlag = false
-  private timer:any
   public pageMaxCount = 1
   public continues = ''
   public defaultSize = 10
@@ -44,15 +43,8 @@ export class ReportViewComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.init()
     this.echartsInit()
-    // this.timer = setInterval(() => {
-    //   if (this.shardService.reportLineChartOption.series[0].data.length > 0) {
-    //     clearInterval(this.timer)
-    //   }
-    //   if (this.reportline) {
-    //     this.reportline.render()        
-    //   }
-    // },100)   
     this.policyService.getAllAssessmentreports().subscribe(
       data => {
         let lineDate: string[] = []
@@ -99,7 +91,6 @@ export class ReportViewComponent implements OnInit, OnDestroy {
     
   toReport(report: any) {
     this.showDetailFlag = true
-    // this.shardService.navVariable = 'Cluster'
     const annotations:{key:string, value:string}[] = []
     const labels:{key:string, value:string}[] = []
     for (const key in report.metadata.annotations) {
@@ -120,7 +111,6 @@ export class ReportViewComponent implements OnInit, OnDestroy {
     }
     this.shardService.currentReport = report
     this.reportDetail.currentReport = report.spec.namespaceAssessments[0]
-    // this.resetWorkload('reportDetailFlag')
   }
 
   pageChange(event: any) {
@@ -191,8 +181,8 @@ export class ReportViewComponent implements OnInit, OnDestroy {
 
   showDetail(event:any) {
 
-    for (let index = 0; index < event.target.classList.length; index++) {      
-      if (event.target.classList[index] === 'report-detai-bg') {
+    for (let index = 0; index < event.target.classList.length; index++) { 
+      if (event.target.classList[index] === 'report-detai-bg' || event.target.classList[index]  === 'report-detai-left') {
         this.showDetailFlag = false
         this.shardService.currentReport = null
         continue;
@@ -213,7 +203,7 @@ export class ReportViewComponent implements OnInit, OnDestroy {
       return a-b;
     }); 
     let yAxis = {
-      min: -1,
+      min: 0,
       max: 30,
       splitLine: {
         show: true,
@@ -262,6 +252,7 @@ export class ReportViewComponent implements OnInit, OnDestroy {
       },
       xAxis: [
         {
+          type: 'category',
           data: dateList
         }
       ],
@@ -281,5 +272,40 @@ export class ReportViewComponent implements OnInit, OnDestroy {
     }
     this.myChart.clear()
     this.echartsOption && this.myChart.setOption(this.echartsOption);
+  }
+
+  init() {
+    let resizeLeft = 445
+    window.onload = function () {
+      var resize: any = document.getElementById("resize");
+      var left: any = document.getElementById("left");
+      var right: any = document.getElementById("right");
+      var box: any = document.getElementById("box");
+      resize.onmousedown = function (e: any) {
+        console.log('e', e);
+          var startX = e.clientX;          
+          resize.left = resizeLeft;          
+            document.onmousemove = function (e) {
+              var endX = e.clientX;
+              
+              var moveLen = resize.left + (startX - endX);
+                            if (moveLen < 445) moveLen = 445;
+              if (moveLen > box.clientWidth-55) moveLen = box.clientWidth-55;
+
+
+              resize.style.left = moveLen;
+              resizeLeft = moveLen
+              right.style.width = moveLen + "px";
+              left.style.width = (box.clientWidth - moveLen - 5) + "px";
+          }
+          document.onmouseup = function (evt) {
+              document.onmousemove = null;
+              document.onmouseup = null;
+              resize.releaseCapture && resize.releaseCapture();
+          }
+          resize.setCapture && resize.setCapture();
+          return false;
+      }
+  }
   }
 }

@@ -53,7 +53,7 @@ export class RiskReportViewComponent implements OnInit {
       return a-b;
     }); 
     let yAxis: any = {
-      min: -1,
+      min: 0,
       max: 30,
       splitLine: {
         show: true,
@@ -63,7 +63,7 @@ export class RiskReportViewComponent implements OnInit {
         }
       }
     }
-    if (sortArr[0] !==0 && sortArr[0] !== sortArr[sortArr.length-1]) {
+    if (sortArr[0] && sortArr[0] !==0 && sortArr[0] !== sortArr[sortArr.length-1]) {
       yAxis = {
         min: sortArr[0],
         max: sortArr[sortArr.length-1],
@@ -76,7 +76,7 @@ export class RiskReportViewComponent implements OnInit {
           }
         }
       }
-    } else if (sortArr[0] !==0) {
+    } else if (sortArr[0] && sortArr[0] !==0) {
       yAxis = {
         min: sortArr[sortArr.length-1] - 50,
         max: sortArr[sortArr.length-1] + 50,
@@ -106,7 +106,7 @@ export class RiskReportViewComponent implements OnInit {
       title: [
         {
           left: 'center',
-          text: 'number of vulnerabilities',
+          text: 'Number of Risks',
           textStyle: {
             color: '#fff'
           }
@@ -117,6 +117,7 @@ export class RiskReportViewComponent implements OnInit {
       },
       xAxis: [
         {
+          type: 'category',
           data: dateList
         }
       ],
@@ -204,10 +205,7 @@ export class RiskReportViewComponent implements OnInit {
     }); 
     
     
-    if (that.echartsLoading) {
-      that.echartsRender(dateList, valueList)
-      that.echartsLoading = false       
-    }
+    that.echartsRender(dateList, valueList)
     that.dgLoading = false;
   }
 
@@ -285,12 +283,10 @@ export class RiskReportViewComponent implements OnInit {
           })
           that.echartsRender(dateList, valueList)
           that.echartsLoading = false
-        }
-                   
+        }          
 
       } else {
         that.riskCallBack(data,that, query, data.hits.total.value)
-
       }
       
 

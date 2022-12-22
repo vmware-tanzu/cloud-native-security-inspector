@@ -55,7 +55,7 @@ export class ShardService {
     xAxis: [],
     series: [
       {
-        label: 'workload amount',
+        label: 'Number of Workloads',
         data: [],
         backgroundColor: [
           '#37A2EB'
@@ -78,7 +78,7 @@ export class ShardService {
     xAxis: [],
     series: [
       {
-        label: 'violation amount',
+        label: 'Number of Violations',
         data: [],
         backgroundColor: [
           '#EE6666'
@@ -101,7 +101,7 @@ export class ShardService {
     xAxis: [],
     series: [
       {
-        label: 'violation amount',
+        label: 'Number of Violations',
         data: [65, 59, 80, 81, 56, 55, 40],
         backgroundColor: [
           '#EE6666'

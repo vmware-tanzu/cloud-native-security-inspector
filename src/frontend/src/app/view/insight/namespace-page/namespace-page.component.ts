@@ -52,7 +52,7 @@ export class NamespacePageComponent implements OnInit {
       this.shardService.workloadChartbarOption.xAxis = []
       obj.workloads.workloads.forEach(workload => {
         this.shardService.workloadChartbarOption.xAxis.push(workload.name)
-        this.shardService.workloadChartbarOption.series[0].data.push(workload.workloadList.length)
+        this.shardService.workloadChartbarOption.series[0].data.push(workload.violationList.length)
       });
     }    
     setTimeout(() => {      
@@ -82,7 +82,7 @@ export class NamespacePageComponent implements OnInit {
   }
   packedbubbleRender(data:{normal:number, abnormal:number, compliant:number}) {
     setTimeout(() => {
-      this.packedbubble?.getSeries(data.normal, data.abnormal, data.compliant)
+      this.packedbubble?.getSeries(data.normal, data.abnormal)
     });
   }
 

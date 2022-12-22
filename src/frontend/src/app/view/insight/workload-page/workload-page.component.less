@@ -27,16 +27,16 @@
       transition: background-color 2;
     }
     .report-detai {
-      position: absolute;
-      right: -700px;
-      top: 0;
-      width: 700px;
+      // position: absolute;
+      // right: -700px;
+      // top: 0;
+      // width: 700px;
       height: auto;
       min-height: 100vh;
       opacity: 0;
       transition: right 5s, opacity 2s;
       &.show {
-        right: 0;
+        // right: 0;
         opacity: 1;
         transition: right 5s, opacity 2s;
       }
@@ -72,6 +72,27 @@
           color: #fff;
         }
       }
+    }
+  }
+  #box {
+    flex: 1;
+    #resize {
+      width: 5px;
+      height: 100%;
+      cursor: w-resize;
+      float: left;
+      position: relative;
+      left: 0px;
+      background-color: #21333B;
+    }
+    #right {
+      width: 445px;
+      float: right;
+    }
+    #left {
+      float: left;
+      width: calc(100% - 450px);
+      height: 100%;
     }
   }
 

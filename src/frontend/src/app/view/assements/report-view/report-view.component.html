@@ -7,10 +7,9 @@
   <h2>
     
     {{'Report_View.title'|translate}}</h2>
-  <!-- <app-line id='report-line' #reportline [chartOptions]="shardService.reportLineChartOption"></app-line> -->
     <div id="report-line" style="flex: 1;height:450px; overflow: hidden;"> </div>
 
-  <clr-datagrid (clrDgRefresh)="pageChange($event)">
+  <clr-datagrid style="height: 450px; overflow: auto;" (clrDgRefresh)="pageChange($event)">
     <clr-dg-column [clrDgField]="'metadata.namespace'">{{'CommonlyUse.name'|translate}}</clr-dg-column>
     <clr-dg-column class="namespace-filter">
       {{'CommonlyUse.namespace'|translate}}
@@ -22,8 +21,6 @@
       </div>
     </clr-dg-column>
     <clr-dg-column >{{'CommonlyUse.create_time'|translate}}</clr-dg-column>
-    <!-- <clr-dg-column >{{'CommonlyUse.action'|translate}}</clr-dg-column> -->
-
     <clr-dg-row *clrDgItems="let report of shardService.reportslist">
       <clr-dg-cell>
         <a href="javascript:;" (click)="toReport(report)" >
@@ -33,9 +30,6 @@
       </clr-dg-cell>
       <clr-dg-cell>{{report.metadata.namespace}}</clr-dg-cell>
       <clr-dg-cell>{{report.metadata.creationTimestamp}}</clr-dg-cell>
-      <!-- <clr-dg-cell >
-      </clr-dg-cell> -->
-
     </clr-dg-row>
     <clr-dg-footer>
       <clr-dg-pagination #pagination [clrDgPageInputDisabled]="true" [clrDgPageSize]="defaultSize" [clrDgLastPage]="pageMaxCount">
@@ -46,8 +40,10 @@
   </clr-dg-footer>
   
   </clr-datagrid>
-  <div class="report-detai-bg" (click)='showDetail($event)' [hidden]="!(shardService.currentReport && showDetail)">
-    <div class="report-detai" [ngClass]="{'show': showDetailFlag}" >
+  <div id="box" class="report-detai-bg" (click)='showDetail($event)' [hidden]="!(shardService.currentReport && showDetail)">
+    <div id="left" class="report-detai-left"></div>
+    <div id="resize"></div>
+    <div id="right" class="report-detai" [ngClass]="{'show': showDetailFlag}" >
       <app-report-view-detail #reportDetail></app-report-view-detail>
     </div>
   </div>

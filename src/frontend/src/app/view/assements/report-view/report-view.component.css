@@ -19,19 +19,12 @@
   height: 100%;
 }
 .report .report-detai-bg .report-detai {
-  position: absolute;
-  right: -700px;
-  top: 0;
-  width: 1200px;
   height: auto;
   min-height: 100vh;
   opacity: 0;
-  transition: right 5s, opacity 2s;
 }
 .report .report-detai-bg .report-detai.show {
-  right: 0;
   opacity: 1;
-  transition: right 5s, opacity 2s;
 }
 .report::ng-deep clr-datagrid clr-dg-column .datagrid-column-flex button {
   color: #fff;
@@ -68,4 +61,25 @@
 }
 .report::ng-deep clr-datagrid clr-dg-row clr-dg-cell {
   color: #fff;
+}
+.report #box {
+  flex: 1;
+}
+.report #box #resize {
+  width: 5px;
+  height: 100%;
+  cursor: w-resize;
+  float: left;
+  position: relative;
+  left: 0px;
+  background-color: #21333B;
+}
+.report #box #right {
+  width: 445px;
+  float: right;
+}
+.report #box #left {
+  float: left;
+  width: calc(100% - 450px);
+  height: 100%;
 }

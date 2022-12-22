@@ -207,6 +207,7 @@
   "Kube_bench_list": {
     "title": "Kube Bench报告",
     "node_type": "节点类型",
+    "node_name": "节点名称",
     "passed": "通过",
     "failed": "失败",
     "warned": "警告",

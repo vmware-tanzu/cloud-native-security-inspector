@@ -6,13 +6,11 @@
     </span>
   </div>
   <div class="chart-warp">
-    <div id="work-node" [hidden]="!(currentChart === 'work-node')" [style]="{width:  currentChart === 'work-node' ? '1400px' : 0}" style="flex: 1; height: 400px;"></div>
-    <div id="k8s-policy" [hidden]="!(currentChart === 'policy')" [style]="{width:  currentChart === 'policy' ? '1400px' : 0}" style="flex: 1; height: 400px;"></div>
-
-    <div class="circle">
-      <span (click)="cutEchart('work-node')" [class]="{active: currentChart === 'work-node'}"></span>
-      <span (click)="cutEchart('policy')" [class]="{active: currentChart === 'policy'}"></span>
-    </div>
+    <div id="work-node" style="flex: 1; width: 300px; height: 360px;"></div>
+    <div id="k8s-policy" style="flex: 1; width: 300px; height: 360px;"></div>
+    <div id="control-plane-security" style="flex: 1; width: 300px; height: 360px;"></div>
+    <div id="control-plane" style="flex: 1; width: 300px; height: 360px;"></div>
+    <div id="etcd-node" style="flex: 1; height: 360px;"></div>
   </div>
 
   <clr-datagrid [clrDgLoading]="dgLoading" (clrDgRefresh)="pageChange($event)">
@@ -27,15 +25,15 @@
         </app-dg-filter>
       </div>
     </clr-dg-column>
-    <!-- <clr-dg-column class="namespace-filter">
-      {{'Kube_bench_list.node_type'|translate}}     
+    <clr-dg-column class="namespace-filter">
+      {{'Kube_bench_list.node_name'|translate}}     
      <cds-icon shape="filter-grid" class="is-solid" (click)="kubeNodeTypeFilterFlag = !kubeNodeTypeFilterFlag"></cds-icon>
       <div class="filter-warp" *ngIf="kubeNodeTypeFilterFlag">
         <cds-icon style="position: absolute; right: 10px; top: 10px;" shape="window-close" (click)="kubeNodeTypeFilterFlag=false"></cds-icon>
         <app-dg-filter label="kube" labelKey="node_type" [pageSize]="defaultSize" (updateListHandler)="getKubeBenchReportList($event)">
         </app-dg-filter>
       </div>
-    </clr-dg-column> -->
+    </clr-dg-column>
     <clr-dg-column >
       <div class="sort">
         {{'CommonlyUse.create_time'|translate}}
@@ -56,7 +54,7 @@
         </a>
       </clr-dg-cell>
       <clr-dg-cell *ngIf="kube">{{kube._source.text}}</clr-dg-cell>
-      <!-- <clr-dg-cell *ngIf="kube">{{kube._source.node_type}}</clr-dg-cell> -->
+      <clr-dg-cell *ngIf="kube">{{kube._source.node_name}}</clr-dg-cell>
       <clr-dg-cell *ngIf="kube">{{kube._source.createTime | date: 'medium'}}</clr-dg-cell>
       <clr-dg-cell *ngIf="kube">
         <a href="javascript:;" class="label clickable" style="border-color: #266900;">

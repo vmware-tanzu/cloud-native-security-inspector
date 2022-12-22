@@ -92,14 +92,14 @@ export class ClusterPageComponent implements OnInit {
         normal: this.shardService.allNormal,
         abnormal: this.shardService.allAbnormal,
         compliant: this.shardService.allCompliant,
-      }      
+      }    
       // this.packedbubbleRender(data)
       setTimeout(() => {
         if (this.packedbubble) {
-          this.packedbubble.getSeries(data.normal, data.abnormal, data.compliant)
+          this.packedbubble.getSeries(data.normal, data.abnormal)
         }
       });
-      this.lineRender()
+      // this.lineRender()
       this.summary = value
 
     } else {
@@ -133,34 +133,32 @@ export class ClusterPageComponent implements OnInit {
           const newData = {
             normal: this.shardService.allNormal,
             abnormal: this.shardService.allAbnormal,
-            compliant: this.shardService.allCompliant,
           }
           if (this.packedbubble) {
-            this.packedbubble.getSeries(newData.normal, newData.abnormal, newData.compliant)
+            this.packedbubble.getSeries(newData.normal, newData.abnormal)
           }
       }
     )
-    this.lineRender()
   }
   lineRender() {
-    this.timer = setInterval(() => {
-      if (this.shardService.reportLineChartOption.series[0].data.length > 0) {
-        clearInterval(this.timer)
-        if (this.reportline) {
-          this.reportline.render()
-        }
-      }
-    },100) 
+    // this.reportline.render()
+    // this.timer = setInterval(() => {
+    //   if (this.shardService.reportLineChartOption.series[0].data.length > 0) {
+    //     clearInterval(this.timer)
+    //     if (this.reportline) {
+    //     }
+    //   }
+    // },100) 
   }
 
-  packedbubbleRender(data:{normal:number, abnormal:number, compliant:number}) {
-    this.timer2 = setInterval(() => {      
-      if (this.packedbubble) {
-        this.packedbubble.getSeries(data.normal, data.abnormal, data.compliant)
-        clearInterval(this.timer)
-      }
-    }, 100);
-  }
+  // packedbubbleRender(data:{normal:number, abnormal:number, compliant:number}) {
+  //   this.timer2 = setInterval(() => {      
+  //     if (this.packedbubble) {
+  //       this.packedbubble.getSeries(data.normal, data.abnormal, data.compliant)
+  //       clearInterval(this.timer)
+  //     }
+  //   }, 100);
+  // }
   toWorkload(item:{namespace:string, workload:any}) {
     this.shardService.currentWorkload = item
     this.shardService.showWorkloadDetailFlag = true
