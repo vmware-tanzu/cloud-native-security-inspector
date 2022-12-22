@@ -7,16 +7,15 @@ import (
 	"time"
 
 	"github.com/goharbor/harbor/src/lib/errors"
+	goharborv1alpha1 "github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/providers"
 	"k8s.io/apimachinery/pkg/api/equality"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/log"
-
-	goharborv1alpha1 "github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/providers"
 )
 
 // SettingReconciler reconciles a Setting object
@@ -40,27 +39,26 @@ type SettingReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.8.3/pkg/reconcile
 func (r *SettingReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	logger := log.FromContext(ctx).WithName("SettingReconciler").WithValues("Setting", req.NamespacedName)
-	logger.Info("Reconciling")
+	log.Info("Reconciling")
 
 	setting := &goharborv1alpha1.Setting{}
 	if err := r.Get(ctx, req.NamespacedName, setting); err != nil {
 		if !apierrors.IsNotFound(err) {
-			logger.Error(err, "unable to get setting")
+			log.Error(err, "unable to get setting")
 		}
 		// Ignore the not found error.
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
 	if !setting.DeletionTimestamp.IsZero() {
-		logger.Info("Skip reconcile because setting has the deletionTimestamp")
+		log.Info("Skip reconcile because setting has the deletionTimestamp")
 		// Exit gracefully and no clean up needed.
 		return ctrl.Result{}, nil
 	}
 
 	// if data source is disabled, skip reconcile
 	if setting.Spec.DataSource.Disabled {
-		logger.Info("Skip reconcile because the data source is disabled")
+		log.Info("Skip reconcile because the data source is disabled")
 		return ctrl.Result{}, nil
 	}
 
@@ -72,30 +70,30 @@ func (r *SettingReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 	// get data source provider
 	provider, err := providers.NewProvider(ctx, r.Client, setting)
 	if err != nil {
-		logger.Error(err, "failed to create provider")
+		log.Error(err, "failed to create provider")
 		return ctrl.Result{}, errors.Wrap(err, "new provider error")
 	}
 	// data source health check
 	if err = r.checkDataSource(ctx, provider, settingCopy); err != nil {
-		logger.Error(err, "failed to check data source health")
+		log.Error(err, "failed to check data source health")
 	}
 	// ensure known registries
 	if err = r.ensureKnownRegistries(ctx, provider, settingCopy); err != nil {
-		logger.Error(err, "failed to ensure known registries")
+		log.Error(err, "failed to ensure known registries")
 	}
 	// apply config
 	if err = r.applyConfig(ctx, provider, settingCopy); err != nil {
-		logger.Error(err, "failed to apply config")
+		log.Error(err, "failed to apply config")
 	}
 	// update status if changed
 	if !equality.Semantic.DeepEqual(setting.Status, settingCopy.Status.AggregateStatus()) {
 		if err = r.Client.Status().Update(ctx, settingCopy); err != nil {
 			return ctrl.Result{}, errors.Wrap(err, "update status error")
 		}
-		logger.Info("Updated status", "status", settingCopy.Status)
+		log.Info("Updated status", "status", settingCopy.Status)
 	}
 
-	logger.Info("Reconcile completed")
+	log.Info("Reconcile completed")
 	return ctrl.Result{}, nil
 }
 

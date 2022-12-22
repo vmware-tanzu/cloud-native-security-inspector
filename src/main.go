@@ -22,8 +22,7 @@ import (
 )
 
 var (
-	scheme   = runtime.NewScheme()
-	setupLog = ctrl.Log.WithName("setup")
+	scheme = runtime.NewScheme()
 )
 
 func init() {
@@ -90,7 +89,7 @@ func main() {
 		log.Fatalf("unable to set up ready check, error: %s", err)
 	}
 
-	setupLog.Info("starting k8s-security-inspector manager")
+	log.Info("starting k8s-security-inspector manager")
 	if err := mgr.Start(ctrl.SetupSignalHandler()); err != nil {
 		log.Fatalf("problem running manager, error: %s", err)
 	}

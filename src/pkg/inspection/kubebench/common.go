@@ -71,12 +71,12 @@ func runChecks(nodetype check.NodeType, testYamlFile, detectedVersion string) {
 		exitWithError(fmt.Errorf("error opening %s test file: %v", testYamlFile, err))
 	}
 
-	log.Info(fmt.Sprintf("Using test file: %s\n", testYamlFile))
+	log.Infof("Using test file: %s\n", testYamlFile)
 
 	// Get the viper config for this section of tests
 	typeConf := viper.Sub(string(nodetype))
 	if typeConf == nil {
-		colorPrint(check.FAIL, fmt.Sprintf("No config settings for %s\n", string(nodetype)))
+		log.Error(check.FAIL, fmt.Sprintf("No config settings for %s\n", string(nodetype)))
 		os.Exit(1)
 	}
 
@@ -84,7 +84,7 @@ func runChecks(nodetype check.NodeType, testYamlFile, detectedVersion string) {
 	binmap, err := getBinaries(typeConf, nodetype)
 	// Checks that the executables we need for the section are running.
 	if err != nil {
-		log.Info(fmt.Sprintf("failed to get a set of executables needed for tests: %v", err))
+		log.Infof("failed to get a set of executables needed for tests: %v", err)
 	}
 
 	confmap := getFiles(typeConf, "config")
@@ -157,12 +157,6 @@ func parseSkipIds(skipIds string) map[string]bool {
 	return skipIdMap
 }
 
-// colorPrint outputs the state in a specific colour, along with a message string
-func colorPrint(state check.State, s string) {
-	colors[state].Printf("[%s] ", state)
-	fmt.Printf("%s", s)
-}
-
 // loadConfig finds the correct config dir based on the kubernetes version,
 // merges any specific config.yaml file found with the main config
 // and returns the benchmark file to use.
@@ -201,13 +195,13 @@ func mergeConfig(path string) error {
 	err := viper.MergeInConfig()
 	if err != nil {
 		if os.IsNotExist(err) {
-			log.Info(fmt.Sprintf("No version-specific config.yaml file in %s", path))
+			log.Infof("No version-specific config.yaml file in %s", path)
 		} else {
 			return fmt.Errorf("couldn't read config file %s: %v", path+"/config.yaml", err)
 		}
 	}
 
-	log.Info(fmt.Sprintf("Using config file: %s\n", viper.ConfigFileUsed()))
+	log.Infof("Using config file: %s\n", viper.ConfigFileUsed())
 
 	return nil
 }
@@ -215,16 +209,16 @@ func mergeConfig(path string) error {
 func mapToBenchmarkVersion(kubeToBenchmarkMap map[string]string, kv string) (string, error) {
 	kvOriginal := kv
 	cisVersion, found := kubeToBenchmarkMap[kv]
-	log.Info(fmt.Sprintf("mapToBenchmarkVersion for k8sVersion: %q cisVersion: %q found: %t\n", kv, cisVersion, found))
+	log.Infof("mapToBenchmarkVersion for k8sVersion: %q cisVersion: %q found: %t\n", kv, cisVersion, found)
 	for !found && (kv != defaultKubeVersion && !isEmpty(kv)) {
 		kv = decrementVersion(kv)
 		cisVersion, found = kubeToBenchmarkMap[kv]
-		log.Info(fmt.Sprintf("mapToBenchmarkVersion for k8sVersion: %q cisVersion: %q found: %t\n", kv, cisVersion, found))
+		log.Infof("mapToBenchmarkVersion for k8sVersion: %q cisVersion: %q found: %t\n", kv, cisVersion, found)
 	}
 
 	if !found {
-		log.Info(fmt.Sprintf("mapToBenchmarkVersion unable to find a match for: %q", kvOriginal))
-		log.Info(fmt.Sprintf("mapToBenchmarkVersion kubeToBenchmarkMap: %#v", kubeToBenchmarkMap))
+		log.Infof("mapToBenchmarkVersion unable to find a match for: %q", kvOriginal)
+		log.Infof("mapToBenchmarkVersion kubeToBenchmarkMap: %#v", kubeToBenchmarkMap)
 		return "", fmt.Errorf("unable to find a matching Benchmark Version match for kubernetes version: %s", kvOriginal)
 	}
 
@@ -281,10 +275,10 @@ func getBenchmarkVersion(kubeVersion, benchmarkVersion string, platform Platform
 			return "", err
 		}
 
-		log.Info(fmt.Sprintf("Mapped Kubernetes version: %s to Benchmark version: %s", kubeVersion, benchmarkVersion))
+		log.Infof("Mapped Kubernetes version: %s to Benchmark version: %s", kubeVersion, benchmarkVersion)
 	}
 
-	log.Info(fmt.Sprintf("Kubernetes version: %q to Benchmark version: %q", kubeVersion, benchmarkVersion))
+	log.Infof("Kubernetes version: %q to Benchmark version: %q", kubeVersion, benchmarkVersion)
 	return benchmarkVersion, nil
 }
 

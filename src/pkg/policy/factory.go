@@ -4,10 +4,8 @@ package policy
 
 import (
 	"fmt"
-
 	"github.com/pkg/errors"
 
-	"github.com/go-logr/logr"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/policy/network"
 	"k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -18,7 +16,6 @@ var _ Enforcer = &network.Enforcer{}
 // EnforcerOptions defines options for the enforcer.
 type EnforcerOptions struct {
 	kc     client.Client
-	logger logr.Logger
 	scheme *runtime.Scheme
 }
 
@@ -36,13 +33,6 @@ type EnforcerOption func(options *EnforcerOptions)
 func UseClient(cli client.Client) EnforcerOption {
 	return func(options *EnforcerOptions) {
 		options.kc = cli
-	}
-}
-
-// WithLogger sets logger object.
-func WithLogger(log logr.Logger) EnforcerOption {
-	return func(options *EnforcerOptions) {
-		options.logger = log
 	}
 }
 

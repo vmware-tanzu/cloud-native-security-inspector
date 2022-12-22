@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/aquasecurity/kube-bench/check"
-	"github.com/fatih/color"
 	"github.com/spf13/viper"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
 	"os"
@@ -14,14 +13,6 @@ import (
 	"strconv"
 	"strings"
 )
-
-// Print colors
-var colors = map[check.State]*color.Color{
-	check.PASS: color.New(color.FgGreen),
-	check.FAIL: color.New(color.FgRed),
-	check.WARN: color.New(color.FgYellow),
-	check.INFO: color.New(color.FgBlue),
-}
 
 var (
 	psFunc          func(string) string
@@ -74,14 +65,14 @@ func cleanIDs(list string) map[string]bool {
 func ps(proc string) string {
 	// TODO: truncate proc to 15 chars
 	// See https://github.com/aquasecurity/kube-bench/issues/328#issuecomment-506813344
-	log.Info(fmt.Sprintf("ps - proc: %q", proc))
+	log.Infof("ps - proc: %q", proc)
 	cmd := exec.Command("/bin/ps", "-C", proc, "-o", "cmd", "--no-headers")
 	out, err := cmd.Output()
 	if err != nil {
 		log.Info(fmt.Errorf("%s: %s", cmd.Args, err))
 	}
 
-	log.Info(fmt.Sprintf("ps - returning: %q", string(out)))
+	log.Infof("ps - returning: %q", string(out))
 	return string(out)
 }
 
@@ -108,9 +99,9 @@ func getBinaries(v *viper.Viper, nodetype check.NodeType) (map[string]string, er
 			// Default the executable name that we'll substitute to the name of the component
 			if bin == "" {
 				bin = component
-				log.Info(fmt.Sprintf("Component %s not running", component))
+				log.Infof("Component %s not running", component)
 			} else {
-				log.Info(fmt.Sprintf("Component %s uses running binary %s", component, bin))
+				log.Infof("Component %s uses running binary %s", component, bin)
 			}
 			binmap[component] = bin
 		}
@@ -121,11 +112,11 @@ func getBinaries(v *viper.Viper, nodetype check.NodeType) (map[string]string, er
 
 // getConfigFilePath locates the config files we should be using for CIS version
 func getConfigFilePath(benchmarkVersion string, filename string) (path string, err error) {
-	log.Info(fmt.Sprintf("Looking for config specific CIS version %q", benchmarkVersion))
+	log.Infof("Looking for config specific CIS version %q", benchmarkVersion)
 
 	path = filepath.Join(cfgDir, benchmarkVersion)
-	file := filepath.Join(path, string(filename))
-	log.Info(fmt.Sprintf("Looking for file: %s", file))
+	file := filepath.Join(path, filename)
+	log.Infof("Looking for file: %s", file)
 
 	if _, err := os.Stat(file); err != nil {
 		log.Infof("error accessing config file: %q error: %v\n", file, err)
@@ -188,14 +179,14 @@ func getFiles(v *viper.Viper, fileType string) map[string]string {
 		if file == "" {
 			if s.IsSet(defaultOpt) {
 				file = s.GetString(defaultOpt)
-				log.Info(fmt.Sprintf("Using default %s file name '%s' for component %s", fileType, file, component))
+				log.Infof("Using default %s file name '%s' for component %s", fileType, file, component)
 			} else {
 				// Default the file name that we'll substitute to the name of the component
-				log.Info(fmt.Sprintf("Missing %s file for %s", fileType, component))
+				log.Infof("Missing %s file for %s", fileType, component)
 				file = component
 			}
 		} else {
-			log.Info(fmt.Sprintf("Component %s uses %s file '%s'", component, fileType, file))
+			log.Infof("Component %s uses %s file '%s'", component, fileType, file)
 		}
 
 		filemap[component] = file
@@ -222,7 +213,7 @@ func verifyBin(bin string) bool {
 	reFirstWord := regexp.MustCompile(`^(\S*\/)*` + bin)
 	lines := strings.Split(out, "\n")
 	for _, l := range lines {
-		log.Info(fmt.Sprintf("reFirstWord.Match(%s)", l))
+		log.Infof("reFirstWord.Match(%s)", l)
 		if reFirstWord.Match([]byte(l)) {
 			return true
 		}
@@ -239,7 +230,7 @@ func findConfigFile(candidates []string) string {
 			return c
 		}
 		if !os.IsNotExist(err) {
-			log.Info(fmt.Sprintf("error looking for file %s: %v", c, err))
+			log.Infof("error looking for file %s: %v", c, err)
 			return ""
 		}
 	}
@@ -253,7 +244,7 @@ func findExecutable(candidates []string) (string, error) {
 		if verifyBin(c) {
 			return c, nil
 		}
-		log.Info(fmt.Sprintf("executable '%s' not running", c))
+		log.Infof("executable '%s' not running", c)
 	}
 
 	return "", fmt.Errorf("no candidates running")
@@ -289,7 +280,7 @@ Alternatively, you can specify the version with --version
 
 func getKubeVersion() (*KubeVersion, error) {
 	if k8sVer, err := getKubeVersionFromRESTAPI(); err == nil {
-		log.Info(fmt.Sprintf("Kubernetes REST API Reported version: %s", k8sVer))
+		log.Infof("Kubernetes REST API Reported version: %s", k8sVer)
 		return k8sVer, nil
 	}
 
@@ -353,7 +344,7 @@ func getVersionFromKubectlOutput(s string) *KubeVersion {
 			msg := fmt.Sprintf(`Warning: Kubernetes version was not auto-detected because kubectl could not connect to the Kubernetes server. This may be because the kubeconfig information is missing or has credentials that do not match the server. Assuming default version %s`, defaultKubeVersion)
 			fmt.Fprintln(os.Stderr, msg)
 		}
-		log.Info(fmt.Sprintf("Unable to get Kubernetes version from kubectl, using default version: %s", defaultKubeVersion))
+		log.Infof("Unable to get Kubernetes version from kubectl, using default version: %s", defaultKubeVersion)
 		return &KubeVersion{baseVersion: defaultKubeVersion}
 	}
 	sv := vrObj.ServerVersion
@@ -369,7 +360,7 @@ func getVersionFromKubeletOutput(s string) *KubeVersion {
 	serverVersionRe := regexp.MustCompile(`Kubernetes v(\d+.\d+)`)
 	subs := serverVersionRe.FindStringSubmatch(s)
 	if len(subs) < 2 {
-		log.Info(fmt.Sprintf("Unable to get Kubernetes version from kubelet, using default version: %s", defaultKubeVersion))
+		log.Infof("Unable to get Kubernetes version from kubelet, using default version: %s", defaultKubeVersion)
 		return &KubeVersion{baseVersion: defaultKubeVersion}
 	}
 	return &KubeVersion{baseVersion: subs[1]}
@@ -380,10 +371,10 @@ func makeSubstitutions(s string, ext string, m map[string]string) (string, []str
 	for k, v := range m {
 		subst := "$" + k + ext
 		if v == "" {
-			log.Info(fmt.Sprintf("No substitution for '%s'\n", subst))
+			log.Infof("No substitution for '%s'\n", subst)
 			continue
 		}
-		log.Info(fmt.Sprintf("Substituting %s with '%s'\n", subst, v))
+		log.Infof("Substituting %s with '%s'\n", subst, v)
 		beforeS := s
 		s = multiWordReplace(s, subst, v)
 		if beforeS != s {
@@ -520,14 +511,14 @@ func getOcpValidVersion(ocpVer string) (string, error) {
 	ocpOriginal := ocpVer
 
 	for !isEmpty(ocpVer) {
-		log.Info(fmt.Sprintf("getOcpBenchmarkVersion check for ocp: %q \n", ocpVer))
+		log.Infof("getOcpBenchmarkVersion check for ocp: %q \n", ocpVer)
 		if ocpVer == "3.10" || ocpVer == "4.1" {
-			log.Info(fmt.Sprintf("getOcpBenchmarkVersion found valid version for ocp: %q \n", ocpVer))
+			log.Infof("getOcpBenchmarkVersion found valid version for ocp: %q \n", ocpVer)
 			return ocpVer, nil
 		}
 		ocpVer = decrementVersion(ocpVer)
 	}
 
-	log.Info(fmt.Sprintf("getOcpBenchmarkVersion unable to find a match for: %q", ocpOriginal))
+	log.Infof("getOcpBenchmarkVersion unable to find a match for: %q", ocpOriginal)
 	return "", fmt.Errorf("unable to find a matching Benchmark Version match for ocp version: %s", ocpOriginal)
 }

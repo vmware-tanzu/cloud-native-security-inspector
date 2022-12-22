@@ -10,11 +10,11 @@ import (
 	"github.com/pkg/errors"
 
 	cnsiv1alpha1 "github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/log"
 )
 
 const (
@@ -41,10 +41,7 @@ type AssessmentReportReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.8.3/pkg/reconcile
 func (r *AssessmentReportReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	logFromContext := log.FromContext(ctx).
-		WithName("AssessmentReportReconciler")
-
-	logFromContext.Info("Reconcile assessment report", "resource", req.NamespacedName)
+	log.Info("Reconcile assessment report", "resource", req.NamespacedName)
 
 	// First get the assessment report.
 	report := &cnsiv1alpha1.AssessmentReport{}
@@ -54,11 +51,11 @@ func (r *AssessmentReportReconciler) Reconcile(ctx context.Context, req ctrl.Req
 	}, report); err != nil {
 		// Resource has been deleted.
 		if apierrors.IsNotFound(err) {
-			logFromContext.Info("Reconcile completed.")
+			log.Info("Reconcile completed.")
 			return ctrl.Result{}, nil
 		}
 
-		logFromContext.Error(err, "get assessment report")
+		log.Error(err, "get assessment report")
 		return ctrl.Result{}, err
 	}
 
@@ -75,7 +72,7 @@ func (r *AssessmentReportReconciler) Reconcile(ctx context.Context, req ctrl.Req
 	if owner, ok := report.Annotations[cnsiv1alpha1.OwnerReferenceAnnotation]; ok {
 		// Get inspection policy here.
 		if err := r.Client.Get(ctx, client.ObjectKey{Name: owner}, policy); err != nil {
-			logFromContext.Error(err, "get inspection policy owner")
+			log.Error(err, "get inspection policy owner")
 			return ctrl.Result{}, err
 		}
 
@@ -86,7 +83,7 @@ func (r *AssessmentReportReconciler) Reconcile(ctx context.Context, req ctrl.Req
 
 			unixT, err := strconv.ParseInt(timestamp, 10, 64)
 			if err != nil {
-				logFromContext.Error(err, "parse creation timestamp")
+				log.Error(err, "parse creation timestamp")
 				return ctrl.Result{}, errors.Wrap(err, "parse creation timestamp")
 			}
 
@@ -94,7 +91,7 @@ func (r *AssessmentReportReconciler) Reconcile(ctx context.Context, req ctrl.Req
 			if time.Unix(unixT, 0).UTC().Add(liveTime).Before(time.Now().UTC()) {
 				// Discard dirty report.
 				if err := r.Client.Delete(ctx, report); err != nil {
-					logFromContext.Error(err, "delete dirty assessment report")
+					log.Error(err, "delete dirty assessment report")
 					return ctrl.Result{}, err
 				}
 
@@ -105,7 +102,7 @@ func (r *AssessmentReportReconciler) Reconcile(ctx context.Context, req ctrl.Req
 	}
 
 	if skipped {
-		logFromContext.Info("Skip assessment report because of missing required annotations")
+		log.Info("Skip assessment report because of missing required annotations")
 		return ctrl.Result{}, nil
 	}
 
@@ -115,7 +112,7 @@ func (r *AssessmentReportReconciler) Reconcile(ctx context.Context, req ctrl.Req
 		nextSlot = lv
 	}
 
-	logFromContext.Info("Reconcile later again", "next time", time.Now().UTC().Add(nextSlot))
+	log.Info("Reconcile later again", "next time", time.Now().UTC().Add(nextSlot))
 	return ctrl.Result{
 		RequeueAfter: nextSlot,
 	}, nil
