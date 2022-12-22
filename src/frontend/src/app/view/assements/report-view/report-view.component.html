@@ -7,7 +7,6 @@
   <h2>
     
     {{'Report_View.title'|translate}}</h2>
-  <!-- <app-line id='report-line' #reportline [chartOptions]="shardService.reportLineChartOption"></app-line> -->
     <div id="report-line" style="flex: 1;height:450px; overflow: hidden;"> </div>
 
   <clr-datagrid style="height: 450px; overflow: auto;" (clrDgRefresh)="pageChange($event)">
@@ -22,8 +21,6 @@
       </div>
     </clr-dg-column>
     <clr-dg-column >{{'CommonlyUse.create_time'|translate}}</clr-dg-column>
-    <!-- <clr-dg-column >{{'CommonlyUse.action'|translate}}</clr-dg-column> -->
-
     <clr-dg-row *clrDgItems="let report of shardService.reportslist">
       <clr-dg-cell>
         <a href="javascript:;" (click)="toReport(report)" >
@@ -33,9 +30,6 @@
       </clr-dg-cell>
       <clr-dg-cell>{{report.metadata.namespace}}</clr-dg-cell>
       <clr-dg-cell>{{report.metadata.creationTimestamp}}</clr-dg-cell>
-      <!-- <clr-dg-cell >
-      </clr-dg-cell> -->
-
     </clr-dg-row>
     <clr-dg-footer>
       <clr-dg-pagination #pagination [clrDgPageInputDisabled]="true" [clrDgPageSize]="defaultSize" [clrDgLastPage]="pageMaxCount">

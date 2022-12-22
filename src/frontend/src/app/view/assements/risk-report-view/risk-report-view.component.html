@@ -6,14 +6,13 @@
       Loading...
     </span>
   </div>
-  <div id="risk" style="width: 1500px;height:450px; overflow: hidden;"> </div>
+  <div id="risk" style="flex:1;height:450px; overflow: hidden;"> </div>
 
   <clr-datagrid  [clrDgLoading]="dgLoading" (clrDgRefresh)="pageChange($event)">
     <clr-dg-column >ID</clr-dg-column>
     <clr-dg-column >
       <div class="sort">
         {{'CommonlyUse.create_time'|translate}}
-        <!-- <cds-icon shape="arrow"></cds-icon>   -->
       </div>
     </clr-dg-column>
     <clr-dg-column >{{'Risk_view.numberOfVulnerabilities'|translate}}</clr-dg-column>
@@ -25,17 +24,6 @@
           {{kube._id}}
         </a>
       </clr-dg-cell>
-      <!-- <clr-dg-cell *ngIf="kube" >
-        {{kube._source.name}}
-      </clr-dg-cell>
-
-      <clr-dg-cell *ngIf="kube" >
-        {{kube._source.namespace}}
-      </clr-dg-cell>
-      <clr-dg-cell *ngIf="kube" >
-        {{kube._source.kind}}
-      </clr-dg-cell> -->
-
       <clr-dg-cell *ngIf="kube" >{{kube._source.createTime | date: 'medium'}}</clr-dg-cell>
       <clr-dg-cell *ngIf="kube" >
         {{kube.risk_number}}

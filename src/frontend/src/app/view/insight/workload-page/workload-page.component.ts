@@ -44,6 +44,7 @@ export class WorkloadPageComponent implements OnInit {
       var right: any = document.getElementById("right");
       var box: any = document.getElementById("box");
       resize.onmousedown = function (e: any) {
+        console.log('');
           var startX = e.clientX;          
           resize.left = resizeLeft;          
             document.onmousemove = function (e) {

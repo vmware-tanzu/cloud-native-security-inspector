@@ -206,9 +206,6 @@ export class RiskReportViewComponent implements OnInit {
     
     
     that.echartsRender(dateList, valueList)
-    // if (that.echartsLoading) {
-    //   that.echartsLoading = false       
-    // }
     that.dgLoading = false;
   }
 

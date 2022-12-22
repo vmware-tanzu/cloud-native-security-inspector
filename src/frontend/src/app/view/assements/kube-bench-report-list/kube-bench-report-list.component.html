@@ -11,11 +11,6 @@
     <div id="control-plane-security" style="flex: 1; width: 300px; height: 360px;"></div>
     <div id="control-plane" style="flex: 1; width: 300px; height: 360px;"></div>
     <div id="etcd-node" style="flex: 1; height: 360px;"></div>
-
-    <!-- <div class="circle">
-      <span (click)="cutEchart('work-node')" [class]="{active: currentChart === 'work-node'}"></span>
-      <span (click)="cutEchart('policy')" [class]="{active: currentChart === 'policy'}"></span>
-    </div> -->
   </div>
 
   <clr-datagrid [clrDgLoading]="dgLoading" (clrDgRefresh)="pageChange($event)">
@@ -39,7 +34,6 @@
         </app-dg-filter>
       </div>
     </clr-dg-column>
-    <!-- <clr-dg-column >{{'Kube_bench_list.node_name'|translate}}</clr-dg-column> -->
     <clr-dg-column >
       <div class="sort">
         {{'CommonlyUse.create_time'|translate}}
@@ -60,7 +54,6 @@
         </a>
       </clr-dg-cell>
       <clr-dg-cell *ngIf="kube">{{kube._source.text}}</clr-dg-cell>
-      <!-- <clr-dg-cell *ngIf="kube">{{kube._source.node_type}}</clr-dg-cell> -->
       <clr-dg-cell *ngIf="kube">{{kube._source.node_name}}</clr-dg-cell>
       <clr-dg-cell *ngIf="kube">{{kube._source.createTime | date: 'medium'}}</clr-dg-cell>
       <clr-dg-cell *ngIf="kube">

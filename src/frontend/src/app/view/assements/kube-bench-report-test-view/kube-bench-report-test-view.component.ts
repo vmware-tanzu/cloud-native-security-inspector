@@ -114,7 +114,6 @@ export class KubeBenchReportTestViewComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // sessionStorage.removeItem(this.testId)
   }
 
   getEchartSourceData() {

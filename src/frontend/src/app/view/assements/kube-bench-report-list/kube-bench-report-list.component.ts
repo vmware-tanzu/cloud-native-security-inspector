@@ -198,13 +198,7 @@ export class KubeBenchReportListComponent implements OnInit {
     this.echartsInit('control-plane-security', 'controlPlaneSecurityChart')
     this.echartsInit('control-plane', 'controlPlaneChart')
     this.echartsInit('etcd-node', 'etcdNodeChart')
-    
-    // this.echartsInit('k8s-policy', 'k8sPolicyChart')
-    // this.echartsInit('k8s-policy', 'k8sPolicyChart')
-
     this.initKubeBenchReportList()
-    // this.initKubeBenchReportTypes()
-    // this.getFiveTypeReportUpdateChart()
   }
   // Get the latest report update chart for 5 types
   getFiveTypeReportUpdateChart() {
@@ -266,8 +260,6 @@ export class KubeBenchReportListComponent implements OnInit {
       if (filter.reset) {
         that.kubeBenchReportList = []        
         that.pagination.page.current = 1
-        // that.pagination.page.size = 10
-        // that.pagination.page.from = that.from        
         that.kubeBenchReportList = data.hits.hits
         that.pagination.lastPage = that.pageMaxCount        
         that.pagination.page.change
@@ -294,22 +286,6 @@ export class KubeBenchReportListComponent implements OnInit {
     }
     this.extractKubeBenchApi(query, callBack)
   }
-
-  // switch E charts
-  // cutEchart(text: 'work-node'| 'policy') {
-  //   this.currentChart = text
-  //   switch (text) {
-  //     case 'work-node':
-  //       this.getTextTypeTenReports('Worker Node Security Configuration')
-  //       break;
-  //     case 'policy':
-  //       this.getTextTypeTenReports('Kubernetes Policies')  
-
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // }
 
   // change handler
   pageChange(event: any) {
@@ -401,23 +377,6 @@ export class KubeBenchReportListComponent implements OnInit {
   drawCharts (data: any, title: string): PieOption {
     const hits = data.hits.hits[0]._source
     const xAxis: {value: string, textStyle: {color: string}}[] = []
-    // const infoList: number[] = []
-    // const passList: number[] = []
-    // const warnList: number[] = []
-    // const failList: number[] = []
-    // hits.forEach((hit: {_source: {createTime: string, total_pass: number, total_fail: number, total_warn: number, total_info: number}}) => {
-    //   xAxis.push({
-    //     value: hit._source.createTime,
-    //     textStyle: {
-    //       color: '#fff'
-    //     }
-    //   })
-    //   infoList.push(hit._source.total_info)
-    //   passList.push(hit._source.total_pass)
-    //   warnList.push(hit._source.total_warn)
-    //   failList.push(hit._source.total_fail)
-    // });
-
     return {
       title: {
         text: title,
@@ -505,7 +464,7 @@ export class KubeBenchReportListComponent implements OnInit {
       data => {
         switch (text) {
           case 'Worker Node Security Configuration':
-            this.workechartsOption = this.drawCharts(data, 'Worker Node Security Configuration');
+            this.workechartsOption = this.drawCharts(data, 'Worker Node Security Config');
             this.workNodeChart.clear()
             this.workechartsOption && this.workNodeChart.setOption(this.workechartsOption);
             break;
@@ -519,7 +478,7 @@ export class KubeBenchReportListComponent implements OnInit {
             break
 
           case 'Control Plane Configuration':
-            this.controlPlaneChartOption = this.drawCharts(data, 'Control Plane Configuration');
+            this.controlPlaneChartOption = this.drawCharts(data, 'Control Plane Config');
 
             this.controlPlaneChart.clear()
             this.controlPlaneChartOption && this.controlPlaneChart.setOption(this.controlPlaneChartOption);
@@ -527,7 +486,7 @@ export class KubeBenchReportListComponent implements OnInit {
             break
   
           case 'Control Plane Security Configuration':
-            this.controlPlaneSecurityChartOption = this.drawCharts(data, 'Control Plane Security Configuration');
+            this.controlPlaneSecurityChartOption = this.drawCharts(data, 'Control Plane Security Config');
 
             this.controlPlaneSecurityChart.clear()
             this.controlPlaneSecurityChartOption && this.controlPlaneSecurityChart.setOption(this.controlPlaneSecurityChartOption);
@@ -535,7 +494,7 @@ export class KubeBenchReportListComponent implements OnInit {
             break
 
           case 'Etcd Node Configuration':
-            this.etcdNodeChartOption = this.drawCharts(data, 'Etcd Node Configuration');
+            this.etcdNodeChartOption = this.drawCharts(data, 'Etcd Node Config');
 
             this.etcdNodeChart.clear()
             this.etcdNodeChartOption && this.etcdNodeChart.setOption(this.etcdNodeChartOption);
