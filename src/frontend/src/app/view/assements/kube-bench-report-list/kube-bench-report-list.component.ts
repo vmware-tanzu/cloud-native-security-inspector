@@ -397,13 +397,6 @@ export class KubeBenchReportListComponent implements OnInit {
       tooltip: {
         trigger: 'item'
       },
-      legend: {
-        top: 'bottom',
-        left: 'center',
-        textStyle: {
-          color: "#ffffff"
-        }
-      },
       series: [
         {
           name: 'Access From',
