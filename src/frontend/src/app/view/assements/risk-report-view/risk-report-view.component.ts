@@ -65,9 +65,9 @@ export class RiskReportViewComponent implements OnInit {
     }
     if (sortArr[0] && sortArr[0] !==0 && sortArr[0] !== sortArr[sortArr.length-1]) {
       yAxis = {
-        min: sortArr[0],
-        max: sortArr[sortArr.length-1],
-        interval: 25,
+        min: sortArr[0] - 10 < 0 ? 0 : sortArr[sortArr.length-1] - 10,
+        max: sortArr[sortArr.length-1] + 10,
+        interval: Math.ceil((sortArr[sortArr.length-1] - sortArr[0]) / 2) === 0 ? 10 : Math.ceil((sortArr[sortArr.length-1] - sortArr[0]) / 2),
         splitLine: {
           show: true,
           lineStyle: {
@@ -78,9 +78,9 @@ export class RiskReportViewComponent implements OnInit {
       }
     } else if (sortArr[0] && sortArr[0] !==0) {
       yAxis = {
-        min: sortArr[sortArr.length-1] - 50,
-        max: sortArr[sortArr.length-1] + 50,
-        interval: 25,
+        min: sortArr[0] - 10 < 0 ? 0 : sortArr[sortArr.length-1] - 10,
+        max: sortArr[sortArr.length-1] + 10,
+        interval: Math.ceil((sortArr[sortArr.length-1] - sortArr[0]) / 2) === 0 ? 5 : Math.ceil((sortArr[sortArr.length-1] - sortArr[0]) / 2),
         splitLine: {
           show: true,
           lineStyle: {

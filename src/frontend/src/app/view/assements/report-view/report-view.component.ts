@@ -202,7 +202,7 @@ export class ReportViewComponent implements OnInit, OnDestroy {
     sortArr.sort(function (a: number, b: number) {
       return a-b;
     }); 
-    let yAxis = {
+    let yAxis: any = {
       min: 0,
       max: 30,
       splitLine: {
@@ -215,8 +215,9 @@ export class ReportViewComponent implements OnInit, OnDestroy {
     }
     if (sortArr[0] !==0 && sortArr[0] !== sortArr[sortArr.length-1]) {
       yAxis = {
-        min: sortArr[0],
-        max: sortArr[sortArr.length-1],
+        min: sortArr[0] - 10 < 0 ? 0 : sortArr[sortArr.length-1] - 10,
+        max: sortArr[sortArr.length-1] + 10,
+        interval: Math.ceil((sortArr[sortArr.length-1] - sortArr[0]) / 2) === 0 ? 10 : Math.ceil((sortArr[sortArr.length-1] - sortArr[0]) / 2),
         splitLine: {
           show: true,
           lineStyle: {
