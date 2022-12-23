@@ -47,7 +47,7 @@
   justify-content: space-evenly;
   flex: 1;
   overflow: hidden;
-  height:400px;
+  height:300px;
   padding-bottom: 20px;
   box-sizing: content-box;
   position: relative;
@@ -66,6 +66,47 @@
       &.active {
         background-color: #fff;
       }
+    }
+  }
+}
+.chart-label {
+  height: 60px;
+  // background-color: yellow;
+  text-align: center;
+  color: #fff;
+  span {
+    font-size: 16px;
+    margin-right: 10px;
+    &:first-of-type {
+      i {
+        background-color: #5470C6;
+      }
+    }
+    &:nth-of-type(2) {
+      i {
+        background-color: #91CB74;
+      }
+    }
+    &:nth-of-type(3) {
+      i {
+        background-color: #FAC858;
+      }
+
+    }
+    &:nth-of-type(4) {
+      i {
+        background-color: #EE6666;
+      }
+
+    }
+    i {
+      display: inline-block;
+      width: 30px;
+      height: 15px;
+      border: 2px solid #fff;
+      border-radius: 4px;
+      position: relative;
+      top: 2px;
     }
   }
 }

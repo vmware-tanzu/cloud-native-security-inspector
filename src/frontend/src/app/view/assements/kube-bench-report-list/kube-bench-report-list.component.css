@@ -37,7 +37,7 @@
   justify-content: space-evenly;
   flex: 1;
   overflow: hidden;
-  height: 400px;
+  height: 300px;
   padding-bottom: 20px;
   box-sizing: content-box;
   position: relative;
@@ -58,6 +58,36 @@
 }
 .chart-warp .circle span.active {
   background-color: #fff;
+}
+.chart-label {
+  height: 60px;
+  text-align: center;
+  color: #fff;
+}
+.chart-label span {
+  font-size: 16px;
+  margin-right: 10px;
+}
+.chart-label span:first-of-type i {
+  background-color: #5470C6;
+}
+.chart-label span:nth-of-type(2) i {
+  background-color: #91CB74;
+}
+.chart-label span:nth-of-type(3) i {
+  background-color: #FAC858;
+}
+.chart-label span:nth-of-type(4) i {
+  background-color: #EE6666;
+}
+.chart-label span i {
+  display: inline-block;
+  width: 30px;
+  height: 15px;
+  border: 2px solid #fff;
+  border-radius: 4px;
+  position: relative;
+  top: 2px;
 }
 clr-datagrid::ng-deep .sort {
   display: flex;

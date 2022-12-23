@@ -6,11 +6,29 @@
     </span>
   </div>
   <div class="chart-warp">
-    <div id="work-node" style="flex: 1; width: 300px; height: 360px;"></div>
-    <div id="k8s-policy" style="flex: 1; width: 300px; height: 360px;"></div>
-    <div id="control-plane-security" style="flex: 1; width: 300px; height: 360px;"></div>
-    <div id="control-plane" style="flex: 1; width: 300px; height: 360px;"></div>
-    <div id="etcd-node" style="flex: 1; height: 360px;"></div>
+    <div id="work-node" style="flex: 1; width: 300px; height: 330px;"></div>
+    <div id="k8s-policy" style="flex: 1; width: 300px; height: 330px;"></div>
+    <div id="control-plane-security" style="flex: 1; width: 300px; height: 330px;"></div>
+    <div id="control-plane" style="flex: 1; width: 300px; height: 330px;"></div>
+    <div id="etcd-node" style="flex: 1; height: 330px;"></div>
+  </div>
+  <div class="chart-label">
+    <span>
+      <i></i>
+      Inform
+    </span>
+    <span>
+      <i></i>
+      Passed
+    </span>
+    <span>
+      <i></i>
+      Warned
+    </span>
+    <span>
+      <i></i>
+      Failed
+    </span>
   </div>
 
   <clr-datagrid [clrDgLoading]="dgLoading" (clrDgRefresh)="pageChange($event)">
