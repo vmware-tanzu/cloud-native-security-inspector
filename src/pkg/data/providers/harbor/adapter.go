@@ -8,6 +8,7 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
+	harborclient "github.com/goharbor/go-client/pkg/harbor"
 	"github.com/goharbor/harbor/src/pkg/scan/vuln"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
 	"io"
@@ -44,10 +45,8 @@ type Adapter struct {
 	k8sClient k8client.Client
 	// cache client for reading caching data.
 	cache cache.Client
-	// endpoint the endpoint of the harbor instance
-	endpoint string
-	// skipTlsVerify if skip Tls verification when communicating with the harbor instance
-	skipTlsVerify bool
+	// clientConfig the client's info of the harbor instance
+	clientConfig harborclient.ClientSetConfig
 }
 
 // WithClient sets Harbor client.
@@ -67,10 +66,9 @@ func (a *Adapter) WithCache(cache cache.Client) *Adapter {
 	return a
 }
 
-// WithEndpoint sets the endpoint string of this harbor instance
-func (a *Adapter) WithEndpoint(endpoint string, skipTlsVerify bool) *Adapter {
-	a.endpoint = endpoint
-	a.skipTlsVerify = skipTlsVerify
+// WithClientConfig sets the client config of this harbor instance
+func (a *Adapter) WithClientConfig(clientConfig harborclient.ClientSetConfig) *Adapter {
+	a.clientConfig = clientConfig
 	return a
 }
 
@@ -577,6 +575,7 @@ func (a *Adapter) scanOnPush(ctx context.Context) error {
 }
 
 func (a *Adapter) GetVulnerabilitiesList(ctx context.Context, id core.ArtifactID) (*vuln.Report, error) {
+	// TODO: When https://github.com/goharbor/harbor/issues/13468 is fixed, this api should use Harbor SDK
 	log.Infof("ProjectName: %s \n", id.Namespace())
 	log.Infof("RepositoryName: %s \n", id.Repository())
 	log.Infof("Reference: %s \n", id.Digest())
@@ -584,7 +583,7 @@ func (a *Adapter) GetVulnerabilitiesList(ctx context.Context, id core.ArtifactID
 
 	xAcceptVulnerabilities := core.DataSchemeVulnerability
 	requestURL := fmt.Sprintf("%s/api/v2.0/projects/%s/repositories/%s/artifacts/%s/additions/vulnerabilities",
-		a.endpoint, id.Namespace(), id.Repository(), id.Digest())
+		a.clientConfig.URL, id.Namespace(), id.Repository(), id.Digest())
 	log.Infof("requestURL: %s \n", requestURL)
 
 	request, err := http.NewRequest("GET", requestURL, bytes.NewBuffer(nil))
@@ -593,10 +592,11 @@ func (a *Adapter) GetVulnerabilitiesList(ctx context.Context, id core.ArtifactID
 		return nil, err
 	}
 	request.Header.Set("X-Accept-Vulnerabilities", xAcceptVulnerabilities)
+	request.SetBasicAuth(a.clientConfig.Username, a.clientConfig.Password)
 	client := &http.Client{
 		Transport: &http.Transport{
 			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: a.skipTlsVerify,
+				InsecureSkipVerify: a.clientConfig.Insecure,
 			},
 		},
 		Timeout: time.Second * 10,
