@@ -178,7 +178,7 @@ func (i *ImageItem) generateUUID() {
 // FetchHarborReport fetch the harbor report
 func (i *ImageItem) FetchHarborReport(Adapter providers.Adapter) (*vuln.Report, error) {
 	ctx := context.Background()
-	report, err := Adapter.GetVulnerabilitiesList(ctx, i.ArtifactID, true)
+	report, err := Adapter.GetVulnerabilitiesList(ctx, i.ArtifactID)
 	if err != nil {
 		return nil, err
 	}

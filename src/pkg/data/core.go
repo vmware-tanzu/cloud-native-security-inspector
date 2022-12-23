@@ -71,5 +71,5 @@ type Configurator interface {
 }
 
 type Artifact interface {
-	GetVulnerabilitiesList(ctx context.Context, id core.ArtifactID, skipVerify bool) (*vuln.Report, error)
+	GetVulnerabilitiesList(ctx context.Context, id core.ArtifactID) (*vuln.Report, error)
 }

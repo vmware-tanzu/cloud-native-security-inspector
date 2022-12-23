@@ -8,6 +8,7 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
+	harborclient "github.com/goharbor/go-client/pkg/harbor"
 	"github.com/goharbor/harbor/src/pkg/scan/vuln"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
 	"io"
@@ -44,9 +45,9 @@ type Adapter struct {
 	k8sClient k8client.Client
 	// cache client for reading caching data.
 	cache cache.Client
+	// clientConfig the client's info of the harbor instance
+	clientConfig harborclient.ClientSetConfig
 }
-
-var DefaultSchemes = []string{"http", "https"}
 
 // WithClient sets Harbor client.
 func (a *Adapter) WithClient(cli *harbor.ClientSet) *Adapter {
@@ -62,6 +63,12 @@ func (a *Adapter) WithK8sClient(client k8client.Client) *Adapter {
 // WithCache sets cache client.
 func (a *Adapter) WithCache(cache cache.Client) *Adapter {
 	a.cache = cache
+	return a
+}
+
+// WithClientConfig sets the client config of this harbor instance
+func (a *Adapter) WithClientConfig(clientConfig harborclient.ClientSetConfig) *Adapter {
+	a.clientConfig = clientConfig
 	return a
 }
 
@@ -567,46 +574,44 @@ func (a *Adapter) scanOnPush(ctx context.Context) error {
 	return nil
 }
 
-func (a *Adapter) GetVulnerabilitiesList(ctx context.Context, id core.ArtifactID, skipVerify bool) (*vuln.Report, error) {
+func (a *Adapter) GetVulnerabilitiesList(ctx context.Context, id core.ArtifactID) (*vuln.Report, error) {
+	// TODO: When https://github.com/goharbor/harbor/issues/13468 is fixed, this api should use Harbor SDK
 	log.Infof("ProjectName: %s \n", id.Namespace())
 	log.Infof("RepositoryName: %s \n", id.Repository())
 	log.Infof("Reference: %s \n", id.Digest())
 	log.Infof("Registry: %s \n", id.Registry())
 
 	xAcceptVulnerabilities := core.DataSchemeVulnerability
-	for _, scheme := range DefaultSchemes {
-		requestURL := fmt.Sprintf("%s://%s/api/v2.0/projects/%s/repositories/%s/artifacts/%s/additions/vulnerabilities",
-			scheme, id.Registry(), id.Namespace(), id.Repository(), id.Digest())
-		log.Infof("requestURL: %s \n", requestURL)
+	requestURL := fmt.Sprintf("%s/api/v2.0/projects/%s/repositories/%s/artifacts/%s/additions/vulnerabilities",
+		a.clientConfig.URL, id.Namespace(), id.Repository(), id.Digest())
+	log.Infof("requestURL: %s \n", requestURL)
 
-		request, err := http.NewRequest("GET", requestURL, bytes.NewBuffer(nil))
-		if err != nil {
-			log.Infof("new request err: %v \n", err)
-			continue
-		}
-		request.Header.Set("X-Accept-Vulnerabilities", xAcceptVulnerabilities)
-		client := &http.Client{
-			Transport: &http.Transport{
-				TLSClientConfig: &tls.Config{
-					InsecureSkipVerify: skipVerify,
-				},
-			},
-			Timeout: time.Second * 10,
-		}
-		res, err := client.Do(request)
-		if err != nil {
-			log.Errorf("find vulnerabilities err: %v \n", err)
-			continue
-		}
-		var report map[string]*vuln.Report
-		err = json.NewDecoder(res.Body).Decode(&report)
-		if err != nil {
-			body, _ := io.ReadAll(res.Body)
-			log.Errorf("vuln report json unmarshal: (%s) \n", string(body))
-			continue
-		}
-		return report[xAcceptVulnerabilities], nil
+	request, err := http.NewRequest("GET", requestURL, bytes.NewBuffer(nil))
+	if err != nil {
+		log.Infof("new request err: %v \n", err)
+		return nil, err
 	}
-
-	return nil, errors.New("not find report")
+	request.Header.Set("X-Accept-Vulnerabilities", xAcceptVulnerabilities)
+	request.SetBasicAuth(a.clientConfig.Username, a.clientConfig.Password)
+	client := &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{
+				InsecureSkipVerify: a.clientConfig.Insecure,
+			},
+		},
+		Timeout: time.Second * 10,
+	}
+	res, err := client.Do(request)
+	if err != nil {
+		log.Errorf("find vulnerabilities err: %v \n", err)
+		return nil, err
+	}
+	var report map[string]*vuln.Report
+	err = json.NewDecoder(res.Body).Decode(&report)
+	if err != nil {
+		body, _ := io.ReadAll(res.Body)
+		log.Errorf("vuln report json unmarshal: (%s) \n", string(body[:256]))
+		return nil, err
+	}
+	return report[xAcceptVulnerabilities], nil
 }

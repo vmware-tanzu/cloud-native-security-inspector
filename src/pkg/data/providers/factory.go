@@ -60,6 +60,6 @@ func NewHarborAdapter(ctx context.Context, kclient k8client.Client, setting *v1a
 
 		ap.WithCache(cc)
 	}
-
+	ap.WithClientConfig(config)
 	return ap, nil
 }
