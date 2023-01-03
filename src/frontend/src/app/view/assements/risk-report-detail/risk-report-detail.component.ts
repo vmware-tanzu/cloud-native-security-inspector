@@ -81,7 +81,7 @@ export class RiskReportDetailComponent implements OnInit {
         containLabel: true
       },
       title: {
-        text: 'Kube Bench Reports Type（Display up to 100 items）',
+        text: 'Number of Risks in Workloads',
         textStyle: {
           color: '#fff'
         },
