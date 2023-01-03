@@ -38,3 +38,24 @@
   left: 50%;
   top: 150px;
 }
+.report #risk-box {
+  flex: 1;
+}
+.report #risk-box #risk-resize {
+  width: 5px;
+  height: 100%;
+  cursor: w-resize;
+  float: left;
+  position: relative;
+  left: 0px;
+  background-color: #21333B;
+}
+.report #risk-box #risk-right {
+  width: 445px;
+  float: right;
+}
+.report #risk-box #risk-left {
+  float: left;
+  width: calc(100% - 450px);
+  height: 100%;
+}

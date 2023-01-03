@@ -35,10 +35,10 @@
       </clr-dg-pagination>
   </clr-dg-footer>
   </clr-datagrid>
-  <div id="box" class="report-detai-bg" (click)='showDetail($event)' [hidden]="!(shardService.currentWorkload && shardService.showWorkloadDetailFlag)">
-    <div id="left" class="report-detai-left"></div>
-    <div id="resize"></div>
-    <div id="right" class="report-detai" [ngClass]="{'show': shardService.showWorkloadDetailFlag}" style="height: 100%;">
+  <div id="work-box" class="report-detai-bg" (click)='showDetail($event)' [hidden]="!(shardService.currentWorkload && shardService.showWorkloadDetailFlag)">
+    <div id="work-left" class="report-detai-left"></div>
+    <div id="work-resize"></div>
+    <div id="work-right" class="report-detai" [ngClass]="{'show': shardService.showWorkloadDetailFlag}" style="height: 100%;">
       <app-workload-detail></app-workload-detail>
     </div>
   </div>

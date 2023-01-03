@@ -51,10 +51,10 @@
 .workload::ng-deep clr-datagrid clr-dg-footer .pagination-description {
   color: #fff;
 }
-.workload #box {
+.workload #work-box {
   flex: 1;
 }
-.workload #box #resize {
+.workload #work-box #work-resize {
   width: 5px;
   height: 100%;
   cursor: w-resize;
@@ -63,11 +63,11 @@
   left: 0px;
   background-color: #21333B;
 }
-.workload #box #right {
+.workload #work-box #work-right {
   width: 445px;
   float: right;
 }
-.workload #box #left {
+.workload #work-box #work-left {
   float: left;
   width: calc(100% - 450px);
   height: 100%;
