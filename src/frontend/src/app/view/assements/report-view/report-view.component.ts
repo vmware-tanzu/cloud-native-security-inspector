@@ -3,7 +3,7 @@
  * SSPDX-License-Identifier: Apache-2.0
  */
 
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PolicyService } from 'src/app/service/policy.service';
 import { ShardService } from 'src/app/service/shard.service'
@@ -19,7 +19,7 @@ type ECOption = echarts.ComposeOption<LineSeriesOption>
   templateUrl: './report-view.component.html',
   styleUrls: ['./report-view.component.less']
 })
-export class ReportViewComponent implements OnInit, OnDestroy {
+export class ReportViewComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('reportline')reportline!: LineComponent|null
   @ViewChild('reportDetail')reportDetail!:ReportViewDetailComponent
   @ViewChild('pagination') pagination!:any
@@ -41,14 +41,45 @@ export class ReportViewComponent implements OnInit, OnDestroy {
     public policyService:PolicyService,
     public router:Router
   ) { }
+  ngAfterViewInit(): void {
+    let resizeLeft = 445
+    var resize: any = document.getElementById("resize");
+    var left: any = document.getElementById("left");
+    var right: any = document.getElementById("right");
+    var box: any = document.getElementById("box");
+    console.log('init');
+    resize.onmousedown = function (e: any) {
+        var startX = e.clientX;          
+        resize.left = resizeLeft;          
+          document.onmousemove = function (e) {
+            var endX = e.clientX;
+            
+            var moveLen = resize.left + (startX - endX);
+                          if (moveLen < 445) moveLen = 445;
+            if (moveLen > box.clientWidth-55) moveLen = box.clientWidth-55;
+
+
+            resize.style.left = moveLen;
+            resizeLeft = moveLen
+            right.style.width = moveLen + "px";
+            left.style.width = (box.clientWidth - moveLen - 5) + "px";
+        }
+        document.onmouseup = function (evt) {
+            document.onmousemove = null;
+            document.onmouseup = null;
+            resize.releaseCapture && resize.releaseCapture();
+        }
+        resize.setCapture && resize.setCapture();
+        return false;
+    }
+  }
 
   ngOnInit(): void {
-    this.init()
     this.echartsInit()
     this.policyService.getAllAssessmentreports().subscribe(
       data => {
         let lineDate: string[] = []
-        let dataValue = []
+        let dataValue: any[] = []
         if (data.items && data.items.length > 10) {
           const result = data.items.splice(data.items.length - 10)
           result.forEach(el => {
@@ -66,8 +97,8 @@ export class ReportViewComponent implements OnInit, OnDestroy {
             dataValue.push(abCount)
           })
         } else {
-          let abCount = 0
           data.items.forEach(el => {
+            let abCount = 0
             el.metadata.creationTimestamp = moment(el.metadata.creationTimestamp).format('LLL')
             lineDate.push(el.metadata.creationTimestamp)
 
@@ -78,15 +109,15 @@ export class ReportViewComponent implements OnInit, OnDestroy {
                 }
               });
             })
+            dataValue.push(abCount)
           })
-          dataValue.push(abCount)
-        }    
+        }
         this.echartsRender(lineDate, dataValue)
       }
     )
-
   }
 
+  
   ngOnDestroy(): void {}
     
   toReport(report: any) {
@@ -273,40 +304,5 @@ export class ReportViewComponent implements OnInit, OnDestroy {
     }
     this.myChart.clear()
     this.echartsOption && this.myChart.setOption(this.echartsOption);
-  }
-
-  init() {
-    let resizeLeft = 445
-    window.onload = function () {
-      var resize: any = document.getElementById("resize");
-      var left: any = document.getElementById("left");
-      var right: any = document.getElementById("right");
-      var box: any = document.getElementById("box");
-      resize.onmousedown = function (e: any) {
-        console.log('e', e);
-          var startX = e.clientX;          
-          resize.left = resizeLeft;          
-            document.onmousemove = function (e) {
-              var endX = e.clientX;
-              
-              var moveLen = resize.left + (startX - endX);
-                            if (moveLen < 445) moveLen = 445;
-              if (moveLen > box.clientWidth-55) moveLen = box.clientWidth-55;
-
-
-              resize.style.left = moveLen;
-              resizeLeft = moveLen
-              right.style.width = moveLen + "px";
-              left.style.width = (box.clientWidth - moveLen - 5) + "px";
-          }
-          document.onmouseup = function (evt) {
-              document.onmousemove = null;
-              document.onmouseup = null;
-              resize.releaseCapture && resize.releaseCapture();
-          }
-          resize.setCapture && resize.setCapture();
-          return false;
-      }
-  }
   }
 }

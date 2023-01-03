@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import * as moment from 'moment';
 import { AssessmentService } from 'src/app/service/assessment.service';
 import { echarts, LineSeriesOption } from 'src/app/shard/shard/echarts';
@@ -10,7 +10,7 @@ type ECOption = echarts.ComposeOption<LineSeriesOption>
   templateUrl: './risk-report-view.component.html',
   styleUrls: ['./risk-report-view.component.less']
 })
-export class RiskReportViewComponent implements OnInit {
+export class RiskReportViewComponent implements OnInit, AfterViewInit {
   @ViewChild('pagination') pagination:any
   echartsOption!: ECOption
   myChart!: any
@@ -28,18 +28,41 @@ export class RiskReportViewComponent implements OnInit {
     private assessmentService: AssessmentService
   ) { }
 
+  ngAfterViewInit(): void {
+    let resizeLeft = 445
+    var resize: any = document.getElementById("risk-resize");
+    var left: any = document.getElementById("risk-left");
+    var right: any = document.getElementById("risk-right");
+    var box: any = document.getElementById("risk-box");
+    console.log('init');
+    resize.onmousedown = function (e: any) {
+        var startX = e.clientX;          
+        resize.left = resizeLeft;          
+          document.onmousemove = function (e) {
+            var endX = e.clientX;
+            
+            var moveLen = resize.left + (startX - endX);
+                          if (moveLen < 445) moveLen = 445;
+            if (moveLen > box.clientWidth-55) moveLen = box.clientWidth-55;
+
+
+            resize.style.left = moveLen;
+            resizeLeft = moveLen
+            right.style.width = moveLen + "px";
+            left.style.width = (box.clientWidth - moveLen - 5) + "px";
+        }
+        document.onmouseup = function (evt) {
+            document.onmousemove = null;
+            document.onmouseup = null;
+            resize.releaseCapture && resize.releaseCapture();
+        }
+        resize.setCapture && resize.setCapture();
+        return false;
+    }
+  }
+
   ngOnInit(): void {
     this.echartsInit()
-    const query: any = { 
-      size:  this.defaultSize,
-      from: 0,
-      sort: [
-        {
-          createTime: {order: "desc"}
-        }
-      ]
-    };
-
   }
   // init
   echartsInit() {
@@ -65,9 +88,9 @@ export class RiskReportViewComponent implements OnInit {
     }
     if (sortArr[0] && sortArr[0] !==0 && sortArr[0] !== sortArr[sortArr.length-1]) {
       yAxis = {
-        min: sortArr[0] - 10 < 0 ? 0 : sortArr[sortArr.length-1] - 10,
+        min: sortArr[0] - 10 < 0 ? 0 : sortArr[0] - 10,
         max: sortArr[sortArr.length-1] + 10,
-        interval: Math.ceil((sortArr[sortArr.length-1] - sortArr[0]) / 2) === 0 ? 10 : Math.ceil((sortArr[sortArr.length-1] - sortArr[0]) / 2),
+        interval: Math.ceil((sortArr[sortArr.length-1] - sortArr[0]) / 2) === 0 ? 10 : Math.ceil((sortArr[sortArr.length-1] - sortArr[0]) / 2) > 50 ? 50 : Math.ceil((sortArr[sortArr.length-1] - sortArr[0]) / 2),
         splitLine: {
           show: true,
           lineStyle: {
@@ -90,7 +113,8 @@ export class RiskReportViewComponent implements OnInit {
         }
       }
     }
-    
+    dateList.reverse()
+    valueList.reverse()
     this.echartsOption = {
       // Make gradient line here
       visualMap: [
@@ -300,9 +324,12 @@ export class RiskReportViewComponent implements OnInit {
     this.currentDetail = detail
   }
 
-  hideDetai(event: any) {
-    if (event.target.classList[0] === 'report-detai-bg') {
-      this.showDetailFlag = false
+  hideDetai(event:any) {
+    for (let index = 0; index < event.target.classList.length; index++) { 
+      if (event.target.classList[index] === 'report-detai-bg' || event.target.classList[index]  === 'report-detai-left') {
+        this.showDetailFlag = false
+        continue;
+      }      
     }
   }
 }

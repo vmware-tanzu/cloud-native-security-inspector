@@ -41,9 +41,15 @@
   </clr-datagrid>
 <!-- detail -->
 
-  <div class="report-detai-bg" *ngIf="showDetailFlag" (click)="hideDetai($event)">
+  <!-- <div class="report-detai-bg" *ngIf="showDetailFlag" (click)="hideDetai($event)">
     <div class="report-detai" [ngClass]="{'show': showDetailFlag}" >
-     <app-risk-report-detail [detailInfo]="currentDetail"></app-risk-report-detail>
+    </div>
+  </div> -->
+  <div id="risk-box" class="report-detai-bg" (click)='hideDetai($event)' [hidden]="!showDetailFlag">
+    <div id="risk-left" class="report-detai-left"></div>
+    <div id="risk-resize"></div>
+    <div id="risk-right" class="report-detai" [ngClass]="{'show': showDetailFlag}" >
+      <app-risk-report-detail [detailInfo]="currentDetail"></app-risk-report-detail>
     </div>
   </div>
 </div>
