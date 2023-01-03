@@ -117,6 +117,8 @@ namespace:
 
 
 gen-and-apply-crd: manifests kustomize ## Install CRDs into the K8s cluster specified in ~/.kube/config.
+	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG_MANAGER}
+	$(KUSTOMIZE) build config/default > tools/installation/yaml/manager.yaml
 	$(KUSTOMIZE) build config/crd | kubectl apply -f -
 
 uninstall-crd: manifests kustomize ## Uninstall CRDs from the K8s cluster specified in ~/.kube/config.
