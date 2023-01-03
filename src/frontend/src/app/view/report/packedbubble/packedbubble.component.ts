@@ -46,7 +46,7 @@ export class PackedbubbleComponent implements OnInit {
           type: 'pie',
           radius: '50%',
           data: [
-            { value: this.abnormal, name: 'AbNormal', itemStyle: {color: '#EE6666'}},
+            { value: this.abnormal, name: 'Abnormal', itemStyle: {color: '#EE6666'}},
             { value: this.normal, name: 'Normal', itemStyle: {color: '#3BA272'} },
           ],
           emphasis: {

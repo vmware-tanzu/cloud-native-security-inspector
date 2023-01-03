@@ -76,7 +76,7 @@ func (p *GrPool) Start() Pool {
 	if p.queue == nil {
 		p.queue = make(chan Job, defaultQueueSize)
 	}
-	log.Info("Error collector is started", nil)
+	log.Info("Error collector is started")
 
 	// Start the job processing flow.
 	go func() {
@@ -98,7 +98,7 @@ func (p *GrPool) Start() Pool {
 				// Find a worker first.
 				// If all the workers are busy, process workflow will be blocked here.
 				p.workers <- struct{}{}
-				log.Info("worker occupied", nil, "available workers", p.availableWorkers())
+				log.Infof("worker occupied, available workers left: %d", p.availableWorkers())
 
 				// Run job now.
 				go func() {
@@ -107,7 +107,7 @@ func (p *GrPool) Start() Pool {
 						p.wg.Done()
 						// Return the worker.
 						<-p.workers
-						log.Info("worker released", nil, "available workers", p.availableWorkers())
+						log.Infof("worker released, available workers left: %d", p.availableWorkers())
 					}()
 
 					select {
@@ -134,7 +134,7 @@ func (p *GrPool) Start() Pool {
 			}
 		}
 	}()
-	log.Info("Job processor is started", nil)
+	log.Info("Job processor is started")
 	return p
 }
 
