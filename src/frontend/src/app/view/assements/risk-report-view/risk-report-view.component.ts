@@ -202,7 +202,7 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
 
     data.hits.hits.forEach((el: any) => {
       let risk_number = 0
-      if (el._source.ReportDetail && el._source.ReportDetail.length > 0) {
+      if (el._source && el._source.ReportDetail && el._source.ReportDetail.length > 0) {
         el._source.ReportDetail.forEach((re: any) => {
           risk_number+=re.Detail.length
         });
@@ -281,7 +281,7 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
         that.riskList = []        
         data.hits.hits.forEach((item: any) => {
           let risk_number = 0
-          if (item._source.ReportDetail && item._source.ReportDetail.length > 0) {
+          if (item._source && item._source.ReportDetail && item._source.ReportDetail.length > 0) {
             item._source.ReportDetail.forEach((re: any) => {
               risk_number+=re.Detail.length
             });
