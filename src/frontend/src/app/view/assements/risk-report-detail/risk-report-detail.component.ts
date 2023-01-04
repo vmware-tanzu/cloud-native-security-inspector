@@ -13,6 +13,7 @@ export class RiskReportDetailComponent implements OnInit {
   myChart!: any
   echartsOption!: ECOption
   echartsLoading = true
+  accordionPanel = true
   constructor() { }
   detailList: any[] = []
   ngOnInit(): void { 
