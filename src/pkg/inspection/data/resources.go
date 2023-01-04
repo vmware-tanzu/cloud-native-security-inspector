@@ -16,11 +16,12 @@ type ResourceItem struct {
 	ID             string             `json:"uuid"`
 	Type           string             `json:"type"`
 	Pod            v1.Pod             `json:"pod,omitempty"`
-	Service        *v1.Service        `json:"service,omitempty"`
+	Service        v1.Service         `json:"service,omitempty"`
 	Node           *v1.Node           `json:"node,omitempty"`
 	ServiceAccount *v1.ServiceAccount `json:"service_account,omitempty"`
 	Secret         *v1.Secret         `json:"secret,omitempty"`
-	Deployment     *appsv1.Deployment `json:"deployment,omitempty"`
+	Deployment     appsv1.Deployment  `json:"deployment,omitempty"`
+	Selector       map[string]string  `json:"selector,omitempty"`
 	metav1.ObjectMeta
 }
 
@@ -34,14 +35,16 @@ func (r *ResourceItem) SetPod(pod v1.Pod) {
 	r.ObjectMeta = pod.ObjectMeta
 }
 
-func (r *ResourceItem) SetService(service *v1.Service) {
+func (r *ResourceItem) SetService(service v1.Service) {
 	r.Service = service
 	r.ObjectMeta = service.ObjectMeta
+	r.Selector = service.Spec.Selector
 }
 
-func (r *ResourceItem) SetDeployment(deploy *appsv1.Deployment) {
+func (r *ResourceItem) SetDeployment(deploy appsv1.Deployment) {
 	r.Deployment = deploy
 	r.ObjectMeta = deploy.ObjectMeta
+	r.Selector = deploy.Spec.Selector.MatchLabels
 }
 
 func (r *ResourceItem) SetNode(node *v1.Node) {
@@ -76,7 +79,7 @@ func (r *ResourceItem) IsPod() bool {
 }
 
 func (r *ResourceItem) IsService() bool {
-	if r.Type == "Service" && r.Service != nil {
+	if r.Type == "Service" && r.Service.GetName() != "" {
 		return true
 	}
 
@@ -84,7 +87,7 @@ func (r *ResourceItem) IsService() bool {
 }
 
 func (r *ResourceItem) IsDeployment() bool {
-	if r.Type == "Deployment" && r.Deployment != nil {
+	if r.Type == "Deployment" && r.Deployment.GetName() != "" {
 		return true
 	}
 

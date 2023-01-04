@@ -106,7 +106,11 @@ func (s *Server) Analyze(option AnalyzeOption) {
 			log.Errorf("get vuln reprot error: %v", err)
 			continue
 		} else {
-			log.Infof("vuln len: %d \n", len(report.Vulnerabilities))
+			if report.Vulnerabilities == nil {
+				log.Error("report is empty")
+				continue
+			}
+			log.Infof("vuln len: %d", len(report.Vulnerabilities))
 		}
 
 		for _, r := range t.Related {
