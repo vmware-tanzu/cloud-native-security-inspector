@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
 import { AssessmentService } from 'src/app/service/assessment.service'
+import { PolicyService } from 'src/app/service/policy.service';
 import { echarts, BarSeriesOption, PieSeriesOption } from 'src/app/shard/shard/echarts';
 type ECOption = echarts.ComposeOption<BarSeriesOption>
 type PieOption = echarts.ComposeOption<PieSeriesOption>
@@ -49,11 +50,12 @@ export class KubeBenchReportListComponent implements OnInit {
   ]
   constructor(
     private router: Router,
-    private assessmentService: AssessmentService
+    private assessmentService: AssessmentService,
+    private policyService: PolicyService
   ) { }
 
   ngOnInit(): void {
-    this.init()
+    this.getInspectionpolicies()
   }
   // init
   echartsInit(id: string, chart: 'myChart'| 'workNodeChart' | 'k8sPolicyChart' | 'controlPlaneChart' | 'controlPlaneSecurityChart' | 'etcdNodeChart') {
@@ -172,6 +174,25 @@ export class KubeBenchReportListComponent implements OnInit {
       that.echartsLoading = false
     }
     this.extractKubeBenchApi(query, callBack)
+  }
+
+  getInspectionpolicies() {
+    this.policyService.getInspectionpolicies().subscribe(
+      (data: any) => {
+        if (data.items && data.items.length >0) {
+          if (data.items[0].spec && data.items[0].spec.inspector && data.items[0].spec.inspector.kubebenchImage) {
+            this.init()
+          } else {
+            this.echartsLoading = false
+          }
+        } else {
+          this.echartsLoading = false
+        }
+      },
+      err => {
+        console.log('err', err);
+      }
+    )
   }
 
   init() {
