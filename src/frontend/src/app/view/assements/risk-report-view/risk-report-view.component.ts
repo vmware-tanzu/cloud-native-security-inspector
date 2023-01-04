@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import * as moment from 'moment';
 import { AssessmentService } from 'src/app/service/assessment.service';
+import { RiskReportDetailComponent } from 'src/app/view/assements/risk-report-detail/risk-report-detail.component'
 import { echarts, LineSeriesOption } from 'src/app/shard/shard/echarts';
 type ECOption = echarts.ComposeOption<LineSeriesOption>
 
@@ -12,6 +13,7 @@ type ECOption = echarts.ComposeOption<LineSeriesOption>
 })
 export class RiskReportViewComponent implements OnInit, AfterViewInit {
   @ViewChild('pagination') pagination:any
+  @ViewChild('riskDetail') riskDetail!:RiskReportDetailComponent
   echartsOption!: ECOption
   myChart!: any
   opensearchInfo!: {url: string, user: string, pswd: string}
@@ -322,6 +324,9 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
   showDetail(detail: any) {
     this.showDetailFlag = true
     this.currentDetail = detail
+    setTimeout(() => {
+      this.riskDetail.dataSourceHandle()
+    },100);
   }
 
   hideDetai(event:any) {

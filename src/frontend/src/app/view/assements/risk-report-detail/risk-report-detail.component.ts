@@ -25,7 +25,6 @@ export class RiskReportDetailComponent implements OnInit {
   echartsInit() {
     const chartDom = document.getElementById('pod-list')!;
     this.myChart = echarts.init(chartDom);
-    this.dataSourceHandle()
   }
 
   // data init
