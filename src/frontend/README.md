@@ -23,7 +23,7 @@ $ kubectl port-forward -n opensearch service/opensearch-cluster-master 9999:9200
 ```json
   {
     "/proxy": {
-      "target": "hostname:8002",
+      "target": "hostname:8082",
       "logLevel": "debug", 
       "secure": false,
       "changeOrigin": true,
@@ -48,7 +48,7 @@ $ kubectl port-forward -n opensearch service/opensearch-cluster-master 9999:9200
 $ npm install connect-history-api-fallback@1.6.0 ejs@3.1.6 express@4.17.2 http-proxy-middleware@2.0.6 https@1.0.0 request@2.88.2 supervisor@0.12.0 @opensearch-project/opensearch@2.1.0 @elastic/elasticsearch@8.5.0
 ```
 
-5. Open the 'node-server.js' file under the "portal" directory, comment the code as 'Please comment this line for development environment', and replace the variable 'body.url' with the hostname of the running Cloud Native Security Inspector: 9999
+5. Open the 'node-server.js' file under the "frontend" directory, comment the code as 'Please comment this line for development environment', and replace the variable 'body.url' with the hostname of the running Cloud Native Security Inspector: 9999
 
 ```json
   // Please comment this line for development environment
@@ -88,17 +88,25 @@ $ [HPM] Proxy rewrite rule created: "^/proxy" ~> "
 
 Start
 ============
-1. npm install (need to be performed in the portal directory)
+1. npm install (need to be performed in the frontend directory)
 2. npm start (all dependencies are installed successfully, run this command to start the project)
 3. open your browser on https://localhost:4004
 
 Notice
 ============
-Possible problems when starting the portal.
+Possible problems when starting the frontend.
 
 1. Installation dependencies in mainland China may encounter problems with installation failures, you can try to execute the following commands
 ```shell
 $ npm get registry
 # Set as Taobao source
 $ npm config set registry https://registry.npmjs.org
+```
+
+2. When accessing the kubebench or risk report page through the UI, the request status code is 404, you need to open the 'assessment.service.ts' file in the 'frontend/src/app/service' directory, and make the following modifications
+```json
+  getKubeBenchReport (data: {url: string, index: string, username: string, password: string, query: any, client: string, ca: string}) :Observable<any>{
+    return this.http.post<any>('/open/open-search', data)
+  }
+
 ```
