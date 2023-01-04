@@ -3,6 +3,7 @@ import * as moment from 'moment';
 import { AssessmentService } from 'src/app/service/assessment.service';
 import { RiskReportDetailComponent } from 'src/app/view/assements/risk-report-detail/risk-report-detail.component'
 import { echarts, LineSeriesOption } from 'src/app/shard/shard/echarts';
+import { PolicyService } from 'src/app/service/policy.service';
 type ECOption = echarts.ComposeOption<LineSeriesOption>
 
 
@@ -18,6 +19,7 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
   myChart!: any
   opensearchInfo!: {url: string, user: string, pswd: string}
   currentDetail: any = {}
+  riskImage = false
   defaultSize = 0
   from = 0
   pageMaxCount = 1
@@ -27,7 +29,8 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
   echartsLoading = true
   riskList = []
   constructor(
-    private assessmentService: AssessmentService
+    private assessmentService: AssessmentService,
+    private policyService: PolicyService
   ) { }
 
   ngAfterViewInit(): void {
@@ -65,11 +68,37 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.echartsInit()
+    this.getInspectionpolicies()
   }
   // init
   echartsInit() {
     const chartDom = document.getElementById('risk')!;
     this.myChart = echarts.init(chartDom);
+  }
+
+  getInspectionpolicies() {
+    this.policyService.getInspectionpolicies().subscribe(
+      (data: any) => {
+        if (data.items && data.items.length >0) {
+          if (data.items[0].spec && data.items[0].spec.inspector.riskImage) {
+            this.riskImage = true
+          } else {            
+            this.echartsRender([], [])
+            this.echartsLoading = false
+            this.dgLoading = false
+            this.riskImage = false
+          }
+        } else {
+          this.echartsRender([], [])
+          this.echartsLoading = false
+          this.dgLoading = false
+          this.riskImage = false
+        }
+      },
+      err => {
+        console.log('err', err);
+      }
+    )
   }
   // echarts render 
   echartsRender(dateList: any, valueList: any) {
@@ -307,7 +336,9 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
               valueList.push(el.risk_number)
             }
           })
-          that.echartsRender(dateList, valueList)
+          if (that.riskImage) {
+            that.echartsRender(dateList, valueList)
+          }
           that.echartsLoading = false
         }          
 
