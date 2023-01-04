@@ -7,7 +7,7 @@
   <clr-accordion clrAccordionMultiPanel="true" >
     <clr-accordion-panel [clrAccordionPanelOpen]='true'>
       <clr-accordion-title>{{'Report_Detail.pod_list'|translate}}</clr-accordion-title>
-      <clr-accordion-content *clrIfExpanded>
+      <clr-accordion-content [clrIfExpanded]="accordionPanel">
         <div class="echarts-loading" *ngIf="echartsLoading">
           <span class="spinner spinner-lg">
             Loading...
