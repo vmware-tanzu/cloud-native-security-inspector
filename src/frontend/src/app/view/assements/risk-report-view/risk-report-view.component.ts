@@ -19,6 +19,7 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
   myChart!: any
   opensearchInfo!: {url: string, user: string, pswd: string}
   currentDetail: any = {}
+  riskImage = false
   defaultSize = 0
   from = 0
   pageMaxCount = 1
@@ -80,15 +81,18 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
       (data: any) => {
         if (data.items && data.items.length >0) {
           if (data.items[0].spec && data.items[0].spec.inspector.riskImage) {
+            this.riskImage = true
           } else {            
             this.echartsRender([], [])
             this.echartsLoading = false
             this.dgLoading = false
+            this.riskImage = false
           }
         } else {
           this.echartsRender([], [])
           this.echartsLoading = false
           this.dgLoading = false
+          this.riskImage = false
         }
       },
       err => {
@@ -332,7 +336,9 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
               valueList.push(el.risk_number)
             }
           })
-          that.echartsRender(dateList, valueList)
+          if (that.riskImage) {
+            that.echartsRender(dateList, valueList)
+          }
           that.echartsLoading = false
         }          
 
