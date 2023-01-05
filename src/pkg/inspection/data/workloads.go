@@ -145,8 +145,11 @@ func (w *Workloads) matchLabel(rs []*ResourceItem, selectorLabel map[string]stri
 	}
 
 	for _, item := range rs {
-		sel := labels.SelectorFromValidatedSet(selectorLabel)
-		lbs := labels.Set(item.ObjectMeta.GetLabels())
+		if len(item.Selector) == 0 {
+			continue
+		}
+		sel := labels.SelectorFromValidatedSet(item.Selector)
+		lbs := labels.Set(selectorLabel)
 		if !sel.Matches(lbs) {
 			continue
 		}

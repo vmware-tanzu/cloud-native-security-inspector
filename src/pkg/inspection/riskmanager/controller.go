@@ -134,7 +134,7 @@ func (c *RiskController) Run(ctx context.Context, policy *v1alpha1.InspectionPol
 		if err == nil {
 			for _, deploy := range deploys.Items {
 				resource := data.NewResourceItem("Deployment")
-				resource.SetDeployment(&deploy)
+				resource.SetDeployment(deploy)
 				allResources = append(allResources, resource)
 			}
 		} else {
@@ -146,7 +146,7 @@ func (c *RiskController) Run(ctx context.Context, policy *v1alpha1.InspectionPol
 		if err == nil {
 			for _, service := range services.Items {
 				resource := data.NewResourceItem("Service")
-				resource.SetService(&service)
+				resource.SetService(service)
 				allResources = append(allResources, resource)
 			}
 		} else {
