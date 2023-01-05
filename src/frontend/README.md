@@ -1,6 +1,6 @@
-Cloud Native Security Inspector (Portal)
+Frontend Developer Guide For Cloud Native Security Inspector
 ============
-This is a project to build a cloud-native security inspector portal based on Clarity and Angular.
+This is a project to build a cloud-native security inspector frontend based on Clarity and Angular.
 
 
 
@@ -19,7 +19,7 @@ $ kubectl proxy --port 8082 --address='0.0.0.0'  --accept-hosts '.*'
 $ kubectl port-forward -n opensearch service/opensearch-cluster-master 9999:9200 --address='0.0.0.0'
 ```
 
-3. Open the "proxy.config.json" file under the directory "portal" and replace "hostname" with an available Cloud Native Security Inspector hostname
+3. Open the '[proxy.config.json](./proxy.config.json)' file under the directory 'frontend' and replace 'hostname' with an available Cloud Native Security Inspector hostname
 ```json
   {
     "/proxy": {
@@ -43,12 +43,14 @@ $ kubectl port-forward -n opensearch service/opensearch-cluster-master 9999:9200
   }
 ```
 
-4. Dependencies required to install node server separately
+4. Dependencies required to install node server separately, first open the src/frontend terminal in the Cloud Native Security Inspector project directory
 ```shell
+$ cd src/frontend 
+
 $ npm install connect-history-api-fallback@1.6.0 ejs@3.1.6 express@4.17.2 http-proxy-middleware@2.0.6 https@1.0.0 request@2.88.2 supervisor@0.12.0 @opensearch-project/opensearch@2.1.0 @elastic/elasticsearch@8.5.0
 ```
 
-5. Open the 'node-server.js' file under the "frontend" directory, comment the code as 'Please comment this line for development environment', and replace the variable 'body.url' with the hostname of the running Cloud Native Security Inspector: 9999
+5. Open the '[node-server.js](./node-server.js)' file under the "frontend" directory, comment the code as 'Please comment this line for development environment', and replace the variable 'body.url' with the hostname of the running Cloud Native Security Inspector: 9999
 
 ```json
   // Please comment this line for development environment
@@ -86,11 +88,20 @@ $ [HPM] Proxy created: /  -> https://kubernetes.default.svc
 $ [HPM] Proxy rewrite rule created: "^/proxy" ~> "
 ```
 
+7. When accessing the kubebench or risk report page through the UI, you will encounter a request status code of 404, and you need to open the '[assessment.service.ts](./src/app/service/assessment.service.ts)' file 'frontend/src/app/service' directory, and make the following changes
+```json
+  getKubeBenchReport (data: {url: string, index: string, username: string, password: string, query: any, client: string, ca: string}) :Observable<any>{
+    return this.http.post<any>('/open/open-search', data)
+  }
+
+```
+
+
 Start
 ============
 1. npm install (need to be performed in the frontend directory)
 2. npm start (all dependencies are installed successfully, run this command to start the project)
-3. open your browser on https://localhost:4004
+3. open your browser on http://localhost:4004
 
 Notice
 ============
@@ -100,13 +111,5 @@ Possible problems when starting the frontend.
 ```shell
 $ npm get registry
 # Set as Taobao source
-$ npm config set registry https://registry.npmjs.org
-```
-
-2. When accessing the kubebench or risk report page through the UI, the request status code is 404, you need to open the 'assessment.service.ts' file in the 'frontend/src/app/service' directory, and make the following modifications
-```json
-  getKubeBenchReport (data: {url: string, index: string, username: string, password: string, query: any, client: string, ca: string}) :Observable<any>{
-    return this.http.post<any>('/open/open-search', data)
-  }
-
+$ npm config set registry https://registry.npm.taobao.org
 ```
