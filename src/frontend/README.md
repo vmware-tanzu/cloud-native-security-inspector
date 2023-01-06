@@ -52,7 +52,7 @@ $ npm install connect-history-api-fallback@1.6.0 ejs@3.1.6 express@4.17.2 http-p
 
 5. Open the '[node-server.js](./node-server.js)' file under the "frontend" directory, comment the code as 'Please comment this line for development environment', and replace the variable 'body.url' with the hostname of the running Cloud Native Security Inspector: 9999
 
-```json
+```js
   // Please comment this line for development environment
   let token = fs.readFileSync(`${SERVICEACCOUNT}/token`, 'utf8')
 
@@ -89,7 +89,7 @@ $ [HPM] Proxy rewrite rule created: "^/proxy" ~> "
 ```
 
 7. When accessing the kubebench or risk report page through the UI, you will encounter a request status code of 404, and you need to open the '[assessment.service.ts](./src/app/service/assessment.service.ts)' file 'frontend/src/app/service' directory, and make the following changes
-```json
+```ts
   getKubeBenchReport (data: {url: string, index: string, username: string, password: string, query: any, client: string, ca: string}) :Observable<any>{
     return this.http.post<any>('/open/open-search', data)
   }
