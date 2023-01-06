@@ -141,6 +141,10 @@ func (r *SettingReconciler) ensureKnownRegistries(ctx context.Context, p provide
 
 	defer set.Status.SetCondition(cond)
 	// register known registries, create or update
+	if set.Spec.KnownRegistries == nil || len(set.Spec.KnownRegistries) == 0 {
+		log.Info("there is no configuration about known registries in the setting")
+		return nil
+	}
 	err := p.RegisterKnownRegistries(ctx, set.Spec.KnownRegistries)
 	if err != nil {
 		if !cond.IsFalse() {
