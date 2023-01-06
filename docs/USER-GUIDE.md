@@ -121,7 +121,7 @@ in the next release we will consider to add a way to purge the data automaticall
 | Field Name      | Field Type        | Description                                                                       |
 |-----------------|-------------------|-----------------------------------------------------------------------------------|
 | Policy Name     | string            | The name of this policy                                                           |
-| Work Namespace  | *string           | The namespace for the scanners                                                    |
+| Work Namespace  | string            | The namespace for the scanners                                                    |
 | Schedule        | string            | Configure Inspection schedule                                                     |
 | Scanners        | multiple configs  | The scanners to be included in the policy                                         |
 | ImagePullPolicy | corev1.PullPolicy | Image pull policy. Choose from Always, IfNotPresent and Never                     |
@@ -147,9 +147,9 @@ in the next release we will consider to add a way to purge the data automaticall
 You can choose whether the image scanner reports are generated in the K8s cluster as CRD after each scanning.
 In additional to that, you can config the format and live time of the reports.
 
-This is for image scanning report only, and is only for 0.2 release. In the next version this part of data
-will also be sent to opensearch or elasticsearch, as what we do for the Kube-bench scanning reports and
-the risk scanning reports
+These configs are for image scanning report only, and is for 0.2 release. In the next release this part of data
+will also be sent to opensearch or elasticsearch, just like what we have done for the Kube-bench scanning reports and
+the risk scanning reports.
 
 | Field Name      | Field Type | Description                                                                       |
 |-----------------|------------|-----------------------------------------------------------------------------------|
@@ -177,9 +177,6 @@ If there is no CVE items whose severity is higher than the baseline you configur
 the report will show the number of vulnerable containers is zero. But you can still review
 all the CVE items equal or below the baseline in the `Details` section of the report.
 
-In release 0.2 the image scanning reports are CR (custom resource) in the K8s cluster. In the next release
-we will also put them in OpenSearch or ElasticSearch.
-
 ##### Kubebench scanning reports
 Besides the image scanner scanning the image of the running workloads, the Kubebench scanner
 scans the configurations of the underlying K8s cluster.
@@ -201,7 +198,7 @@ Each sub-category contains the actual security check items:
 
 The checks are based on the [CIS Kubernetes Benchmark support](https://www.cisecurity.org/benchmark/kubernetes)
 
-The Kubebench scanner is based on the [opensource implementation](https://github.com/aquasecurity/kube-bench),
+The Kubebench scanner is based on this [opensource implementation](https://github.com/aquasecurity/kube-bench),
 we integrate this scanner into Cloud-Native-Security-Inspector. The config files are mounted from
 the host to the Kubebench scanner's cronjob pod, then those configuration files are analyzed.
 
@@ -224,7 +221,7 @@ The risk scanner will decode the CVE vector of each serious vulnerabilities and 
 
 ###### network exposure risks
 When the vulnerability's [CVSS v3.1 vector](https://www.first.org/cvss/specification-document) indicates that
-this vulnerability could bring more risks when the workload is exposed in the network,
+this vulnerability could bring more risks when the workload is exposed to the network,
 the risk scanner will add a new vulnerability item indicates that.
 Example:
 ```
@@ -247,7 +244,8 @@ The score scale for this kind of risk is the same with the `network exposure ris
 We can also check the time-series trend of the vulnerabilities in the container.
 
 #### 1.1.3 Insight
-In release 2.0, insight is all about the image scanning results.
+In release 2.0, insight is all about the image scanning results, Kubebench scanning results and
+risk scanning results are not included in the Insight section.
 
 The security administrator can examine the CVE issues in 3 perspectives:
 
@@ -263,7 +261,7 @@ You can check the distribution of the vulnerable workloads across the namespaces
 
 ##### Namespace
 You can check the total number of workloads that passed or violates the baseline within a certain namespace.
-<img src="./pictures/insight-namespace-summry.png">
+<img src="./pictures/insight-namespace-summary.png">
 You can check the distribution of the vulnerable workloads across different types of workload within the namespace.
 <img src="./pictures/insight-namespace-violations.png">
 
@@ -393,7 +391,7 @@ For now, Cloud-Native-Security-Inspector only supports `quarantine_vulnerable_wo
   
 When violation is detected on workloads, Cloud-Native-Security-Inspector will create a network
 policy with "deny-all" rules for the namespace if not exist. The violation pods will be
-labeled `goharbor.io/controller: "TSI"` and `goharbor.io/inspection: "risk'` to match
+labeled `goharbor.io/controller: "CNSI"` and `goharbor.io/inspection: "risk'` to match
 the pod selector on network policy and the pods will be quarantined.
 
 When the violation pods turns good, the labels will be removed from the pods. And the

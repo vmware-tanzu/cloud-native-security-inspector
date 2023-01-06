@@ -25,7 +25,7 @@ greater awareness and control of running workloads.
 In regard to scanners, currently we support 3 different kinds of scanners:
 ### [Image vulnerability scanner](https://goharbor.io/docs/main/administration/vulnerability-scanning/)
 Harbor provides static analysis of vulnerabilities in images through the open source projects [Trivy](https://github.com/aquasecurity/trivy).
-In CNSI, this capability is used to perform [dynamic security application testing](https://www.gartner.com/en/information-technology/glossary/dynamic-application-security-testing-dast) (DAST)
+In CNSI, this capability is used to perform [dynamic security application testing](https://www.gartner.com/en/information-technology/glossary/dynamic-application-security-testing-dast) (DAST).
 
 ### [Kubebench scanner](https://github.com/aquasecurity/kube-bench)
 Kubebench scanner mainly cares about the underlying Kubernetes cluster. 
@@ -33,7 +33,7 @@ It checks whether Kubernetes is deployed securely by running the checks document
 
 ### [Risk Scanner (contributed by Arksec Beijing Ltd)](https://arksec.cn/)
 The Risk scanner fetches the [CVSS vectors](https://qualysguard.qg2.apps.qualys.com/qwebhelp/fo_portal/setup/cvss_vector_strings.htm)
-from the image vulnerability report, then reports risks it observes in the vector.
+from the image vulnerability report, then reports scored-risks it observed in the vector.
 
 ## Demo
 [Video Demo](https://youtu.be/IMxU0UWo-DU) - Demo for Cloud Native Security Inspector features
