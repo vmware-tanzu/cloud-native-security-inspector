@@ -1,6 +1,6 @@
 {
   "/proxy": {
-    "target": "http://127.0.0.1:8082",
+    "target": "hostname:8002",
     "logLevel": "debug", 
     "secure": false,
     "changeOrigin": true,

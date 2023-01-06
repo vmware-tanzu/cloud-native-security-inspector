@@ -3,7 +3,6 @@
 const express = require('express')
 const https = require('https')
 const request = require('request');
-// const request = {}
 const { createProxyMiddleware, fixRequestBody  } = require('http-proxy-middleware')
 const bodyParser = require('body-parser')
 const ejs = require('ejs')
@@ -16,7 +15,9 @@ const SERVICEACCOUNT='/var/run/secrets/kubernetes.io/serviceaccount'
 const { Client } = require('@opensearch-project/opensearch')
 const elastic = require('@elastic/elasticsearch')
 const elasticClient = elastic.Client
+// Please comment this line for development environment
 let token = fs.readFileSync(`${SERVICEACCOUNT}/token`, 'utf8')
+
 let app = express()
 // Forward processing of requests starting with /api
 app.use('/proxy', createProxyMiddleware({ 
@@ -25,9 +26,11 @@ app.use('/proxy', createProxyMiddleware({
 	// Rewrite path when forwarding
 	pathRewrite: {'^/proxy' : ''},
   headers: {
+    // Please comment this line for development environment
     'Authorization': `Bearer ${token}`
   },
   ssl: {
+    // Please comment this line for development environment
     ca: fs.readFileSync(`${SERVICEACCOUNT}/ca.crt`, 'utf8')
   },
 	changeOrigin: true,
@@ -97,6 +100,7 @@ app.post('/open-search', (req, res) => {
 
   if (body.client === 'opensearch') {
     const client = new Client({
+      // The development environment replaces the 'body.url' address
       node: body.url,
       ssl: {
         rejectUnauthorized: false
@@ -114,6 +118,7 @@ app.post('/open-search', (req, res) => {
     })
   } else if (body.client === 'risk_opensearch') {
     const client = new Client({
+      // The development environment replaces the 'body.url' address
       node: body.url,
       ssl: {
         rejectUnauthorized: false
