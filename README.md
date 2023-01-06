@@ -2,30 +2,38 @@
 [![CodeQL](https://github.com/vmware-tanzu/cloud-native-security-inspector/actions/workflows/codeql.yml/badge.svg)](https://github.com/vmware-tanzu/cloud-native-security-inspector/actions/workflows/codeql.yml)
 
 
-Cloud Native Security Inspector is an open source cloud native runtime security tool that works with Harbor. It allows end users to assess the security posture of Kubernetes clusters at runtime. This project will add dynamic scanning giving Security Auditors greater awareness and control of running workloads.
+Cloud Native Security Inspector is an open source cloud native runtime security tool. It allows end users to assess
+the security posture of Kubernetes clusters at runtime. This project will add dynamic scanning giving Security Auditors
+greater awareness and control of running workloads.
 
 ## Features 
 - View overall security posture of applications in runtime  
-- Create policies and bug scanning jobs  
+- Policy-based scanning management
 - Revise baseline policies as needed and prevent redeploying workloads sourced from vulnerable images 
-- Set up a policy to quarantine non-secure workloads 
-- Review, filter, and remove policy reports  
-- Generate assessment reports with every scan 
-- View notifications about flagged pods 
-
+- Quarantine non-secure workloads 
+- Review and filter the assessment reports
+- Send the historical assessment reports to [OpenSearch](https://opensearch.org/) or [ElasticSearch](https://www.elastic.co/elasticsearch/)
 
 ## Architecture
   <img src="./docs/pictures/architecture.png">  
 
 **Cloud Native Security Inspector** consists of the following 3 components:
-1. Controller Manager
-2. Inspector
-3. Portal
+1. The Controller Manager
+2. The Portal
+3. Scanners
 
-In regard to inspector, currently we support 3 different kinds of inspectors:
-1. [Harbor vulnerability scanner](https://goharbor.io/docs/main/administration/vulnerability-scanning/).
-2. An inspector based on [Kube-bench](https://github.com/aquasecurity/kube-bench).
-3. Risk inspector contributed by [Arksec](https://arksec.cn/).
+In regard to scanners, currently we support 3 different kinds of scanners:
+### [Image vulnerability scanner](https://goharbor.io/docs/main/administration/vulnerability-scanning/)
+Harbor provides static analysis of vulnerabilities in images through the open source projects [Trivy](https://github.com/aquasecurity/trivy).
+In CNSI, this capability is used to perform [dynamic security application testing](https://www.gartner.com/en/information-technology/glossary/dynamic-application-security-testing-dast) (DAST)
+
+### [Kubebench scanner](https://github.com/aquasecurity/kube-bench)
+Kubebench scanner mainly cares about the underlying Kubernetes cluster. 
+It checks whether Kubernetes is deployed securely by running the checks documented in the [CIS Kubernetes Benchmark](https://www.cisecurity.org/benchmark/kubernetes/).
+
+### [Risk Scanner (contributed by Arksec Beijing Ltd)](https://arksec.cn/)
+The Risk scanner fetches the [CVSS vectors](https://qualysguard.qg2.apps.qualys.com/qwebhelp/fo_portal/setup/cvss_vector_strings.htm)
+from the image vulnerability report, then reports risks it observes in the vector.
 
 ## Demo
 [Video Demo](https://youtu.be/IMxU0UWo-DU) - Demo for Cloud Native Security Inspector features
@@ -69,7 +77,6 @@ $ cd cloud-native-security-inspector
 $ ./deploy.sh install --build-source
 ```
 
-
 ### Verifying the deployment
 After the installation is completed either via Option 1 or Option 2, use the following command to see if all the components have been started successfully in Kubernetes.
 
@@ -98,9 +105,6 @@ NAME                                             TYPE       CLUSTER-IP     EXTER
 cloud-native-security-inspector-portal-service   NodePort   10.98.232.35   <none>        3800:32541/TCP   44h
 ```
 
-If you are using KIND to deploy Kubernetes, in order to visit the portal successfully, please make sure the NodePort (by default: 30150) of the portal has been exposed to the host machine correctly. 
-For more details please refer to [KIND documentation](https://kind.sigs.k8s.io/docs/user/quick-start/#mapping-ports-to-the-host-machine).
-
 ### Run
 - Refer to the [Tutorial](docs/TUTORIAL.md) for a quick guidance.
 - Refer to the [User Guide](docs/USER-GUIDE.md) for more details on how to use Cloud Native Security Inspector.
@@ -111,6 +115,7 @@ To uninstall Cloud Native Security Inspector, use the following command:
 $ ./deploy.sh uninstall 
 ```
 For more details, please refer to the [User Guide](docs/USER-GUIDE.md).
+
 ## Contact us
 Email: narrows@vmware.com  
 
