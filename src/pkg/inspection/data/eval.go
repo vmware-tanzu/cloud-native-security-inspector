@@ -50,7 +50,7 @@ func (d *DefaultEvaluator) getExposureRisk(i *ResourceItem, w *Workloads, v *vul
 						Score: v.Severity.Code(),
 						Scale: vuln.Critical.Code(),
 						Reason: fmt.Sprintf("resource %s is exposed to network while it has "+
-							"vulneratbility %s(severity: %d) with network exposure", i.ID, v.ID, v.Severity.Code()),
+							"vulneratbility %s (severity: %d) with network exposure", i.ID, v.ID, v.Severity.Code()),
 						VulnerabilityRiskItem: &VulnerabilityRiskItem{
 							InfectionVectors: vector,
 							Package:          v.Package,
@@ -101,7 +101,7 @@ func (d *DefaultEvaluator) getPrivilegeRisk(i *ResourceItem, w *Workloads, v *vu
 						Score: v.Severity.Code(),
 						Scale: vuln.Critical.Code(),
 						Reason: fmt.Sprintf("resource %s is exposed to low privilege-required vulnerability"+
-							"%s(severity: %d)", i.ID, v.ID, v.Severity.Code()),
+							" %s (severity: %d)", i.ID, v.ID, v.Severity.Code()),
 						VulnerabilityRiskItem: &VulnerabilityRiskItem{
 							InfectionVectors: vector,
 							Package:          v.Package,
