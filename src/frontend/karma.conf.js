@@ -60,8 +60,8 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    singleRun: true,
-    browsers: ['ChromeHeadlessNoSandbox'],
+    singleRun: false,
+    browsers: ['Chrome', 'ChromeHeadlessNoSandbox'],
     browserDisconnectTolerance: 2,
     browserNoActivityTimeout: 50000,
     customLaunchers: {
