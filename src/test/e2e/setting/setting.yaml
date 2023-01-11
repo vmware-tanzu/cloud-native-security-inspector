@@ -1,0 +1,36 @@
+# Copyright 2022 VMware, Inc.
+# SPDX-License-Identifier: Apache-2.0
+apiVersion: v1
+data:
+  accessKey: YWRtaW4=
+  accessSecret: SGFyYm9yMTIzNDU=
+kind: Secret
+metadata:
+  name: harbor
+  namespace: default
+type: Opaque
+
+---
+apiVersion: goharbor.goharbor.io/v1alpha1
+kind: Setting
+metadata:
+  name: setting-test
+spec:
+  dataSource:
+    credentialRef:
+      name: harbor
+      namespace: default
+    provider: Harbor
+    name: source-harbor
+    endpoint: https://your-harbor-regsitry
+    scanSchedule: "0 0 0 * * *"
+    skipTLSVerify: true
+
+  knownRegistries:
+  - provider: docker-registry
+    name: local-registry
+    endpoint: https://your-known-registry:5000
+    credentialRef:
+      name: harbor
+      namespace: default
+    skipTLSVerify: true
