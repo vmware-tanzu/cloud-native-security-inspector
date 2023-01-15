@@ -1,0 +1,1682 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.4.1
+  creationTimestamp: null
+  name: assessmentreports.goharbor.goharbor.io
+spec:
+  group: goharbor.goharbor.io
+  names:
+    kind: AssessmentReport
+    listKind: AssessmentReportList
+    plural: assessmentreports
+    singular: assessmentreport
+  scope: Namespaced
+  versions:
+    - name: v1alpha1
+      schema:
+        openAPIV3Schema:
+          description: AssessmentReport is the Schema for the assessmentreports API
+          properties:
+            apiVersion:
+              description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+              type: string
+            kind:
+              description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+              type: string
+            metadata:
+              type: object
+            spec:
+              description: AssessmentReportSpec defines the desired state of AssessmentReport
+              properties:
+                inspectionConfiguration:
+                  description: InspectionConfiguration refers tp the inspection configuration
+                    defined in the InspectionPolicy.
+                  properties:
+                    actions:
+                      description: Actions of protection.
+                      items:
+                        description: FollowupAction defines what actions should be applied
+                          when security expectations are matched.
+                        properties:
+                          ignore:
+                            description: Ignore applying actions to the workloads with
+                              the specified labels.
+                            properties:
+                              matchExpressions:
+                                description: matchExpressions is a list of label selector
+                                  requirements. The requirements are ANDed.
+                                items:
+                                  description: A label selector requirement is a selector
+                                    that contains values, a key, and an operator that
+                                    relates the key and values.
+                                  properties:
+                                    key:
+                                      description: key is the label key that the selector
+                                        applies to.
+                                      type: string
+                                    operator:
+                                      description: operator represents a key's relationship
+                                        to a set of values. Valid operators are In,
+                                        NotIn, Exists and DoesNotExist.
+                                      type: string
+                                    values:
+                                      description: values is an array of string values.
+                                        If the operator is In or NotIn, the values array
+                                        must be non-empty. If the operator is Exists
+                                        or DoesNotExist, the values array must be empty.
+                                        This array is replaced during a strategic merge
+                                        patch.
+                                      items:
+                                        type: string
+                                      type: array
+                                  required:
+                                    - key
+                                    - operator
+                                  type: object
+                                type: array
+                              matchLabels:
+                                additionalProperties:
+                                  type: string
+                                description: matchLabels is a map of {key,value} pairs.
+                                  A single {key,value} in the matchLabels map is equivalent
+                                  to an element of matchExpressions, whose key field
+                                  is "key", the operator is "In", and the values array
+                                  contains only "value". The requirements are ANDed.
+                                type: object
+                            type: object
+                          kind:
+                            description: Kind of action.
+                            enum:
+                              - forbid_vulnerable_deployment
+                              - quarantine_vulnerable_workload
+                              - alert
+                            type: string
+                          settings:
+                            additionalProperties:
+                              type: string
+                            description: Settings of the action.
+                            type: object
+                        required:
+                          - kind
+                        type: object
+                      type: array
+                    assessment:
+                      description: DataProvider is the data provider. DataProvider DataProvider
+                        `json:"dataProvider"` Assessment is the assessment report.
+                      properties:
+                        elasticSearchAddr:
+                          description: ElasticSearch endpoint
+                          type: string
+                        elasticSearchCert:
+                          description: ElasticSearch certificate for the client
+                          type: string
+                        elasticSearchEnabled:
+                          default: false
+                          description: Indicate whether to store the reports to elasticsearch
+                          type: boolean
+                        elasticSearchPasswd:
+                          description: ElasticSearch password for the client
+                          type: string
+                        elasticSearchUser:
+                          description: ElasticSearch username for the client
+                          type: string
+                        format:
+                          default: YAML
+                          description: Format of the assessment report data.
+                          enum:
+                            - JSON
+                            - YAML
+                          type: string
+                        generate:
+                          default: true
+                          description: Generate indicates whether generate the assessment
+                            report or not.
+                          type: boolean
+                        liveTime:
+                          default: 86400
+                          description: Live time of the generated report. Unit is second.
+                          format: int64
+                          type: integer
+                        managedBy:
+                          default: false
+                          description: Indicate whether the assessment reports are managed
+                            by the policy. If it is set to true, then the assessment
+                            report is owned by the policy.
+                          type: boolean
+                        openSearchAddr:
+                          description: ElasticSearch endpoint
+                          type: string
+                        openSearchCert:
+                          description: ElasticSearch certificate for the client
+                          type: string
+                        openSearchEnabled:
+                          default: false
+                          description: Indicate whether to store the reports to opensearch
+                          type: boolean
+                        openSearchPasswd:
+                          description: ElasticSearch password for the client
+                          type: string
+                        openSearchUser:
+                          description: ElasticSearch username for the client
+                          type: string
+                      required:
+                        - elasticSearchEnabled
+                        - format
+                        - generate
+                        - liveTime
+                        - managedBy
+                        - openSearchEnabled
+                      type: object
+                    baselines:
+                      description: Baselines of cluster compliance.
+                      items:
+                        description: ComplianceBaseline defines the expecting compliance
+                          baseline.
+                        properties:
+                          baseline:
+                            description: Baseline for the compliance of this kind.
+                            type: string
+                          kind:
+                            description: Kind of inspector.
+                            enum:
+                              - vulnerability
+                              - malware
+                              - misconfiguration
+                              - license
+                              - BOM
+                            type: string
+                          scheme:
+                            description: Scheme of data.
+                            type: string
+                          version:
+                            description: Version of data scheme used for the compliance
+                              check.
+                            type: string
+                        required:
+                          - baseline
+                          - kind
+                          - scheme
+                          - version
+                        type: object
+                      minItems: 1
+                      type: array
+                    namespaceSelector:
+                      description: NamespaceSelector provides a way to select the specified
+                        namespaces.
+                      properties:
+                        matchExpressions:
+                          description: matchExpressions is a list of label selector
+                            requirements. The requirements are ANDed.
+                          items:
+                            description: A label selector requirement is a selector
+                              that contains values, a key, and an operator that relates
+                              the key and values.
+                            properties:
+                              key:
+                                description: key is the label key that the selector
+                                  applies to.
+                                type: string
+                              operator:
+                                description: operator represents a key's relationship
+                                  to a set of values. Valid operators are In, NotIn,
+                                  Exists and DoesNotExist.
+                                type: string
+                              values:
+                                description: values is an array of string values. If
+                                  the operator is In or NotIn, the values array must
+                                  be non-empty. If the operator is Exists or DoesNotExist,
+                                  the values array must be empty. This array is replaced
+                                  during a strategic merge patch.
+                                items:
+                                  type: string
+                                type: array
+                            required:
+                              - key
+                              - operator
+                            type: object
+                          type: array
+                        matchLabels:
+                          additionalProperties:
+                            type: string
+                          description: matchLabels is a map of {key,value} pairs. A
+                            single {key,value} in the matchLabels map is equivalent
+                            to an element of matchExpressions, whose key field is "key",
+                            the operator is "In", and the values array contains only
+                            "value". The requirements are ANDed.
+                          type: object
+                      type: object
+                    workloadSelector:
+                      description: WorkloadSelector provides a way to select the specified
+                        workloads.
+                      properties:
+                        matchExpressions:
+                          description: matchExpressions is a list of label selector
+                            requirements. The requirements are ANDed.
+                          items:
+                            description: A label selector requirement is a selector
+                              that contains values, a key, and an operator that relates
+                              the key and values.
+                            properties:
+                              key:
+                                description: key is the label key that the selector
+                                  applies to.
+                                type: string
+                              operator:
+                                description: operator represents a key's relationship
+                                  to a set of values. Valid operators are In, NotIn,
+                                  Exists and DoesNotExist.
+                                type: string
+                              values:
+                                description: values is an array of string values. If
+                                  the operator is In or NotIn, the values array must
+                                  be non-empty. If the operator is Exists or DoesNotExist,
+                                  the values array must be empty. This array is replaced
+                                  during a strategic merge patch.
+                                items:
+                                  type: string
+                                type: array
+                            required:
+                              - key
+                              - operator
+                            type: object
+                          type: array
+                        matchLabels:
+                          additionalProperties:
+                            type: string
+                          description: matchLabels is a map of {key,value} pairs. A
+                            single {key,value} in the matchLabels map is equivalent
+                            to an element of matchExpressions, whose key field is "key",
+                            the operator is "In", and the values array contains only
+                            "value". The requirements are ANDed.
+                          type: object
+                      type: object
+                  required:
+                    - assessment
+                    - baselines
+                  type: object
+                namespaceAssessments:
+                  description: Assessments are the assessment results.
+                  items:
+                    description: NamespaceAssessment defines assessment results for
+                      each Namespace.
+                    properties:
+                      namespace:
+                        description: Which namespace?
+                        properties:
+                          name:
+                            description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                            TODO: Add other useful fields. apiVersion, kind, uid?'
+                            type: string
+                        type: object
+                      workloadAssessments:
+                        description: Assessments contains results of namespace assessments.
+                        items:
+                          description: WorkloadAssessment defines assessment results
+                            for each Workload.
+                          properties:
+                            actionEnforcements:
+                              description: ActionEnforcements indicates what actions
+                                are enforced? Only when passed failed and actions are
+                                defined in the inspection policy.
+                              items:
+                                description: FollowupActionEnforcement indicates what
+                                  followup actions defined in the inspection configuration
+                                  are applied.
+                                properties:
+                                  action:
+                                    description: FollowupAction defines what actions
+                                      should be applied when security expectations are
+                                      matched.
+                                    properties:
+                                      ignore:
+                                        description: Ignore applying actions to the
+                                          workloads with the specified labels.
+                                        properties:
+                                          matchExpressions:
+                                            description: matchExpressions is a list
+                                              of label selector requirements. The requirements
+                                              are ANDed.
+                                            items:
+                                              description: A label selector requirement
+                                                is a selector that contains values,
+                                                a key, and an operator that relates
+                                                the key and values.
+                                              properties:
+                                                key:
+                                                  description: key is the label key
+                                                    that the selector applies to.
+                                                  type: string
+                                                operator:
+                                                  description: operator represents a
+                                                    key's relationship to a set of values.
+                                                    Valid operators are In, NotIn, Exists
+                                                    and DoesNotExist.
+                                                  type: string
+                                                values:
+                                                  description: values is an array of
+                                                    string values. If the operator is
+                                                    In or NotIn, the values array must
+                                                    be non-empty. If the operator is
+                                                    Exists or DoesNotExist, the values
+                                                    array must be empty. This array
+                                                    is replaced during a strategic merge
+                                                    patch.
+                                                  items:
+                                                    type: string
+                                                  type: array
+                                              required:
+                                                - key
+                                                - operator
+                                              type: object
+                                            type: array
+                                          matchLabels:
+                                            additionalProperties:
+                                              type: string
+                                            description: matchLabels is a map of {key,value}
+                                              pairs. A single {key,value} in the matchLabels
+                                              map is equivalent to an element of matchExpressions,
+                                              whose key field is "key", the operator
+                                              is "In", and the values array contains
+                                              only "value". The requirements are ANDed.
+                                            type: object
+                                        type: object
+                                      kind:
+                                        description: Kind of action.
+                                        enum:
+                                          - forbid_vulnerable_deployment
+                                          - quarantine_vulnerable_workload
+                                          - alert
+                                        type: string
+                                      settings:
+                                        additionalProperties:
+                                          type: string
+                                        description: Settings of the action.
+                                        type: object
+                                    required:
+                                      - kind
+                                    type: object
+                                  result:
+                                    description: EnforcementResult keeps the result
+                                      of policy enforcement.
+                                    properties:
+                                      error:
+                                        type: string
+                                      status:
+                                        enum:
+                                          - applied
+                                          - failed
+                                          - dirty
+                                        type: string
+                                    required:
+                                      - status
+                                    type: object
+                                required:
+                                  - action
+                                  - result
+                                type: object
+                              type: array
+                            failures:
+                              description: Keep all the failures of the assessment when
+                                passed is false.
+                              items:
+                                description: AssessmentFailure defines failures of the
+                                  assessment.
+                                properties:
+                                  assessmentError:
+                                    description: What error occurred?
+                                    properties:
+                                      cause:
+                                        type: string
+                                      code:
+                                        format: int32
+                                        type: integer
+                                      error:
+                                        type: string
+                                    required:
+                                      - error
+                                    type: object
+                                  baseline:
+                                    description: For which compliance baseline? If no
+                                      compliance baseline specified, that means other
+                                      failure happened before doing data assessment.
+                                    properties:
+                                      baseline:
+                                        description: Baseline for the compliance of
+                                          this kind.
+                                        type: string
+                                      kind:
+                                        description: Kind of inspector.
+                                        enum:
+                                          - vulnerability
+                                          - malware
+                                          - misconfiguration
+                                          - license
+                                          - BOM
+                                        type: string
+                                      scheme:
+                                        description: Scheme of data.
+                                        type: string
+                                      version:
+                                        description: Version of data scheme used for
+                                          the compliance check.
+                                        type: string
+                                    required:
+                                      - baseline
+                                      - kind
+                                      - scheme
+                                      - version
+                                    type: object
+                                  container:
+                                    description: For which container (image)?
+                                    properties:
+                                      id:
+                                        description: ID of the container.
+                                        type: string
+                                      image:
+                                        description: Image of the container.
+                                        type: string
+                                      imageID:
+                                        description: ImageID of the container.
+                                        type: string
+                                      isInit:
+                                        description: IsInit indicate if the container
+                                          is an init container.
+                                        type: boolean
+                                      name:
+                                        description: Name of the container.
+                                        type: string
+                                    required:
+                                      - id
+                                      - image
+                                      - imageID
+                                      - isInit
+                                      - name
+                                    type: object
+                                required:
+                                  - assessmentError
+                                  - container
+                                type: object
+                              type: array
+                            passed:
+                              description: Indicates if all the compliance checks are
+                                passed.
+                              type: boolean
+                            workload:
+                              description: For which workload is assessing?
+                              properties:
+                                metadata:
+                                  description: For pure Pod, no object reference.
+                                  properties:
+                                    apiVersion:
+                                      description: API version of the referent.
+                                      type: string
+                                    fieldPath:
+                                      description: 'If referring to a piece of an object
+                                      instead of an entire object, this string should
+                                      contain a valid JSON/Go field access statement,
+                                      such as desiredState.manifest.containers[2].
+                                      For example, if the object reference is to a
+                                      container within a pod, this would take on a
+                                      value like: "spec.containers{name}" (where "name"
+                                      refers to the name of the container that triggered
+                                      the event) or if no container name is specified
+                                      "spec.containers[2]" (container with index 2
+                                      in this pod). This syntax is chosen only to
+                                      have some well-defined way of referencing a
+                                      part of an object. TODO: this design is not
+                                      final and this field is subject to change in
+                                      the future.'
+                                      type: string
+                                    kind:
+                                      description: 'Kind of the referent. More info:
+                                      https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                                      type: string
+                                    name:
+                                      description: 'Name of the referent. More info:
+                                      https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                      type: string
+                                    namespace:
+                                      description: 'Namespace of the referent. More
+                                      info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                                      type: string
+                                    resourceVersion:
+                                      description: 'Specific resourceVersion to which
+                                      this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                                      type: string
+                                    uid:
+                                      description: 'UID of the referent. More info:
+                                      https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                                      type: string
+                                  type: object
+                                pods:
+                                  description: Pods of this workload.
+                                  items:
+                                    description: Pod for representing kubernetes Pod.
+                                    properties:
+                                      containers:
+                                        description: Containers of the pod.
+                                        items:
+                                          description: Container for representing kubernetes
+                                            Container.
+                                          properties:
+                                            id:
+                                              description: ID of the container.
+                                              type: string
+                                            image:
+                                              description: Image of the container.
+                                              type: string
+                                            imageID:
+                                              description: ImageID of the container.
+                                              type: string
+                                            isInit:
+                                              description: IsInit indicate if the container
+                                                is an init container.
+                                              type: boolean
+                                            name:
+                                              description: Name of the container.
+                                              type: string
+                                          required:
+                                            - id
+                                            - image
+                                            - imageID
+                                            - isInit
+                                            - name
+                                          type: object
+                                        type: array
+                                      metadata:
+                                        description: "ObjectReference contains enough
+                                        information to let you inspect or modify the
+                                        referred object. --- New uses of this type
+                                        are discouraged because of difficulty describing
+                                        its usage when embedded in APIs.  1. Ignored
+                                        fields.  It includes many fields which are
+                                        not generally honored.  For instance, ResourceVersion
+                                        and FieldPath are both very rarely valid in
+                                        actual usage.  2. Invalid usage help.  It
+                                        is impossible to add specific help for individual
+                                        usage.  In most embedded usages, there are
+                                        particular     restrictions like, \"must refer
+                                        only to types A and B\" or \"UID not honored\"
+                                        or \"name must be restricted\".     Those
+                                        cannot be well described when embedded.  3.
+                                        Inconsistent validation.  Because the usages
+                                        are different, the validation rules are different
+                                        by usage, which makes it hard for users to
+                                        predict what will happen.  4. The fields are
+                                        both imprecise and overly precise.  Kind is
+                                        not a precise mapping to a URL. This can produce
+                                        ambiguity     during interpretation and require
+                                        a REST mapping.  In most cases, the dependency
+                                        is on the group,resource tuple     and the
+                                        version of the actual struct is irrelevant.
+                                        \ 5. We cannot easily change it.  Because
+                                        this type is embedded in many locations, updates
+                                        to this type     will affect numerous schemas.
+                                        \ Don't make new APIs embed an underspecified
+                                        API type they do not control. \n Instead of
+                                        using this type, create a locally provided
+                                        and used type that is well-focused on your
+                                        reference. For example, ServiceReferences
+                                        for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533
+                                        ."
+                                        properties:
+                                          apiVersion:
+                                            description: API version of the referent.
+                                            type: string
+                                          fieldPath:
+                                            description: 'If referring to a piece of
+                                            an object instead of an entire object,
+                                            this string should contain a valid JSON/Go
+                                            field access statement, such as desiredState.manifest.containers[2].
+                                            For example, if the object reference is
+                                            to a container within a pod, this would
+                                            take on a value like: "spec.containers{name}"
+                                            (where "name" refers to the name of the
+                                            container that triggered the event) or
+                                            if no container name is specified "spec.containers[2]"
+                                            (container with index 2 in this pod).
+                                            This syntax is chosen only to have some
+                                            well-defined way of referencing a part
+                                            of an object. TODO: this design is not
+                                            final and this field is subject to change
+                                            in the future.'
+                                            type: string
+                                          kind:
+                                            description: 'Kind of the referent. More
+                                            info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                                            type: string
+                                          name:
+                                            description: 'Name of the referent. More
+                                            info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                            type: string
+                                          namespace:
+                                            description: 'Namespace of the referent.
+                                            More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                                            type: string
+                                          resourceVersion:
+                                            description: 'Specific resourceVersion to
+                                            which this reference is made, if any.
+                                            More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                                            type: string
+                                          uid:
+                                            description: 'UID of the referent. More
+                                            info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                                            type: string
+                                        type: object
+                                    required:
+                                      - containers
+                                      - metadata
+                                    type: object
+                                  type: array
+                              required:
+                                - metadata
+                                - pods
+                              type: object
+                          required:
+                            - passed
+                            - workload
+                          type: object
+                        type: array
+                    required:
+                      - namespace
+                      - workloadAssessments
+                    type: object
+                  type: array
+              required:
+                - inspectionConfiguration
+                - namespaceAssessments
+              type: object
+            status:
+              description: AssessmentReportStatus defines the observed state of AssessmentReport
+              type: object
+          type: object
+      served: true
+      storage: true
+      subresources:
+        status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.4.1
+  creationTimestamp: null
+  name: inspectionpolicies.goharbor.goharbor.io
+spec:
+  group: goharbor.goharbor.io
+  names:
+    kind: InspectionPolicy
+    listKind: InspectionPolicyList
+    plural: inspectionpolicies
+    singular: inspectionpolicy
+  scope: Cluster
+  versions:
+    - additionalPrinterColumns:
+        - jsonPath: .status.status
+          name: Status
+          priority: 50
+          type: string
+        - jsonPath: .spec.schedule
+          name: Schedule
+          priority: 100
+          type: string
+      name: v1alpha1
+      schema:
+        openAPIV3Schema:
+          description: InspectionPolicy is the Schema for the inspectionpolicies API
+          properties:
+            apiVersion:
+              description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+              type: string
+            kind:
+              description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+              type: string
+            metadata:
+              type: object
+            spec:
+              description: InspectionPolicySpec defines the desired state of InspectionPolicy
+              properties:
+                enabled:
+                  description: Enabled defines whether this inspection policy disable
+                    or enable, default is enabled.
+                  type: boolean
+                inspection:
+                  description: Inspection defines the configurations of the inspector.
+                  properties:
+                    actions:
+                      description: Actions of protection.
+                      items:
+                        description: FollowupAction defines what actions should be applied
+                          when security expectations are matched.
+                        properties:
+                          ignore:
+                            description: Ignore applying actions to the workloads with
+                              the specified labels.
+                            properties:
+                              matchExpressions:
+                                description: matchExpressions is a list of label selector
+                                  requirements. The requirements are ANDed.
+                                items:
+                                  description: A label selector requirement is a selector
+                                    that contains values, a key, and an operator that
+                                    relates the key and values.
+                                  properties:
+                                    key:
+                                      description: key is the label key that the selector
+                                        applies to.
+                                      type: string
+                                    operator:
+                                      description: operator represents a key's relationship
+                                        to a set of values. Valid operators are In,
+                                        NotIn, Exists and DoesNotExist.
+                                      type: string
+                                    values:
+                                      description: values is an array of string values.
+                                        If the operator is In or NotIn, the values array
+                                        must be non-empty. If the operator is Exists
+                                        or DoesNotExist, the values array must be empty.
+                                        This array is replaced during a strategic merge
+                                        patch.
+                                      items:
+                                        type: string
+                                      type: array
+                                  required:
+                                    - key
+                                    - operator
+                                  type: object
+                                type: array
+                              matchLabels:
+                                additionalProperties:
+                                  type: string
+                                description: matchLabels is a map of {key,value} pairs.
+                                  A single {key,value} in the matchLabels map is equivalent
+                                  to an element of matchExpressions, whose key field
+                                  is "key", the operator is "In", and the values array
+                                  contains only "value". The requirements are ANDed.
+                                type: object
+                            type: object
+                          kind:
+                            description: Kind of action.
+                            enum:
+                              - forbid_vulnerable_deployment
+                              - quarantine_vulnerable_workload
+                              - alert
+                            type: string
+                          settings:
+                            additionalProperties:
+                              type: string
+                            description: Settings of the action.
+                            type: object
+                        required:
+                          - kind
+                        type: object
+                      type: array
+                    assessment:
+                      description: DataProvider is the data provider. DataProvider DataProvider
+                        `json:"dataProvider"` Assessment is the assessment report.
+                      properties:
+                        elasticSearchAddr:
+                          description: ElasticSearch endpoint
+                          type: string
+                        elasticSearchCert:
+                          description: ElasticSearch certificate for the client
+                          type: string
+                        elasticSearchEnabled:
+                          default: false
+                          description: Indicate whether to store the reports to elasticsearch
+                          type: boolean
+                        elasticSearchPasswd:
+                          description: ElasticSearch password for the client
+                          type: string
+                        elasticSearchUser:
+                          description: ElasticSearch username for the client
+                          type: string
+                        format:
+                          default: YAML
+                          description: Format of the assessment report data.
+                          enum:
+                            - JSON
+                            - YAML
+                          type: string
+                        generate:
+                          default: true
+                          description: Generate indicates whether generate the assessment
+                            report or not.
+                          type: boolean
+                        liveTime:
+                          default: 86400
+                          description: Live time of the generated report. Unit is second.
+                          format: int64
+                          type: integer
+                        managedBy:
+                          default: false
+                          description: Indicate whether the assessment reports are managed
+                            by the policy. If it is set to true, then the assessment
+                            report is owned by the policy.
+                          type: boolean
+                        openSearchAddr:
+                          description: ElasticSearch endpoint
+                          type: string
+                        openSearchCert:
+                          description: ElasticSearch certificate for the client
+                          type: string
+                        openSearchEnabled:
+                          default: false
+                          description: Indicate whether to store the reports to opensearch
+                          type: boolean
+                        openSearchPasswd:
+                          description: ElasticSearch password for the client
+                          type: string
+                        openSearchUser:
+                          description: ElasticSearch username for the client
+                          type: string
+                      required:
+                        - elasticSearchEnabled
+                        - format
+                        - generate
+                        - liveTime
+                        - managedBy
+                        - openSearchEnabled
+                      type: object
+                    baselines:
+                      description: Baselines of cluster compliance.
+                      items:
+                        description: ComplianceBaseline defines the expecting compliance
+                          baseline.
+                        properties:
+                          baseline:
+                            description: Baseline for the compliance of this kind.
+                            type: string
+                          kind:
+                            description: Kind of inspector.
+                            enum:
+                              - vulnerability
+                              - malware
+                              - misconfiguration
+                              - license
+                              - BOM
+                            type: string
+                          scheme:
+                            description: Scheme of data.
+                            type: string
+                          version:
+                            description: Version of data scheme used for the compliance
+                              check.
+                            type: string
+                        required:
+                          - baseline
+                          - kind
+                          - scheme
+                          - version
+                        type: object
+                      minItems: 1
+                      type: array
+                    namespaceSelector:
+                      description: NamespaceSelector provides a way to select the specified
+                        namespaces.
+                      properties:
+                        matchExpressions:
+                          description: matchExpressions is a list of label selector
+                            requirements. The requirements are ANDed.
+                          items:
+                            description: A label selector requirement is a selector
+                              that contains values, a key, and an operator that relates
+                              the key and values.
+                            properties:
+                              key:
+                                description: key is the label key that the selector
+                                  applies to.
+                                type: string
+                              operator:
+                                description: operator represents a key's relationship
+                                  to a set of values. Valid operators are In, NotIn,
+                                  Exists and DoesNotExist.
+                                type: string
+                              values:
+                                description: values is an array of string values. If
+                                  the operator is In or NotIn, the values array must
+                                  be non-empty. If the operator is Exists or DoesNotExist,
+                                  the values array must be empty. This array is replaced
+                                  during a strategic merge patch.
+                                items:
+                                  type: string
+                                type: array
+                            required:
+                              - key
+                              - operator
+                            type: object
+                          type: array
+                        matchLabels:
+                          additionalProperties:
+                            type: string
+                          description: matchLabels is a map of {key,value} pairs. A
+                            single {key,value} in the matchLabels map is equivalent
+                            to an element of matchExpressions, whose key field is "key",
+                            the operator is "In", and the values array contains only
+                            "value". The requirements are ANDed.
+                          type: object
+                      type: object
+                    workloadSelector:
+                      description: WorkloadSelector provides a way to select the specified
+                        workloads.
+                      properties:
+                        matchExpressions:
+                          description: matchExpressions is a list of label selector
+                            requirements. The requirements are ANDed.
+                          items:
+                            description: A label selector requirement is a selector
+                              that contains values, a key, and an operator that relates
+                              the key and values.
+                            properties:
+                              key:
+                                description: key is the label key that the selector
+                                  applies to.
+                                type: string
+                              operator:
+                                description: operator represents a key's relationship
+                                  to a set of values. Valid operators are In, NotIn,
+                                  Exists and DoesNotExist.
+                                type: string
+                              values:
+                                description: values is an array of string values. If
+                                  the operator is In or NotIn, the values array must
+                                  be non-empty. If the operator is Exists or DoesNotExist,
+                                  the values array must be empty. This array is replaced
+                                  during a strategic merge patch.
+                                items:
+                                  type: string
+                                type: array
+                            required:
+                              - key
+                              - operator
+                            type: object
+                          type: array
+                        matchLabels:
+                          additionalProperties:
+                            type: string
+                          description: matchLabels is a map of {key,value} pairs. A
+                            single {key,value} in the matchLabels map is equivalent
+                            to an element of matchExpressions, whose key field is "key",
+                            the operator is "In", and the values array contains only
+                            "value". The requirements are ANDed.
+                          type: object
+                      type: object
+                  required:
+                    - assessment
+                    - baselines
+                  type: object
+                inspector:
+                  description: Inspector (image) for doing the inspection.
+                  properties:
+                    image:
+                      description: Image of the inspector.
+                      type: string
+                    imagePullPolicy:
+                      default: IfNotPresent
+                      description: Image pull policy.
+                      type: string
+                    imagePullSecrets:
+                      description: Image pull secrets.
+                      items:
+                        description: LocalObjectReference contains enough information
+                          to let you locate the referenced object inside the same namespace.
+                        properties:
+                          name:
+                            description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                            TODO: Add other useful fields. apiVersion, kind, uid?'
+                            type: string
+                        type: object
+                      type: array
+                    kubebenchImage:
+                      description: Image of the kubebench.
+                      type: string
+                    riskImage:
+                      description: Image of the risk.
+                      type: string
+                  required:
+                    - imagePullPolicy
+                  type: object
+                schedule:
+                  description: 'Schedule of the inspector. Cron format. Reference: https://en.wikipedia.org/wiki/Cron'
+                  pattern: (@(annually|yearly|monthly|weekly|daily|hourly|reboot))|(@every
+                    (\d+(ns|us|µs|ms|s|m|h))+)|((((\d+,)+\d+|(\d+(\/|-)\d+)|\d+|\*)
+                    ?){5,7})
+                  type: string
+                settingsName:
+                  description: 'INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
+                  Important: Run "make" to regenerate code after modifying this file
+                  DataSource is the data source definitions.'
+                  type: string
+                strategy:
+                  description: Strategy of the inspector.
+                  properties:
+                    concurrencyRule:
+                      default: Forbid
+                      description: ConcurrencyRule indicates how to handle the overlapped
+                        inspector processes.
+                      enum:
+                        - Allow
+                        - Forbid
+                        - Replace
+                      type: string
+                    historyLimit:
+                      default: 25
+                      description: HistoryLimit limits the max number of the completed
+                        inspections.
+                      format: int32
+                      type: integer
+                    suspend:
+                      description: Suspend the subsequent inspections temporarily.
+                      type: boolean
+                  required:
+                    - concurrencyRule
+                    - historyLimit
+                  type: object
+                workNamespace:
+                  description: WorkNamespace specify the namespace for creating the
+                    underlying inspection resources. If it is not specified, a new namespace
+                    with the same name of this policy will be created. If the namespace
+                    with the name of this policy is existing and it's not created by
+                    the controller, conflict error will occur.
+                  type: string
+              required:
+                - inspection
+                - schedule
+                - settingsName
+                - strategy
+              type: object
+            status:
+              description: InspectionPolicyStatus defines the observed state of InspectionPolicy
+              properties:
+                inspectionExecutor:
+                  description: InspectionExecutor of this policy. It is always an object
+                    reference to the underlying cronjob.
+                  properties:
+                    apiVersion:
+                      description: API version of the referent.
+                      type: string
+                    fieldPath:
+                      description: 'If referring to a piece of an object instead of
+                      an entire object, this string should contain a valid JSON/Go
+                      field access statement, such as desiredState.manifest.containers[2].
+                      For example, if the object reference is to a container within
+                      a pod, this would take on a value like: "spec.containers{name}"
+                      (where "name" refers to the name of the container that triggered
+                      the event) or if no container name is specified "spec.containers[2]"
+                      (container with index 2 in this pod). This syntax is chosen
+                      only to have some well-defined way of referencing a part of
+                      an object. TODO: this design is not final and this field is
+                      subject to change in the future.'
+                      type: string
+                    kind:
+                      description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                      type: string
+                    name:
+                      description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                      type: string
+                    namespace:
+                      description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                      type: string
+                    resourceVersion:
+                      description: 'Specific resourceVersion to which this reference
+                      is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                      type: string
+                    uid:
+                      description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                      type: string
+                  type: object
+                kubebenchExecutor:
+                  description: KubebenchExecutor of this policy. It is always an object
+                    reference to the underlying cronjob.
+                  properties:
+                    apiVersion:
+                      description: API version of the referent.
+                      type: string
+                    fieldPath:
+                      description: 'If referring to a piece of an object instead of
+                      an entire object, this string should contain a valid JSON/Go
+                      field access statement, such as desiredState.manifest.containers[2].
+                      For example, if the object reference is to a container within
+                      a pod, this would take on a value like: "spec.containers{name}"
+                      (where "name" refers to the name of the container that triggered
+                      the event) or if no container name is specified "spec.containers[2]"
+                      (container with index 2 in this pod). This syntax is chosen
+                      only to have some well-defined way of referencing a part of
+                      an object. TODO: this design is not final and this field is
+                      subject to change in the future.'
+                      type: string
+                    kind:
+                      description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                      type: string
+                    name:
+                      description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                      type: string
+                    namespace:
+                      description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                      type: string
+                    resourceVersion:
+                      description: 'Specific resourceVersion to which this reference
+                      is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                      type: string
+                    uid:
+                      description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                      type: string
+                  type: object
+                riskExecutor:
+                  description: RiskExecutor of this policy. It is always an object reference
+                    to the underlying cronjob.
+                  properties:
+                    apiVersion:
+                      description: API version of the referent.
+                      type: string
+                    fieldPath:
+                      description: 'If referring to a piece of an object instead of
+                      an entire object, this string should contain a valid JSON/Go
+                      field access statement, such as desiredState.manifest.containers[2].
+                      For example, if the object reference is to a container within
+                      a pod, this would take on a value like: "spec.containers{name}"
+                      (where "name" refers to the name of the container that triggered
+                      the event) or if no container name is specified "spec.containers[2]"
+                      (container with index 2 in this pod). This syntax is chosen
+                      only to have some well-defined way of referencing a part of
+                      an object. TODO: this design is not final and this field is
+                      subject to change in the future.'
+                      type: string
+                    kind:
+                      description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                      type: string
+                    name:
+                      description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                      type: string
+                    namespace:
+                      description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                      type: string
+                    resourceVersion:
+                      description: 'Specific resourceVersion to which this reference
+                      is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                      type: string
+                    uid:
+                      description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                      type: string
+                  type: object
+                status:
+                  description: Status of the policy. Pending, Standby, Suspend.
+                  type: string
+              required:
+                - status
+              type: object
+          type: object
+      served: true
+      storage: true
+      subresources:
+        status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.4.1
+  creationTimestamp: null
+  name: inspections.goharbor.goharbor.io
+spec:
+  group: goharbor.goharbor.io
+  names:
+    kind: Inspection
+    listKind: InspectionList
+    plural: inspections
+    singular: inspection
+  scope: Cluster
+  versions:
+    - name: v1alpha1
+      schema:
+        openAPIV3Schema:
+          description: Inspection is the Schema for the inspections API
+          properties:
+            apiVersion:
+              description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+              type: string
+            kind:
+              description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+              type: string
+            metadata:
+              type: object
+            spec:
+              description: InspectionSpec defines the desired state of Inspection
+              properties:
+                foo:
+                  description: Foo is an example field of Inspection. Edit inspection_types.go
+                    to remove/update
+                  type: string
+              type: object
+            status:
+              description: InspectionStatus defines the observed state of Inspection
+              properties:
+                conditions:
+                  description: Conditions of inspector.
+                  items:
+                    description: "Condition contains details for one aspect of the current
+                    state of this API Resource. --- This struct is intended for direct
+                    use as an array at the field path .status.conditions.  For example,
+                    \n \ttype FooStatus struct{ \t    // Represents the observations
+                    of a foo's current state. \t    // Known .status.conditions.type
+                    are: \"Available\", \"Progressing\", and \"Degraded\" \t    //
+                    +patchMergeKey=type \t    // +patchStrategy=merge \t    // +listType=map
+                    \t    // +listMapKey=type \t    Conditions []metav1.Condition
+                    `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\"
+                    protobuf:\"bytes,1,rep,name=conditions\"` \n \t    // other fields
+                    \t}"
+                    properties:
+                      lastTransitionTime:
+                        description: lastTransitionTime is the last time the condition
+                          transitioned from one status to another. This should be when
+                          the underlying condition changed.  If that is not known, then
+                          using the time when the API field changed is acceptable.
+                        format: date-time
+                        type: string
+                      message:
+                        description: message is a human readable message indicating
+                          details about the transition. This may be an empty string.
+                        maxLength: 32768
+                        type: string
+                      observedGeneration:
+                        description: observedGeneration represents the .metadata.generation
+                          that the condition was set based upon. For instance, if .metadata.generation
+                          is currently 12, but the .status.conditions[x].observedGeneration
+                          is 9, the condition is out of date with respect to the current
+                          state of the instance.
+                        format: int64
+                        minimum: 0
+                        type: integer
+                      reason:
+                        description: reason contains a programmatic identifier indicating
+                          the reason for the condition's last transition. Producers
+                          of specific condition types may define expected values and
+                          meanings for this field, and whether the values are considered
+                          a guaranteed API. The value should be a CamelCase string.
+                          This field may not be empty.
+                        maxLength: 1024
+                        minLength: 1
+                        pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                        type: string
+                      status:
+                        description: status of the condition, one of True, False, Unknown.
+                        enum:
+                          - "True"
+                          - "False"
+                          - Unknown
+                        type: string
+                      type:
+                        description: type of condition in CamelCase or in foo.example.com/CamelCase.
+                          --- Many .condition.type values are consistent across resources
+                          like Available, but because arbitrary conditions can be useful
+                          (see .node.status.conditions), the ability to deconflict is
+                          important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
+                        maxLength: 316
+                        pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                        type: string
+                    required:
+                      - lastTransitionTime
+                      - message
+                      - reason
+                      - status
+                      - type
+                    type: object
+                  type: array
+              required:
+                - conditions
+              type: object
+          type: object
+      served: true
+      storage: true
+      subresources:
+        status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.4.1
+  creationTimestamp: null
+  name: settings.goharbor.goharbor.io
+spec:
+  group: goharbor.goharbor.io
+  names:
+    kind: Setting
+    listKind: SettingList
+    plural: settings
+    singular: setting
+  scope: Cluster
+  versions:
+    - additionalPrinterColumns:
+        - jsonPath: .spec.dataSource.endpoint
+          name: Endpoint
+          type: string
+        - jsonPath: .status.status
+          name: Status
+          type: string
+        - jsonPath: .metadata.creationTimestamp
+          name: Age
+          type: date
+      name: v1alpha1
+      schema:
+        openAPIV3Schema:
+          description: Setting is the Schema for the cnsi related configs.
+          properties:
+            apiVersion:
+              description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+              type: string
+            kind:
+              description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+              type: string
+            metadata:
+              type: object
+            spec:
+              description: SettingSpec defines the spec of setting.
+              properties:
+                cache:
+                  description: Cache is the cache configurations.
+                  properties:
+                    address:
+                      description: 'Address of the cache. e.g: redis://xxx.com.'
+                      type: string
+                    credentialRef:
+                      description: CredentialRef for providing access credential. Empty
+                        credentialRef is acceptable if the cache service is public.
+                      properties:
+                        apiVersion:
+                          description: API version of the referent.
+                          type: string
+                        fieldPath:
+                          description: 'If referring to a piece of an object instead
+                          of an entire object, this string should contain a valid
+                          JSON/Go field access statement, such as desiredState.manifest.containers[2].
+                          For example, if the object reference is to a container within
+                          a pod, this would take on a value like: "spec.containers{name}"
+                          (where "name" refers to the name of the container that triggered
+                          the event) or if no container name is specified "spec.containers[2]"
+                          (container with index 2 in this pod). This syntax is chosen
+                          only to have some well-defined way of referencing a part
+                          of an object. TODO: this design is not final and this field
+                          is subject to change in the future.'
+                          type: string
+                        kind:
+                          description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                          type: string
+                        name:
+                          description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                          type: string
+                        namespace:
+                          description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                          type: string
+                        resourceVersion:
+                          description: 'Specific resourceVersion to which this reference
+                          is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                          type: string
+                        uid:
+                          description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                          type: string
+                      type: object
+                    database:
+                      description: Database index for connecting to.
+                      type: integer
+                    kind:
+                      description: Kind of the cache.
+                      enum:
+                        - Redis
+                      type: string
+                    settings:
+                      description: Settings of cache.
+                      properties:
+                        livingTime:
+                          default: 3600
+                          description: LivingTime (seconds) specifies the living time
+                            of the cache data. After cache data longer than the `LivingTime`,
+                            the cache data must be refreshed again.
+                          format: int64
+                          type: integer
+                        skipTLSVerify:
+                          description: SkipTLSVerify indicates whether skip the TLS
+                            verification. Only active when 'rediss' scheme is configured.
+                          type: boolean
+                      required:
+                        - livingTime
+                      type: object
+                  required:
+                    - address
+                    - kind
+                  type: object
+                dataSource:
+                  description: DataSource is the data source definitions.
+                  properties:
+                    credentialRef:
+                      description: CredentialRef defines the authorization info for
+                        registry, the value is a reference to secret.
+                      properties:
+                        apiVersion:
+                          description: API version of the referent.
+                          type: string
+                        fieldPath:
+                          description: 'If referring to a piece of an object instead
+                          of an entire object, this string should contain a valid
+                          JSON/Go field access statement, such as desiredState.manifest.containers[2].
+                          For example, if the object reference is to a container within
+                          a pod, this would take on a value like: "spec.containers{name}"
+                          (where "name" refers to the name of the container that triggered
+                          the event) or if no container name is specified "spec.containers[2]"
+                          (container with index 2 in this pod). This syntax is chosen
+                          only to have some well-defined way of referencing a part
+                          of an object. TODO: this design is not final and this field
+                          is subject to change in the future.'
+                          type: string
+                        kind:
+                          description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                          type: string
+                        name:
+                          description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                          type: string
+                        namespace:
+                          description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                          type: string
+                        resourceVersion:
+                          description: 'Specific resourceVersion to which this reference
+                          is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                          type: string
+                        uid:
+                          description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                          type: string
+                      type: object
+                    disabled:
+                      description: Disable defines whether this data source disable
+                        or enable, default is enable.
+                      type: boolean
+                    endpoint:
+                      description: Endpoint defines the endpoint of the registry.
+                      type: string
+                    name:
+                      description: Name is the registry name.
+                      type: string
+                    provider:
+                      description: Provider defines the registry provider type.
+                      enum:
+                        - Harbor
+                      type: string
+                    scanSchedule:
+                      description: ScanSchedule defines the scan schedule for the data
+                        source.
+                      type: string
+                    skipTLSVerify:
+                      description: TLSVerify defines whether need to verify tls cert.
+                      type: boolean
+                  required:
+                    - endpoint
+                    - name
+                    - provider
+                    - scanSchedule
+                  type: object
+                knownRegistries:
+                  description: KnownRegistries is the registered private registry collections.
+                  items:
+                    description: KnownRegistry defines the spec of known registry.
+                    properties:
+                      credentialRef:
+                        description: CredentialRef defines the authorization info for
+                          registry, the value is a reference to secret.
+                        properties:
+                          apiVersion:
+                            description: API version of the referent.
+                            type: string
+                          fieldPath:
+                            description: 'If referring to a piece of an object instead
+                            of an entire object, this string should contain a valid
+                            JSON/Go field access statement, such as desiredState.manifest.containers[2].
+                            For example, if the object reference is to a container
+                            within a pod, this would take on a value like: "spec.containers{name}"
+                            (where "name" refers to the name of the container that
+                            triggered the event) or if no container name is specified
+                            "spec.containers[2]" (container with index 2 in this pod).
+                            This syntax is chosen only to have some well-defined way
+                            of referencing a part of an object. TODO: this design
+                            is not final and this field is subject to change in the
+                            future.'
+                            type: string
+                          kind:
+                            description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                            type: string
+                          name:
+                            description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                            type: string
+                          namespace:
+                            description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                            type: string
+                          resourceVersion:
+                            description: 'Specific resourceVersion to which this reference
+                            is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                            type: string
+                          uid:
+                            description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                            type: string
+                        type: object
+                      endpoint:
+                        description: Endpoint defines the endpoint of the registry.
+                        type: string
+                      name:
+                        description: Name is the registry name.
+                        type: string
+                      provider:
+                        description: Provider defines the registry provider type.
+                        enum:
+                          - ali-acr
+                          - artifact-hub
+                          - aws-ecr
+                          - azure-acr
+                          - docker-hub
+                          - docker-registry
+                          - dtr
+                          - github-ghcr
+                          - gitlab
+                          - google-gcr
+                          - harbor
+                          - helm-hub
+                          - huawei-SWR
+                          - jfrog-artifactory
+                          - quay
+                          - tencent-tcr
+                        type: string
+                      skipTLSVerify:
+                        description: TLSVerify defines whether need to verify tls cert.
+                        type: boolean
+                    required:
+                      - endpoint
+                      - name
+                      - provider
+                    type: object
+                  type: array
+              type: object
+            status:
+              description: SettingStatus defines the status of setting.
+              properties:
+                conditions:
+                  description: Conditions represents the collections of setting condition.
+                  items:
+                    description: Condition is the schema for condition.
+                    properties:
+                      lastTransitionTime:
+                        description: LastTransitionTime is the last time the condition
+                          transitioned from one status to another.
+                        format: date-time
+                        type: string
+                      message:
+                        description: Message is a human readable message indicating
+                          details about the transition.
+                        type: string
+                      reason:
+                        description: Reason is the reason for condition's last transition.
+                        type: string
+                      status:
+                        description: Status of condition, one of True, False, Unknown
+                        type: string
+                      type:
+                        description: Type of condition.
+                        type: string
+                    required:
+                      - status
+                      - type
+                    type: object
+                  type: array
+                status:
+                  description: Status represents the health status of setting.
+                  enum:
+                    - Unknown
+                    - Healthy
+                    - Unhealthy
+                  type: string
+              required:
+                - status
+              type: object
+          type: object
+      served: true
+      storage: true
+      subresources:
+        status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
