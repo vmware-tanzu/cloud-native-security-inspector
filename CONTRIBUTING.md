@@ -6,6 +6,12 @@ Please familiarize yourself with the [Code of Conduct](https://github.com/vmware
 
 Before you start working with cloud-native-security-inspector, please read and sign our Contributor License Agreement [CLA](https://cla.vmware.com/cla/1/preview). If you wish to contribute code and you have not signed our contributor license agreement (CLA), our bot will prompt you to do so when you open a Pull Request. For any questions about the CLA process, please refer to our [FAQ]([https://cla.vmware.com/faq](https://cla.vmware.com/faq)).
 
+**Important:** 
+
+1. Please make sure you sign the Individual CLA and you must provide real information for EVERY form.
+2. You must sign an Individual CLA for every unique pull request.
+3. After the legal team approve the CLA, and one maintainer has reviewed and approved the change, the pull request will be merged by us.
+
 ## Ways to contribute
 
 We welcome many different types of contributions and not all of them need a Pull request. Contributions may include:
@@ -20,7 +26,7 @@ We welcome many different types of contributions and not all of them need a Pull
 
 ## Getting started
 
-Please refer to README to learn more about how to build the project from source and run.
+Please refer to [README](README.md) to learn more about how to build the project from source and run.
 
 
 
