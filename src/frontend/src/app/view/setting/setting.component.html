@@ -2,14 +2,21 @@
     Copyright 2022 VMware, Inc.
     SPDX-License-Identifier: Apache-2.0
 -->
+<!-- e2e Test HTML -->
+<div style="height: 5px; opacity: 0.1; display: flex;">
+  <button id="data-cy"  data-cy="submit" (click)="secretModalFlag=true"></button>
+  <button id="data-cy"  data-cy="cut_setting" (click)="isSecret=false"></button>
+</div>
+
+
 <div class="policy-page">
   <div class="sddc-header">
     <h2 class="sddc-title">{{'Setting.Settings'|translate}}</h2>
   </div>
   <div class="setting-page">
     <clr-tabs>
-      <clr-tab >
-        <button clrTabLink id="link1" (click)="getSecrets()">Secret</button>
+      <clr-tab>
+        <button clrTabLink  (click)="getSecrets()">Secret</button>
           <ng-template [clrIfActive]="isSecret">
             <clr-tab-content>
               <button class="btn btn-primary btn-sm create" (click)="secretModalFlag=true">
@@ -86,7 +93,7 @@
   
     </clr-tabs>
   
-    <div *ngIf="secretModalFlag" class="modal" style="width: 1000px; margin: 0 auto;">
+    <div [hidden]="!secretModalFlag" class="modal" style="width: 1000px; margin: 0 auto;">
       <div class="modal-dialog" role="dialog" aria-hidden="true" style="width: 1000px;">
           <div class="modal-content">
               <div class="modal-header">
@@ -101,7 +108,7 @@
   
                   <clr-input-container style="padding-bottom: 10px;">
                     <label>{{'CommonlyUse.name'|translate}}: </label>
-                    <input clrInput placeholder="" name="secret_name" formControlName="secret_name"/>
+                    <input clrInput data-cy="secret_name" placeholder="" name="secret_name" formControlName="secret_name"/>
                   </clr-input-container>
                   <clr-select-container>
                     <label style="color: #acbac3;">{{'Setting.secretNamespace'|translate}}:</label>
@@ -111,18 +118,18 @@
                   </clr-select-container>
                   <clr-password-container style="padding-bottom: 10px;">
                     <label>{{'Setting.accessKey'|translate}}: </label>
-                    <input clrPassword placeholder="" name="accessKey" formControlName="secret_accessKey"/>
+                    <input clrPassword data-cy="accessKey" placeholder="" name="accessKey" formControlName="secret_accessKey"/>
                   </clr-password-container>
                   <clr-password-container style="padding-bottom: 10px;">
                     <label>{{'Setting.accessSecret'|translate}}: </label>
-                    <input clrPassword placeholder="" name="accessSecret" formControlName="secret_accessSecret"/>
+                    <input clrPassword data-cy="accessSecret" placeholder="" name="accessSecret" formControlName="secret_accessSecret"/>
                   </clr-password-container>
                 </form>
   
               </div>
               <div class="modal-footer">
                   <button class="btn btn-outline" (click)='secretModalFlag=false' type="button">{{'CommonlyUse.cancel'|translate}}</button>
-                  <button class="btn btn-primary" (click)='createSecret()' type="button">{{'CommonlyUse.create'|translate}}</button>
+                  <button class="btn btn-primary" data-cy="createSecret" (click)='createSecret()' type="button">{{'CommonlyUse.create'|translate}}</button>
               </div>
               <div class="alert alert-danger" role="alert" *ngIf="messageSecretFlag === 'fail'">
                 <div class="alert-items">

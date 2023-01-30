@@ -33,11 +33,11 @@ import { PolicyComponent } from './view/policy/policy.component';
 import { CornScheduleComponent } from './components/corn-schedule/corn-schedule.component';
 import { TimePickerComponent } from './components/time-picker/time-picker.component';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { AppService, createTranslateLoader } from './app.service';
+import { AppService } from './app.service';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ClusterLineComponent } from './view/report/cluster-line/cluster-line.component';
 import { NamesapcePolarComponent } from './view/report/namesapce-polar/namesapce-polar.component';
 import { NamesapceHistogramComponent } from './view/report/namesapce-histogram/namesapce-histogram.component'
-import { ShardTestModule } from 'src/app/shard/shard/shard.module';
 import { DgFilterComponent } from './components/dg-filter/dg-filter.component';
 import { HarborSettingPageComponent } from './view/setting/harbor-setting-page/harbor-setting-page.component';
 import { PolicySettingPageComponent } from './view/policy/policy-setting-page/policy-setting-page.component';
@@ -171,7 +171,9 @@ ClarityIcons.addIcons(
       defaultLanguage: 'en',
       loader: {
         provide: TranslateLoader,
-        useFactory: createTranslateLoader,
+        useFactory: (http: HttpClient) => {
+          return new TranslateHttpLoader(http, '../assets/i18n/', '.json')
+        },
         deps: [HttpClient]
       },
     }),

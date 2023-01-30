@@ -1,0 +1,1537 @@
+{
+  "kind": "APIServiceList",
+  "apiVersion": "apiregistration.k8s.io/v1",
+  "metadata": {
+    "resourceVersion": "5141933"
+  },
+  "items": [
+    {
+      "metadata": {
+        "name": "v1.",
+        "uid": "8f57485a-f72a-4a74-a578-028981a42007",
+        "resourceVersion": "7",
+        "creationTimestamp": "2022-12-19T09:44:03Z",
+        "labels": {
+          "kube-aggregator.kubernetes.io/automanaged": "onstart"
+        },
+        "managedFields": [
+          {
+            "manager": "kube-apiserver",
+            "operation": "Update",
+            "apiVersion": "apiregistration.k8s.io/v1",
+            "time": "2022-12-19T09:44:03Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kube-aggregator.kubernetes.io/automanaged": {}
+                }
+              },
+              "f:spec": {
+                "f:groupPriorityMinimum": {},
+                "f:version": {},
+                "f:versionPriority": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "version": "v1",
+        "groupPriorityMinimum": 18000,
+        "versionPriority": 1
+      },
+      "status": {
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "lastTransitionTime": "2022-12-19T09:44:03Z",
+            "reason": "Local",
+            "message": "Local APIServices are always available"
+          }
+        ]
+      }
+    },
+    {
+      "metadata": {
+        "name": "v1.admissionregistration.k8s.io",
+        "uid": "384c1293-f603-40b6-9602-bf4f9f5f98f4",
+        "resourceVersion": "10",
+        "creationTimestamp": "2022-12-19T09:44:03Z",
+        "labels": {
+          "kube-aggregator.kubernetes.io/automanaged": "onstart"
+        },
+        "managedFields": [
+          {
+            "manager": "kube-apiserver",
+            "operation": "Update",
+            "apiVersion": "apiregistration.k8s.io/v1",
+            "time": "2022-12-19T09:44:03Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kube-aggregator.kubernetes.io/automanaged": {}
+                }
+              },
+              "f:spec": {
+                "f:group": {},
+                "f:groupPriorityMinimum": {},
+                "f:version": {},
+                "f:versionPriority": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "group": "admissionregistration.k8s.io",
+        "version": "v1",
+        "groupPriorityMinimum": 16700,
+        "versionPriority": 15
+      },
+      "status": {
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "lastTransitionTime": "2022-12-19T09:44:03Z",
+            "reason": "Local",
+            "message": "Local APIServices are always available"
+          }
+        ]
+      }
+    },
+    {
+      "metadata": {
+        "name": "v1.apiextensions.k8s.io",
+        "uid": "14eb3d6a-1ae2-4de2-a755-2820d2300c90",
+        "resourceVersion": "11",
+        "creationTimestamp": "2022-12-19T09:44:03Z",
+        "labels": {
+          "kube-aggregator.kubernetes.io/automanaged": "onstart"
+        },
+        "managedFields": [
+          {
+            "manager": "kube-apiserver",
+            "operation": "Update",
+            "apiVersion": "apiregistration.k8s.io/v1",
+            "time": "2022-12-19T09:44:03Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kube-aggregator.kubernetes.io/automanaged": {}
+                }
+              },
+              "f:spec": {
+                "f:group": {},
+                "f:groupPriorityMinimum": {},
+                "f:version": {},
+                "f:versionPriority": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "group": "apiextensions.k8s.io",
+        "version": "v1",
+        "groupPriorityMinimum": 16700,
+        "versionPriority": 15
+      },
+      "status": {
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "lastTransitionTime": "2022-12-19T09:44:03Z",
+            "reason": "Local",
+            "message": "Local APIServices are always available"
+          }
+        ]
+      }
+    },
+    {
+      "metadata": {
+        "name": "v1.apps",
+        "uid": "34733719-4f9a-4f3d-b21e-818e9e8599b8",
+        "resourceVersion": "8",
+        "creationTimestamp": "2022-12-19T09:44:03Z",
+        "labels": {
+          "kube-aggregator.kubernetes.io/automanaged": "onstart"
+        },
+        "managedFields": [
+          {
+            "manager": "kube-apiserver",
+            "operation": "Update",
+            "apiVersion": "apiregistration.k8s.io/v1",
+            "time": "2022-12-19T09:44:03Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kube-aggregator.kubernetes.io/automanaged": {}
+                }
+              },
+              "f:spec": {
+                "f:group": {},
+                "f:groupPriorityMinimum": {},
+                "f:version": {},
+                "f:versionPriority": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "group": "apps",
+        "version": "v1",
+        "groupPriorityMinimum": 17800,
+        "versionPriority": 15
+      },
+      "status": {
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "lastTransitionTime": "2022-12-19T09:44:03Z",
+            "reason": "Local",
+            "message": "Local APIServices are always available"
+          }
+        ]
+      }
+    },
+    {
+      "metadata": {
+        "name": "v1.authentication.k8s.io",
+        "uid": "dab582fd-1f7c-4cef-abb7-a3a4d6209a70",
+        "resourceVersion": "9",
+        "creationTimestamp": "2022-12-19T09:44:03Z",
+        "labels": {
+          "kube-aggregator.kubernetes.io/automanaged": "onstart"
+        },
+        "managedFields": [
+          {
+            "manager": "kube-apiserver",
+            "operation": "Update",
+            "apiVersion": "apiregistration.k8s.io/v1",
+            "time": "2022-12-19T09:44:03Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kube-aggregator.kubernetes.io/automanaged": {}
+                }
+              },
+              "f:spec": {
+                "f:group": {},
+                "f:groupPriorityMinimum": {},
+                "f:version": {},
+                "f:versionPriority": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "group": "authentication.k8s.io",
+        "version": "v1",
+        "groupPriorityMinimum": 17700,
+        "versionPriority": 15
+      },
+      "status": {
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "lastTransitionTime": "2022-12-19T09:44:03Z",
+            "reason": "Local",
+            "message": "Local APIServices are always available"
+          }
+        ]
+      }
+    },
+    {
+      "metadata": {
+        "name": "v1.authorization.k8s.io",
+        "uid": "31182692-d770-48ea-9861-a08a9a137816",
+        "resourceVersion": "12",
+        "creationTimestamp": "2022-12-19T09:44:03Z",
+        "labels": {
+          "kube-aggregator.kubernetes.io/automanaged": "onstart"
+        },
+        "managedFields": [
+          {
+            "manager": "kube-apiserver",
+            "operation": "Update",
+            "apiVersion": "apiregistration.k8s.io/v1",
+            "time": "2022-12-19T09:44:03Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kube-aggregator.kubernetes.io/automanaged": {}
+                }
+              },
+              "f:spec": {
+                "f:group": {},
+                "f:groupPriorityMinimum": {},
+                "f:version": {},
+                "f:versionPriority": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "group": "authorization.k8s.io",
+        "version": "v1",
+        "groupPriorityMinimum": 17600,
+        "versionPriority": 15
+      },
+      "status": {
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "lastTransitionTime": "2022-12-19T09:44:03Z",
+            "reason": "Local",
+            "message": "Local APIServices are always available"
+          }
+        ]
+      }
+    },
+    {
+      "metadata": {
+        "name": "v1.autoscaling",
+        "uid": "5c80c9ba-5843-4d18-b898-ff7d3c9462b8",
+        "resourceVersion": "14",
+        "creationTimestamp": "2022-12-19T09:44:03Z",
+        "labels": {
+          "kube-aggregator.kubernetes.io/automanaged": "onstart"
+        },
+        "managedFields": [
+          {
+            "manager": "kube-apiserver",
+            "operation": "Update",
+            "apiVersion": "apiregistration.k8s.io/v1",
+            "time": "2022-12-19T09:44:03Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kube-aggregator.kubernetes.io/automanaged": {}
+                }
+              },
+              "f:spec": {
+                "f:group": {},
+                "f:groupPriorityMinimum": {},
+                "f:version": {},
+                "f:versionPriority": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "group": "autoscaling",
+        "version": "v1",
+        "groupPriorityMinimum": 17500,
+        "versionPriority": 15
+      },
+      "status": {
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "lastTransitionTime": "2022-12-19T09:44:03Z",
+            "reason": "Local",
+            "message": "Local APIServices are always available"
+          }
+        ]
+      }
+    },
+    {
+      "metadata": {
+        "name": "v1.batch",
+        "uid": "151e55cf-d112-486c-839a-685c2c79ebc2",
+        "resourceVersion": "19",
+        "creationTimestamp": "2022-12-19T09:44:04Z",
+        "labels": {
+          "kube-aggregator.kubernetes.io/automanaged": "onstart"
+        },
+        "managedFields": [
+          {
+            "manager": "kube-apiserver",
+            "operation": "Update",
+            "apiVersion": "apiregistration.k8s.io/v1",
+            "time": "2022-12-19T09:44:04Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kube-aggregator.kubernetes.io/automanaged": {}
+                }
+              },
+              "f:spec": {
+                "f:group": {},
+                "f:groupPriorityMinimum": {},
+                "f:version": {},
+                "f:versionPriority": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "group": "batch",
+        "version": "v1",
+        "groupPriorityMinimum": 17400,
+        "versionPriority": 15
+      },
+      "status": {
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "lastTransitionTime": "2022-12-19T09:44:04Z",
+            "reason": "Local",
+            "message": "Local APIServices are always available"
+          }
+        ]
+      }
+    },
+    {
+      "metadata": {
+        "name": "v1.certificates.k8s.io",
+        "uid": "4dea0ce1-a3d8-4db4-83f7-a87cb8362793",
+        "resourceVersion": "18",
+        "creationTimestamp": "2022-12-19T09:44:04Z",
+        "labels": {
+          "kube-aggregator.kubernetes.io/automanaged": "onstart"
+        },
+        "managedFields": [
+          {
+            "manager": "kube-apiserver",
+            "operation": "Update",
+            "apiVersion": "apiregistration.k8s.io/v1",
+            "time": "2022-12-19T09:44:04Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kube-aggregator.kubernetes.io/automanaged": {}
+                }
+              },
+              "f:spec": {
+                "f:group": {},
+                "f:groupPriorityMinimum": {},
+                "f:version": {},
+                "f:versionPriority": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "group": "certificates.k8s.io",
+        "version": "v1",
+        "groupPriorityMinimum": 17300,
+        "versionPriority": 15
+      },
+      "status": {
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "lastTransitionTime": "2022-12-19T09:44:04Z",
+            "reason": "Local",
+            "message": "Local APIServices are always available"
+          }
+        ]
+      }
+    },
+    {
+      "metadata": {
+        "name": "v1.coordination.k8s.io",
+        "uid": "728be8d2-4127-41dd-ae85-6a754e55ff36",
+        "resourceVersion": "20",
+        "creationTimestamp": "2022-12-19T09:44:04Z",
+        "labels": {
+          "kube-aggregator.kubernetes.io/automanaged": "onstart"
+        },
+        "managedFields": [
+          {
+            "manager": "kube-apiserver",
+            "operation": "Update",
+            "apiVersion": "apiregistration.k8s.io/v1",
+            "time": "2022-12-19T09:44:04Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kube-aggregator.kubernetes.io/automanaged": {}
+                }
+              },
+              "f:spec": {
+                "f:group": {},
+                "f:groupPriorityMinimum": {},
+                "f:version": {},
+                "f:versionPriority": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "group": "coordination.k8s.io",
+        "version": "v1",
+        "groupPriorityMinimum": 16500,
+        "versionPriority": 15
+      },
+      "status": {
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "lastTransitionTime": "2022-12-19T09:44:04Z",
+            "reason": "Local",
+            "message": "Local APIServices are always available"
+          }
+        ]
+      }
+    },
+    {
+      "metadata": {
+        "name": "v1.discovery.k8s.io",
+        "uid": "15c5fd86-f1d6-40aa-b01c-f25b711a43a5",
+        "resourceVersion": "21",
+        "creationTimestamp": "2022-12-19T09:44:04Z",
+        "labels": {
+          "kube-aggregator.kubernetes.io/automanaged": "onstart"
+        },
+        "managedFields": [
+          {
+            "manager": "kube-apiserver",
+            "operation": "Update",
+            "apiVersion": "apiregistration.k8s.io/v1",
+            "time": "2022-12-19T09:44:04Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kube-aggregator.kubernetes.io/automanaged": {}
+                }
+              },
+              "f:spec": {
+                "f:group": {},
+                "f:groupPriorityMinimum": {},
+                "f:version": {},
+                "f:versionPriority": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "group": "discovery.k8s.io",
+        "version": "v1",
+        "groupPriorityMinimum": 16200,
+        "versionPriority": 15
+      },
+      "status": {
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "lastTransitionTime": "2022-12-19T09:44:04Z",
+            "reason": "Local",
+            "message": "Local APIServices are always available"
+          }
+        ]
+      }
+    },
+    {
+      "metadata": {
+        "name": "v1.events.k8s.io",
+        "uid": "28ffd423-b523-4d74-983a-6c9f4dff039c",
+        "resourceVersion": "27",
+        "creationTimestamp": "2022-12-19T09:44:04Z",
+        "labels": {
+          "kube-aggregator.kubernetes.io/automanaged": "onstart"
+        },
+        "managedFields": [
+          {
+            "manager": "kube-apiserver",
+            "operation": "Update",
+            "apiVersion": "apiregistration.k8s.io/v1",
+            "time": "2022-12-19T09:44:04Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kube-aggregator.kubernetes.io/automanaged": {}
+                }
+              },
+              "f:spec": {
+                "f:group": {},
+                "f:groupPriorityMinimum": {},
+                "f:version": {},
+                "f:versionPriority": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "group": "events.k8s.io",
+        "version": "v1",
+        "groupPriorityMinimum": 17750,
+        "versionPriority": 15
+      },
+      "status": {
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "lastTransitionTime": "2022-12-19T09:44:04Z",
+            "reason": "Local",
+            "message": "Local APIServices are always available"
+          }
+        ]
+      }
+    },
+    {
+      "metadata": {
+        "name": "v1.networking.k8s.io",
+        "uid": "257d60b9-fa9c-4f39-b25b-60f1c61f07fc",
+        "resourceVersion": "32",
+        "creationTimestamp": "2022-12-19T09:44:04Z",
+        "labels": {
+          "kube-aggregator.kubernetes.io/automanaged": "onstart"
+        },
+        "managedFields": [
+          {
+            "manager": "kube-apiserver",
+            "operation": "Update",
+            "apiVersion": "apiregistration.k8s.io/v1",
+            "time": "2022-12-19T09:44:04Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kube-aggregator.kubernetes.io/automanaged": {}
+                }
+              },
+              "f:spec": {
+                "f:group": {},
+                "f:groupPriorityMinimum": {},
+                "f:version": {},
+                "f:versionPriority": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "group": "networking.k8s.io",
+        "version": "v1",
+        "groupPriorityMinimum": 17200,
+        "versionPriority": 15
+      },
+      "status": {
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "lastTransitionTime": "2022-12-19T09:44:04Z",
+            "reason": "Local",
+            "message": "Local APIServices are always available"
+          }
+        ]
+      }
+    },
+    {
+      "metadata": {
+        "name": "v1.node.k8s.io",
+        "uid": "bf433c37-739f-4a64-91b8-56a5f3cf57b0",
+        "resourceVersion": "30",
+        "creationTimestamp": "2022-12-19T09:44:04Z",
+        "labels": {
+          "kube-aggregator.kubernetes.io/automanaged": "onstart"
+        },
+        "managedFields": [
+          {
+            "manager": "kube-apiserver",
+            "operation": "Update",
+            "apiVersion": "apiregistration.k8s.io/v1",
+            "time": "2022-12-19T09:44:04Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kube-aggregator.kubernetes.io/automanaged": {}
+                }
+              },
+              "f:spec": {
+                "f:group": {},
+                "f:groupPriorityMinimum": {},
+                "f:version": {},
+                "f:versionPriority": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "group": "node.k8s.io",
+        "version": "v1",
+        "groupPriorityMinimum": 16300,
+        "versionPriority": 15
+      },
+      "status": {
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "lastTransitionTime": "2022-12-19T09:44:04Z",
+            "reason": "Local",
+            "message": "Local APIServices are always available"
+          }
+        ]
+      }
+    },
+    {
+      "metadata": {
+        "name": "v1.policy",
+        "uid": "fcb90c58-19eb-4672-9eba-0c63b9d02a07",
+        "resourceVersion": "34",
+        "creationTimestamp": "2022-12-19T09:44:04Z",
+        "labels": {
+          "kube-aggregator.kubernetes.io/automanaged": "onstart"
+        },
+        "managedFields": [
+          {
+            "manager": "kube-apiserver",
+            "operation": "Update",
+            "apiVersion": "apiregistration.k8s.io/v1",
+            "time": "2022-12-19T09:44:04Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kube-aggregator.kubernetes.io/automanaged": {}
+                }
+              },
+              "f:spec": {
+                "f:group": {},
+                "f:groupPriorityMinimum": {},
+                "f:version": {},
+                "f:versionPriority": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "group": "policy",
+        "version": "v1",
+        "groupPriorityMinimum": 17100,
+        "versionPriority": 15
+      },
+      "status": {
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "lastTransitionTime": "2022-12-19T09:44:04Z",
+            "reason": "Local",
+            "message": "Local APIServices are always available"
+          }
+        ]
+      }
+    },
+    {
+      "metadata": {
+        "name": "v1.rbac.authorization.k8s.io",
+        "uid": "bdb8aa5b-2791-4cae-88ba-3017bd164aef",
+        "resourceVersion": "37",
+        "creationTimestamp": "2022-12-19T09:44:04Z",
+        "labels": {
+          "kube-aggregator.kubernetes.io/automanaged": "onstart"
+        },
+        "managedFields": [
+          {
+            "manager": "kube-apiserver",
+            "operation": "Update",
+            "apiVersion": "apiregistration.k8s.io/v1",
+            "time": "2022-12-19T09:44:04Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kube-aggregator.kubernetes.io/automanaged": {}
+                }
+              },
+              "f:spec": {
+                "f:group": {},
+                "f:groupPriorityMinimum": {},
+                "f:version": {},
+                "f:versionPriority": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "group": "rbac.authorization.k8s.io",
+        "version": "v1",
+        "groupPriorityMinimum": 17000,
+        "versionPriority": 15
+      },
+      "status": {
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "lastTransitionTime": "2022-12-19T09:44:04Z",
+            "reason": "Local",
+            "message": "Local APIServices are always available"
+          }
+        ]
+      }
+    },
+    {
+      "metadata": {
+        "name": "v1.scheduling.k8s.io",
+        "uid": "f33b0076-e66d-46bc-a4a7-0b7772033532",
+        "resourceVersion": "38",
+        "creationTimestamp": "2022-12-19T09:44:04Z",
+        "labels": {
+          "kube-aggregator.kubernetes.io/automanaged": "onstart"
+        },
+        "managedFields": [
+          {
+            "manager": "kube-apiserver",
+            "operation": "Update",
+            "apiVersion": "apiregistration.k8s.io/v1",
+            "time": "2022-12-19T09:44:04Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kube-aggregator.kubernetes.io/automanaged": {}
+                }
+              },
+              "f:spec": {
+                "f:group": {},
+                "f:groupPriorityMinimum": {},
+                "f:version": {},
+                "f:versionPriority": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "group": "scheduling.k8s.io",
+        "version": "v1",
+        "groupPriorityMinimum": 16600,
+        "versionPriority": 15
+      },
+      "status": {
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "lastTransitionTime": "2022-12-19T09:44:04Z",
+            "reason": "Local",
+            "message": "Local APIServices are always available"
+          }
+        ]
+      }
+    },
+    {
+      "metadata": {
+        "name": "v1.storage.k8s.io",
+        "uid": "22b2b57b-418c-451b-b810-8ba5dd9c0c89",
+        "resourceVersion": "36",
+        "creationTimestamp": "2022-12-19T09:44:04Z",
+        "labels": {
+          "kube-aggregator.kubernetes.io/automanaged": "onstart"
+        },
+        "managedFields": [
+          {
+            "manager": "kube-apiserver",
+            "operation": "Update",
+            "apiVersion": "apiregistration.k8s.io/v1",
+            "time": "2022-12-19T09:44:04Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kube-aggregator.kubernetes.io/automanaged": {}
+                }
+              },
+              "f:spec": {
+                "f:group": {},
+                "f:groupPriorityMinimum": {},
+                "f:version": {},
+                "f:versionPriority": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "group": "storage.k8s.io",
+        "version": "v1",
+        "groupPriorityMinimum": 16800,
+        "versionPriority": 15
+      },
+      "status": {
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "lastTransitionTime": "2022-12-19T09:44:04Z",
+            "reason": "Local",
+            "message": "Local APIServices are always available"
+          }
+        ]
+      }
+    },
+    {
+      "metadata": {
+        "name": "v1alpha1.goharbor.goharbor.io",
+        "uid": "7089165b-7a59-41f5-a679-00bfe4547507",
+        "resourceVersion": "3218717",
+        "creationTimestamp": "2023-01-04T07:30:57Z",
+        "labels": {
+          "kube-aggregator.kubernetes.io/automanaged": "true"
+        },
+        "managedFields": [
+          {
+            "manager": "kube-apiserver",
+            "operation": "Update",
+            "apiVersion": "apiregistration.k8s.io/v1",
+            "time": "2023-01-04T07:30:57Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kube-aggregator.kubernetes.io/automanaged": {}
+                }
+              },
+              "f:spec": {
+                "f:group": {},
+                "f:groupPriorityMinimum": {},
+                "f:version": {},
+                "f:versionPriority": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "group": "goharbor.goharbor.io",
+        "version": "v1alpha1",
+        "groupPriorityMinimum": 1000,
+        "versionPriority": 100
+      },
+      "status": {
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "lastTransitionTime": "2023-01-04T07:30:57Z",
+            "reason": "Local",
+            "message": "Local APIServices are always available"
+          }
+        ]
+      }
+    },
+    {
+      "metadata": {
+        "name": "v1beta1.batch",
+        "uid": "7d588ce0-06e6-4fc1-a8ff-528b00b076c4",
+        "resourceVersion": "17",
+        "creationTimestamp": "2022-12-19T09:44:04Z",
+        "labels": {
+          "kube-aggregator.kubernetes.io/automanaged": "onstart"
+        },
+        "managedFields": [
+          {
+            "manager": "kube-apiserver",
+            "operation": "Update",
+            "apiVersion": "apiregistration.k8s.io/v1",
+            "time": "2022-12-19T09:44:04Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kube-aggregator.kubernetes.io/automanaged": {}
+                }
+              },
+              "f:spec": {
+                "f:group": {},
+                "f:groupPriorityMinimum": {},
+                "f:version": {},
+                "f:versionPriority": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "group": "batch",
+        "version": "v1beta1",
+        "groupPriorityMinimum": 17400,
+        "versionPriority": 9
+      },
+      "status": {
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "lastTransitionTime": "2022-12-19T09:44:04Z",
+            "reason": "Local",
+            "message": "Local APIServices are always available"
+          }
+        ]
+      }
+    },
+    {
+      "metadata": {
+        "name": "v1beta1.discovery.k8s.io",
+        "uid": "6fca91dd-f944-420a-aa3f-7e715803a271",
+        "resourceVersion": "25",
+        "creationTimestamp": "2022-12-19T09:44:04Z",
+        "labels": {
+          "kube-aggregator.kubernetes.io/automanaged": "onstart"
+        },
+        "managedFields": [
+          {
+            "manager": "kube-apiserver",
+            "operation": "Update",
+            "apiVersion": "apiregistration.k8s.io/v1",
+            "time": "2022-12-19T09:44:04Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kube-aggregator.kubernetes.io/automanaged": {}
+                }
+              },
+              "f:spec": {
+                "f:group": {},
+                "f:groupPriorityMinimum": {},
+                "f:version": {},
+                "f:versionPriority": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "group": "discovery.k8s.io",
+        "version": "v1beta1",
+        "groupPriorityMinimum": 16200,
+        "versionPriority": 12
+      },
+      "status": {
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "lastTransitionTime": "2022-12-19T09:44:04Z",
+            "reason": "Local",
+            "message": "Local APIServices are always available"
+          }
+        ]
+      }
+    },
+    {
+      "metadata": {
+        "name": "v1beta1.events.k8s.io",
+        "uid": "a4261fe2-fa2d-4675-964e-39bb7b2537ae",
+        "resourceVersion": "26",
+        "creationTimestamp": "2022-12-19T09:44:04Z",
+        "labels": {
+          "kube-aggregator.kubernetes.io/automanaged": "onstart"
+        },
+        "managedFields": [
+          {
+            "manager": "kube-apiserver",
+            "operation": "Update",
+            "apiVersion": "apiregistration.k8s.io/v1",
+            "time": "2022-12-19T09:44:04Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kube-aggregator.kubernetes.io/automanaged": {}
+                }
+              },
+              "f:spec": {
+                "f:group": {},
+                "f:groupPriorityMinimum": {},
+                "f:version": {},
+                "f:versionPriority": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "group": "events.k8s.io",
+        "version": "v1beta1",
+        "groupPriorityMinimum": 17750,
+        "versionPriority": 5
+      },
+      "status": {
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "lastTransitionTime": "2022-12-19T09:44:04Z",
+            "reason": "Local",
+            "message": "Local APIServices are always available"
+          }
+        ]
+      }
+    },
+    {
+      "metadata": {
+        "name": "v1beta1.flowcontrol.apiserver.k8s.io",
+        "uid": "96c88471-dcca-467c-b260-f5b1f43c5f71",
+        "resourceVersion": "24",
+        "creationTimestamp": "2022-12-19T09:44:04Z",
+        "labels": {
+          "kube-aggregator.kubernetes.io/automanaged": "onstart"
+        },
+        "managedFields": [
+          {
+            "manager": "kube-apiserver",
+            "operation": "Update",
+            "apiVersion": "apiregistration.k8s.io/v1",
+            "time": "2022-12-19T09:44:04Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kube-aggregator.kubernetes.io/automanaged": {}
+                }
+              },
+              "f:spec": {
+                "f:group": {},
+                "f:groupPriorityMinimum": {},
+                "f:version": {},
+                "f:versionPriority": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "group": "flowcontrol.apiserver.k8s.io",
+        "version": "v1beta1",
+        "groupPriorityMinimum": 16100,
+        "versionPriority": 12
+      },
+      "status": {
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "lastTransitionTime": "2022-12-19T09:44:04Z",
+            "reason": "Local",
+            "message": "Local APIServices are always available"
+          }
+        ]
+      }
+    },
+    {
+      "metadata": {
+        "name": "v1beta1.node.k8s.io",
+        "uid": "fa4ea7ad-94d1-474c-a6b9-dac4a5496bfc",
+        "resourceVersion": "31",
+        "creationTimestamp": "2022-12-19T09:44:04Z",
+        "labels": {
+          "kube-aggregator.kubernetes.io/automanaged": "onstart"
+        },
+        "managedFields": [
+          {
+            "manager": "kube-apiserver",
+            "operation": "Update",
+            "apiVersion": "apiregistration.k8s.io/v1",
+            "time": "2022-12-19T09:44:04Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kube-aggregator.kubernetes.io/automanaged": {}
+                }
+              },
+              "f:spec": {
+                "f:group": {},
+                "f:groupPriorityMinimum": {},
+                "f:version": {},
+                "f:versionPriority": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "group": "node.k8s.io",
+        "version": "v1beta1",
+        "groupPriorityMinimum": 16300,
+        "versionPriority": 9
+      },
+      "status": {
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "lastTransitionTime": "2022-12-19T09:44:04Z",
+            "reason": "Local",
+            "message": "Local APIServices are always available"
+          }
+        ]
+      }
+    },
+    {
+      "metadata": {
+        "name": "v1beta1.policy",
+        "uid": "a03b83eb-2306-46b0-82e4-93bd05a32c74",
+        "resourceVersion": "33",
+        "creationTimestamp": "2022-12-19T09:44:04Z",
+        "labels": {
+          "kube-aggregator.kubernetes.io/automanaged": "onstart"
+        },
+        "managedFields": [
+          {
+            "manager": "kube-apiserver",
+            "operation": "Update",
+            "apiVersion": "apiregistration.k8s.io/v1",
+            "time": "2022-12-19T09:44:04Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kube-aggregator.kubernetes.io/automanaged": {}
+                }
+              },
+              "f:spec": {
+                "f:group": {},
+                "f:groupPriorityMinimum": {},
+                "f:version": {},
+                "f:versionPriority": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "group": "policy",
+        "version": "v1beta1",
+        "groupPriorityMinimum": 17100,
+        "versionPriority": 9
+      },
+      "status": {
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "lastTransitionTime": "2022-12-19T09:44:04Z",
+            "reason": "Local",
+            "message": "Local APIServices are always available"
+          }
+        ]
+      }
+    },
+    {
+      "metadata": {
+        "name": "v1beta1.storage.k8s.io",
+        "uid": "1d115584-3ab2-4075-940c-5b56f2efab1c",
+        "resourceVersion": "35",
+        "creationTimestamp": "2022-12-19T09:44:04Z",
+        "labels": {
+          "kube-aggregator.kubernetes.io/automanaged": "onstart"
+        },
+        "managedFields": [
+          {
+            "manager": "kube-apiserver",
+            "operation": "Update",
+            "apiVersion": "apiregistration.k8s.io/v1",
+            "time": "2022-12-19T09:44:04Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kube-aggregator.kubernetes.io/automanaged": {}
+                }
+              },
+              "f:spec": {
+                "f:group": {},
+                "f:groupPriorityMinimum": {},
+                "f:version": {},
+                "f:versionPriority": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "group": "storage.k8s.io",
+        "version": "v1beta1",
+        "groupPriorityMinimum": 16800,
+        "versionPriority": 9
+      },
+      "status": {
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "lastTransitionTime": "2022-12-19T09:44:04Z",
+            "reason": "Local",
+            "message": "Local APIServices are always available"
+          }
+        ]
+      }
+    },
+    {
+      "metadata": {
+        "name": "v1beta2.flowcontrol.apiserver.k8s.io",
+        "uid": "85e039af-cd1b-41cc-9dd4-0cb3bacb3146",
+        "resourceVersion": "23",
+        "creationTimestamp": "2022-12-19T09:44:04Z",
+        "labels": {
+          "kube-aggregator.kubernetes.io/automanaged": "onstart"
+        },
+        "managedFields": [
+          {
+            "manager": "kube-apiserver",
+            "operation": "Update",
+            "apiVersion": "apiregistration.k8s.io/v1",
+            "time": "2022-12-19T09:44:04Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kube-aggregator.kubernetes.io/automanaged": {}
+                }
+              },
+              "f:spec": {
+                "f:group": {},
+                "f:groupPriorityMinimum": {},
+                "f:version": {},
+                "f:versionPriority": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "group": "flowcontrol.apiserver.k8s.io",
+        "version": "v1beta2",
+        "groupPriorityMinimum": 16100,
+        "versionPriority": 15
+      },
+      "status": {
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "lastTransitionTime": "2022-12-19T09:44:04Z",
+            "reason": "Local",
+            "message": "Local APIServices are always available"
+          }
+        ]
+      }
+    },
+    {
+      "metadata": {
+        "name": "v2.autoscaling",
+        "uid": "e8dae725-9da2-423a-a9d7-f61a3bcc70f4",
+        "resourceVersion": "13",
+        "creationTimestamp": "2022-12-19T09:44:03Z",
+        "labels": {
+          "kube-aggregator.kubernetes.io/automanaged": "onstart"
+        },
+        "managedFields": [
+          {
+            "manager": "kube-apiserver",
+            "operation": "Update",
+            "apiVersion": "apiregistration.k8s.io/v1",
+            "time": "2022-12-19T09:44:03Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kube-aggregator.kubernetes.io/automanaged": {}
+                }
+              },
+              "f:spec": {
+                "f:group": {},
+                "f:groupPriorityMinimum": {},
+                "f:version": {},
+                "f:versionPriority": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "group": "autoscaling",
+        "version": "v2",
+        "groupPriorityMinimum": 17500,
+        "versionPriority": 30
+      },
+      "status": {
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "lastTransitionTime": "2022-12-19T09:44:03Z",
+            "reason": "Local",
+            "message": "Local APIServices are always available"
+          }
+        ]
+      }
+    },
+    {
+      "metadata": {
+        "name": "v2beta1.autoscaling",
+        "uid": "7351514f-4695-471f-af9c-65b17ebd6ee6",
+        "resourceVersion": "16",
+        "creationTimestamp": "2022-12-19T09:44:03Z",
+        "labels": {
+          "kube-aggregator.kubernetes.io/automanaged": "onstart"
+        },
+        "managedFields": [
+          {
+            "manager": "kube-apiserver",
+            "operation": "Update",
+            "apiVersion": "apiregistration.k8s.io/v1",
+            "time": "2022-12-19T09:44:03Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kube-aggregator.kubernetes.io/automanaged": {}
+                }
+              },
+              "f:spec": {
+                "f:group": {},
+                "f:groupPriorityMinimum": {},
+                "f:version": {},
+                "f:versionPriority": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "group": "autoscaling",
+        "version": "v2beta1",
+        "groupPriorityMinimum": 17500,
+        "versionPriority": 9
+      },
+      "status": {
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "lastTransitionTime": "2022-12-19T09:44:03Z",
+            "reason": "Local",
+            "message": "Local APIServices are always available"
+          }
+        ]
+      }
+    },
+    {
+      "metadata": {
+        "name": "v2beta2.autoscaling",
+        "uid": "9d8c17ed-2e59-4270-b0a5-c4dd072fe720",
+        "resourceVersion": "15",
+        "creationTimestamp": "2022-12-19T09:44:03Z",
+        "labels": {
+          "kube-aggregator.kubernetes.io/automanaged": "onstart"
+        },
+        "managedFields": [
+          {
+            "manager": "kube-apiserver",
+            "operation": "Update",
+            "apiVersion": "apiregistration.k8s.io/v1",
+            "time": "2022-12-19T09:44:03Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kube-aggregator.kubernetes.io/automanaged": {}
+                }
+              },
+              "f:spec": {
+                "f:group": {},
+                "f:groupPriorityMinimum": {},
+                "f:version": {},
+                "f:versionPriority": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "group": "autoscaling",
+        "version": "v2beta2",
+        "groupPriorityMinimum": 17500,
+        "versionPriority": 1
+      },
+      "status": {
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "lastTransitionTime": "2022-12-19T09:44:03Z",
+            "reason": "Local",
+            "message": "Local APIServices are always available"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "apiVersion": "goharbor.goharbor.io/v1alpha1",
+  "items": [
+    {
+      "apiVersion": "goharbor.goharbor.io/v1alpha1",
+      "kind": "Setting",
+      "metadata": {
+        "annotations": {
+          "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"goharbor.goharbor.io/v1alpha1\",\"kind\":\"Setting\",\"metadata\":{\"annotations\":{},\"name\":\"sample-setting\"},\"spec\":{\"dataSource\":{\"credentialRef\":{\"name\":\"harbor\",\"namespace\":\"default\"},\"endpoint\":\"https://10.212.47.157\",\"name\":\"source-harbor\",\"provider\":\"Harbor\",\"scanSchedule\":\"0 0 0 * * *\",\"skipTLSVerify\":true}}}\n"
+        },
+        "creationTimestamp": "2023-01-04T07:31:45Z",
+        "generation": 1,
+        "managedFields": [
+          {
+            "apiVersion": "goharbor.goharbor.io/v1alpha1",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:annotations": {
+                  ".": {},
+                  "f:kubectl.kubernetes.io/last-applied-configuration": {}
+                }
+              },
+              "f:spec": {
+                ".": {},
+                "f:dataSource": {
+                  ".": {},
+                  "f:credentialRef": {
+                    ".": {},
+                    "f:name": {},
+                    "f:namespace": {}
+                  },
+                  "f:endpoint": {},
+                  "f:name": {},
+                  "f:provider": {},
+                  "f:scanSchedule": {},
+                  "f:skipTLSVerify": {}
+                }
+              }
+            },
+            "manager": "kubectl-client-side-apply",
+            "operation": "Update",
+            "time": "2023-01-04T07:31:45Z"
+          },
+          {
+            "apiVersion": "goharbor.goharbor.io/v1alpha1",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:status": {
+                ".": {},
+                "f:conditions": {},
+                "f:status": {}
+              }
+            },
+            "manager": "manager",
+            "operation": "Update",
+            "subresource": "status",
+            "time": "2023-01-04T07:32:07Z"
+          }
+        ],
+        "name": "sample-setting",
+        "resourceVersion": "3454750",
+        "uid": "4cdc3a26-2d87-4435-80ab-a29c383c8831"
+      },
+      "spec": {
+        "dataSource": {
+          "credentialRef": {
+            "name": "harbor",
+            "namespace": "default"
+          },
+          "endpoint": "https://10.212.47.157",
+          "name": "source-harbor",
+          "provider": "Harbor",
+          "scanSchedule": "0 0 0 * * *",
+          "skipTLSVerify": true
+        }
+      },
+      "status": {
+        "conditions": [
+          {
+            "lastTransitionTime": "2023-01-05T10:20:09Z",
+            "status": "True",
+            "type": "DataSourceReady"
+          },
+          {
+            "lastTransitionTime": "2023-01-05T10:20:09Z",
+            "status": "True",
+            "type": "KnownRegistryRegistered"
+          },
+          {
+            "lastTransitionTime": "2023-01-05T10:20:10Z",
+            "status": "True",
+            "type": "ApplyConfigReady"
+          }
+        ],
+        "status": "Healthy"
+      }
+    }
+  ],
+  "kind": "SettingList",
+  "metadata": {
+    "continue": "",
+    "resourceVersion": "5143720"
+  }
+}

@@ -16,7 +16,8 @@ describe('Service', () => {
       imports: [
         TranslateModule.forChild({
           extend: true,
-        }),    
+        }),
+        HttpClientTestingModule
       ],
       providers: [TranslateStore, TranslateService]
     
