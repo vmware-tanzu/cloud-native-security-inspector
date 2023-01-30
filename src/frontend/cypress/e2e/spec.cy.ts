@@ -44,7 +44,7 @@ describe('Setting Test', () => {
 
 
   it('open secret modal', () => {
-    cy.contains('Secret')
+    cy.contains('Secret222')
     // create secret
     cy.get('[data-cy=submit]').click()
     cy.get('[data-cy=secret_name]').type('Harbor-test', {force: true})
