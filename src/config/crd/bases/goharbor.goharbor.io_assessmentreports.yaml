@@ -128,6 +128,23 @@ spec:
                       elasticSearchUser:
                         description: ElasticSearch username for the client
                         type: string
+                      governor:
+                        description: Indicate whether to config of governor
+                        properties:
+                          enabled:
+                            default: false
+                            description: Indicate whether to send the reports to governor
+                            type: boolean
+                          clusterId:
+                            description: Unique identifier of the cluster
+                            type: string
+                          url:
+                            description: Api url to send telemetry data
+                            type: string
+                          apiToken:
+                            description: Api token for user authentication
+                            type: string
+                        type: object
                       format:
                         default: YAML
                         description: Format of the assessment report data.

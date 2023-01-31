@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
 	es "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers/es"
+	governor "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers/governor"
 	osearch "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers/opensearch"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
@@ -328,6 +329,20 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 	if policy.Spec.Inspection.Actions != nil {
 		if err := c.enforcePolicies(ctx, report, policy); err != nil {
 			return errors.Wrap(err, "enforce policies")
+		}
+	}
+
+	// Read config from InspectionPolicy, send assessment reports to Governor api if governor enabled.
+	if policy.Spec.Inspection.Assessment.Governor.Enabled {
+		governorConfig := policy.Spec.Inspection.Assessment.Governor
+		exporter := governor.GovernorExporter{
+			Report:    report,
+			ClusterID: governorConfig.ClusterID,
+			ApiURL:    governorConfig.URL,
+			ApiToken:  governorConfig.APIToken,
+		}
+		if err := exporter.SendReportToGovernor(); err != nil {
+			return err
 		}
 	}
 

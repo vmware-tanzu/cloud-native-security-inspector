@@ -114,6 +114,24 @@ type Assessment struct {
 	// ElasticSearch certificate for the client
 	// +kubebuilder:validation:Optional
 	OpenSearchCert string `json:"openSearchCert"`
+	// Indicate whether to config of governor
+	Governor Governor `json:"governor"`
+}
+
+// Governor contains policies for governor to send report
+type Governor struct {
+	// Indicate whether to send the reports to governor
+	// +kubebuilder:default:=false
+	Enabled bool `json:"enabled"`
+	// Unique identifier of the cluster
+	// +kubebuilder:validation:Optional
+	ClusterID string `json:"clusterId"`
+	// Api url to send telemetry data
+	// +kubebuilder:validation:Optional
+	URL string `json:"url"`
+	// Api token for user authentication
+	// +kubebuilder:validation:Optional
+	APIToken string `json:"apiToken"`
 }
 
 // FollowupAction defines what actions should be applied when security expectations are matched.

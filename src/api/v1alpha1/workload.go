@@ -3,6 +3,7 @@
 package v1alpha1
 
 import (
+	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 )
 
@@ -39,6 +40,8 @@ var AllWorkloads = []string{
 type Workload struct {
 	// For pure Pod, no object reference.
 	corev1.ObjectReference `json:"metadata"`
+	// Replicas of this workload.
+	Replicas appsv1.ReplicaSet `json:"replicas"`
 	// Pods of this workload.
 	Pods []*Pod `json:"pods"`
 }
