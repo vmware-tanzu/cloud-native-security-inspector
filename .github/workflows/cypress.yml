@@ -7,7 +7,7 @@ on:
     types: [synchronize, opened, reopened]
 
 jobs:
-  source:
+  cnsi_portal_e2e_test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
