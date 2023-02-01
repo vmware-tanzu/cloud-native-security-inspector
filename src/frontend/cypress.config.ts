@@ -3,7 +3,7 @@ import { defineConfig } from 'cypress'
 export default defineConfig({
   
   e2e: {
-    baseUrl: null,
+    baseUrl: 'http://localhost:4004',
     supportFile: false
   },
   

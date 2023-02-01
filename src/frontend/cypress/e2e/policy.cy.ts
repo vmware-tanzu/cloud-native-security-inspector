@@ -32,7 +32,7 @@ describe('Setting Test', () => {
         msg: 'created sussessful!',
       },
     })
-    cy.visit('http://127.0.0.1:4004/policy')
+    cy.visit('/policy')
 
     // cy.visit('https://angular.realworld.io/')
   })
@@ -42,7 +42,7 @@ describe('Setting Test', () => {
     // cy.contains('Secret-team')
     // create policy
     cy.intercept('GET', environment.api.goharbor + '/inspectionpolicies', { fixture: 'policy-list.json' })
-    cy.visit('http://127.0.0.1:4004/modify-policy/create')
+    cy.visit('/modify-policy/create')
     // cy.get('[data-cy=new_policy]').click()
     cy.get('[data-cy=name]').type('policy-test', {force: true})
     cy.get('[data-cy=namespace]').type('cronjobs', {force: true})
