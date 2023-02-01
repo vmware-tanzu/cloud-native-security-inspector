@@ -2,13 +2,27 @@
 
 We welcome contributions from the community and first want to thank you for taking the time to contribute!
 
-Please familiarize yourself with the [Code of Conduct](https://github.com/vmware/.github/blob/main/CODE_OF_CONDUCT.md) before contributing.
+**Table of Contents**
 
-Before you start working with cloud-native-security-inspector, please read and sign our Contributor License Agreement [CLA](https://cla.vmware.com/cla/1/preview). If you wish to contribute code and you have not signed our contributor license agreement (CLA), our bot will prompt you to do so when you open a Pull Request. For any questions about the CLA process, please refer to our [FAQ]([https://cla.vmware.com/faq](https://cla.vmware.com/faq)).
+* [Code of Conduct](#code-of-conduct)
+* [Ways to Contribute](#ways-to-contribute)
+* [Sign a Contributor License](#sign-a-contributor-license)
+* [Getting Started](#getting-started)
+* [Contribution Flow](#contribution-flow)
+  * [Staying In Sync With Upstream](#staying-in-sync-with-upstream)
+  * [Updating pull requests](#updating-pull-requests)
+  * [Formatting Commit Messages](#formatting-commit-messages)
+  * [Pull Request Checklist](#pull-request-checklist)
+* [Reporting Bugs and Creating Issues](#reporting-bugs-and-creating-issues)
+* [Ask for Help](#ask-for-help)
+
+## Code of Conduct
+Please familiarize yourself with the [Code of Conduct](https://github.com/vmware/.github/blob/main/CODE_OF_CONDUCT.md)
+before contributing.
 
 ## Ways to contribute
 
-We welcome many different types of contributions and not all of them need a Pull request. Contributions may include:
+We welcome many types of contributions and not all of them need a Pull request. Contributions may include:
 
 * New features and proposals
 * Documentation
@@ -20,9 +34,33 @@ We welcome many different types of contributions and not all of them need a Pull
 
 ## Getting started
 
-Please refer to README to learn more about how to build the project from source and run.
+Please refer to [README](README.md) to learn more about how to build the project from source code and run.
 
+All todo items, are recorded on the issue [page](https://github.com/vmware-tanzu/cloud-native-security-inspector/issues).
+You can pick one of them by add comments below, then a maintainer can assign the feature to you.
 
+After picking the issue, before any code change, a design doc should be proposed first.
+Check the [template](docs/design/template.md) to see how to write a design doc.
+
+After the design doc is approved by two maintainers, you can start the implementation process.
+It would be nice if you can comment in the issue assigned to you about when is the feature expected to be finished,
+so that the maintainers can schedule the issue in the appropriate release in the future.
+
+## Sign a contributor license
+
+If you would like to contribute code to cloud-native-security-inspector, you must read and sign our
+Contributor License Agreement [CLA](https://cla.vmware.com/cla/1/preview). If you wish to contribute
+code and you have not signed our contributor license agreement (CLA), our bot will prompt you to do 
+so when you open a Pull Request. For any questions about the CLA process, please refer to our
+[FAQ]([https://cla.vmware.com/faq](https://cla.vmware.com/faq)).
+
+When you click the link for signing the CLA, please sign the individual CLA.
+
+<img src="docs/contributing-pictures/sign-cla.png">
+
+**Important: Make sure you provide all the information we ask you to provide, e.g., fill in each blank in below form.**
+
+<img src="docs/contributing-pictures/cla-information.png">
 
 ## Contribution Flow
 
@@ -35,7 +73,8 @@ This is a rough outline of what a contributor's workflow looks like:
 * Push your changes to the topic branch in your fork
 * Create a pull request containing that commit
 
-We follow the GitHub workflow and you can find more details on the [GitHub flow documentation](https://docs.github.com/en/get-started/quickstart/github-flow).
+We follow the GitHub workflow and you can find more details on the
+[GitHub flow documentation](https://docs.github.com/en/get-started/quickstart/github-flow).
 
 Example:
 ```shell
@@ -82,31 +121,23 @@ Be sure to include any related GitHub issue references in the commit message.  S
 [GFM syntax](https://guides.github.com/features/mastering-markdown/#GitHub-flavored-markdown) for referencing issues
 and commits.
 
-
-
-
 ### Pull Request Checklist
 
 Before submitting your pull request, we advise you to use the following:
 
-1. Check if your code changes will pass both code linting checks and unit tests.
+1. Make sure you code change brings no regression, e.g., you change must pass every github workflow item triggerred by your PR.
 2. Ensure your commit messages are descriptive. We follow the conventions on [How to Write a Git Commit Message](http://chris.beams.io/posts/git-commit/). Be sure to include any related GitHub issue references in the commit message. See [GFM syntax](https://guides.github.com/features/mastering-markdown/#GitHub-flavored-markdown) for referencing issues and commits.
 3. Check the commits and commits messages and ensure they are free from typos.
+4. Make sure you have involved new tests that can verify that your change does can solve the problem.
 
 ## Reporting Bugs and Creating Issues
 
 For specifics on what to include in your report, please follow the guidelines in the issue and pull request templates when available.
 When opening a new issue, try to roughly follow the commit message format conventions above.
 
-
-
 ## Ask for Help
 
 The best way to reach us with a question when contributing is to ask on:
 
 * The original GitHub issue
-* The developer mailing list
-
-
-
-
+* The developer mailing list: narrows@vmware.com
