@@ -14,7 +14,7 @@ jobs:
         node_version: [14.19.0]
     container: cypress/base:${{ matrix.node_version }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Install dependencies
         run: |
@@ -26,15 +26,24 @@ jobs:
           else
           npm i
           fi
-      - name: run portal
-        run: |
-          cd src/frontend
-          npm run start &
-          sleep 30
+
+      - name: open
+        uses: cypress-io/github-action@v5
         with:
-          wait-on: http://localhost:4004
+          install: false
+          working-directory: src/frontend
+          start: npm run start
+          wait-on: 'http://localhost:4004'
+          wait-on-timeout: 120
+      # - name: run portal
+      #   run: |
+      #     cd src/frontend
+      #     npm run start &
+      #     sleep 30
+      #   with:
+      #     wait-on: http://localhost:4004
           
-      - name: test e2e
-        run: |
-          cd src/frontend
-          npm run cypress:run
+      # - name: test e2e
+      #   run: |
+      #     cd src/frontend
+      #     npm run cypress:run
