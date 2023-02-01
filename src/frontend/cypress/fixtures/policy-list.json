@@ -1,0 +1,145 @@
+{
+  "apiVersion": "goharbor.goharbor.io/v1alpha1",
+  "items": [
+    {
+      "apiVersion": "goharbor.goharbor.io/v1alpha1",
+      "kind": "InspectionPolicy",
+      "metadata": {
+        "creationTimestamp": "2023-02-01T01:56:59Z",
+        "generation": 1,
+        "managedFields": [
+          {
+            "apiVersion": "goharbor.goharbor.io/v1alpha1",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:deletionGracePeriodSeconds": {}
+              },
+              "f:spec": {
+                ".": {},
+                "f:enabled": {},
+                "f:inspection": {
+                  ".": {},
+                  "f:actions": {},
+                  "f:assessment": {
+                    ".": {},
+                    "f:elasticSearchEnabled": {},
+                    "f:format": {},
+                    "f:generate": {},
+                    "f:liveTime": {},
+                    "f:managedBy": {},
+                    "f:openSearchAddr": {},
+                    "f:openSearchEnabled": {},
+                    "f:openSearchPasswd": {},
+                    "f:openSearchUser": {}
+                  },
+                  "f:baselines": {},
+                  "f:namespaceSelector": {
+                    ".": {},
+                    "f:matchExpressions": {},
+                    "f:matchLabels": {
+                      ".": {},
+                      "f:defalut": {}
+                    }
+                  },
+                  "f:workloadSelector": {
+                    ".": {},
+                    "f:matchExpressions": {},
+                    "f:matchLabels": {}
+                  }
+                },
+                "f:inspector": {
+                  ".": {},
+                  "f:image": {},
+                  "f:imagePullPolicy": {},
+                  "f:imagePullSecrets": {},
+                  "f:kubebenchImage": {},
+                  "f:riskImage": {}
+                },
+                "f:schedule": {},
+                "f:settingsName": {},
+                "f:strategy": {
+                  ".": {},
+                  "f:concurrencyRule": {},
+                  "f:historyLimit": {},
+                  "f:suspend": {}
+                },
+                "f:workNamespace": {}
+              }
+            },
+            "manager": "Mozilla",
+            "operation": "Update",
+            "time": "2023-02-01T01:56:59Z"
+          }
+        ],
+        "name": "policy-test",
+        "resourceVersion": "2285810",
+        "uid": "d5e6fe01-b09a-4b8b-98bd-37731d683d9c"
+      },
+      "spec": {
+        "enabled": true,
+        "inspection": {
+          "actions": [
+            {
+              "ignore": {
+                "matchExpressions": [],
+                "matchLabels": {}
+              },
+              "kind": "quarantine_vulnerable_workload",
+              "settings": {}
+            }
+          ],
+          "assessment": {
+            "elasticSearchEnabled": false,
+            "format": "YAML",
+            "generate": true,
+            "liveTime": 3600,
+            "managedBy": true,
+            "openSearchAddr": "https://opensearch-cluster-master.opensearch:9200",
+            "openSearchEnabled": true,
+            "openSearchPasswd": "admin",
+            "openSearchUser": "admin"
+          },
+          "baselines": [
+            {
+              "baseline": "High",
+              "kind": "vulnerability",
+              "scheme": "application/vnd.security.vulnerability.report; version=1.1",
+              "version": "v1.1"
+            }
+          ],
+          "namespaceSelector": {
+            "matchExpressions": [],
+            "matchLabels": {
+              "defalut": "true"
+            }
+          },
+          "workloadSelector": {
+            "matchExpressions": [],
+            "matchLabels": {}
+          }
+        },
+        "inspector": {
+          "image": "projects.registry.vmware.com/cnsi/inspector:0.2",
+          "imagePullPolicy": "Always",
+          "imagePullSecrets": [],
+          "kubebenchImage": "projects.registry.vmware.com/cnsi/kubebench:0.2",
+          "riskImage": "projects.registry.vmware.com/cnsi/risk:0.2"
+        },
+        "schedule": "*/3 * * * *",
+        "settingsName": "test-setting",
+        "strategy": {
+          "concurrencyRule": "Forbid",
+          "historyLimit": 5,
+          "suspend": false
+        },
+        "workNamespace": "cronjobs"
+      }
+    }
+  ],
+  "kind": "InspectionPolicyList",
+  "metadata": {
+    "continue": "",
+    "resourceVersion": "2285820"
+  }
+}

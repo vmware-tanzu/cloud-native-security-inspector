@@ -149,7 +149,7 @@ export class PolicySettingPageComponent implements OnInit {
         historyLimit:[5],
         suspend: [false],
         concurrencyRule:['Forbid'],
-        image:[[]],
+        image:[['inspector']],
         imagePullPolicy: ['IfNotPresent'],
         settingsName: [''],
         elasticSearchEnabled: [false],

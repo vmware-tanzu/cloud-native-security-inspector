@@ -14,12 +14,12 @@
       <clr-step-content *clrIfExpanded>
         <clr-input-container class="w-230">
           <label>{{'Policy.name'|translate}}: </label>
-          <input clrInput placeholder="" name="name" formControlName="name"/>
+          <input data-cy="name" clrInput placeholder="" name="name" formControlName="name"/>
         </clr-input-container>
   
         <clr-input-container class="w-230">
           <label>{{'CommonlyUse.inspectionNamespace'|translate}}: </label>
-          <input clrInput placeholder="" name="namespace" formControlName="namespace"/>
+          <input data-cy="namespace" clrInput placeholder="" name="namespace" formControlName="namespace"/>
         </clr-input-container>
   
         <div class="schedule">
@@ -52,7 +52,7 @@
         </clr-select-container> -->
         <clr-combobox-container class="combobox">
           <label>{{'CommonlyUse.scanInspector'|translate}}:</label>
-          <clr-combobox formControlName="image" name="image" clrMulti="true" required>
+          <clr-combobox data-cy="image" formControlName="image" name="image" clrMulti="true" required>
             <ng-container *clrOptionSelected="let selected">
               <cds-icon shape="network-globe"></cds-icon> {{selected}}
             </ng-container>
@@ -70,7 +70,7 @@
 
         <clr-select-container class="w-230">
           <label class="w-200">{{'Policy.imagePullPolicy'|translate}}</label>
-          <select clrSelect name="imagePullPolicy" formControlName="imagePullPolicy">
+          <select data-cy="imagePullPolicy" clrSelect name="imagePullPolicy" formControlName="imagePullPolicy">
             <option value="IfNotPresent">IfNotPresent</option>
             <option value="Always">Always</option>
             <option value="Never">Never</option>
@@ -80,7 +80,7 @@
         
         <clr-select-container class="w-230">
           <label class="w-200">{{'Policy.settingsName'|translate}}</label>
-          <select clrSelect name="settingsName" formControlName="settingsName">
+          <select data-cy="settingsName" clrSelect name="settingsName" formControlName="settingsName">
             <option></option>
             <option *ngFor="let item of settingList" [value]="item.metadata.name">{{item.metadata.name}}</option>
           </select>
@@ -179,7 +179,7 @@
 
         </div>
 
-        <button clrStepButton="next" [disabled]="inspectionSettingValid">next</button>
+        <button clrStepButton="next" data-cy="next-one" [disabled]="inspectionSettingValid">next</button>
       </clr-step-content>
     </clr-stepper-panel>
   
@@ -226,7 +226,7 @@
   
         <div class="actions w-auto">
           <h4>{{'Policy.namespace'|translate}}
-            <cds-icon (click)="policySettingAddItem('namespacelabels')" style="color:hsl(198, 80%, 46%)" shape="plus-circle" class="is-solid"></cds-icon>
+            <cds-icon data-cy="policySettingAddItem" (click)="policySettingAddItem('namespacelabels')" style="color:hsl(198, 80%, 46%)" shape="plus-circle" class="is-solid"></cds-icon>
           </h4>
           <ul class="list">
             <li *ngFor="let item of namespacelabels,let i = index;">
@@ -234,12 +234,12 @@
                 <label>{{'Policy.key'| translate}}:   
                   <cds-icon (click)="policySettingremoveItem('namespacelabels', i)" style="color: hsl(9, 100%, 43%);"shape="minus-circle" class="is-solid"></cds-icon>
                 </label>
-                <input clrInput placeholder="" name="liveTime" [(ngModel)]="item.key" [ngModelOptions]="{standalone: true}"/>
+                <input data-cy="key" clrInput placeholder="" name="key" [(ngModel)]="item.key" [ngModelOptions]="{standalone: true}"/>
               </clr-input-container>
               <clr-input-container class="w-230">
                 <label>{{'Policy.value'| translate}}:   
                 </label>
-                <input clrInput placeholder="" name="liveTime" [(ngModel)]="item.value" [ngModelOptions]="{standalone: true}"/>
+                <input data-cy="value" clrInput placeholder="" name="value" [(ngModel)]="item.value" [ngModelOptions]="{standalone: true}"/>
               </clr-input-container>
       
             </li>
@@ -268,7 +268,7 @@
           </ul>
         </div>
   
-        <button clrStepButton="next" [disabled]="inspectionStandardValid">Next</button>
+        <button clrStepButton="next" data-cy="next-two" [disabled]="inspectionStandardValid">Next</button>
       </clr-step-content>
     </clr-stepper-panel>
   
@@ -330,7 +330,7 @@
           </ul>
         </div>
         <div class="submit-btns">
-          <button clrStepButton class="btn btn-primary" [disabled]="inspectionResultValid" type="submit" (click)="policyHandler(text)">{{'CommonlyUse.'+text|translate}}</button>
+          <button data-cy="created" clrStepButton class="btn btn-primary" [disabled]="inspectionResultValid" type="submit" (click)="policyHandler(text)">{{'CommonlyUse.'+text|translate}}</button>
         </div>
       </clr-step-content>
     </clr-stepper-panel>
