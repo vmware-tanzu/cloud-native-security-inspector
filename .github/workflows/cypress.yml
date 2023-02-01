@@ -27,7 +27,7 @@ jobs:
           npm i
           fi
 
-      - name: open
+      - name: Cpyress run
         uses: cypress-io/github-action@v5
         with:
           install: false
