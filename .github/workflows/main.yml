@@ -64,6 +64,7 @@ jobs:
       - name: Install dependencies
         run: |
           pwd
+          ls
           cd ${{ github.repository }}
           pwd
           cd src/frontend
