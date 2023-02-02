@@ -100,12 +100,8 @@ jobs:
       - name: script
         run: |
           pwd
-          ls
           cd ${{ github.repository }}/src
-          pwd
-          ls
           cd frontend
-          ls
           bash ./test/ui_unit.sh
           df -h
       - name: Codecov For UI
