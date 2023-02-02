@@ -101,7 +101,7 @@ jobs:
         run: |
           pwd
           ls
-          cd src
+          cd ${{ github.repository }}/src
           pwd
           ls
           cd frontend
