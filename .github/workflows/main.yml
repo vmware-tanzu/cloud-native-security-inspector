@@ -63,16 +63,9 @@ jobs:
           
       - name: Install dependencies
         run: |
-          pwd
-          ls
           cd src
-          pwd
+          ls
           cd frontend
-          if [ -e yarn.lock ]; then
-          yarn install --frozen-lockfile
-          elif [ -e package-lock.json ]; then
-          npm ci
-          else
           npm i
         
       - name: Unit test
