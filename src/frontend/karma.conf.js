@@ -1,11 +1,3 @@
-// Copyright 2022 VMware, Inc.
-// SPDX-License-Identifier: Apache-2.0
-// Karma configuration file, see link for more information
-// https://karma-runner.github.io/1.0/config/configuration-file.html
-
-// Karma configuration file, see link for more information
-// https://karma-runner.github.io/1.0/config/configuration-file.html
-
 module.exports = function (config) {
   config.set({
     basePath: '',
@@ -30,7 +22,6 @@ module.exports = function (config) {
       suppressAll: true // removes the duplicated traces
     },
     coverageReporter: {
-      // type: 'html',  // view via browser
       dir: require('path').join(__dirname, './coverage'),
       subdir: '.',
       reporters: [
@@ -41,10 +32,10 @@ module.exports = function (config) {
         emitWarning: false, // set to `true` to not fail the test command when thresholds are not met
         // thresholds for all files
         global: {
-          statements: 2,
-          branches: 2,
-          functions: 2,
-          lines: 2
+          statements: 30,
+          branches: 5,
+          functions: 26,
+          lines: 30
         },
         // thresholds per file
         each: {
@@ -61,8 +52,8 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    singleRun: true, // false  view via browser
-    browsers: ['Chrome', 'ChromeHeadlessNoSandbox'],
+    singleRun: true,
+    browsers: ['ChromeHeadlessNoSandbox'],
     browserDisconnectTolerance: 2,
     browserNoActivityTimeout: 50000,
     customLaunchers: {
