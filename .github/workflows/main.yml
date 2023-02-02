@@ -59,10 +59,12 @@ jobs:
       - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
+        node-version: ${{ matrix.node-version }}
           
       - name: Install dependencies
         run: |
+          cd ${{ github.repository }}
+          cd src/frontend
           if [ -e yarn.lock ]; then
           yarn install --frozen-lockfile
           elif [ -e package-lock.json ]; then
@@ -72,6 +74,8 @@ jobs:
         
       - name: Unit test
         run: |
+          cd ${{ github.repository }}
+          cd src/frontend
           npm run test
 
       - uses: codecov/codecov-action@v3
