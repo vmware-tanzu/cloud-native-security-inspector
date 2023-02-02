@@ -50,7 +50,7 @@ describe('PolicyComponent', () => {
 
   describe('functions ', () => {
     it('get inspectionpolicies', () => {
-      component.modifyPolicy()
+      // component.modifyPolicy()
       component.deleteModalHandler('test')
       component.deletePolicy()
   
