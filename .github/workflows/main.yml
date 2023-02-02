@@ -50,19 +50,13 @@ jobs:
   portal_unit_test:
     runs-on:
       - ubuntu-latest
-    timeout-minutes: 100
+    strategy:
+      matrix:
+        node_version: [14.19.0]
     
     steps:
       - uses: actions/checkout@v3
-        with:
-          path: ${{ github.repository }}
           
-      - name: Set up node v14.17.5
-        uses: actions/setup-node@v3
-        with:
-           node-version: 14
-        id: node
-
       - name: Install dependencies
         run: |
           cd src/frontend
