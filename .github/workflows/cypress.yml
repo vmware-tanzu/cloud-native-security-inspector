@@ -1,4 +1,4 @@
-name: CNSI Portal E2E Test
+name: Cypress
 
 on:
   push:
