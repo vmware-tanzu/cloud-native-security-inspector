@@ -65,9 +65,9 @@ jobs:
         run: |
           pwd
           ls
-          cd ${{ github.repository }}
+          cd src
           pwd
-          cd src/frontend
+          cd frontend
           if [ -e yarn.lock ]; then
           yarn install --frozen-lockfile
           elif [ -e package-lock.json ]; then
@@ -77,7 +77,7 @@ jobs:
         
       - name: Unit test
         run: |
-          cd ${{ github.repository }}
+          pwd
           cd src/frontend
           npm run test
 
