@@ -63,7 +63,9 @@ jobs:
           
       - name: Install dependencies
         run: |
+          pwd
           cd ${{ github.repository }}
+          pwd
           cd src/frontend
           if [ -e yarn.lock ]; then
           yarn install --frozen-lockfile
