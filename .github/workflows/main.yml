@@ -100,7 +100,12 @@ jobs:
       - name: script
         run: |
           pwd
-          cd src/frontend
+          ls
+          cd src
+          pwd
+          ls
+          cd frontend
+          ls
           bash ./test/ui_unit.sh
           df -h
       - name: Codecov For UI
