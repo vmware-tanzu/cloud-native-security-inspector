@@ -47,3 +47,42 @@ jobs:
           fail_ci_if_error: true # optional (default = false)
           verbose: true # optional (default = false)
 
+  portal_unit_test:
+    runs-on:
+      - ubuntu-latest
+    timeout-minutes: 100
+    
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          path: ${{ github.repository }}
+          
+      - name: Set up node v14.17.5
+        uses: actions/setup-node@v3
+        with:
+           node-version: 14
+        id: node
+
+      - name: Install dependencies
+        run: |
+          cd ${{ github.repository }}/src/frontend
+          if [ -e yarn.lock ]; then
+          yarn install --frozen-lockfile
+          elif [ -e package-lock.json ]; then
+          npm ci
+          else
+          npm i
+        
+      - name: Unit test
+        run: |
+          cd ${{ github.repository }}/src/frontend
+          npm run test
+
+      - uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+          files: ${{ github.repository }}/src/frontend/coverage/icov.info
+          flags: unittests # optional
+          name: codecov-umbrella # optional
+          fail_ci_if_error: true # optional (default = false)
+          verbose: true # optional (default = false)
