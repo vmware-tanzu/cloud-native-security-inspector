@@ -65,7 +65,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd ${{ github.repository }}/src/frontend
+          cd ${{ github.repository }}
+          cd src/frontend
           if [ -e yarn.lock ]; then
           yarn install --frozen-lockfile
           elif [ -e package-lock.json ]; then
@@ -75,7 +76,8 @@ jobs:
         
       - name: Unit test
         run: |
-          cd ${{ github.repository }}/src/frontend
+          cd ${{ github.repository }}
+          cd src/frontend
           npm run test
 
       - uses: codecov/codecov-action@v3
