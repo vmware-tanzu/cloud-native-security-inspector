@@ -245,7 +245,7 @@ export class HarborSettingPageComponent implements OnInit {
   }
   updateHarbor(){
     // harbor update
-
+    if (!this.harborResponse) return
     this.harborResponse.metadata.name = this.harborForm.get('requiredFields')?.get('name')?.value
     this.harborResponse.spec.dataSource.credentialRef.name = this.harborForm.get('requiredFields')?.get('data_credential_name')?.value
     this.harborResponse.spec.dataSource.credentialRef.namespace = this.harborForm.get('requiredFields')?.get('data_credential_namespace')?.value

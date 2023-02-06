@@ -35,4 +35,24 @@ describe('CornScheduleComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  describe('CornScheduleComponent Function', () => {
+    it('getMultipleType', () => {
+      component.getMultipleType = 'day'
+      setTimeout(() => {
+        component.getMultipleType = 'day2'
+      }, 100);
+    });
+    
+    it('setTimePicker', () => {
+      component.setTimePicker({hour: {value: 10}, minute: {value: 10}})
+    })
+
+    it('setTimePicker', () => {
+      component.setTimePicker({hour: {value: 10}, minute: {value: 10}})
+    })
+
+
+});
+
 });

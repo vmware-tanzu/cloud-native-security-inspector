@@ -1,0 +1,71 @@
+;FFMETADATA1
+[CHAPTER]
+TIMEBASE=1/1000
+START=-23540
+END=6203
+title=Actions .type() - type into a DOM element
+[CHAPTER]
+TIMEBASE=1/1000
+START=32152
+END=35966
+title=Actions .focus() - focus on a DOM element
+[CHAPTER]
+TIMEBASE=1/1000
+START=36318
+END=39793
+title=Actions .blur() - blur off a DOM element
+[CHAPTER]
+TIMEBASE=1/1000
+START=37915
+END=43272
+title=Actions .clear() - clears an input or textarea element
+[CHAPTER]
+TIMEBASE=1/1000
+START=44763
+END=48636
+title=Actions .submit() - submit a form
+[CHAPTER]
+TIMEBASE=1/1000
+START=42335
+END=52519
+title=Actions .click() - click on a DOM element
+[CHAPTER]
+TIMEBASE=1/1000
+START=59463
+END=62715
+title=Actions .dblclick() - double click on a DOM element
+[CHAPTER]
+TIMEBASE=1/1000
+START=63230
+END=65971
+title=Actions .rightclick() - right click on a DOM element
+[CHAPTER]
+TIMEBASE=1/1000
+START=65247
+END=68722
+title=Actions .check() - check a checkbox or radio element
+[CHAPTER]
+TIMEBASE=1/1000
+START=67902
+END=72208
+title=Actions .uncheck() - uncheck a checkbox element
+[CHAPTER]
+TIMEBASE=1/1000
+START=71802
+END=76517
+title=Actions .select() - select an option in a <select> element
+[CHAPTER]
+TIMEBASE=1/1000
+START=78106
+END=81239
+title=Actions .scrollIntoView() - scroll an element into view
+[CHAPTER]
+TIMEBASE=1/1000
+START=82164
+END=84377
+title=Actions .trigger() - trigger an event on a DOM element
+[CHAPTER]
+TIMEBASE=1/1000
+START=82402
+END=86596
+title=Actions cy.scrollTo() - scroll the window or element to a position
