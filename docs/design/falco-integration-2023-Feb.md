@@ -14,18 +14,18 @@ security inspection. This project is under [Apache 2.0](https://github.com/falco
 We would like to integrate Falco into CNSI to provide the runtime security inspection capability.
 
 This is not the end, we will provide a general framework to make it possible for bringing more similar
-security inspectors into CNSI. This doc describes a big picture and marked to stage 1 work we need to do
+security inspectors into CNSI. This doc describes a big picture and marked the stage 1 work we need to do
 to integrate Falco into CNSI by March 6th.
 
 ## Goals
 ### Stage 1 goals (plan to be released by CNSI v0.3)
-1. In policy CRD, user can enable falco, and configure several key configurations
-2. User can expect falco DaemonSets to be created on the K8s cluster.
-3. User can expect each host having a falco agent container, which is listening on kernel events.
-4. There will be a hub service on the control plane, it has an http endpoint for the falco agent 
+1. In policy CRD, user can enable Falco, and configure several key configurations.
+2. User can expect Falco DaemonSets to be created on the K8s cluster.
+3. User can expect each host having a Falco agent container, which is listening on the kernel events.
+4. There will be a hub service on the control plane, it has an http endpoint for the Falco agent 
    to post data, and it can deliver data to whatever endpoint.
 5. User should be able to define the consumers in the Settings CRD
-6. The hub should be able to read the setting, and get where should it send the report to.
+6. The Hub should be able to read the setting, and get where should it send the report to.
 
 ## High-Level Design
 Describe the high-level design.
@@ -35,6 +35,8 @@ Describe the high-level design.
 ## Detailed Design
 
 As the picture showing, Let's introduce the new components.
+
+**Note: Some components may not be implemented in Stage 1**
 
 ### DB
 The DB will be added AFTER stage 1.
