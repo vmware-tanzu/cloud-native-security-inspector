@@ -32,9 +32,9 @@ Currently, only OpenSearch and ElasticSearch are supported in Project Narrows.
 * Implement the whole security stack
 
 ## High-Level Design
-![](https://github.com/4everming/cloud-native-security-inspector/blob/doc/commit-the-design-doc-for-new-architecture-of-Narrows/docs/pictures/architecture-refactor-1.png)
+![Narrows for single cluster](https://github.com/4everming/cloud-native-security-inspector/blob/doc/commit-the-design-doc-for-new-architecture-of-Narrows/docs/pictures/architecture-refactor-1.png)
 
-![](https://github.com/4everming/cloud-native-security-inspector/blob/doc/commit-the-design-doc-for-new-architecture-of-Narrows/docs/pictures/architecture-refactor-multi-cluster.png)
+![Narrows for multi-cluster](https://github.com/4everming/cloud-native-security-inspector/blob/doc/commit-the-design-doc-for-new-architecture-of-Narrows/docs/pictures/architecture-refactor-multi-cluster.png)
 
 ## Detailed Design
 There are several components as the picture showing above which can be divided into 3 categories:   
