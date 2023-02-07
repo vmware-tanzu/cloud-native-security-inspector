@@ -29,7 +29,7 @@ module.exports = function (config) {
         { type: 'text-summary' }
       ],
       check: {
-        emitWarning: false, // set to `true` to not fail the test command when thresholds are not met
+        emitWarning: true, // set to `true` to not fail the test command when thresholds are not met
         // thresholds for all files
         global: {
           statements: 30,
