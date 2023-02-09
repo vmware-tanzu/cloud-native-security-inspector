@@ -1,4 +1,4 @@
-name: CNSI Portal E2E Test
+name: Cypress
 
 on:
   push:
@@ -35,15 +35,3 @@ jobs:
           start: npm run start
           wait-on: 'http://localhost:4004'
           wait-on-timeout: 120
-      # - name: run portal
-      #   run: |
-      #     cd src/frontend
-      #     npm run start &
-      #     sleep 30
-      #   with:
-      #     wait-on: http://localhost:4004
-          
-      # - name: test e2e
-      #   run: |
-      #     cd src/frontend
-      #     npm run cypress:run

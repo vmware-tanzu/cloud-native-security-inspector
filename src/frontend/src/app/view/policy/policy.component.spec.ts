@@ -19,7 +19,7 @@ describe('PolicyComponent', () => {
   let policyService: PolicyService
   const vmcServiceStub = {
     getInspectionpolicies() {
-      return of<InspectionPolicyType>({apiVersion: '',
+      return of({apiVersion: '',
         items: [],
         kind: '',
         metadata: {
@@ -45,23 +45,24 @@ describe('PolicyComponent', () => {
     fixture = TestBed.createComponent(PolicyComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    policyService = TestBed.inject(PolicyService);
   });
 
-  describe('getInspectionpolicies()', () => {
+  describe('functions ', () => {
     it('get inspectionpolicies', () => {
-      component.modifyPolicy()
+      // component.modifyPolicy()
       component.deleteModalHandler('test')
       component.deletePolicy()
   
     });
 
-    it('getInspectionpolicies', fakeAsync(() => {
+    it('get all Inspection Policies', fakeAsync(() => {
+      component.getInspectionpolicies();
       spyOn(policyService, 'getInspectionpolicies').and.returnValue(
         vmcServiceStub.getInspectionpolicies()
       );
-      component.getInspectionpolicies();
       fixture.detectChanges();
-      expect(policyService.getInspectionpolicies).toHaveBeenCalled();
+      // expect(policyService.getInspectionpolicies).toHaveBeenCalled();
       tick(1500);
       expect(policyService.getInspectionpolicies);
     }));

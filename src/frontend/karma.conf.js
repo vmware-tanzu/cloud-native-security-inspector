@@ -1,3 +1,4 @@
+
 // Copyright 2022 VMware, Inc.
 // SPDX-License-Identifier: Apache-2.0
 // Karma configuration file, see link for more information
@@ -30,7 +31,6 @@ module.exports = function (config) {
       suppressAll: true // removes the duplicated traces
     },
     coverageReporter: {
-      // type: 'html',  // view via browser
       dir: require('path').join(__dirname, './coverage'),
       subdir: '.',
       reporters: [
@@ -61,8 +61,8 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    singleRun: true, // false  view via browser
-    browsers: ['Chrome', 'ChromeHeadlessNoSandbox'],
+    singleRun: true,
+    browsers: ['ChromeHeadlessNoSandbox'],
     browserDisconnectTolerance: 2,
     browserNoActivityTimeout: 50000,
     customLaunchers: {

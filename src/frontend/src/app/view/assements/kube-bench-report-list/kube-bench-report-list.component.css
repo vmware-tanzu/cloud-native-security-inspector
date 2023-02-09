@@ -44,7 +44,7 @@
 }
 .chart-warp .circle {
   position: absolute;
-  bottom: 0px;
+  bottom: 0;
   left: 50%;
 }
 .chart-warp .circle span {
@@ -78,7 +78,7 @@
   background-color: #FAC858;
 }
 .chart-label span:nth-of-type(4) i {
-  background-color: #EE6666;
+  background-color: #e66;
 }
 .chart-label span i {
   display: inline-block;
