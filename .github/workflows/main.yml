@@ -47,42 +47,6 @@ jobs:
           fail_ci_if_error: true # optional (default = false)
           verbose: true # optional (default = false)
 
-  # portal_unit_test:
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       node_version: [14.19.0]
-    
-  #   steps:
-  #     - uses: actions/checkout@v3
-
-  #     - name: Set up Node.js ${{ matrix.node-version }}
-  #       uses: actions/setup-node@v1
-  #       with:
-  #         node-version: ${{ matrix.node-version }}
-          
-  #     - name: Install dependencies
-  #       run: |
-  #         cd src
-  #         ls
-  #         cd frontend
-  #         npm i
-        
-  #     - name: Unit test
-  #       run: |
-  #         pwd
-  #         cd src/frontend
-  #         npm run test
-
-  #     - uses: codecov/codecov-action@v3
-  #       with:
-  #         token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-  #         files: ${{ github.repository }}/src/frontend/coverage/icov.info
-  #         flags: unittests # optional
-  #         name: codecov-umbrella # optional
-  #         fail_ci_if_error: true # optional (default = false)
-  #         verbose: true # optional (default = false)
-
   UI_UT:
     env:
       UI_UT: true

@@ -20,10 +20,10 @@
   color: #91CB74;
 }
 .report .status.fail {
-  color: #EE6666;
+  color: #E66;
 }
 .report .status.fail cds-icon {
-  color: #EE6666;
+  color: #E66;
 }
 .report .status.info {
   color: #5470C6;

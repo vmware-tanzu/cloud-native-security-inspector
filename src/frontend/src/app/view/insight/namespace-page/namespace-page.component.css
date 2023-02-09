@@ -55,7 +55,7 @@
   color: yellow;
 }
 .namespace-page clr-tabs::ng-deep .report .data div.abnormal cds-icon {
-  color: #EE6666;
+  color: #e66;
 }
 .namespace-page clr-tabs::ng-deep .report .clickable {
   width: 242px;
@@ -102,7 +102,7 @@
   background-color: #3BA272;
 }
 .namespace-page clr-tabs::ng-deep .report .clickable .card-block.abnormal .pro {
-  background-color: #EE6666 !important;
+  background-color: #e66 !important;
 }
 .namespace-page clr-tabs::ng-deep::ng-deep clr-dg-column {
   background-color: #22343C;
