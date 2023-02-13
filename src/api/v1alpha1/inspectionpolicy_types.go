@@ -17,8 +17,8 @@ const (
 const (
 	// CronjobInpsection describes the Inspection type of cronjob.
 	CronjobInpsection = "Inpection"
-	// CronjobKubebench describes the Kubebench type of the cronjob.
-	CronjobKubebench = "Kubebench"
+	// DaemonSetKubebench describes the Kubebench type of the cronjob.
+	DaemonSetKubebench = "Kubebench"
 	// CronjobRisk describes the Risk type of the cronjob.
 	CronjobRisk = "Risk"
 )
