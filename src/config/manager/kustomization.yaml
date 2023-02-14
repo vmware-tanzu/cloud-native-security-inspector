@@ -15,4 +15,4 @@ kind: Kustomization
 images:
 - name: controller
   newName: projects.registry.vmware.com/cnsi/manager
-  newTag: "0.2"
+  newTag: "0.3"
