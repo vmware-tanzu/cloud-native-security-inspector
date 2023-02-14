@@ -64,6 +64,7 @@ type InspectionPolicyReconciler struct {
 //+kubebuilder:rbac:groups="",resources=serviceaccounts,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups="batch",resources=cronjobs,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups="core",resources=nodes,verbs=get;list;watch
+//+kubebuilder:rbac:groups="apps",resources=daemonsets,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups="apps",resources=deployments,verbs=get;list
 //+kubebuilder:rbac:groups="core",resources=services,verbs=get;list
 
