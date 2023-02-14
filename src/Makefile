@@ -89,7 +89,7 @@ run: manifests generate fmt vet ## Run a controller from your host.
 
 docker-build-all: docker-build-manager docker-build-inspector docker-build-kubebench docker-build-portal docker-build-risk
 
-docker-build-manager: test build-manager ## Build docker image with the manager.
+docker-build-manager: build-manager ## Build docker image with the manager.
 	$(DOCKERCMD) build -t ${IMG_MANAGER} .
 
 docker-build-inspector: build-inspector ## Build docker image with inspector cmd.

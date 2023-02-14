@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"github.com/fsnotify/fsnotify"
+	"github.com/goharbor/harbor/src/jobservice/logger"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/inspection/kubebench"
@@ -89,7 +90,9 @@ func main() {
 		log.Fatal(err)
 	}
 	defer watcher.Close()
-	lastScanTime := time.Now().AddDate(0, 0, -1)
+	lastScanTime := time.Now()
+	// Do one round of scanning before listening on the events
+	scan()
 	const coolDownSeconds = 60
 	// Start listening for events.
 	go func() {
@@ -135,13 +138,14 @@ func main() {
 		etcCniNetdPath,
 		optCniBinPath,
 	}
+	log.Info("the watcher has been started to watch the K8s configurations files")
 	for _, path := range pathList {
 		err = watcher.Add(path)
+		logger.Infof("watching path: %s", path)
 		if err != nil {
 			log.Fatalf("failed to add the path %s path, err: %s", path, err)
 		}
 	}
-
 	// Block main goroutine forever.
 	<-make(chan struct{})
 }
