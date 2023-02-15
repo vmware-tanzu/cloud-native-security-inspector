@@ -143,6 +143,8 @@ func (r *SettingReconciler) ensureKnownRegistries(ctx context.Context, p provide
 	// register known registries, create or update
 	if set.Spec.KnownRegistries == nil || len(set.Spec.KnownRegistries) == 0 {
 		log.Info("there is no configuration about known registries in the setting")
+		// we should set this to true because a setting without the known registry configuration should be healthy
+		cond.Status = goharborv1alpha1.ConditionStatusTrue
 		return nil
 	}
 	err := p.RegisterKnownRegistries(ctx, set.Spec.KnownRegistries)
