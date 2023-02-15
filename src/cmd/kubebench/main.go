@@ -4,7 +4,6 @@ import (
 	"context"
 	"flag"
 	"github.com/fsnotify/fsnotify"
-	"github.com/goharbor/harbor/src/jobservice/logger"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/inspection/kubebench"
@@ -154,7 +153,7 @@ func main() {
 	log.Info("the watcher has been started to watch the K8s configurations files")
 	for _, path := range pathList {
 		err = watcher.Add(path)
-		logger.Infof("watching path: %s", path)
+		log.Infof("watching path: %s", path)
 		if err != nil {
 			log.Fatalf("failed to add the path %s path, err: %s", path, err)
 		}
