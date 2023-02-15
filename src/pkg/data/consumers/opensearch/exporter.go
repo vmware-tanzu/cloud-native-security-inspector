@@ -235,7 +235,7 @@ func (o *OpenSearchExporter) SaveCIS(controlsCollection []*check.Controls) error
 
 		res, err = opensearchapi.IndexRequest{
 			Index:      o.indexName,
-			DocumentID: "kubebench-Report_" + o.hostname + "_" + currentTimeData + "_" + names.SimpleNameGenerator.GenerateName(""),
+			DocumentID: "kubebench-Report_" + currentTimeData + "_" + names.SimpleNameGenerator.GenerateName(""),
 			Body:       strings.NewReader(string(doc)),
 			Refresh:    "true",
 		}.Do(context.Background(), o.Client)
