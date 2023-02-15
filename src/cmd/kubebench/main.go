@@ -12,8 +12,10 @@ import (
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	"os"
+	"os/exec"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"strings"
 	"time"
 )
 
@@ -68,7 +70,7 @@ func scan() {
 		log.Error(err, "unable to retrieve the specified inspection policy")
 		os.Exit(1)
 	}
-	hostname := os.Getenv("hostname")
+	hostname := getHostName()
 	log.Infof("Kubebench scanner running on host:%v", hostname)
 
 	runner := kubebench.NewController().
@@ -81,6 +83,17 @@ func scan() {
 		log.Error(err, "kubebench controller run")
 		os.Exit(1)
 	}
+}
+
+func getHostName() string {
+	out, err := exec.Command("hostname").Output()
+	if err != nil {
+		log.Error("failed to get the hostname in the daemon pod")
+		return ""
+	}
+	output := string(out[:])
+	output = strings.Trim(output, "\n")
+	return output
 }
 
 func main() {
