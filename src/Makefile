@@ -90,19 +90,19 @@ run: manifests generate fmt vet ## Run a controller from your host.
 docker-build-all: docker-build-manager docker-build-inspector docker-build-kubebench docker-build-portal docker-build-risk
 
 docker-build-manager: build-manager ## Build docker image with the manager.
-	$(DOCKERCMD) build -t ${IMG_MANAGER} .
+	$(DOCKERCMD) buildx build -t ${IMG_MANAGER} .
 
 docker-build-inspector: build-inspector ## Build docker image with inspector cmd.
-	$(DOCKERCMD) build -t ${IMG_CMD_INSPECTOR} -f Dockerfile.inspection .
+	$(DOCKERCMD) buildx build -t ${IMG_CMD_INSPECTOR} -f Dockerfile.inspection .
 
 docker-build-kubebench: build-kubebench ## Build docker image with kubebench cmd.
-	$(DOCKERCMD) build -t ${IMG_CMD_KUBEBENCH} -f Dockerfile.kubebench .
+	$(DOCKERCMD) buildx build -t ${IMG_CMD_KUBEBENCH} -f Dockerfile.kubebench .
 
 docker-build-portal:
-	$(DOCKERCMD) build -t ${PORTAl} -f Dockerfile.portal .
+	$(DOCKERCMD) buildx build -t ${PORTAl} -f Dockerfile.portal .
 
 docker-build-risk: build-risk ## Build docker image with risk cmd.
-	$(DOCKERCMD) build -t ${RISK} -f Dockerfile.riskmanager .
+	$(DOCKERCMD) buildx build -t ${RISK} -f Dockerfile.riskmanager .
 
 docker-push: ## Push docker images with the manager.
 	$(DOCKERCMD) push ${IMG_MANAGER}
