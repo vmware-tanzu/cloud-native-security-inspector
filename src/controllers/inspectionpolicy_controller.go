@@ -502,7 +502,7 @@ func (r *InspectionPolicyReconciler) ensureRBAC(ctx context.Context, ns string) 
 		},
 		Subjects: []rbacv1.Subject{
 			{
-				Kind:      sa.Kind,
+				Kind:      "ServiceAccount",
 				Namespace: ns,
 				Name:      saName,
 			},
