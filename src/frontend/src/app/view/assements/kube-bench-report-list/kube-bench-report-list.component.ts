@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import * as moment from 'moment';
 import { AssessmentService } from 'src/app/service/assessment.service'
 import { PolicyService } from 'src/app/service/policy.service';
+import { ShardService } from 'src/app/service/shard.service';
 import { echarts, BarSeriesOption, PieSeriesOption } from 'src/app/shard/shard/echarts';
 type ECOption = echarts.ComposeOption<BarSeriesOption>
 type PieOption = echarts.ComposeOption<PieSeriesOption>
@@ -20,14 +21,13 @@ export class KubeBenchReportListComponent implements OnInit {
   controlPlaneChart!: any
   controlPlaneSecurityChart!: any
   etcdNodeChart!: any
-
   // chartoptions
   echartsOption!: ECOption
-  k8sechartsOption!: PieOption
-  workechartsOption!: PieOption
-  controlPlaneChartOption!: PieOption
-  controlPlaneSecurityChartOption!: PieOption
-  etcdNodeChartOption!: PieOption
+  k8sechartsOption!: PieOption | null
+  workechartsOption!: PieOption | null
+  controlPlaneChartOption!: PieOption | null
+  controlPlaneSecurityChartOption!: PieOption | null
+  etcdNodeChartOption!: PieOption | null
 
   currentChart = 'work-node'
   echartsLoading = true
@@ -48,13 +48,18 @@ export class KubeBenchReportListComponent implements OnInit {
   opensearchInfo!: {url: string, user: string, pswd: string}
   kubeBenchReportList: any = [
   ]
+  nodeList: any[] = []
+  currentNode = ''
+  nodesPodsCorrespondence : {pod: string, node: string}[]= []
   constructor(
     private router: Router,
     private assessmentService: AssessmentService,
-    private policyService: PolicyService
+    private policyService: PolicyService,
+    private shardService: ShardService
   ) { }
 
   ngOnInit(): void {
+    this.getNodeList()
     this.getInspectionpolicies()
   }
   // init
@@ -64,6 +69,8 @@ export class KubeBenchReportListComponent implements OnInit {
   }
   
   initKubeBenchReportList() {
+    if (!this.currentNode) return
+    const podInfo = this.nodesPodsCorrespondence.find(item => item.node === this.currentNode) || {pod: ''}
     this.dgLoading = true
     const query: any = { 
       size: this.defaultSize,
@@ -74,7 +81,12 @@ export class KubeBenchReportListComponent implements OnInit {
             order: "desc"
           }
         }
-      ]
+      ],
+      query: {
+        match: {
+          node_name: podInfo.pod
+        }
+      }
     };
     function callBack(data: any, that: any) {
       that.echartsLoading = false
@@ -219,16 +231,60 @@ export class KubeBenchReportListComponent implements OnInit {
     this.echartsInit('control-plane-security', 'controlPlaneSecurityChart')
     this.echartsInit('control-plane', 'controlPlaneChart')
     this.echartsInit('etcd-node', 'etcdNodeChart')
+
+    
     this.initKubeBenchReportList()
   }
+
+  // node
+  getNodeList() {
+    this.shardService.getNodeList().subscribe(
+      data => {
+        this.nodeList = []
+        data.items.forEach(node => {
+          this.nodeList.push({
+            name: node.metadata.name
+          })
+        });
+        this.currentNode = data.items[0]?.metadata.name || '';
+        this.getPodeList()
+      }
+    )
+  }
+
+  switchNode(node: any) {
+    this.currentNode = node
+    this.initKubeBenchReportList()
+    
+  }
+
+  // pods
+  getPodeList() {
+    this.shardService.getPodList().subscribe(
+      data => {
+        this.nodesPodsCorrespondence = []
+        data.items.forEach(item => {
+          if (item.metadata.name.indexOf('kubebench-daemonset') !== -1) {
+            this.nodesPodsCorrespondence.push({
+              node: item.spec.nodeName,
+              pod: item.metadata.name
+            })
+          }
+        })
+        this.init()
+      }
+    )
+
+  }
+
   // Get the latest report update chart for 5 types
   getFiveTypeReportUpdateChart() {
     this.echartsLoading = true
-    this.getTextTypeTenReports('Worker Node Security Configuration')
-    this.getTextTypeTenReports('Kubernetes Policies')
-    this.getTextTypeTenReports('Control Plane Security Configuration')
-    this.getTextTypeTenReports('Control Plane Configuration')
-    this.getTextTypeTenReports('Etcd Node Configuration')
+    this.getTextTypeTenReports('1')
+    this.getTextTypeTenReports('2')
+    this.getTextTypeTenReports('3')
+    this.getTextTypeTenReports('4')
+    this.getTextTypeTenReports('5')
   }
 
   // get list
@@ -238,6 +294,8 @@ export class KubeBenchReportListComponent implements OnInit {
   }
 
   getKubeBenchReportList(filter: {key:string, value: string, size?: number, from?:number, reset: boolean}) {
+    if (!this.currentNode) return
+    const podName = this.nodesPodsCorrespondence.find(item => item.node === this.currentNode)
     const query: any = { 
       size: filter.size ? filter.size :10,
       from: filter.from ? filter.from: 0,
@@ -247,7 +305,12 @@ export class KubeBenchReportListComponent implements OnInit {
             order: "desc"
           }
         }
-      ]
+      ],
+      query: {
+        match: {
+          node_name: podName
+        }
+      }
     };
     if (filter.key) {
       if (!this.oldKey) {
@@ -309,7 +372,7 @@ export class KubeBenchReportListComponent implements OnInit {
   }
 
   // change handler
-  pageChange(event: any) {
+  pageChange(event: any) {    
     if (event.page.current <= 1) {// size change
       if (event.page.size !== this.defaultSize) {
         this.getKubeBenchReportList(
@@ -395,72 +458,80 @@ export class KubeBenchReportListComponent implements OnInit {
   }
 
   // draw charts
-  drawCharts (data: any, title: string): PieOption {
-    const hits = data.hits.hits[0]._source
-    const xAxis: {value: string, textStyle: {color: string}}[] = []
-    return {
-      title: {
-        text: title,
-        textStyle: {
-          color: '#fff',
-          overflow: 'truncate',
-          width: '300'
-        },
-        subtext: moment(hits.createTime).format('LLL'),
-        subtextStyle: {
-          color: '#fff',
-          align: 'center',
-          verticalAlign: 'bottom'
-        },
-        left: 'center',
-        textVerticalAlign: 'top'
-      },
-      tooltip: {
-        trigger: 'item'
-      },
-      series: [
-        {
-          name: 'Access From',
-          type: 'pie',
-          radius: ['40%', '70%'],
-          avoidLabelOverlap: false,
-          itemStyle: {
-            borderRadius: 10,
-            borderColor: '#fff',
-            borderWidth: 2
+  drawCharts (data: any): PieOption|null {
+    if (data.hits.hits[0]) {
+      const hits = data.hits.hits[0]._source
+      return {
+        title: {
+          text: hits.text.replace('Configuration', 'Config'),
+          textStyle: {
+            color: '#fff',
+            overflow: 'truncate',
+            width: '300'
           },
-          label: {
-            show: false,
-            position: 'center'
+          subtext: moment(hits.createTime).format('LLL'),
+          subtextStyle: {
+            color: '#fff',
+            align: 'center',
+            verticalAlign: 'bottom'
           },
-          emphasis: {
+          left: 'center',
+          textVerticalAlign: 'top'
+        },
+        tooltip: {
+          trigger: 'item'
+        },
+        series: [
+          {
+            name: 'Access From',
+            type: 'pie',
+            radius: ['40%', '70%'],
+            avoidLabelOverlap: false,
+            itemStyle: {
+              borderRadius: 10,
+              borderColor: '#fff',
+              borderWidth: 2
+            },
             label: {
-              show: true,
-              fontSize: '40',
-              fontWeight: 'bold'
-            }
-          },
-          labelLine: {
-            show: false
-          },
-          data: [
-            { value: hits.total_info, name: 'Inform', label: {color: '#fff'} },
-            { value: hits.total_pass, name: 'Passed', label: {color: '#fff'} },
-            { value: hits.total_warn, name: 'Warned', label: {color: '#fff'} },
-            { value: hits.total_fail, name: 'Failed', label: {color: '#fff'} },
-          ]
-        }
-      ]
+              show: false,
+              position: 'center'
+            },
+            emphasis: {
+              label: {
+                show: true,
+                fontSize: '40',
+                fontWeight: 'bold'
+              }
+            },
+            labelLine: {
+              show: false
+            },
+            data: [
+              { value: hits.total_info, name: 'Inform', label: {color: '#fff'} },
+              { value: hits.total_pass, name: 'Passed', label: {color: '#fff'} },
+              { value: hits.total_warn, name: 'Warned', label: {color: '#fff'} },
+              { value: hits.total_fail, name: 'Failed', label: {color: '#fff'} },
+            ]
+          }
+        ]
+      }
+    } else {
+      return null
     }
   }
 
   //Get nearly 1 reports of each type according to text classification
-  getTextTypeTenReports(text: string) {
+  getTextTypeTenReports(id: string) {
+    if (!this.currentNode) return
+    const podInfo = this.nodesPodsCorrespondence.find(item => item.node === this.currentNode) || {pod: ''}
     this.echartsLoading = true
     const query = {
       query: {
-        match: {
-          text: text
+        bool: {
+          must: [
+              {match: {id : id}},
+              {match: {node_name : podInfo.pod}},
+          ]
         }
       },
       from: 0,
@@ -476,39 +547,39 @@ export class KubeBenchReportListComponent implements OnInit {
 
     this.assessmentService.getKubeBenchReport({url: this.opensearchInfo.url, index: 'cis_report', username: this.opensearchInfo.user, password: this.opensearchInfo.pswd, query, client: this.client, ca:this.ca}).subscribe(
       data => {
-        switch (text) {
-          case 'Worker Node Security Configuration':
-            this.workechartsOption = this.drawCharts(data, 'Worker Node Security Config');
+        switch (id) {
+          case '1':
+            this.workechartsOption = this.drawCharts(data);
             this.workNodeChart.clear()
             this.workechartsOption && this.workNodeChart.setOption(this.workechartsOption);
             break;
         
-          case 'Kubernetes Policies':
-            this.k8sechartsOption = this.drawCharts(data, 'Kubernetes Policies');
+          case '2':
+            this.k8sechartsOption = this.drawCharts(data);
 
             this.k8sPolicyChart.clear()
             this.k8sechartsOption && this.k8sPolicyChart.setOption(this.k8sechartsOption);
 
             break
 
-          case 'Control Plane Configuration':
-            this.controlPlaneChartOption = this.drawCharts(data, 'Control Plane Config');
+          case '3':
+            this.controlPlaneChartOption = this.drawCharts(data);
 
             this.controlPlaneChart.clear()
             this.controlPlaneChartOption && this.controlPlaneChart.setOption(this.controlPlaneChartOption);
 
             break
   
-          case 'Control Plane Security Configuration':
-            this.controlPlaneSecurityChartOption = this.drawCharts(data, 'Control Plane Security Config');
+          case '4':
+            this.controlPlaneSecurityChartOption = this.drawCharts(data);
 
             this.controlPlaneSecurityChart.clear()
             this.controlPlaneSecurityChartOption && this.controlPlaneSecurityChart.setOption(this.controlPlaneSecurityChartOption);
 
             break
 
-          case 'Etcd Node Configuration':
-            this.etcdNodeChartOption = this.drawCharts(data, 'Etcd Node Config');
+          case '5':
+            this.etcdNodeChartOption = this.drawCharts(data);
 
             this.etcdNodeChart.clear()
             this.etcdNodeChartOption && this.etcdNodeChart.setOption(this.etcdNodeChartOption);
@@ -516,7 +587,7 @@ export class KubeBenchReportListComponent implements OnInit {
             break
   
           default:
-            break;
+          break;
         }
         this.echartsLoading = false
       }

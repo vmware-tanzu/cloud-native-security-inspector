@@ -214,7 +214,8 @@
     "inform": "通知",
     "reason": "原因",
     "status": "状态",
-    "remediation": "修改建议"
+    "remediation": "修改建议",
+    "current_node": "当前节点"
   },
   "en": "English",
   "zh_CN": "中文 (简体)"

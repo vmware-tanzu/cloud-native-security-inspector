@@ -215,7 +215,8 @@
     "inform": "Inform",
     "reason": "Reason",
     "status": "Status",
-    "remediation": "Remediation"
+    "remediation": "Remediation",
+    "current_node": "Current Node"
   },
   "en": "English",
   "zh_CN": "中文 (简体)"

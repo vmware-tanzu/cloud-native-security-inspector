@@ -1,16 +1,24 @@
 <div class="report">
   <h2>{{'Nav.Assessments.Kube_bench'| translate}}</h2>
+  <div class="kube-title">
+    <h4>
+      <span>{{'Kube_bench_list.current_node'| translate}}</span>
+      <select class="select" clrSelect name="options" (ngModelChange)="switchNode($event)" [(ngModel)]="currentNode">
+        <option *ngFor="let node of nodeList" [value]="node.name">{{node.name}}</option>
+      </select>
+    </h4>
+  </div>
   <div class="echarts-loading" *ngIf="echartsLoading">
     <span class="spinner spinner-lg">
       Loading...
     </span>
   </div>
   <div class="chart-warp">
-    <div id="work-node" style="flex: 1; width: 300px; height: 330px;"></div>
-    <div id="k8s-policy" style="flex: 1; width: 300px; height: 330px;"></div>
-    <div id="control-plane-security" style="flex: 1; width: 300px; height: 330px;"></div>
-    <div id="control-plane" style="flex: 1; width: 300px; height: 330px;"></div>
-    <div id="etcd-node" style="flex: 1; height: 330px;"></div>
+    <div [hidden]="!workechartsOption" id="work-node" style=" width: 300px; height: 330px; display: flex; justify-content: center;"></div>
+    <div [hidden]="!k8sechartsOption" id="k8s-policy" style=" width: 300px; height: 330px; display: flex; justify-content: center;"></div>
+    <div [hidden]="!controlPlaneSecurityChartOption" id="control-plane-security" style=" width: 300px; height: 330px; display: flex; justify-content: center;"></div>
+    <div [hidden]="!controlPlaneChartOption" id="control-plane" style=" width: 300px; height: 330px; display: flex; justify-content: center;"></div>
+    <div [hidden]="!etcdNodeChartOption" id="etcd-node" style=" width: 300px; height: 330px; display: flex; justify-content: center;"></div>
   </div>
   <div class="chart-label">
     <span>
@@ -43,7 +51,7 @@
         </app-dg-filter>
       </div>
     </clr-dg-column>
-    <clr-dg-column class="namespace-filter">
+    <!-- <clr-dg-column class="namespace-filter">
       {{'Kube_bench_list.node_name'|translate}}     
      <cds-icon shape="filter-grid" class="is-solid" (click)="kubeNodeTypeFilterFlag = !kubeNodeTypeFilterFlag"></cds-icon>
       <div class="filter-warp" *ngIf="kubeNodeTypeFilterFlag">
@@ -51,7 +59,7 @@
         <app-dg-filter label="kube" labelKey="node_type" [pageSize]="defaultSize" (updateListHandler)="getKubeBenchReportList($event)">
         </app-dg-filter>
       </div>
-    </clr-dg-column>
+    </clr-dg-column> -->
     <clr-dg-column >
       <div class="sort">
         {{'CommonlyUse.create_time'|translate}}
@@ -72,7 +80,7 @@
         </a>
       </clr-dg-cell>
       <clr-dg-cell *ngIf="kube">{{kube._source.text}}</clr-dg-cell>
-      <clr-dg-cell *ngIf="kube">{{kube._source.node_name}}</clr-dg-cell>
+      <!-- <clr-dg-cell *ngIf="kube">{{kube._source.node_name}}</clr-dg-cell> -->
       <clr-dg-cell *ngIf="kube">{{kube._source.createTime | date: 'medium'}}</clr-dg-cell>
       <clr-dg-cell *ngIf="kube">
         <a href="javascript:;" class="label clickable" style="border-color: #266900;">
