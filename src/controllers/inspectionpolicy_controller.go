@@ -5,6 +5,7 @@ package controllers
 import (
 	"context"
 	"fmt"
+	appsv1 "k8s.io/api/apps/v1"
 	"strconv"
 
 	"strings"
@@ -27,8 +28,9 @@ import (
 )
 
 const (
+	appLabelKey                     = "app"
 	defaultImage                    = "projects.registry.vmware.com/cnsi/inspector"
-	defaultImageTag                 = "0.2"
+	defaultImageTag                 = "0.3"
 	labelOwnerKey                   = "goharbor.io/policy-working-for"
 	labelTypeKey                    = "cnsi/inspector-type"
 	lastAppliedAnnotation           = "goharbor.io/last-applied-spec"
@@ -62,6 +64,7 @@ type InspectionPolicyReconciler struct {
 //+kubebuilder:rbac:groups="",resources=serviceaccounts,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups="batch",resources=cronjobs,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups="core",resources=nodes,verbs=get;list;watch
+//+kubebuilder:rbac:groups="apps",resources=daemonsets,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups="apps",resources=deployments,verbs=get;list
 //+kubebuilder:rbac:groups="core",resources=services,verbs=get;list
 
@@ -133,8 +136,7 @@ func (r *InspectionPolicyReconciler) Reconcile(ctx context.Context, req ctrl.Req
 
 	// Process the cronjob for kubebench
 	var statusNeedUpdateForKubebench bool
-	statusNeedUpdateForKubebench, err = r.cronjobForKubebench(ctx, policy)
-
+	statusNeedUpdateForKubebench, err = r.checkKubebench(ctx, policy)
 	// Process the cronjob for risk
 	var statusNeedUpdateForRisk bool
 	statusNeedUpdateForRisk, err = r.cronjobForInspection(ctx, policy, goharborv1.CronjobRisk)
@@ -154,17 +156,105 @@ func (r *InspectionPolicyReconciler) Reconcile(ctx context.Context, req ctrl.Req
 	return ctrl.Result{}, nil
 }
 
-func (r *InspectionPolicyReconciler) cronjobForKubebench(ctx context.Context, policy *goharborv1.InspectionPolicy) (bool, error) {
+func (r *InspectionPolicyReconciler) checkKubebench(ctx context.Context, policy *goharborv1.InspectionPolicy) (bool, error) {
 	if policy.Spec.Inspector.KubebenchImage == "" {
-		log.Info(nil, "the user doesn't involve KubebenchImage in policy")
+		log.Info(nil, "the user doesn't involve Kubebench Image in policy")
 		return false, nil
 	}
-	if err := r.checkKubebenchCronJob(ctx, policy); err != nil {
-		log.Error(err, "unable to check underlying cronjob CR for kubebench")
-		return false, err
+	var kubebenchDaemonSet appsv1.DaemonSet
+	namespacedName := types.NamespacedName{
+		Name:      fmt.Sprintf("%s-kubebench-daemonset", policy.Name),
+		Namespace: *policy.Spec.WorkNamespace,
 	}
-	return true, nil
+	if err := r.Get(ctx, namespacedName, &kubebenchDaemonSet); err != nil {
+		if !apierrors.IsNotFound(err) {
+			log.Error(err, "failed to get information of the kubebench daemonset")
+			return true, err
+		} else {
+			// cannot find the DaemonSet resource
+			dsStruct, err := r.constructKubebenchDaemonSet(policy)
+			if err != nil {
+				log.Error(err, "failed to construct the DaemonSet struct")
+				return true, err
+			} else {
+				err = r.Client.Create(ctx, dsStruct)
+				if err != nil {
+					log.Errorf("failed to create the DaemonSet for kubebench %s, err:", err)
+					return true, err
+				}
+				return false, err
+			}
+		}
+	}
+	log.Debug("The daemonSet is already existing")
+	return false, nil
+}
 
+func (r *InspectionPolicyReconciler) constructKubebenchDaemonSet(
+	policy *goharborv1.InspectionPolicy) (*appsv1.DaemonSet, error) {
+	command := "/kubebench"
+	rootUid := int64(0)
+	fsPolicy := corev1.FSGroupChangeOnRootMismatch
+	container := corev1.Container{
+		Name:            "kubebench",
+		Image:           policy.Spec.Inspector.KubebenchImage,
+		ImagePullPolicy: getImagePullPolicy(policy),
+		Command:         []string{command},
+		Args: []string{
+			"--policy",
+			policy.Name,
+		},
+	}
+	r.addVolumeMountsToContainer(&container)
+	podSpec := corev1.PodSpec{
+		HostPID: true,
+		SecurityContext: &corev1.PodSecurityContext{
+			RunAsUser:           &rootUid,
+			FSGroupChangePolicy: &fsPolicy,
+		},
+		Containers:         []corev1.Container{container},
+		RestartPolicy:      corev1.RestartPolicyAlways,
+		ServiceAccountName: saName,
+		ImagePullSecrets:   policy.Spec.Inspector.ImagePullSecrets,
+	}
+	r.addVolumeToPodSpec(&podSpec)
+	ds := appsv1.DaemonSet{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      fmt.Sprintf("%s-kubebench-daemonset", policy.Name),
+			Namespace: *policy.Spec.WorkNamespace,
+			Labels: map[string]string{
+				labelOwnerKey: policy.Name,
+				labelTypeKey:  goharborv1.DaemonSetKubebench,
+			},
+			Annotations: make(map[string]string),
+		},
+		Spec: appsv1.DaemonSetSpec{
+			Selector: &metav1.LabelSelector{
+				MatchLabels: map[string]string{
+					appLabelKey: "kubebench",
+				},
+			},
+			Template: corev1.PodTemplateSpec{
+				ObjectMeta: metav1.ObjectMeta{
+					Labels: map[string]string{
+						appLabelKey: "kubebench",
+					},
+				},
+				Spec: podSpec,
+			},
+		},
+	}
+	// Set owner reference.
+	if err := ctrl.SetControllerReference(policy, &ds, r.Scheme); err != nil {
+		return nil, err
+	}
+	jdata, err := json.Marshal(ds.Spec)
+	if err != nil {
+		return nil, err
+	}
+	ds.Annotations[lastAppliedAnnotation] = string(jdata)
+	log.Infof("Kubebench DaemonSet %s constructed", ds.ObjectMeta.Name)
+	return &ds, nil
 }
 
 func (r *InspectionPolicyReconciler) cronjobForInspection(ctx context.Context, policy *goharborv1.InspectionPolicy,
@@ -253,11 +343,6 @@ func (r *InspectionPolicyReconciler) updatePolicyStatus(policy *goharborv1.Inspe
 			return err
 		}
 	}
-	return nil
-}
-
-func (r *InspectionPolicyReconciler) doKubeBench() error {
-
 	return nil
 }
 
@@ -417,7 +502,7 @@ func (r *InspectionPolicyReconciler) ensureRBAC(ctx context.Context, ns string) 
 		},
 		Subjects: []rbacv1.Subject{
 			{
-				Kind:      sa.Kind,
+				Kind:      "ServiceAccount",
 				Namespace: ns,
 				Name:      saName,
 			},
@@ -431,77 +516,6 @@ func (r *InspectionPolicyReconciler) ensureRBAC(ctx context.Context, ns string) 
 	} else {
 		if err := r.Client.Update(ctx, ncrb); err != nil {
 			return errors.Wrapf(err, "failed to update crb: %s", roleBindingName)
-		}
-	}
-	return nil
-}
-
-func (r *InspectionPolicyReconciler) isCronjobCountReady(policy *goharborv1.InspectionPolicy) bool {
-	execCount := len(policy.Status.KubebenchExecutor)
-	if execCount < len(r.nodeList) {
-		return false
-	} else {
-		return true
-	}
-}
-
-func (r *InspectionPolicyReconciler) updatePolicyStatusForKubebench(ctx context.Context,
-	policy *goharborv1.InspectionPolicy, jl batchv1.CronJobList) error {
-	log.Info("Update status of inspection policy for kubebench", "status", policy.Status.Status)
-	for _, job := range jl.Items {
-		ref, err := reference.GetReference(r.Scheme, &job)
-		if err != nil {
-			log.Error(err, "unable to get reference of underlying cronjob for kubebench",
-				"cronjob", job.Name)
-			return err
-		}
-		policy.Status.KubebenchExecutor = append(policy.Status.KubebenchExecutor, ref)
-	}
-	if err := r.Status().Update(ctx, policy); err != nil {
-		log.Error(err, "failed to update status of inspection policy for kubebench")
-		return err
-	}
-	return nil
-}
-
-func (r *InspectionPolicyReconciler) checkKubebenchCronJob(ctx context.Context, policy *goharborv1.InspectionPolicy) error {
-	var jl batchv1.CronJobList
-	if err := r.List(ctx, &jl, client.MatchingLabels{labelOwnerKey: policy.Name, labelTypeKey: goharborv1.CronjobKubebench}); err != nil {
-		return err
-	}
-
-	if (policy.Status.KubebenchExecutor == nil && len(jl.Items) > 0) ||
-		(len(policy.Status.KubebenchExecutor) < len(jl.Items)) {
-		// Update policy status for Kubebench cronjobs
-		if err := r.updatePolicyStatusForKubebench(ctx, policy, jl); err != nil {
-			return err
-		}
-		return nil
-	}
-
-	if r.isCronjobCountReady(policy) {
-		log.Info("Numbers of cronjob for kube-bench has already met the requirement")
-		// Do nothing but keep tracking the status of the cronjobs and update it to policy.
-	} else {
-		log.Info("Numbers of cronjob for kube-bench has not already met the requirement")
-		if len(jl.Items) == 0 {
-			// Nothing found. Will create cronjob.
-			log.Info("Start creating cronjob for kube-bench")
-			crList, err := r.generateKubebenchCronJobCR(policy)
-			if err != nil {
-				log.Error(err, "generateKubebenchCronJobCR error")
-			}
-			for _, cr := range crList {
-				if err := r.Client.Create(ctx, &cr); err != nil {
-					log.Error(err, "unable to create cronjob for kubebench", "cronjob", cr.Name)
-					return err
-				}
-			}
-			return nil
-		} else {
-			// Cronjob have been found but not met the required counts. Will wait for a sec.
-			log.Info("Will wait and see...")
-			return nil
 		}
 	}
 	return nil
@@ -573,107 +587,12 @@ func (r *InspectionPolicyReconciler) addVolumeToPodSpec(podSpec *corev1.PodSpec)
 	}
 }
 
-func (r *InspectionPolicyReconciler) generateKubebenchCronJobCR(policy *goharborv1.InspectionPolicy) ([]batchv1.CronJob, error) {
-	var fl int32 = 1
-	name := "kubebench"
-	command := "/kubebench"
-	image := getImage(policy, goharborv1.CronjobKubebench)
-	var cronjobList []batchv1.CronJob
-
-	for _, node := range r.nodeList {
-		container := corev1.Container{
-			Name:            name,
-			Image:           image,
-			ImagePullPolicy: getImagePullPolicy(policy),
-			Command:         []string{command},
-			Args: []string{
-				"--policy",
-				policy.Name,
-			},
-			Env: []corev1.EnvVar{{Name: "hostname", Value: node}},
-		}
-		r.addVolumeMountsToContainer(&container)
-		log.Infof("added volumemount for container: %v", container)
-		cronjobName := randomName(policy.Name) + "-" + name + "-" + node
-		// no more than 52 characters for cronjobName
-		if len(cronjobName) > 52 {
-			cronjobName = cronjobName[0:51]
-		}
-		meta := metav1.ObjectMeta{
-			Name:      cronjobName,
-			Namespace: *policy.Spec.WorkNamespace,
-			Labels: map[string]string{
-				labelOwnerKey: policy.Name,
-				labelTypeKey:  goharborv1.CronjobKubebench,
-			},
-			Annotations: make(map[string]string),
-		}
-		var containerList []corev1.Container
-		rootUid := int64(0)
-		fsPolicy := corev1.FSGroupChangeOnRootMismatch
-		podSpec := corev1.PodSpec{
-			HostPID:            true,
-			SecurityContext:    &corev1.PodSecurityContext{RunAsUser: &rootUid, FSGroupChangePolicy: &fsPolicy},
-			Containers:         append(containerList, container),
-			RestartPolicy:      corev1.RestartPolicyOnFailure,
-			ServiceAccountName: saName,
-			NodeName:           node,
-		}
-		r.addVolumeToPodSpec(&podSpec)
-
-		cj := &batchv1.CronJob{
-			ObjectMeta: meta,
-			Spec: batchv1.CronJobSpec{
-				Schedule:                   policy.Spec.Schedule,
-				ConcurrencyPolicy:          batchv1.ConcurrencyPolicy(policy.Spec.Strategy.ConcurrencyRule),
-				Suspend:                    policy.Spec.Strategy.Suspend,
-				SuccessfulJobsHistoryLimit: policy.Spec.Strategy.HistoryLimit,
-				FailedJobsHistoryLimit:     &fl,
-				JobTemplate: batchv1.JobTemplateSpec{
-					Spec: batchv1.JobSpec{
-						Template: corev1.PodTemplateSpec{
-							Spec: podSpec,
-						},
-					},
-				},
-			},
-		}
-		if policy.Spec.Inspector != nil {
-			if len(policy.Spec.Inspector.ImagePullSecrets) > 0 {
-				cj.Spec.JobTemplate.Spec.Template.Spec.ImagePullSecrets = append(
-					cj.Spec.JobTemplate.Spec.Template.Spec.ImagePullSecrets,
-					policy.Spec.Inspector.ImagePullSecrets...)
-			}
-		}
-
-		// Set owner reference.
-		if err := ctrl.SetControllerReference(policy, cj, r.Scheme); err != nil {
-			return nil, err
-		}
-
-		jdata, err := json.Marshal(cj.Spec)
-		if err != nil {
-			return nil, err
-		}
-
-		cj.Annotations[lastAppliedAnnotation] = string(jdata)
-		log.Infof("Kubebench Cronjob: %v", (*cj).Name)
-		log.Infof("Kubebench Cronjob Node name: %v", (*cj).Spec.JobTemplate.Spec.Template.Spec.NodeName)
-		cronjobList = append(cronjobList, *cj)
-	}
-
-	return cronjobList, nil
-}
-
 func (r *InspectionPolicyReconciler) generateCronJobCR(policy *goharborv1.InspectionPolicy, cronjobType string) (*batchv1.CronJob, error) {
 	var fl int32 = 1
 	var name, image, command string
 	if cronjobType == goharborv1.CronjobInpsection {
 		name = "inspector"
 		command = "/inspector"
-	} else if cronjobType == goharborv1.CronjobKubebench {
-		name = "kubebench"
-		command = "/kubebench"
 	} else if cronjobType == goharborv1.CronjobRisk {
 		name = "risk"
 		command = "/risk"
@@ -779,13 +698,10 @@ func getImage(policy *goharborv1.InspectionPolicy, cronjobType string) string {
 	if policy.Spec.Inspector != nil {
 		if cronjobType == goharborv1.CronjobInpsection {
 			return policy.Spec.Inspector.Image
-		} else if cronjobType == goharborv1.CronjobKubebench {
-			return policy.Spec.Inspector.KubebenchImage
 		} else if cronjobType == goharborv1.CronjobRisk {
 			return policy.Spec.Inspector.RiskImage
 		}
 	}
-
 	return fmt.Sprintf("%s:%s", defaultImage, defaultImageTag)
 }
 

@@ -6,7 +6,7 @@ KUBECTLCMD=$(shell which kubectl)
 SWAGGER := $(DOCKERCMD) run --rm -it -v $(HOME):$(HOME) -w $(shell pwd) quay.io/goswagger/swagger
 
 REGISTRY ?= projects.registry.vmware.com/cnsi
-IMG_TAG = 0.2
+IMG_TAG = 0.3
 # Image URL to use all building/pushing image targets
 IMG_MANAGER ?= $(REGISTRY)/manager:$(IMG_TAG)
 IMG_CMD_INSPECTOR ?= $(REGISTRY)/inspector:$(IMG_TAG)
@@ -89,7 +89,7 @@ run: manifests generate fmt vet ## Run a controller from your host.
 
 docker-build-all: docker-build-manager docker-build-inspector docker-build-kubebench docker-build-portal docker-build-risk
 
-docker-build-manager: test build-manager ## Build docker image with the manager.
+docker-build-manager: build-manager ## Build docker image with the manager.
 	$(DOCKERCMD) buildx build -t ${IMG_MANAGER} .
 
 docker-build-inspector: build-inspector ## Build docker image with inspector cmd.

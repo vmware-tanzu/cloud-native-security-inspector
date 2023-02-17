@@ -18,7 +18,7 @@ spec:
       serviceAccountName: cloud-native-security-inspector-portal-serviceaccount
       containers:
       - name: cloud-native-security-inspector-frontend
-        image: projects.registry.vmware.com/cnsi/portal:0.2
+        image: projects.registry.vmware.com/cnsi/portal:0.3
         imagePullPolicy: Always
         ports:
           - containerPort: 3800       

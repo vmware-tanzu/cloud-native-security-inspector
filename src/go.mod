@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/aquasecurity/kube-bench v0.6.10
 	github.com/elastic/go-elasticsearch/v8 v8.4.0
+	github.com/fsnotify/fsnotify v1.6.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-openapi/errors v0.20.3
 	github.com/go-openapi/runtime v0.24.2
@@ -54,7 +55,6 @@ require (
 	github.com/emicklei/go-restful/v3 v3.8.0 // indirect
 	github.com/evanphx/json-patch/v5 v5.6.0 // indirect
 	github.com/felixge/httpsnoop v1.0.2 // indirect
-	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
