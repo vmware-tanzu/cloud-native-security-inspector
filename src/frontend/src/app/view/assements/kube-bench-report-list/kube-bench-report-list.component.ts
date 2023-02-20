@@ -72,7 +72,7 @@ export class KubeBenchReportListComponent implements OnInit {
   
   initKubeBenchReportList() {
     if (!this.currentNode) return
-    const podInfo = this.nodesPodsCorrespondence.find(item => item.node === this.currentNode) || {pod: ''}
+    const podInfo: any = this.nodesPodsCorrespondence.find(item => item.node === this.currentNode) || {pod: ''}
     this.dgLoading = true
     const query: any = { 
       size: this.defaultSize,
@@ -180,11 +180,11 @@ export class KubeBenchReportListComponent implements OnInit {
         data.items.forEach(item => {
           if (item.metadata.name.indexOf('kubebench-daemonset') !== -1) {
             this.nodesPodsCorrespondence.push({
-              node: item.metadata.nodeName,
+              node: item.spec.nodeName,
               pod: item.metadata.name
             })
           }
-        })
+        })        
         this.init()
       }
     )

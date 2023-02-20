@@ -47,16 +47,25 @@ describe('KubeBenchReportListComponent', () => {
           {
             "metadata": {
               "name": "inspectionpolicy-sample-kubebench-daemonset-7qjdg",
+            },
+            "spec": {
+              nodeName: "sc2-10-186-134-223.eng.vmware.com"
             }
           },
           {
             "metadata": {
               "name": "inspectionpolicy-sample-kubebench-daemonset-s2dql",
-            }
+            },
+            "spec": {
+              nodeName: "sc2-10-186-142-227.eng.vmware.com"
+            }  
           },
           {
             "metadata": {
               "name": "inspectionpolicy-sample-kubebench-daemonset-zb882",
+            },
+            "spec": {
+              nodeName: "sc2-10-186-131-84.eng.vmware.com"
             }
           }
         ]
