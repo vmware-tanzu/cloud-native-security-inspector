@@ -6,11 +6,11 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  margin-top: 0px;
+  margin-top: 0;
   margin-bottom: 20px;
 }
 .report .kube-title h4::ng-deep clr-select-container {
-  margin-top: 0px;
+  margin-top: 0;
 }
 .report::ng-deep clr-datagrid clr-dg-column.namespace-filter .datagrid-column-flex .datagrid-column-title {
   display: flex;
