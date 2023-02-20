@@ -180,7 +180,7 @@ export class KubeBenchReportListComponent implements OnInit {
         data.items.forEach(item => {
           if (item.metadata.name.indexOf('kubebench-daemonset') !== -1) {
             this.nodesPodsCorrespondence.push({
-              node: item.spec.nodeName,
+              node: item.metadata.nodeName,
               pod: item.metadata.name
             })
           }
