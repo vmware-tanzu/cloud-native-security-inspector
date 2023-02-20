@@ -163,7 +163,7 @@ describe('PolicySettingPageComponent', () => {
         }
       }
       component.getInspectionpolicies();
-      component.createPolicy(data)
+      component.createPolicy()
       component.modifyPolicy()
       component.setSchedule({hour: 3})
       component.saveSchedule({})

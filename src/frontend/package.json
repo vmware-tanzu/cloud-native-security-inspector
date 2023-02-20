@@ -8,7 +8,11 @@
     "watch": "ng build --watch --configuration development",
     "lint": "ng lint",
     "lint:style": "npx stylelint \"**/*.less\"",
-    "test": "node --max_old_space_size=2048 ./node_modules/@angular/cli/bin/ng test --code-coverage"
+    "test": "ng test --code-coverage",
+    "test2": "node --max_old_space_size=2048 ./node_modules/@angular/cli/bin/ng test --code-coverage",
+    "e2e": "ng e2e",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
   },
   "private": true,
   "dependencies": {
@@ -44,10 +48,12 @@
     "@angular-eslint/template-parser": "14.0.3",
     "@angular/cli": "^14.2.1",
     "@angular/compiler-cli": "^14.2.0",
+    "@cypress/schematic": "^2.4.0",
     "@types/jasmine": "~3.8.0",
     "@types/node": "^12.11.1",
     "@typescript-eslint/eslint-plugin": "5.29.0",
     "@typescript-eslint/parser": "5.29.0",
+    "cypress": "^12.3.0",
     "eslint": "^8.18.0",
     "jasmine-core": "~3.8.0",
     "karma": "~6.3.0",

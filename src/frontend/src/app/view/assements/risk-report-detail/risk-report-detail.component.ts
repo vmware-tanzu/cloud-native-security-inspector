@@ -9,7 +9,7 @@ type ECOption = echarts.ComposeOption<BarSeriesOption>
   styleUrls: ['./risk-report-detail.component.less']
 })
 export class RiskReportDetailComponent implements OnInit {
-  @Input('detailInfo') detailInfo!: any
+  @Input('detailInfo') detailInfo: any = {}
   myChart!: any
   echartsOption!: ECOption
   echartsLoading = true
@@ -113,7 +113,6 @@ export class RiskReportDetailComponent implements OnInit {
     this.myChart.clear()
     this.echartsLoading = false
     this.echartsOption && this.myChart.setOption(this.echartsOption);
-
   }
 
   showDetail(detail: any) {

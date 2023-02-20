@@ -47,3 +47,29 @@ jobs:
           fail_ci_if_error: true # optional (default = false)
           verbose: true # optional (default = false)
 
+  UI_UT:
+    env:
+      UI_UT: true
+    runs-on:
+      #- self-hosted
+      - ubuntu-latest
+    timeout-minutes: 100
+    steps:
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - uses: actions/checkout@v3
+        with:
+          path: ${{ github.repository }}
+      - name: script
+        run: |
+          pwd
+          cd ${{ github.repository }}/src
+          cd frontend
+          bash ./test/ui_unit.sh
+          df -h
+      - name: Codecov For UI
+        uses: codecov/codecov-action@v3
+        with:
+          file:  ${{ github.repository }}/src/frontend/coverage/icov.info
+          flags: unittests

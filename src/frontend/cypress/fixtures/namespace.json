@@ -1,0 +1,288 @@
+{
+  "kind": "NamespaceList",
+  "apiVersion": "v1",
+  "metadata": {
+    "resourceVersion": "5141933"
+  },
+  "items": [
+    {
+      "metadata": {
+        "name": "cnsi-system",
+        "uid": "8fc590fc-3b1a-4099-80fc-95559c58f5c7",
+        "resourceVersion": "3218730",
+        "creationTimestamp": "2023-01-04T07:30:54Z",
+        "labels": {
+          "control-plane": "cnsi-controller",
+          "kubernetes.io/metadata.name": "cnsi-system"
+        },
+        "annotations": {
+          "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Namespace\",\"metadata\":{\"annotations\":{},\"labels\":{\"control-plane\":\"cnsi-controller\"},\"name\":\"cnsi-system\"}}\n"
+        },
+        "managedFields": [
+          {
+            "manager": "kubectl-client-side-apply",
+            "operation": "Update",
+            "apiVersion": "v1",
+            "time": "2023-01-04T07:30:57Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:annotations": {
+                  ".": {},
+                  "f:kubectl.kubernetes.io/last-applied-configuration": {}
+                },
+                "f:labels": {
+                  ".": {},
+                  "f:control-plane": {},
+                  "f:kubernetes.io/metadata.name": {}
+                }
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "finalizers": [
+          "kubernetes"
+        ]
+      },
+      "status": {
+        "phase": "Active"
+      }
+    },
+    {
+      "metadata": {
+        "name": "cronjobs",
+        "uid": "f5f086f0-b5f8-4ec9-8c55-46dfc0a1cd8a",
+        "resourceVersion": "3226946",
+        "creationTimestamp": "2023-01-04T08:50:45Z",
+        "labels": {
+          "goharbor.io/policy-working-for": "cronjobs",
+          "kubernetes.io/metadata.name": "cronjobs"
+        },
+        "ownerReferences": [
+          {
+            "apiVersion": "goharbor.goharbor.io/v1alpha1",
+            "kind": "InspectionPolicy",
+            "name": "inspectionpolicy-sample",
+            "uid": "a80a10f7-84fc-400e-91b5-55fe7d9d0028",
+            "controller": true,
+            "blockOwnerDeletion": true
+          }
+        ],
+        "managedFields": [
+          {
+            "manager": "manager",
+            "operation": "Update",
+            "apiVersion": "v1",
+            "time": "2023-01-04T08:50:45Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:goharbor.io/policy-working-for": {},
+                  "f:kubernetes.io/metadata.name": {}
+                },
+                "f:ownerReferences": {
+                  ".": {},
+                  "k:{\"uid\":\"a80a10f7-84fc-400e-91b5-55fe7d9d0028\"}": {}
+                }
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "finalizers": [
+          "kubernetes"
+        ]
+      },
+      "status": {
+        "phase": "Active"
+      }
+    },
+    {
+      "metadata": {
+        "name": "default",
+        "uid": "734c6b84-c100-4d56-a625-a2e070674556",
+        "resourceVersion": "207",
+        "creationTimestamp": "2022-12-19T09:44:05Z",
+        "labels": {
+          "kubernetes.io/metadata.name": "default"
+        },
+        "managedFields": [
+          {
+            "manager": "kube-apiserver",
+            "operation": "Update",
+            "apiVersion": "v1",
+            "time": "2022-12-19T09:44:05Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kubernetes.io/metadata.name": {}
+                }
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "finalizers": [
+          "kubernetes"
+        ]
+      },
+      "status": {
+        "phase": "Active"
+      }
+    },
+    {
+      "metadata": {
+        "name": "kube-node-lease",
+        "uid": "3292ac16-851f-4f55-9d8e-4bc1661bd551",
+        "resourceVersion": "6",
+        "creationTimestamp": "2022-12-19T09:44:03Z",
+        "labels": {
+          "kubernetes.io/metadata.name": "kube-node-lease"
+        },
+        "managedFields": [
+          {
+            "manager": "kube-apiserver",
+            "operation": "Update",
+            "apiVersion": "v1",
+            "time": "2022-12-19T09:44:03Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kubernetes.io/metadata.name": {}
+                }
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "finalizers": [
+          "kubernetes"
+        ]
+      },
+      "status": {
+        "phase": "Active"
+      }
+    },
+    {
+      "metadata": {
+        "name": "kube-public",
+        "uid": "d1d41c01-ec70-487d-a904-feff396e8f56",
+        "resourceVersion": "5",
+        "creationTimestamp": "2022-12-19T09:44:03Z",
+        "labels": {
+          "kubernetes.io/metadata.name": "kube-public"
+        },
+        "managedFields": [
+          {
+            "manager": "kube-apiserver",
+            "operation": "Update",
+            "apiVersion": "v1",
+            "time": "2022-12-19T09:44:03Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kubernetes.io/metadata.name": {}
+                }
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "finalizers": [
+          "kubernetes"
+        ]
+      },
+      "status": {
+        "phase": "Active"
+      }
+    },
+    {
+      "metadata": {
+        "name": "kube-system",
+        "uid": "47f66aa5-e14b-4e54-972a-f9699f323aff",
+        "resourceVersion": "4",
+        "creationTimestamp": "2022-12-19T09:44:03Z",
+        "labels": {
+          "kubernetes.io/metadata.name": "kube-system"
+        },
+        "managedFields": [
+          {
+            "manager": "kube-apiserver",
+            "operation": "Update",
+            "apiVersion": "v1",
+            "time": "2022-12-19T09:44:03Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kubernetes.io/metadata.name": {}
+                }
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "finalizers": [
+          "kubernetes"
+        ]
+      },
+      "status": {
+        "phase": "Active"
+      }
+    },
+    {
+      "metadata": {
+        "name": "opensearch",
+        "uid": "29f30510-691c-4b99-bbde-c03eed4df717",
+        "resourceVersion": "551",
+        "creationTimestamp": "2022-12-19T09:46:28Z",
+        "labels": {
+          "kubernetes.io/metadata.name": "opensearch",
+          "name": "opensearch"
+        },
+        "managedFields": [
+          {
+            "manager": "helm",
+            "operation": "Update",
+            "apiVersion": "v1",
+            "time": "2022-12-19T09:46:28Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:kubernetes.io/metadata.name": {},
+                  "f:name": {}
+                }
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "finalizers": [
+          "kubernetes"
+        ]
+      },
+      "status": {
+        "phase": "Active"
+      }
+    }
+  ]
+}

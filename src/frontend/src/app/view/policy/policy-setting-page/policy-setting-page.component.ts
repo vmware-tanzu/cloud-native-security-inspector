@@ -149,7 +149,7 @@ export class PolicySettingPageComponent implements OnInit {
         historyLimit:[5],
         suspend: [false],
         concurrencyRule:['Forbid'],
-        image:[[]],
+        image:[['inspector']],
         imagePullPolicy: ['IfNotPresent'],
         settingsName: [''],
         elasticSearchEnabled: [false],
@@ -319,10 +319,6 @@ export class PolicySettingPageComponent implements OnInit {
 
           this.policyForm.get('inspectionSetting')?.get('imagePullPolicy')?.setValue(policyList[0].spec.inspector.imagePullPolicy)
           this.policyForm.get('inspectionSetting')?.get('settingsName')?.setValue(policyList[0].spec.settingsName)
-          // this.policyForm.get('endpoint')?.setValue(policyList[0].spec.inspection.dataProvider.endpoint)
-          // this.policyForm.get('username')?.setValue(policyList[0].spec.inspection.dataProvider.credential.accessKey)
-          // this.policyForm.get('password')?.setValue(policyList[0].spec.inspection.dataProvider.credential.accessSecret)
-          // this.policyForm.get('insecure')?.setValue(policyList[0].spec.inspection.dataProvider.connection.insecure)
           this.policyForm.get('inspectionResult')?.get('generate')?.setValue(policyList[0].spec.inspection.assessment.generate)
           this.policyForm.get('inspectionResult')?.get('format')?.setValue(policyList[0].spec.inspection.assessment.format)
           this.policyForm.get('inspectionResult')?.get('liveTime')?.setValue(policyList[0].spec.inspection.assessment.liveTime)
