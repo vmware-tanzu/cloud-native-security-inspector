@@ -2,6 +2,16 @@
   position: relative;
   padding: 15px;
 }
+.report .kube-title h4 {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+.report .kube-title h4::ng-deep clr-select-container {
+  margin-top: 0;
+}
 .report::ng-deep clr-datagrid clr-dg-column.namespace-filter .datagrid-column-flex .datagrid-column-title {
   display: flex;
   justify-content: space-between;
@@ -34,7 +44,7 @@
 }
 .chart-warp {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
   flex: 1;
   overflow: hidden;
   height: 300px;
