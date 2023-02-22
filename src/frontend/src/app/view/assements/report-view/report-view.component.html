@@ -10,26 +10,36 @@
     <div id="report-line" style="flex: 1;height:450px; overflow: hidden;"> </div>
 
   <clr-datagrid style="height: 450px; overflow: auto;" (clrDgRefresh)="pageChange($event)">
-    <clr-dg-column [clrDgField]="'metadata.namespace'">{{'CommonlyUse.name'|translate}}</clr-dg-column>
+    <clr-dg-column class="namespace-filter">{{'CommonlyUse.name'|translate}}
+      <cds-icon shape="filter-grid" class="is-solid" (click)="nameFilterFlag = !nameFilterFlag"></cds-icon>
+      <div class="filter-warp" *ngIf="nameFilterFlag">
+        <cds-icon style="position: absolute; right: 10px; top: 10px;" shape="window-close" (click)="nameFilterFlag=false"></cds-icon>
+        <app-dg-filter label="kube" labelKey="_id" [pageSize]="10" (updateListHandler)="getKubeBenchReportList($event)">
+        </app-dg-filter>
+      </div>
+    </clr-dg-column>
     <clr-dg-column class="namespace-filter">
       {{'CommonlyUse.namespace'|translate}}
       <cds-icon shape="filter-grid" class="is-solid" (click)="namespaceFilterFlag = !namespaceFilterFlag"></cds-icon>
       <div class="filter-warp" *ngIf="namespaceFilterFlag">
         <cds-icon style="position: absolute; right: 10px; top: 10px;" shape="window-close" (click)="namespaceFilterFlag=false"></cds-icon>
-        <app-dg-filter [pageSize]="defaultSize" [continues]="continues">
+        <app-dg-filter label="kube" labelKey="workloadNamespace" [pageSize]="10" (updateListHandler)="getKubeBenchReportList($event)">
         </app-dg-filter>
       </div>
     </clr-dg-column>
-    <clr-dg-column >{{'CommonlyUse.create_time'|translate}}</clr-dg-column>
-    <clr-dg-row *clrDgItems="let report of shardService.reportslist">
+    <clr-dg-column >
+      {{'CommonlyUse.create_time'|translate}}
+      <cds-icon (click)="createTimeSort()" shape="arrow" [class]="{oder: isOder}"></cds-icon>  
+    </clr-dg-column>
+    <clr-dg-row *clrDgItems="let report of imagesReportList">
       <clr-dg-cell>
         <a href="javascript:;" (click)="toReport(report)" >
           <cds-icon style="color: skyblue; cursor: pointer;" shape="pop-out"></cds-icon>
-          {{report.metadata.name}}
+          {{report._id}}
         </a>
       </clr-dg-cell>
-      <clr-dg-cell>{{report.metadata.namespace}}</clr-dg-cell>
-      <clr-dg-cell>{{report.metadata.creationTimestamp}}</clr-dg-cell>
+      <clr-dg-cell>{{report._source.workloadNamespace}}</clr-dg-cell>
+      <clr-dg-cell>{{report._source.createTime}}</clr-dg-cell>
     </clr-dg-row>
     <clr-dg-footer>
       <clr-dg-pagination #pagination [clrDgPageInputDisabled]="true" [clrDgPageSize]="defaultSize" [clrDgLastPage]="pageMaxCount">

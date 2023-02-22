@@ -21,13 +21,14 @@ export class ReportViewDetailComponent implements OnInit {
     private assessmentService: AssessmentService
     ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void { 
+  }
   setCurrentReport(data:any) {    
     this.currentReport = data
   }
 
-  getRisk(workload: any) {
-    this.workloadInfo = workload
+  getRisk(report: any) {
+    // this.workloadInfo = workload
 
 
     const opensearchbase: any = localStorage.getItem('cnsi-open-search')
@@ -50,20 +51,23 @@ export class ReportViewDetailComponent implements OnInit {
         // ca = elasticsearchInfo.ca
       }
 
-      if (this.workloadInfo.workload.pods.length > 0) {
-        this.workloadInfo.workload.pods.forEach((pod: any) => {
-          this.assessmentService.getKubeBenchReport({url: searchInfoa.url, index: 'risk_manager_details', username: searchInfoa.user, password: searchInfoa.pswd, query: pod.metadata.uid, client, ca}).subscribe(
-            data => {
-              if (data._source.Detail) {
-                pod.detail = data._source.Detail
-              } else {
-                pod.detail = {}
-              }
-            },
-            err => {}
-          )
-        });
-      }
+      this.assessmentService.getKubeBenchReport({url: searchInfoa.url, index: 'risk_manager_details', username: searchInfoa.user, password: searchInfoa.pswd, query: report._source.reportUID, client, ca}).subscribe(
+        data => {
+          console.log('data', data);
+          
+          // if (data._source.Detail) {
+          //   pod.detail = data._source.Detail
+          // } else {
+          //   pod.detail = {}
+          // }
+        },
+        err => {}
+      )
+      // if (this.workloadInfo.workload.pods.length > 0) {
+      //   this.workloadInfo.workload.pods.forEach((pod: any) => {
+
+      //   });
+      // }
     }    
   }
 }

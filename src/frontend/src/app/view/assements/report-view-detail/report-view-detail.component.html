@@ -13,34 +13,49 @@
         <ul class="list warp-1">
           <li>
             <b>UID: </b>
-            <span>{{shardService.currentReport?.metadata.uid}}</span>
+            <span>{{shardService.currentReport?._source.reportUID}}</span>
           </li>
           <li>
             <b>Name: </b>
-            <span>{{shardService.currentReport?.metadata.name}}</span>
+            <span>{{shardService.currentReport?._id}}</span>
           </li>
           <li>
             <b>Namespace: </b>
-            <span>{{shardService.currentReport?.metadata.namespace}}</span>
+            <span>{{shardService.currentReport?._source.workloadNamespace}}</span>
           </li>
           <li>
+            <b>Container Name: </b>
+            <span>{{shardService.currentReport?._source.containerName}}</span>
+          </li>
+          <li>
+            <b>Container Image: </b>
+            <span>{{shardService.currentReport?._source.containerName}}</span>
+          </li>
+          <!-- <li>
             <b>Version: </b>
             <span>
               {{shardService.currentReport?.metadata.resourceVersion}}
             </span>
-          </li>
+          </li> -->
           <li>
-            <b>Annotations: </b>
-            <div *ngFor="let item of shardService.currentReport?.metadata.annotations">
-              <b class="content">{{item.key}}</b>
-              <span>{{item.value}}</span>
+            <b>Action Enforcement: </b>
+            <div *ngFor="let item of shardService.currentReport?._source.actionEnforcement">
+              <div>
+                <b class="content"> Action:</b>
+                <span>{{item.action.kind}}</span>
+              </div>
+              <div>
+                <b class="content"> Result:</b>
+                <span>{{item.result.status}}</span>
+  
+              </div>
             </div>
           </li>
         </ul>
       </clr-accordion-content>
     </clr-accordion-panel>
   
-    <clr-accordion-panel >
+    <!-- <clr-accordion-panel >
       <clr-accordion-title>{{'Report_Detail.owner_references'| translate}}</clr-accordion-title>
       <clr-accordion-content *clrIfExpanded>
           <ul class="list warp-1 " *ngFor="let item of shardService.currentReport?.metadata.ownerReferences">
@@ -66,15 +81,15 @@
             </li>
           </ul>
       </clr-accordion-content>
-    </clr-accordion-panel>
-  
+    </clr-accordion-panel> -->
+
     <clr-accordion-panel >
       <clr-accordion-title>{{'Report_Detail.inspection_configuration'| translate}}</clr-accordion-title>
       <clr-accordion-content *clrIfExpanded>
         <ul class="list warp-1">
           <li *ngIf="shardService.currentReport">
             <b>{{'Report_Detail.actions'| translate}}:  </b>
-            <ul class="list wrap-2" *ngFor="let item of shardService.currentReport.spec.inspectionConfiguration.actions">
+            <ul class="list wrap-2" *ngFor="let item of shardService.currentReport._source.inspectionConfiguration.actions">
               <li>
                 <b>{{'Report_Detail.kind'| translate}}:  </b>
                 <span>{{item.kind}}</span>  
@@ -85,24 +100,24 @@
             <b>{{'Report_Detail.assessment'| translate}}:  </b>
             <div>
               <b>{{'Report_Detail.format'| translate}}: </b>
-              {{shardService.currentReport.spec.inspectionConfiguration.assessment.format}}
+              {{shardService.currentReport._source.inspectionConfiguration.assessment.format}}
             </div>
             <div>
               <b>{{'Report_Detail.generate'| translate}}: </b>
-              {{shardService.currentReport.spec.inspectionConfiguration.assessment.generate}}
+              {{shardService.currentReport._source.inspectionConfiguration.assessment.generate}}
             </div>
             <div>
               <b>{{'Report_Detail.live_time'| translate}}: </b>
-              {{shardService.currentReport.spec.inspectionConfiguration.assessment.liveTime}}
+              {{shardService.currentReport._source.inspectionConfiguration.assessment.liveTime}}
             </div>
             <div>
               <b>{{'Report_Detail.managedBy'| translate}}: </b>
-              {{shardService.currentReport.spec.inspectionConfiguration.assessment.managedBy}}
+              {{shardService.currentReport._source.inspectionConfiguration.assessment.managedBy}}
             </div>
           </li>
           <li>
             <b>{{'Report_Detail.baselines'| translate}}:  </b>
-            <ul class="list warp-2" *ngFor="let item of shardService.currentReport.spec.inspectionConfiguration.baselines">
+            <ul class="list warp-2" *ngFor="let item of shardService.currentReport._source.inspectionConfiguration.baselines">
               <li>
                 <b>{{'Report_Detail.baseline'| translate}}:  </b>
                 <span>{{item.baseline}}</span>
@@ -121,10 +136,98 @@
               </li>
             </ul>
           </li>
+          <li>
+            <b>Elastic Search:</b>
+            <ul class="list warp-2">
+              <li>
+                <b>{{'Policy.elasticSearchEnabled'|translate}}:</b>
+                <span>{{shardService.currentReport._source.inspectionConfiguration.assessment.elasticSearchEnabled}}</span>  
+              </li>
+              <div *ngIf="shardService.currentReport._source.inspectionConfiguration.assessment.elasticSearchEnabled">
+                <li>
+                  <b>{{'Policy.elasticSearchAddr'|translate}}:</b>
+                  <span>{{shardService.currentReport._source.inspectionConfiguration.assessment.elasticSearchAddr}}</span>  
+                </li>
+                <li>
+                  <b>{{'Policy.elasticSearchUser'|translate}}:</b>
+                  <span>{{shardService.currentReport._source.inspectionConfiguration.assessment.elasticSearchUser}}</span>  
+                </li>
+                <li>
+                  <b>{{'Policy.elasticSearchCert'|translate}}:</b>
+                  <span>{{shardService.currentReport._source.inspectionConfiguration.assessment.elasticSearchCert}}</span>  
+                </li>
+              </div>
+            </ul>
+          </li>
+          <li>
+            <b>Open Search:</b>
+            <ul class="list warp-2">
+              <li>
+                <b>{{'Policy.openSearchEnabled'|translate}}:</b>
+                <span>{{shardService.currentReport._source.inspectionConfiguration.assessment.openSearchEnabled}}</span>  
+              </li>
+              <div *ngIf="shardService.currentReport._source.inspectionConfiguration.assessment.openSearchEnabled">
+                <li>
+                  <b>{{'Policy.elasticSearchAddr'|translate}}:</b>
+                  <span>{{shardService.currentReport._source.inspectionConfiguration.assessment.openSearchAddr}}</span>  
+                </li>
+                <li>
+                  <b>{{'Policy.elasticSearchUser'|translate}}:</b>
+                  <span>{{shardService.currentReport._source.inspectionConfiguration.assessment.openSearchUser}}</span>  
+                </li>
+                <!-- <li>
+                  <b>{{'Policy.elasticSearchCert'|translate}}:</b>
+                  <span>{{shardService.currentReport._source.inspectionConfiguration.assessment.openSearchCert}}</span>  
+                </li> -->
+              </div>
+              </ul>
+          </li>
         </ul>
       </clr-accordion-content>
     </clr-accordion-panel>
-  
+    <clr-accordion-panel *ngIf="shardService.currentReport?._source.inspectionConfiguration.namespaceSelector">
+      <clr-accordion-title>Labels</clr-accordion-title>
+      <clr-accordion-content *clrIfExpanded>
+        <ul class="list warp-1">
+          <li *ngFor="let item of shardService.currentReport._source.inspectionConfiguration.namespaceSelector.matchLabels">
+            <b>{{item.key}}:  </b>
+            <span>{{item.value}}</span>
+          </li>
+        </ul>
+      </clr-accordion-content>
+    </clr-accordion-panel>
+
+    <clr-accordion-panel [clrAccordionPanelOpen]='true' *ngIf="shardService.currentReport?._source.failures">
+      <clr-accordion-title>{{'Report_Detail.failures'|translate}}</clr-accordion-title>
+      <clr-accordion-content *clrIfExpanded>
+        <clr-datagrid style="height:  200px; overflow:  auto;">
+          <clr-dg-column [clrDgField]="'container.name'">Name</clr-dg-column>
+          <clr-dg-column >Image</clr-dg-column>
+          <clr-dg-column >{{'Report_Detail.isInit'|translate}}</clr-dg-column>
+          <clr-dg-column >Cause</clr-dg-column>
+          <clr-dg-column >Error</clr-dg-column>
+
+          <clr-dg-row *clrDgItems="let failure of shardService.currentReport?._source.failures" [clrDgItem]="failure">
+            <clr-dg-cell>
+              {{failure.container.name}}
+            </clr-dg-cell>
+            <clr-dg-cell>{{failure.container.image}}</clr-dg-cell>
+            <clr-dg-cell>{{failure.container.isInit}}</clr-dg-cell>
+            <clr-dg-cell>{{failure.assessmentError.cause}}</clr-dg-cell>
+            <clr-dg-cell>{{failure.assessmentError.error}}</clr-dg-cell>
+          </clr-dg-row>
+          <clr-dg-placeholder *ngIf="false"></clr-dg-placeholder>
+          <clr-dg-footer>
+            <clr-dg-pagination #pagination [clrDgPageSize]="10">
+                <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">failures per page</clr-dg-page-size>
+                {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                of {{pagination.totalItems}} failures
+            </clr-dg-pagination>
+        </clr-dg-footer>
+        </clr-datagrid>
+      </clr-accordion-content>
+    </clr-accordion-panel>
+    <!-- 
     <clr-accordion-panel *ngIf="shardService.currentReport?.spec.inspectionConfiguration.dataProvider">
       <clr-accordion-title>{{'Report_Detail.data_provider'| translate}}</clr-accordion-title>
       <clr-accordion-content *clrIfExpanded>
@@ -137,18 +240,6 @@
           <li >
             <b>{{'Report_Detail.provider'| translate}}:  </b>
             <span>{{shardService.currentReport.spec.inspectionConfiguration.dataProvider.provider}}</span>
-          </li>
-        </ul>
-      </clr-accordion-content>
-    </clr-accordion-panel>
-  
-    <clr-accordion-panel *ngIf="shardService.currentReport?.spec?.inspectionConfiguration?.namespaceSelector">
-      <clr-accordion-title>Labels</clr-accordion-title>
-      <clr-accordion-content *clrIfExpanded>
-        <ul class="list warp-1">
-          <li *ngFor="let item of shardService.currentReport.spec.inspectionConfiguration.namespaceSelector.matchLabels">
-            <b>{{item.key}}:  </b>
-            <span>{{item.value}}</span>
           </li>
         </ul>
       </clr-accordion-content>
@@ -328,7 +419,7 @@
         </div>
       </section>
       </clr-accordion-content>
-    </clr-accordion-panel>
+    </clr-accordion-panel> -->
 
   </clr-accordion>
 </div>
