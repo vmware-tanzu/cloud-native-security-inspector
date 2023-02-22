@@ -163,7 +163,8 @@ export class SettingComponent implements OnInit, OnDestroy {
       kind: 'Secret',
       metadata: {
         name: this.secretForm.get('secret_name')?.value,
-        namespace: this.secretForm.get('secret_namespace')?.value
+        namespace: this.secretForm.get('secret_namespace')?.value,
+        creationTimestamp: ''
       },
       type: 'Opaque'
     }
