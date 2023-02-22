@@ -152,6 +152,25 @@ spec:
                         description: Generate indicates whether generate the assessment
                           report or not.
                         type: boolean
+                      governor:
+                        description: Indicate whether to config of governor
+                        properties:
+                          apiToken:
+                            description: Api token for user authentication
+                            type: string
+                          clusterId:
+                            description: Unique identifier of the cluster
+                            type: string
+                          enabled:
+                            default: false
+                            description: Indicate whether to send the reports to governor
+                            type: boolean
+                          url:
+                            description: Api url to send telemetry data
+                            type: string
+                        required:
+                        - enabled
+                        type: object
                       liveTime:
                         default: 86400
                         description: Live time of the generated report. Unit is second.
@@ -179,23 +198,6 @@ spec:
                       openSearchUser:
                         description: ElasticSearch username for the client
                         type: string
-                      governor:
-                        description: Indicate whether to config of governor
-                        properties:
-                          enabled:
-                            default: false
-                            description: Indicate whether to send the reports to governor
-                            type: boolean
-                          clusterId:
-                            description: Unique identifier of the cluster
-                            type: string
-                          url:
-                            description: Api url to send telemetry data
-                            type: string
-                          apiToken:
-                            description: Api token for user authentication
-                            type: string
-                        type: object
                     required:
                     - elasticSearchEnabled
                     - format

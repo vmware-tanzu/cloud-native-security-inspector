@@ -115,6 +115,7 @@ type Assessment struct {
 	// +kubebuilder:validation:Optional
 	OpenSearchCert string `json:"openSearchCert"`
 	// Indicate whether to config of governor
+	// +kubebuilder:validation:Optional
 	Governor Governor `json:"governor"`
 }
 

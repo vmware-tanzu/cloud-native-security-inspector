@@ -21,7 +21,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/viper v1.14.0
 	github.com/stretchr/testify v1.8.1
-	gitlab.eng.vmware.com/vac/catalog-governor/api-specs/catalog-governor-service-rest/go-client v0.0.0-20230213153333-158da97aac53
+	gitlab.eng.vmware.com/vac/catalog-governor/api-specs/catalog-governor-service-rest/go-client v0.0.0-20230217132810-674c08a7361b
 	k8s.io/api v0.25.4
 	k8s.io/apimachinery v0.25.4
 	k8s.io/apiserver v0.25.4

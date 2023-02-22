@@ -9,6 +9,7 @@ import (
 	es "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers/es"
 	governor "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers/governor"
 	osearch "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers/opensearch"
+	openapi "gitlab.eng.vmware.com/vac/catalog-governor/api-specs/catalog-governor-service-rest/go-client"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
 	"time"
@@ -335,14 +336,15 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 	// Read config from InspectionPolicy, send assessment reports to Governor api if governor enabled.
 	if policy.Spec.Inspection.Assessment.Governor.Enabled {
 		governorConfig := policy.Spec.Inspection.Assessment.Governor
-		exporter := governor.GovernorExporter{
-			Report:    report,
-			ClusterID: governorConfig.ClusterID,
-			ApiURL:    governorConfig.URL,
-			ApiToken:  governorConfig.APIToken,
+
+		if governorConfig.ClusterID == "" || governorConfig.URL == "" || governorConfig.APIToken == "" {
+			log.Error("Either ClusterID or URL or APIToken is empty")
+			return errors.New("Either ClusterID or URL or APIToken is empty")
 		}
-		if err := exporter.SendReportToGovernor(); err != nil {
-			return err
+
+		if exporterErr := exportReportToGovernor(report, policy); exporterErr != nil {
+			log.Errorf("Error from exporter: %v", exporterErr)
+			return exporterErr
 		}
 	}
 
@@ -365,6 +367,29 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 		if err := exportReportToOpenSearch(report, policy); err != nil {
 			return err
 		}
+	}
+
+	return nil
+}
+
+func exportReportToGovernor(report *v1alpha1.AssessmentReport, policy *v1alpha1.InspectionPolicy) error {
+	governorConfig := policy.Spec.Inspection.Assessment.Governor
+
+	// Create api client to governor api.
+	config := openapi.NewConfiguration()
+	config.Host = governorConfig.URL
+	apiClient := openapi.NewAPIClient(config)
+
+	exporter := governor.GovernorExporter{
+		Report:    report,
+		ClusterID: governorConfig.ClusterID,
+		ApiToken:  governorConfig.APIToken,
+		ApiClient: apiClient,
+	}
+
+	if apiResponseErr := exporter.SendReportToGovernor(); apiResponseErr != nil {
+		log.Error("Err response from governor exporter", apiResponseErr)
+		return apiResponseErr
 	}
 
 	return nil
