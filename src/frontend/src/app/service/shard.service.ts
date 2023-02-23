@@ -189,8 +189,8 @@ export class ShardService {
   public packedbubbleRender!:Function
   constructor(private http:HttpClient) {
   }
-  getNodeList(){    
-    return this.http.get(this.environment.api.k8s + '/nodes')
+  getNodeList(): Observable<{items: any[]}>{    
+    return this.http.get<{items: any[]}>(this.environment.api.k8s + '/nodes')
   }
 
   getNodeStatus(name:string) {
@@ -204,5 +204,10 @@ export class ShardService {
   getApiservice() {
     return this.http.get(this.environment.api.apiregistration + '/apiservices')
   }
+
+  getPodList(): Observable<{items: any[]}>{    
+    return this.http.get<{items: any[]}>(this.environment.api.k8s + '/pods')
+  }
+
 
 }

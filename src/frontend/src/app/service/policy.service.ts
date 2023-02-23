@@ -33,7 +33,7 @@ export class PolicyService {
     return this.http.get<AssessmentReportType>(this.environment.api.goharbor + `/namespace/${namespace}/assessmentreports/${name}/status`)
   }
 
-  getInspectionpolicies (name?:string):Observable<InspectionPolicyType|PolicyItemType> {    
+  getInspectionpolicies (name?:string):Observable<InspectionPolicyType|PolicyItemType|any> {    
     if (name) {      
       return this.http.get<PolicyItemType>(this.environment.api.goharbor + '/inspectionpolicies/'+name)
     }
