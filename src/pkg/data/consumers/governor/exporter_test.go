@@ -2,7 +2,7 @@ package consumers
 
 import (
 	api "github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
-	openapi "gitlab.eng.vmware.com/vac/catalog-governor/api-specs/catalog-governor-service-rest/go-client"
+	openapi "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers/governor/go-client"
 	v1 "k8s.io/api/core/v1"
 	"os"
 	"testing"
