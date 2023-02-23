@@ -342,6 +342,7 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 			return errors.New("Either ClusterID or URL or APIToken is empty")
 		}
 
+		log.Info("Calling governor exporter")
 		if exporterErr := exportReportToGovernor(report, policy); exporterErr != nil {
 			log.Errorf("Error from exporter: %v", exporterErr)
 			return exporterErr
@@ -377,7 +378,8 @@ func exportReportToGovernor(report *v1alpha1.AssessmentReport, policy *v1alpha1.
 
 	// Create api client to governor api.
 	config := openapi.NewConfiguration()
-	config.Host = governorConfig.URL
+	//config.Host = governorConfig.URL
+	config.Servers = openapi.ServerConfigurations{{URL: governorConfig.URL}}
 	apiClient := openapi.NewAPIClient(config)
 
 	exporter := governor.GovernorExporter{

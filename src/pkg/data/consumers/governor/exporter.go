@@ -20,8 +20,9 @@ type GovernorExporter struct {
 // SendReportToGovernor is used to send report to governor url http end point.
 func (g GovernorExporter) SendReportToGovernor() error {
 	// Get governor api request model from assessment report.
-	kubernetesCluster := getGovernorAPIPayload(*g.Report)
-
+	kubernetesCluster := g.getGovernorAPIPayload()
+	log.Info("Payload data for governor:")
+	log.Info(kubernetesCluster)
 	apiSaveClusterRequest := g.ApiClient.ClustersApi.UpdateTelemetry(context.Background(), g.ClusterID).KubernetesTelemetryRequest(kubernetesCluster)
 
 	// Call api cluster to send telemetry data and get response.
@@ -30,7 +31,11 @@ func (g GovernorExporter) SendReportToGovernor() error {
 		log.Errorf("Governor api response error: %v", err)
 		return err
 	}
-	if response.StatusCode != http.StatusOK {
+
+	log.Info("successful called governor api")
+	log.Info(response)
+
+	if response.StatusCode != http.StatusNoContent {
 		log.Errorf("Governor api response status: %v", response.StatusCode)
 		return errors.New(fmt.Sprintf("Governor api response status: %s", response.Status))
 	}
@@ -39,16 +44,15 @@ func (g GovernorExporter) SendReportToGovernor() error {
 }
 
 // getGovernorAPIPayload is used to map assessment report to client model.
-func getGovernorAPIPayload(doc api.AssessmentReport) openapi.KubernetesTelemetryRequest {
+func (g GovernorExporter) getGovernorAPIPayload() openapi.KubernetesTelemetryRequest {
 	kubernetesCluster := openapi.NewKubernetesTelemetryRequestWithDefaults()
-	for _, nsa := range doc.Spec.NamespaceAssessments {
+
+	for _, nsa := range g.Report.Spec.NamespaceAssessments {
 		for _, workloadAssessment := range nsa.WorkloadAssessments {
 			kubernetesWorkloads := openapi.NewKubernetesWorkloadWithDefaults()
 			kubernetesWorkloads.Name = workloadAssessment.Workload.Name
 			kubernetesWorkloads.Kind = workloadAssessment.Workload.Kind
-			if nsa.Namespace.Name != "" {
-				kubernetesWorkloads.Namespace = nsa.Namespace.Name
-			}
+			kubernetesWorkloads.Namespace = nsa.Namespace.Name
 			kubernetesWorkloads.Replicas = workloadAssessment.Workload.Replicas
 			for _, pod := range workloadAssessment.Workload.Pods {
 				containerData := openapi.NewContainerWithDefaults()
