@@ -5,7 +5,6 @@ import (
 	"crypto/x509"
 	"encoding/base64"
 	"errors"
-	"fmt"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/exporter/types"
 	"io"
@@ -72,7 +71,7 @@ func (c *Client) Post(payload string) error {
 	// defer + recover to catch panic if the consumer doesn't respond
 	defer func() {
 		if err := recover(); err != nil {
-			log.Errorf("the consumer doesn't respond, client details: %s, error: %v", c, err)
+			log.Errorf("the consumer doesn't respond, client details: %v, error: %v", c, err)
 		}
 	}()
 
@@ -89,7 +88,7 @@ func (c *Client) Post(payload string) error {
 		// Load CA cert
 		caCert, err := os.ReadFile(c.Config.MutualTLSFilesPath + MutualTLSCaCertFilename)
 		if err != nil {
-			log.Errorf("failed to load the ca cert", err.Error())
+			log.Errorf("failed to load the ca cert %s", err.Error())
 		}
 		caCertPool := x509.NewCertPool()
 		caCertPool.AppendCertsFromPEM(caCert)
@@ -120,8 +119,6 @@ func (c *Client) Post(payload string) error {
 	for _, headerObj := range c.HeaderList {
 		req.Header.Add(headerObj.Key, headerObj.Value)
 	}
-	fmt.Println("fuck1")
-	fmt.Println(req)
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Errorf("failed to do the post http request, error: %s", err.Error())
@@ -131,11 +128,11 @@ func (c *Client) Post(payload string) error {
 
 	switch resp.StatusCode {
 	case http.StatusOK, http.StatusCreated, http.StatusAccepted, http.StatusNoContent: //200, 201, 202, 204
-		log.Infof("post successfully with response code: %s", resp.StatusCode)
+		log.Infof("post successfully with response code: %d", resp.StatusCode)
 		return nil
 	default:
 		msg, _ := io.ReadAll(resp.Body)
-		log.Errorf("unexpected response: %s, report data: %s", resp.StatusCode, msg)
+		log.Errorf("unexpected response: %d, report data: %s", resp.StatusCode, msg)
 		return errors.New(resp.Status)
 	}
 }

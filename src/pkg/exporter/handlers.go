@@ -57,7 +57,6 @@ func forwardEvent(reportData *types.ReportData) {
 		if err != nil {
 			log.Errorf("failed to create the Opensearch client, err: %s", err.Error())
 		} else {
-			fmt.Println(reportData.Payload)
 			go OpensearchClient.OpenSearchPost(reportData.Payload)
 			enabledOutputs = append(enabledOutputs, "openSearch")
 		}
