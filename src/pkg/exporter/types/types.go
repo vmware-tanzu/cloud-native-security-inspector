@@ -1,8 +1,7 @@
 package types
 
 type Configuration struct {
-	MutualTLSFilesPath string                 `json:"mutualTLSFilesPath,omitempty"`
-	OpenSearch         OpensearchOutputConfig `json:"openSearch,omitempty"`
+	OpenSearch OpensearchOutputConfig `json:"openSearch,omitempty"`
 	// Extend this struct for more consumers
 }
 

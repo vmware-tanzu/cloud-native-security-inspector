@@ -129,9 +129,6 @@ func TestAddBasicAuth(t *testing.T) {
 
 func TestMutualTlsPost(t *testing.T) {
 	config := &types.Configuration{}
-	config.MutualTLSFilesPath = "/tmp/narrowsTestCert"
-	// delete folder to avoid makedir failure
-	os.RemoveAll(config.MutualTLSFilesPath)
 
 	serverTLSConf, err := certSetup(config)
 	if err != nil {
@@ -161,11 +158,13 @@ func TestMutualTlsPost(t *testing.T) {
 
 	errPost := nc.Post("")
 	require.Nil(t, errPost)
-	os.RemoveAll(config.MutualTLSFilesPath)
+	os.RemoveAll(MutualTLSFilesPath)
 }
 
 func certSetup(config *types.Configuration) (serverTLSConf *tls.Config, err error) {
-	err = os.Mkdir(config.MutualTLSFilesPath, 0755)
+	// delete folder to avoid makedir failure
+	os.RemoveAll(MutualTLSFilesPath)
+	err = os.Mkdir(MutualTLSFilesPath, 0755)
 	if err != nil {
 		return nil, err
 	}
@@ -209,7 +208,7 @@ func certSetup(config *types.Configuration) (serverTLSConf *tls.Config, err erro
 	})
 
 	// save ca to ca.crt file (it will be used by Client)
-	err = os.WriteFile(config.MutualTLSFilesPath+"/ca.crt", caPEM.Bytes(), 0600)
+	err = os.WriteFile(MutualTLSFilesPath+"/ca.crt", caPEM.Bytes(), 0600)
 	if err != nil {
 		return nil, err
 	}
@@ -309,7 +308,7 @@ func certSetup(config *types.Configuration) (serverTLSConf *tls.Config, err erro
 	})
 
 	// save client cert and key to client.crt and client.key
-	err = os.WriteFile(config.MutualTLSFilesPath+"/client.crt", clientCertPEM.Bytes(), 0600)
+	err = os.WriteFile(MutualTLSFilesPath+"/client.crt", clientCertPEM.Bytes(), 0600)
 	if err != nil {
 		return nil, err
 	}
@@ -318,7 +317,7 @@ func certSetup(config *types.Configuration) (serverTLSConf *tls.Config, err erro
 		Type:  "RSA PRIVATE KEY",
 		Bytes: x509.MarshalPKCS1PrivateKey(clientCertPrivKey),
 	})
-	err = os.WriteFile(config.MutualTLSFilesPath+"/client.key", clientCertPrivKeyPEM.Bytes(), 0600)
+	err = os.WriteFile(MutualTLSFilesPath+"/client.key", clientCertPrivKeyPEM.Bytes(), 0600)
 	if err != nil {
 		return nil, err
 	}

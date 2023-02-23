@@ -8,7 +8,6 @@ import (
 func TestUnmarshalReportData(t *testing.T) {
 	testReportData := `{
     "config": {
-        "mutualTLSFilesPath": "/etc/tls",
         "openSearch": {
             "host_port": "localhost",
             "index": "assessment_report",
@@ -23,7 +22,6 @@ func TestUnmarshalReportData(t *testing.T) {
 	got, _ := unmarshalReportData(testReportData)
 	want := types.ReportData{
 		Config: types.Configuration{
-			MutualTLSFilesPath: "/etc/tls",
 			OpenSearch: types.OpensearchOutputConfig{
 				HostPort:  "localhost",
 				Index:     "assessment_report",

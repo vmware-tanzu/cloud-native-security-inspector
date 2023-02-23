@@ -63,4 +63,5 @@ func forwardEvent(reportData *types.ReportData) {
 	}
 	// To developers:
 	// launch more goroutines to forward to other consumers
+	log.Infof("the enabled outputs: %s", enabledOutputs)
 }

@@ -24,6 +24,7 @@ const (
 	AuthorizationHeaderKey      = "Authorization"
 	UserAgentHeaderKey          = "User-Agent"
 	UserAgentHeaderValue        = "Narrows"
+	MutualTLSFilesPath          = "/tmp/NarrowsTlsFiles"
 	MutualTLSClientCertFilename = "/client.crt"
 	MutualTLSClientKeyFilename  = "/client.key"
 	MutualTLSCaCertFilename     = "/ca.crt"
@@ -80,13 +81,13 @@ func (c *Client) Post(payload string) error {
 
 	if c.MutualTLSEnabled {
 		// Load client cert
-		cert, err := tls.LoadX509KeyPair(c.Config.MutualTLSFilesPath+MutualTLSClientCertFilename, c.Config.MutualTLSFilesPath+MutualTLSClientKeyFilename)
+		cert, err := tls.LoadX509KeyPair(MutualTLSFilesPath+MutualTLSClientCertFilename, MutualTLSFilesPath+MutualTLSClientKeyFilename)
 		if err != nil {
 			log.Errorf("failed to load the x509 key pair %s", err.Error())
 		}
 
 		// Load CA cert
-		caCert, err := os.ReadFile(c.Config.MutualTLSFilesPath + MutualTLSCaCertFilename)
+		caCert, err := os.ReadFile(MutualTLSFilesPath + MutualTLSCaCertFilename)
 		if err != nil {
 			log.Errorf("failed to load the ca cert %s", err.Error())
 		}
