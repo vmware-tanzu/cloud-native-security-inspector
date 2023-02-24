@@ -33,7 +33,7 @@ func TestMain(m *testing.M) {
 	testEnv.Finish(
 		envfuncs.DeleteNamespace(namespace),
 		envfuncs.TeardownCRDs("../../tools/installation/yaml", "*"),
-		envfuncs.DestroyKindCluster(kindClusterName),
+		//envfuncs.DestroyKindCluster(kindClusterName),
 	)
 
 	os.Exit(testEnv.Run(m))
