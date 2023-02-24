@@ -27,7 +27,7 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
   dgLoading = false
   public showDetailFlag = false
   echartsLoading = true
-  riskList = []
+  riskList: any[] = []
   constructor(
     private assessmentService: AssessmentService,
     private policyService: PolicyService
