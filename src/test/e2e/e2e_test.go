@@ -87,7 +87,6 @@ var createInspectionPolicy = func(ctx context.Context, t *testing.T, c *envconf.
 	return ctx
 }
 
-
 func TestE2E(t *testing.T) {
 
 	// Test manager can be up and run
@@ -118,7 +117,7 @@ func TestE2E(t *testing.T) {
 						}
 						_ = r.Get(ctx, "cnsi-controller-manager", "cnsi-system", &managerDeployment)
 					}
-					log.Errorf("time out: narrows manager is still not ready after %d seconds", iterations * waitTime)
+					log.Errorf("time out: narrows manager is still not ready after %d seconds", iterations*waitTime)
 					t.Fail()
 				}
 				return ctx
@@ -184,7 +183,7 @@ func TestE2E(t *testing.T) {
 					// The reconciler may need some time for creating the DaemonSet
 					err = r.Get(ctx, "inspectionpolicy-test-kubebench-daemonset", namespace, &kubebenchDaemonSet)
 					if err != nil {
-						if apierrors.IsNotFound(err){
+						if apierrors.IsNotFound(err) {
 							time.Sleep(time.Duration(waitTime) * time.Second)
 						} else {
 							log.Fatalf("failed to get the kubebench daemonSet, err: %s", err.Error())
@@ -217,7 +216,7 @@ func TestE2E(t *testing.T) {
 				t.Fail()
 			}
 			err = r.Get(ctx, "inspectionpolicy-test", "", policy)
-			if apierrors.IsNotFound(err){
+			if apierrors.IsNotFound(err) {
 				log.Info("deleted the policy successfully")
 				return ctx
 			}
@@ -243,7 +242,7 @@ func TestE2E(t *testing.T) {
 			}
 
 			err = r.Get(ctx, "setting-test", "", settings)
-			if apierrors.IsNotFound(err){
+			if apierrors.IsNotFound(err) {
 				log.Info("deleted the setting successfully")
 				return ctx
 			}
