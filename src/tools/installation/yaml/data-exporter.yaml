@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: narrows-exporter
+  name: cnsi-exporter
   namespace: cnsi-system
 spec:
   replicas: 1
@@ -17,10 +17,23 @@ spec:
         - image: projects.registry.vmware.com/cnsi/exporter:0.3
           ports:
             - containerPort: 6780
-              name: servicePort
+              name: exporter-pod-port
           name: exporter
           securityContext:
             allowPrivilegeEscalation: false
       securityContext:
         runAsNonRoot: true
       terminationGracePeriodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cnsi-exporter-service
+  namespace: cnsi-system
+spec:
+  ports:
+    - name: exporter-service-port
+      port: 6780
+      targetPort: exporter-pod-port
+  selector:
+    control-plane: cnsi-exporter
