@@ -17,7 +17,7 @@ spec:
         - image: projects.registry.vmware.com/cnsi/exporter:0.3
           ports:
             - containerPort: 6780
-              name: exporter-pod-port
+              name: http
           name: exporter
           securityContext:
             allowPrivilegeEscalation: false
@@ -32,8 +32,8 @@ metadata:
   namespace: cnsi-system
 spec:
   ports:
-    - name: exporter-service-port
+    - name: http
       port: 6780
-      targetPort: exporter-pod-port
+      targetPort: http
   selector:
     control-plane: cnsi-exporter
