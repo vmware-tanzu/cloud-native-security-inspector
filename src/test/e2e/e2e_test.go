@@ -5,6 +5,7 @@ package e2e
 
 import (
 	"context"
+	"errors"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/test/e2e/inspectionpolicy"
@@ -39,7 +40,9 @@ func TestMain(m *testing.M) {
 	testEnv.Setup(
 		envfuncs.CreateKindCluster(kindClusterName),
 		envfuncs.CreateNamespace(namespace),
-		envfuncs.SetupCRDs("../../tools/installation/yaml", "*"),
+		envfuncs.SetupCRDs("../../tools/installation/yaml", "crd.yaml"),
+		envfuncs.SetupCRDs("../../tools/installation/yaml", "manager.yaml"),
+		envfuncs.SetupCRDs("../../tools/installation/yaml", "data-exporter.yaml"),
 		envfuncs.SetupCRDs("../../config/rbac/", "role.yaml"),
 	)
 
@@ -99,26 +102,17 @@ func TestE2E(t *testing.T) {
 					log.Error(err)
 					t.Fail()
 				}
-				err = r.Get(ctx, "cnsi-controller-manager", "cnsi-system", &managerDeployment)
+				deploymentName := "cnsi-controller-manager"
+				err = r.Get(ctx, deploymentName, "cnsi-system", &managerDeployment)
 				if err != nil {
-					log.Errorf("got an issue when try to check if the cnsi manager deployment exist, err: %s", err)
+					log.Errorf("failed to check the pod readiness for %s exist, err: %s", deploymentName, err)
 					t.Fail()
 				} else {
-					var i int
-					iterations := 10
-					waitTime := 30
-					for i = 0; i < iterations; i++ {
-						if managerDeployment.Status.ReadyReplicas > 0 {
-							log.Info("narrows manager is ready")
-							return ctx
-						} else {
-							log.Infof("narrows manager is not ready, wait %d seconds and recheck", waitTime)
-							time.Sleep(time.Duration(waitTime) * time.Second)
-						}
-						_ = r.Get(ctx, "cnsi-controller-manager", "cnsi-system", &managerDeployment)
+					err = waitPodReady(ctx, r, "cnsi-controller-manager", "cnsi-system", 30, 10, 1)
+					if err != nil {
+						log.Errorf("failed to check the pod readiness, err: %s", err.Error())
+						t.Fail()
 					}
-					log.Errorf("time out: narrows manager is still not ready after %d seconds", iterations*waitTime)
-					t.Fail()
 				}
 				return ctx
 			}).Feature()
@@ -252,4 +246,35 @@ func TestE2E(t *testing.T) {
 		}).Feature()
 
 	testEnv.Test(t, deleteSetting)
+}
+
+// waitPodReady will check the pod number of a deployment periodically, it will return when:
+// 1. Timeout, when the total time > waitTime * iterations, returns error.
+// 2. When the pod number >= expectedReplicas, returns nil.
+// 3. An error occurs, returns the error.
+func waitPodReady(
+	ctx context.Context,
+	r *resources.Resources,
+	name, namespace string,
+	waitTime, iterations, expectedReplicas int) error {
+	log.Infof("start to check the readiness for deployment %s in namespace %s", name, namespace)
+	var err error
+	var deployment appsv1.Deployment
+	for i := 0; i < iterations; i++ {
+		err = r.Get(ctx, name, namespace, &deployment)
+		if err != nil {
+			log.Error("failed to get the deployment",
+				name, namespace, err.Error())
+			return err
+		} else {
+			if int(deployment.Status.ReadyReplicas) >= expectedReplicas {
+				log.Infof("the deployment with %d replicas is ready", deployment.Status.ReadyReplicas)
+				return nil
+			} else {
+				log.Infof("the deployment is not ready, wait %d seconds and recheck", waitTime)
+				time.Sleep(time.Duration(waitTime) * time.Second)
+			}
+		}
+	}
+	return errors.New("time out when checking the pods of the deployment")
 }
