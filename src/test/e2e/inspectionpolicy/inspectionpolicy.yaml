@@ -5,7 +5,7 @@ metadata:
 spec:
   settingsName: setting-test
   enabled: true
-  workNamespace: cronjobs
+  workNamespace: narrows-workspace
   schedule: "*/1 * * * *"
   strategy:
     historyLimit: 5
