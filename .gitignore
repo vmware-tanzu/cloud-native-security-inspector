@@ -20,6 +20,9 @@
 # Except this file
 !.gitignore
 
+# The output of the test coverage
+*.out
+
 #portal 
 dist/
 node_modules/

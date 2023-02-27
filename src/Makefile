@@ -9,6 +9,7 @@ REGISTRY ?= projects.registry.vmware.com/cnsi
 IMG_TAG = 0.3
 # Image URL to use all building/pushing image targets
 IMG_MANAGER ?= $(REGISTRY)/manager:$(IMG_TAG)
+IMG_EXPORTER ?= $(REGISTRY)/exporter:$(IMG_TAG)
 IMG_CMD_INSPECTOR ?= $(REGISTRY)/inspector:$(IMG_TAG)
 IMG_CMD_KUBEBENCH ?= $(REGISTRY)/kubebench:$(IMG_TAG)
 PORTAl ?= $(REGISTRY)/portal:$(IMG_TAG)
@@ -75,6 +76,10 @@ test: manifests generate fmt vet ## Run tests.
 build-manager: generate fmt vet ## Build manager binary.
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o bin/manager main.go
 
+build-exporter: fmt vet
+	cd pkg/exporter
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/exporter
+
 build-inspector: generate fmt vet ## Build inspector command.
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/inspector cmd/inspector/main.go
 
@@ -87,10 +92,13 @@ build-risk: generate fmt vet ## Build risk command.
 run: manifests generate fmt vet ## Run a controller from your host.
 	go run ./main.go
 
-docker-build-all: docker-build-manager docker-build-inspector docker-build-kubebench docker-build-portal docker-build-risk
+docker-build-all: docker-build-manager docker-build-exporter docker-build-inspector docker-build-kubebench docker-build-portal docker-build-risk
 
 docker-build-manager: build-manager ## Build docker image with the manager.
 	$(DOCKERCMD) buildx build -t ${IMG_MANAGER} .
+
+docker-build-exporter: build-exporter ## Build the docker image of the Exporter.
+	$(DOCKERCMD) buildx build -t ${IMG_EXPORTER} -f pkg/exporter/Dockerfile pkg/exporter/
 
 docker-build-inspector: build-inspector ## Build docker image with inspector cmd.
 	$(DOCKERCMD) buildx build -t ${IMG_CMD_INSPECTOR} -f Dockerfile.inspection .
@@ -106,6 +114,7 @@ docker-build-risk: build-risk ## Build docker image with risk cmd.
 
 docker-push: ## Push docker images with the manager.
 	$(DOCKERCMD) push ${IMG_MANAGER}
+	$(DOCKERCMD) push ${IMG_EXPORTER}
 	$(DOCKERCMD) push ${IMG_CMD_INSPECTOR}
 	$(DOCKERCMD) push ${IMG_CMD_KUBEBENCH}
 	$(DOCKERCMD) push ${PORTAl}
@@ -149,11 +158,13 @@ portal: namespace
 install: portal
 	$(KUBECTLCMD) apply -f config/crd/bases
 	$(KUBECTLCMD) apply -f tools/installation/yaml/manager.yaml
+	$(KUBECTLCMD) apply -f tools/installation/yaml/data-exporter.yaml
 	$(KUBECTLCMD) apply -f config/rbac/role.yaml
 
 uninstall: remove_clusterrolebinding
 	$(KUBECTLCMD) delete -f config/crd/bases --ignore-not-found=true
 	$(KUBECTLCMD) delete -f tools/installation/yaml/manager.yaml --ignore-not-found=true
+	$(KUBECTLCMD) delete -f tools/installation/yaml/data-exporter.yaml --ignore-not-found=true
 	$(KUBECTLCMD) delete -f config/rbac/role.yaml --ignore-not-found=true
 
 CONTROLLER_GEN = $(shell pwd)/bin/controller-gen
