@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cnsi-exporter
+  namespace: cnsi-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      control-plane: cnsi-exporter
+  template:
+    metadata:
+      labels:
+        control-plane: cnsi-exporter
+    spec:
+      containers:
+        - image: projects.registry.vmware.com/cnsi/exporter:0.3
+          ports:
+            - containerPort: 6780
+              name: http
+          name: exporter
+          securityContext:
+            allowPrivilegeEscalation: false
+      securityContext:
+        runAsNonRoot: true
+      terminationGracePeriodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cnsi-exporter-service
+  namespace: cnsi-system
+spec:
+  ports:
+    - name: http
+      port: 6780
+      targetPort: http
+  selector:
+    control-plane: cnsi-exporter
