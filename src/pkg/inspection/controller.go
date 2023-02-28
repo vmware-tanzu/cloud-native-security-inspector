@@ -5,6 +5,7 @@ package inspection
 import (
 	"context"
 	"fmt"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/cspauth"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
 	es "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers/es"
 	governor "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers/governor"
@@ -12,6 +13,7 @@ import (
 	osearch "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers/opensearch"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/client-go/kubernetes"
 	"time"
 
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/policy/enforcement"
@@ -141,6 +143,10 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 	// Just in case.
 	if len(nsl) == 0 {
 		log.Info("no namespaces found")
+		err2 := c.checkAndSendReportToGovernor(ctx, policy, &v1alpha1.AssessmentReport{})
+		if err2 != nil {
+			return err2
+		}
 		return nil
 	}
 
@@ -333,20 +339,10 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 		}
 	}
 
-	// Read config from InspectionPolicy, send assessment reports to Governor api if governor enabled.
-	if policy.Spec.Inspection.Assessment.Governor.Enabled {
-		governorConfig := policy.Spec.Inspection.Assessment.Governor
-
-		if governorConfig.ClusterID == "" || governorConfig.URL == "" || governorConfig.APIToken == "" {
-			log.Error("Either ClusterID or URL or APIToken is empty")
-			return errors.New("Either ClusterID or URL or APIToken is empty")
-		}
-
-		log.Info("Calling governor exporter")
-		if exporterErr := exportReportToGovernor(report, policy); exporterErr != nil {
-			log.Errorf("Error from exporter: %v", exporterErr)
-			return exporterErr
-		}
+	err2 := c.checkAndSendReportToGovernor(ctx, policy, report)
+	log.Info("Calling governor exporter")
+	if err2 != nil {
+		return err2
 	}
 
 	// Create report CR if necessary.
@@ -373,23 +369,57 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 	return nil
 }
 
-func exportReportToGovernor(report *v1alpha1.AssessmentReport, policy *v1alpha1.InspectionPolicy) error {
+func (c *controller) checkAndSendReportToGovernor(ctx context.Context, policy *v1alpha1.InspectionPolicy, report *v1alpha1.AssessmentReport) error {
+	// Read config from InspectionPolicy, send assessment reports to Governor api if governor enabled.
+	if policy.Spec.Inspection.Assessment.Governor.Enabled {
+		governorConfig := policy.Spec.Inspection.Assessment.Governor
+
+		if governorConfig.ClusterID == "" || governorConfig.URL == "" || governorConfig.CspSecretName == "" {
+			log.Error("Either ClusterID or URL or CSPSecretName is empty")
+			return errors.New("Either ClusterID or URL or CSPSecretName is empty")
+		}
+
+		log.Info("Calling governor exporter")
+		if exporterErr := exportReportToGovernor(ctx, report, policy); exporterErr != nil {
+			log.Errorf("Error from exporter: %v", exporterErr)
+			return exporterErr
+		}
+	}
+	return nil
+}
+
+func exportReportToGovernor(ctx context.Context, report *v1alpha1.AssessmentReport, policy *v1alpha1.InspectionPolicy) error {
 	governorConfig := policy.Spec.Inspection.Assessment.Governor
 
 	// Create api client to governor api.
 	config := openapi.NewConfiguration()
-	//config.Host = governorConfig.URL
-	config.Servers = openapi.ServerConfigurations{{URL: governorConfig.URL}}
+	config.Servers = openapi.ServerConfigurations{{
+		URL: governorConfig.URL,
+	}}
 	apiClient := openapi.NewAPIClient(config)
 
-	exporter := governor.GovernorExporter{
-		Report:    report,
-		ClusterID: governorConfig.ClusterID,
-		ApiToken:  governorConfig.APIToken,
-		ApiClient: apiClient,
+	cspClient, err := cspauth.NewCspHTTPClient()
+	if err != nil {
+		log.Errorf("Initializing CSP : %v", err)
+		return err
+	}
+	provider := &cspauth.CspAuth{CspClient: cspClient}
+
+	clientSet, err := kubernetes.NewForConfig(ctrl.GetConfigOrDie())
+	if err != nil {
+		log.Error(err, "Failed to get kubernetes clientSet, check if kube config is correctly configured!")
+		return err
 	}
 
-	if apiResponseErr := exporter.SendReportToGovernor(); apiResponseErr != nil {
+	exporter := governor.GovernorExporter{
+		Report:        report,
+		ClusterID:     governorConfig.ClusterID,
+		ApiClient:     apiClient,
+		CspProvider:   provider,
+		KubeInterface: clientSet,
+	}
+
+	if apiResponseErr := exporter.SendReportToGovernor(ctx); apiResponseErr != nil {
 		log.Error("Err response from governor exporter", apiResponseErr)
 		return apiResponseErr
 	}
@@ -398,15 +428,15 @@ func exportReportToGovernor(report *v1alpha1.AssessmentReport, policy *v1alpha1.
 }
 
 func exportReportToOpenSearch(report *v1alpha1.AssessmentReport, policy *v1alpha1.InspectionPolicy) error {
-	client := osearch.NewClient([]byte{},
+	openSearchClient := osearch.NewClient([]byte{},
 		policy.Spec.Inspection.Assessment.OpenSearchAddr,
 		policy.Spec.Inspection.Assessment.OpenSearchUser,
 		policy.Spec.Inspection.Assessment.OpenSearchPasswd)
-	if client == nil {
-		log.Info("OpenSearch client is nil")
+	if openSearchClient == nil {
+		log.Info("OpenSearch openSearchClient is nil")
 	}
-	exporter := osearch.OpenSearchExporter{Client: client}
-	err := exporter.NewExporter(client, "assessment_report")
+	exporter := osearch.OpenSearchExporter{Client: openSearchClient}
+	err := exporter.NewExporter(openSearchClient, "assessment_report")
 	if err != nil {
 		return err
 	}
@@ -434,17 +464,17 @@ func exportReportToES(report *v1alpha1.AssessmentReport, policy *v1alpha1.Inspec
 	}
 	log.Info("ES config: ", "addr", clientArgs.addr)
 	log.Info("ES config: ", "clientArgs.username", clientArgs.username)
-	client := es.NewClient(clientArgs.cert, clientArgs.addr, clientArgs.username, clientArgs.passwd)
-	if client == nil {
-		log.Info("ES client is nil")
+	esClient := es.NewClient(clientArgs.cert, clientArgs.addr, clientArgs.username, clientArgs.passwd)
+	if esClient == nil {
+		log.Info("ES esClient is nil")
 	}
 
 	if err := es.TestClient(); err != nil {
-		log.Info("client test error")
+		log.Info("esClient test error")
 		return err
 	}
-	exporter := es.ElasticSearchExporter{Client: client}
-	err := exporter.NewExporter(client, "assessment_report")
+	exporter := es.ElasticSearchExporter{Client: esClient}
+	err := exporter.NewExporter(esClient, "assessment_report")
 	if err != nil {
 		return err
 	}

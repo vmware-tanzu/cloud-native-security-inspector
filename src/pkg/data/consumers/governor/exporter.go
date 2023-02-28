@@ -5,25 +5,47 @@ import (
 	"errors"
 	"fmt"
 	api "github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/cspauth"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
 	openapi "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers/governor/go-client"
+	"k8s.io/client-go/kubernetes"
 	"net/http"
 )
 
+const (
+	cspSecretNamespace = "cnsi-system"
+)
+
 type GovernorExporter struct {
-	Report    *api.AssessmentReport
-	ClusterID string
-	ApiToken  string
-	ApiClient *openapi.APIClient
+	Report        *api.AssessmentReport
+	ClusterID     string
+	ApiClient     *openapi.APIClient
+	CspProvider   cspauth.Provider
+	KubeInterface kubernetes.Interface
 }
 
 // SendReportToGovernor is used to send report to governor url http end point.
-func (g GovernorExporter) SendReportToGovernor() error {
+func (g GovernorExporter) SendReportToGovernor(ctx context.Context) error {
 	// Get governor api request model from assessment report.
 	kubernetesCluster := g.getGovernorAPIPayload()
+
 	log.Info("Payload data for governor:")
 	log.Info(kubernetesCluster)
-	apiSaveClusterRequest := g.ApiClient.ClustersApi.UpdateTelemetry(context.Background(), g.ClusterID).KubernetesTelemetryRequest(kubernetesCluster)
+
+	cspSecretName := ctx.Value("cspSecretName")
+	if cspSecretName == nil {
+		log.Error("Error while retrieving access token !")
+		return errors.New("CSP secret name must be set to connect to Governor")
+	}
+	governorAccessToken, err := g.CspProvider.GetBearerToken(g.KubeInterface, ctx, cspSecretNamespace, cspSecretName.(string))
+	if err != nil {
+		log.Error("Error while retrieving access token !")
+		return err
+	}
+
+	ctx = context.WithValue(ctx, openapi.ContextAccessToken, governorAccessToken)
+
+	apiSaveClusterRequest := g.ApiClient.ClustersApi.UpdateTelemetry(ctx, g.ClusterID).KubernetesTelemetryRequest(kubernetesCluster)
 
 	// Call api cluster to send telemetry data and get response.
 	response, err := g.ApiClient.ClustersApi.UpdateTelemetryExecute(apiSaveClusterRequest)
@@ -46,7 +68,7 @@ func (g GovernorExporter) SendReportToGovernor() error {
 // getGovernorAPIPayload is used to map assessment report to client model.
 func (g GovernorExporter) getGovernorAPIPayload() openapi.KubernetesTelemetryRequest {
 	kubernetesCluster := openapi.NewKubernetesTelemetryRequestWithDefaults()
-
+	kubernetesCluster.Workloads = make([]openapi.KubernetesWorkload, 0)
 	for _, nsa := range g.Report.Spec.NamespaceAssessments {
 		for _, workloadAssessment := range nsa.WorkloadAssessments {
 			kubernetesWorkloads := openapi.NewKubernetesWorkloadWithDefaults()
@@ -54,6 +76,7 @@ func (g GovernorExporter) getGovernorAPIPayload() openapi.KubernetesTelemetryReq
 			kubernetesWorkloads.Kind = workloadAssessment.Workload.Kind
 			kubernetesWorkloads.Namespace = nsa.Namespace.Name
 			kubernetesWorkloads.Replicas = workloadAssessment.Workload.Replicas
+
 			for _, pod := range workloadAssessment.Workload.Pods {
 				containerData := openapi.NewContainerWithDefaults()
 				for _, container := range pod.Containers {

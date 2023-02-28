@@ -143,8 +143,8 @@ spec:
                       governor:
                         description: Indicate whether to config of governor
                         properties:
-                          apiToken:
-                            description: Api token for user authentication
+                          cspSecretName:
+                            description: Secret name where CSP api token is stored in cnsi-system namespace
                             type: string
                           clusterId:
                             description: Unique identifier of the cluster
