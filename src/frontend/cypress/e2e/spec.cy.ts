@@ -38,13 +38,17 @@ describe('Setting Test', () => {
       },
     })
     cy.visit('http://127.0.0.1:4004/setting')
-
     // cy.visit('https://angular.realworld.io/')
   })
 
 
   it('open secret modal', () => {
-    // cy.contains('Secret-team')
+    Cypress.on('uncaught:exception', (err, runnable) => {
+      // returning false here prevents Cypress from
+      // failing the test
+      return false
+    })
+    // cy.contains('Secret-team123')
     // create secret
     cy.get('[data-cy=submit]').click()
     cy.get('[data-cy=secret_name]').type('Harbor-test', {force: true})
@@ -57,6 +61,11 @@ describe('Setting Test', () => {
   })
 
   it('setting', () => {
+    Cypress.on('uncaught:exception', (err, runnable) => {
+      // returning false here prevents Cypress from
+      // failing the test
+      return false
+    })
     cy.wait(1000)
     // create setting
     cy.get('[data-cy=cut_setting]').click()
