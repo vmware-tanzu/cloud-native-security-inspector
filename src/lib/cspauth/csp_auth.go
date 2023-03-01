@@ -74,7 +74,8 @@ func (a *CspAuth) refreshToken(ctx context.Context, clientSet kubernetes.Interfa
 		expiresIn := time.Duration(math.Min(float64(cspAuthResponse.ExpiresIn), tokenMaxAgeSeconds)) * time.Second
 		formattedExpiration := now.Add(expiresIn).Format(time.Layout)
 
-		log.Infof("Refreshed access token for governor: %s which expires in %s", cspAuthResponse.AccessToken, formattedExpiration)
+		log.Infof("Refreshed access token for governor which expires in %s", formattedExpiration)
+		accessTokenSecret.Data = make(map[string][]byte, 0)
 		accessTokenSecret.Data[governorAccessTokenKey] = []byte(cspAuthResponse.AccessToken)
 		accessTokenSecret.Data[governorTokenExpiresIn] = []byte(formattedExpiration)
 		_, err = clientSet.CoreV1().Secrets(cspSecretNamespace).Update(ctx, accessTokenSecret, v1.UpdateOptions{})
@@ -104,7 +105,7 @@ func getOrCreateSecretForAccessToken(clientSet kubernetes.Interface, ctx context
 		secret = &v12.Secret{}
 		secret.Name = accessTokenSecretName
 		secret.Namespace = ns
-		secret.Data = map[string][]byte{}
+		secret.Data = make(map[string][]byte, 0)
 		secret, err = clientSet.CoreV1().Secrets(ns).Create(ctx, secret, v1.CreateOptions{})
 		if err != nil {
 			log.Error(err, "Failed to create secret for storing access token.")

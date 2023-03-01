@@ -61,7 +61,7 @@ spec:
         enabled: true
         clusterId: "65a03970-c53a-4ba1-8d1f-42c9f95d2761"
         url: "https://api.int.app-catalog.vmware.com/catalog-governor/v1"
-        apiToken: "n6yDMkMEghPUYJDGsn39I_GYNnPh4Vi-LnaH2URjpgwcXbFIVYzMU-n8LRzTJGKO"
+        cspSecretName: "csp-secret"
     baselines:
       - kind: "vulnerability"
         baseline: "High"
