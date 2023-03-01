@@ -13,10 +13,14 @@ import { ShardService } from './service/shard.service';
 })
 export class AppComponent implements OnInit{
   title='';
+  lang: any = ''
   constructor(private shardService:ShardService, private i18: AppService) {
-    const lang = localStorage.getItem('tsi-language')
-    if (lang) {
-      this.i18.changeLanguage(lang)
+    this.getLang()
+  }
+  getLang() {
+    this.lang = localStorage.getItem('tsi-language')
+    if (this.lang) {
+      this.i18.changeLanguage(this.lang)
     } else {
       if (window.navigator.language === 'zh-CN') {
         this.i18.changeLanguage('zh_CN')
@@ -24,8 +28,8 @@ export class AppComponent implements OnInit{
         this.i18.changeLanguage('en')
       }
     }
-
   }
+
   ngOnInit(): void {
     this.getNamespaceList()
   }

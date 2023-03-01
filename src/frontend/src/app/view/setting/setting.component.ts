@@ -26,7 +26,7 @@ export class SettingComponent implements OnInit, OnDestroy {
   public isCornUpdateModal = false
   public secretModalFlag = false
   public noteIconFlag = true;
-  public isSecret = true
+  public secret = true
   public secretForm!: UntypedFormGroup;
 
   public messageHarborFlag = false;
@@ -69,6 +69,13 @@ export class SettingComponent implements OnInit, OnDestroy {
     }, 1000)
   }
 
+  get isSecret () {
+    return this.secret
+  }
+
+  set isSecret (value) {
+    this.secret = value
+  }
   // setting func
   getHarbor(){
     this.settingLoading = true
@@ -156,7 +163,8 @@ export class SettingComponent implements OnInit, OnDestroy {
       kind: 'Secret',
       metadata: {
         name: this.secretForm.get('secret_name')?.value,
-        namespace: this.secretForm.get('secret_namespace')?.value
+        namespace: this.secretForm.get('secret_namespace')?.value,
+        creationTimestamp: ''
       },
       type: 'Opaque'
     }

@@ -36,4 +36,7 @@ describe('HeaderComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+  it('Get the current language of the browser', () => {
+    const lang = localStorage.getItem('tsi-language')
+  });
 });

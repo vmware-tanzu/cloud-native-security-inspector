@@ -10,6 +10,7 @@ import { ShardTestModule } from 'src/app/shard/shard/shard.module';
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 
 import { ReportViewComponent } from './report-view.component';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('ReportViewComponent', () => {
   let component: ReportViewComponent;
@@ -18,7 +19,7 @@ describe('ReportViewComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ ReportViewComponent ],
-      imports: [ShardTestModule],
+      imports: [ShardTestModule, RouterTestingModule],
       providers: [ShardService, PolicyService],
       schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
 

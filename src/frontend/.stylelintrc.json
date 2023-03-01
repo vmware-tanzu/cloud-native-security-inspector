@@ -9,6 +9,7 @@
     "no-descending-specificity": null,
     "function-no-unknown": null,
     "hue-degree-notation": null,
-    "no-duplicate-selectors": null
+    "no-duplicate-selectors": null,
+    "at-rule-no-unknown": null
   }
 }

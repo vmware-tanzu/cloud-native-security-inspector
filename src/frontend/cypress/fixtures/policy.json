@@ -1,0 +1,10 @@
+{
+  "apiVersion": "goharbor.goharbor.io/v1alpha1",
+  "items": [
+  ],
+  "kind": "InspectionPolicyList",
+  "metadata": {
+    "continue": "",
+    "resourceVersion": "2285820"
+  }
+}
