@@ -10,10 +10,24 @@ greater awareness and control of running workloads.
 - We recommend you to have 8 GiB of memory available for this deployment, or at least 4 GiB for the minimum requirement.
 Else, the deployment is expected to fail. 
 ## Installing
-
+```shell
+$ helm install [release-name] src/tools/installation/charts/cnsi
+```
 ## Uninstalling
-
+```shell
+$ helm uninstall [release-name]
+```
+This will not delete CRD. You can get and delete CRD manually using below commands:
+```shell
+$ kubectl get crd
+$ kubectl delete crd assessmentreports.goharbor.goharbor.io inspectionpolicies.goharbor.goharbor.io settings.goharbor.goharbor.io
+```
 ## Configuration
-| Parameter | Description | Default         |
-|----------|-------------|-----------------|
-| `param`  | `desc`      | `Default value` |
+```shell
+$ helm install [release-name] src/tools/installation/charts/cnsi/ --set image.repository="your-own-repository" --set image.tag="latest"
+```
+| Parameter | Description                           | Default                          |
+|----------|---------------------------------------|----------------------------------|
+| `image.repository`  | `The repository to pull images`       | `projects.registry.vmware.com/cnsi` |
+| `image.tag`  | `The tags of the images`              | `0.3`                            |
+| `image.pullPolicy`  | `The image pull policy in Kubernetes` | `IfNotPresent`                               |
