@@ -36,6 +36,9 @@ It checks whether Kubernetes is deployed securely by running the checks document
 The Risk scanner fetches the [CVSS vectors](https://qualysguard.qg2.apps.qualys.com/qwebhelp/fo_portal/setup/cvss_vector_strings.htm)
 from the image vulnerability report, then reports scored-risks it observed in the vector.
 
+## Integration with VMware Application Catalog for OSS inspection
+  See the [Open-Source Software Inspection with VMware Application Catalog](./docs/GOVERNOR.md) guide.
+
 ## Demo
 [Video Demo](https://youtu.be/IMxU0UWo-DU) - Demo for Cloud Native Security Inspector features
 
