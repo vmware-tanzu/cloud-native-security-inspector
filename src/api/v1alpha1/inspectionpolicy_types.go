@@ -1,3 +1,4 @@
+// Package v1alpha1
 // Copyright 2022 VMware, Inc.
 // SPDX-License-Identifier: Apache-2.0
 package v1alpha1
@@ -67,55 +68,6 @@ type Connection struct {
 	Insecure bool `json:"insecure"`
 }
 
-// Assessment report.
-type Assessment struct {
-	// Generate indicates whether generate the assessment report or not.
-	// +kubebuilder:default:=true
-	Generate bool `json:"generate"`
-	// Format of the assessment report data.
-	// +kubebuilder:validation:Enum:=JSON;YAML
-	// +kubebuilder:default:=YAML
-	Format string `json:"format"`
-	// Live time of the generated report.
-	// Unit is second.
-	// +kubebuilder:default:=86400
-	LiveTime int64 `json:"liveTime"`
-	// Indicate whether the assessment reports are managed by the policy.
-	// If it is set to true, then the assessment report is owned by the policy.
-	// +kubebuilder:default:=false
-	ManagedBy bool `json:"managedBy"`
-	// Indicate whether to store the reports to elasticsearch
-	// +kubebuilder:default:=false
-	ElasticSearchEnabled bool `json:"elasticSearchEnabled"`
-	// ElasticSearch endpoint
-	// +kubebuilder:validation:Optional
-	ElasticSearchAddr string `json:"elasticSearchAddr"`
-	// ElasticSearch username for the client
-	// +kubebuilder:validation:Optional
-	ElasticSearchUser string `json:"elasticSearchUser"`
-	// ElasticSearch password for the client
-	// +kubebuilder:validation:Optional
-	ElasticSearchPasswd string `json:"elasticSearchPasswd"`
-	// ElasticSearch certificate for the client
-	// +kubebuilder:validation:Optional
-	ElasticSearchCert string `json:"elasticSearchCert"`
-	// Indicate whether to store the reports to opensearch
-	// +kubebuilder:default:=false
-	OpenSearchEnabled bool `json:"openSearchEnabled"`
-	// ElasticSearch endpoint
-	// +kubebuilder:validation:Optional
-	OpenSearchAddr string `json:"openSearchAddr"`
-	// ElasticSearch username for the client
-	// +kubebuilder:validation:Optional
-	OpenSearchUser string `json:"openSearchUser"`
-	// ElasticSearch password for the client
-	// +kubebuilder:validation:Optional
-	OpenSearchPasswd string `json:"openSearchPasswd"`
-	// ElasticSearch certificate for the client
-	// +kubebuilder:validation:Optional
-	OpenSearchCert string `json:"openSearchCert"`
-}
-
 // FollowupAction defines what actions should be applied when security expectations are matched.
 type FollowupAction struct {
 	// Kind of action.
@@ -147,10 +99,6 @@ type ComplianceBaseline struct {
 
 // InspectionConfiguration contains the configurations of the inspection.
 type InspectionConfiguration struct {
-	// DataProvider is the data provider.
-	//DataProvider DataProvider `json:"dataProvider"`
-	// Assessment is the assessment report.
-	Assessment Assessment `json:"assessment"`
 	// Actions of protection.
 	// +kubebuilder:validation:Optional
 	Actions []*FollowupAction `json:"actions"`
@@ -163,6 +111,32 @@ type InspectionConfiguration struct {
 	// WorkloadSelector provides a way to select the specified workloads.
 	// +kubebuilder:validation:Optional
 	WorkloadSelector *metav1.LabelSelector `json:"workloadSelector,omitempty"`
+}
+
+type ExportConfig struct {
+	// +kubebuilder:validation:Optional
+	OpenSearch OpensearchOutputConfig `json:"openSearch,omitempty"`
+	// Extend this struct for more consumers
+}
+
+type OpensearchOutputConfig struct {
+	HostPort string `json:"hostport"`
+	// +kubebuilder:validation:Optional
+	Index     string `json:"index,omitempty"`
+	Username  string `json:"username"`
+	Password  string `json:"password"`
+	CheckCert bool   `json:"checkCert"`
+	MutualTLS bool   `json:"mutualTLS"`
+}
+
+// ReportData defines the protocol between scanners and exporters
+type ReportData struct {
+	// Source indicates the report is from which source
+	Source string `json:"source"`
+	// Config indicates the consumer configurations
+	ExportConfig ExportConfig `json:"exportConfig"`
+	// Payload is the actual report content
+	Payload string `json:"payload"`
 }
 
 // Strategy of inspector.
@@ -181,6 +155,8 @@ type Strategy struct {
 
 // Inspector contains the image configuration of the inspector.
 type Inspector struct {
+	// +kubebuilder:validation:Optional
+	ExportConfig ExportConfig `json:"exportConfig,omitempty"`
 	// Image of the inspector.
 	// +kubebuilder:validation:Optional
 	Image string `json:"image"`

@@ -30,13 +30,4 @@ resources:
   kind: Assessment
   path: goharbor.io/cloud-native-security-inspector/api/v1alpha1
   version: v1alpha1
-- api:
-    crdVersion: v1
-    namespaced: true
-  controller: true
-  domain: goharbor.io
-  group: goharbor
-  kind: AssessmentReport
-  path: goharbor.io/cloud-native-security-inspector/api/v1alpha1
-  version: v1alpha1
 version: "3"

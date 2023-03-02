@@ -4,17 +4,16 @@ package policy
 
 import (
 	"context"
-
-	"github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
+	rcworkload "github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/assets/workload"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/policy/enforcement"
 )
 
 // Enforcer to enforce policy.
 type Enforcer interface {
 	// Enforce policy to the specified workload with options.
-	Enforce(ctx context.Context, workload *v1alpha1.Workload, option ...enforcement.Option) error
+	Enforce(ctx context.Context, workload *rcworkload.Workload, option ...enforcement.Option) error
 	// Revoke policy from the specified workload.
-	Revoke(ctx context.Context, workload *v1alpha1.Workload) error
-	// IsManaged checks if the workload is managed by the policy.
-	IsManaged(ctx context.Context, workload *v1alpha1.Workload) (bool, error)
+	Revoke(ctx context.Context, workload *rcworkload.Workload) error
+	// HasBeenEnforced checks if the workload is managed by the policy.
+	HasBeenEnforced(ctx context.Context, workload *rcworkload.Workload) (bool, error)
 }

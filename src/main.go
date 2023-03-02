@@ -74,12 +74,6 @@ func main() {
 		log.Fatalf("unable to create controller, error: %s", err)
 	}
 
-	if err = (&controllers.AssessmentReportReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		log.Fatalf("unable to create controller, error: %s", err)
-	}
 	//+kubebuilder:scaffold:builder
 
 	if err := mgr.AddHealthzCheck("healthz", healthz.Ping); err != nil {
