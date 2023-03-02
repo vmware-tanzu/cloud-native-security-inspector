@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    control-plane: cnsi-controller
+  name: cnsi-controller-manager
+  namespace: cnsi-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      control-plane: cnsi-controller
+  template:
+    metadata:
+      labels:
+        control-plane: cnsi-controller
+    spec:
+      containers:
+        - args:
+            - --secure-listen-address=0.0.0.0:8443
+            - --upstream=http://127.0.0.1:8080/
+            - --logtostderr=true
+            - --v=10
+          image: {{ .Values.image.repository }}/kubebuilder/kube-rbac-proxy:v0.8.0
+          name: kube-rbac-proxy
+          ports:
+            - containerPort: 8443
+              name: https
+        - args:
+            - --health-probe-bind-address=:8081
+            - --metrics-bind-address=127.0.0.1:8080
+            - --leader-elect
+          command:
+            - /manager
+          image: {{ .Values.image.repository }}/manager:{{ .Values.image.tag }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8081
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          name: manager
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8081
+            initialDelaySeconds: 10
+            periodSeconds: 20
+          resources:
+            limits:
+              cpu: 100m
+              memory: 30Mi
+            requests:
+              cpu: 100m
+              memory: 20Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+      securityContext:
+        runAsNonRoot: true
+      serviceAccountName: cnsi-controller-manager
+      terminationGracePeriodSeconds: 10
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cnsi-exporter
+  namespace: cnsi-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      control-plane: cnsi-exporter
+  template:
+    metadata:
+      labels:
+        control-plane: cnsi-exporter
+    spec:
+      containers:
+        - image: {{ .Values.image.repository }}/exporter:{{ .Values.image.tag }}
+          ports:
+            - containerPort: 6780
+              name: http
+          name: exporter
+          securityContext:
+            allowPrivilegeEscalation: false
+      securityContext:
+        runAsNonRoot: true
+      terminationGracePeriodSeconds: 10
