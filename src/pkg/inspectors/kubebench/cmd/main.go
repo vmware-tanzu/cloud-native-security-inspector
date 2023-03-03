@@ -186,7 +186,6 @@ func readTheSubPaths(root string, fullDirListPtr *[]string, exceptPaths *[]strin
 				if slices.Contains(*exceptPaths, subDirPath) {
 					continue
 				}
-				*fullDirListPtr = append(*fullDirListPtr, subDirPath)
 				readTheSubPaths(subDirPath, fullDirListPtr, exceptPaths)
 			}
 		}
