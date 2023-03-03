@@ -130,7 +130,7 @@ func (ds *DefaultScanner) processPod(ctx context.Context, pod corev1.Pod, indexe
 		return errors.Wrap(err, "get pod reference")
 	}
 
-	owner, err := ds.getOwner(ctx, pod)
+	owner, replicaSetCount, err := ds.getOwner(ctx, pod)
 	if err != nil {
 		return errors.Wrap(err, "get pod owner")
 	}
@@ -142,6 +142,7 @@ func (ds *DefaultScanner) processPod(ctx context.Context, pod corev1.Pod, indexe
 
 	if _, ok := indexer[uid]; !ok {
 		indexer[uid] = &v1alpha1.Workload{}
+		indexer[uid].Replicas = replicaSetCount
 	}
 
 	// Set owner reference.
@@ -160,33 +161,35 @@ func (ds *DefaultScanner) processPod(ctx context.Context, pod corev1.Pod, indexe
 	return nil
 }
 
-func (ds *DefaultScanner) getOwner(ctx context.Context, pod corev1.Pod) (*corev1.ObjectReference, error) {
+func (ds *DefaultScanner) getOwner(ctx context.Context, pod corev1.Pod) (*corev1.ObjectReference, int32, error) {
 	refs := pod.GetOwnerReferences()
 	if ref, yes := hasReplicaSet(refs); yes {
-		rsOwnerRef, err := ds.getReplicaSetOwnerRef(ctx, types.NamespacedName{
+		rsOwnerRef, replicaSetCount, err := ds.getReplicaSetOwnerRef(ctx, types.NamespacedName{
 			Namespace: pod.Namespace,
 			Name:      ref.Name,
 		})
 		if err != nil {
-			return nil, errors.Wrap(err, "get replicaSet owner ref")
+			return nil, 0, errors.Wrap(err, "get replicaSet owner ref")
 		}
 
 		// Deployment?
 		if rsOwnerRef != nil {
-			return rsOwnerRef, nil
+			return rsOwnerRef, replicaSetCount, nil
 		}
 	}
 
-	return extractOwnerRef(pod.Namespace, refs), nil
+	return extractOwnerRef(pod.Namespace, refs), 0, nil
 }
 
-func (ds *DefaultScanner) getReplicaSetOwnerRef(ctx context.Context, namespacedName types.NamespacedName) (*corev1.ObjectReference, error) {
+func (ds *DefaultScanner) getReplicaSetOwnerRef(ctx context.Context, namespacedName types.NamespacedName) (*corev1.ObjectReference, int32, error) {
 	var rps appsv1.ReplicaSet
 	if err := ds.Get(ctx, namespacedName, &rps); err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
-	return extractOwnerRef(namespacedName.Namespace, rps.GetOwnerReferences()), nil
+	ownerRef := rps.GetOwnerReferences()
+
+	return extractOwnerRef(namespacedName.Namespace, ownerRef), extractReplicaSet(ownerRef, rps), nil
 }
 
 // ScanOtherResource implements inspection.Scanner.
@@ -266,6 +269,16 @@ func extractOwnerRef(ns string, ownerRefs []metav1.OwnerReference) *corev1.Objec
 	}
 
 	return nil
+}
+
+func extractReplicaSet(ownerRefs []metav1.OwnerReference, rps appsv1.ReplicaSet) int32 {
+	for _, or := range ownerRefs {
+		if isWorkload(or.Kind) {
+			return *rps.Spec.Replicas
+		}
+	}
+
+	return 0
 }
 
 func hasReplicaSet(ownerRefs []metav1.OwnerReference) (metav1.OwnerReference, bool) {

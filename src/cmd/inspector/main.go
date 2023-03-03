@@ -41,6 +41,7 @@ func main() {
 	k8sClient, err := client.New(ctrl.GetConfigOrDie(), client.Options{
 		Scheme: scheme,
 	})
+
 	if err != nil {
 		log.Error(err, "unable to create k8s client")
 		os.Exit(1)
@@ -54,6 +55,10 @@ func main() {
 	if err := k8sClient.Get(ctx, client.ObjectKey{Name: policy}, inspectionPolicy); err != nil {
 		log.Error(err, "unable to retrieve the specified inspection policy")
 		os.Exit(1)
+	}
+
+	if inspectionPolicy.Spec.Inspection.Assessment.Governor.Enabled {
+		ctx = context.WithValue(ctx, "cspSecretName", inspectionPolicy.Spec.Inspection.Assessment.Governor.CspSecretName)
 	}
 
 	runner := inspection.NewController().

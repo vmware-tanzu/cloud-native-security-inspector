@@ -57,6 +57,11 @@ spec:
       openSearchAddr: "https://opensearch-cluster-master.default:9200"
       openSearchUser: "admin"
       openSearchPasswd: "admin"
+      governor:
+        enabled: true
+        clusterId: "65a03970-c53a-4ba1-8d1f-42c9f95d2761"
+        url: "https://api.int.app-catalog.vmware.com/catalog-governor/v1"
+        cspSecretName: "csp-secret"
     baselines:
       - kind: "vulnerability"
         baseline: "High"
