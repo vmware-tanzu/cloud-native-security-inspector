@@ -11,6 +11,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
+	"k8s.io/utils/strings/slices"
 	"os"
 	"os/exec"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -30,7 +31,7 @@ const (
 	varLibKubeSchedulerPath         = "/var/lib/kube-scheduler"
 	varLibKubeControllerManagerPath = "/var/lib/kube-controller-manager"
 	etcSystemdPath                  = "/etc/systemd"
-	libSystemdPath                  = "/lib/systemd/"
+	libSystemdPath                  = "/lib/systemd/system"
 	srvKubernetesPath               = "/srv/kubernetes/"
 	etcKubernetesPath               = "/etc/kubernetes"
 	usrBinPath                      = "/usr/local/mount-from-host/bin"
@@ -155,8 +156,11 @@ func main() {
 	log.Info("the watcher has been started to watch the K8s configurations files")
 
 	var fullDirList []string
+	exceptPaths := []string{
+		"/var/lib/kubelet/pods", // This is under kubelet but is not about k8s configurations
+	}
 	for _, rootPath := range rootPathList {
-		readThePaths(rootPath, &fullDirList)
+		readTheSubPaths(rootPath, &fullDirList, &exceptPaths)
 	}
 
 	for _, path := range fullDirList {
@@ -170,15 +174,20 @@ func main() {
 	<-make(chan struct{})
 }
 
-func readThePaths(root string, fullDirListPtr *[]string) {
+func readTheSubPaths(root string, fullDirListPtr *[]string, exceptPaths *[]string) {
+	*fullDirListPtr = append(*fullDirListPtr, root)
 	entries, err := os.ReadDir(root)
 	if err != nil {
+		log.Error(err, "failed to read the dir", "root", root)
 	} else {
 		for _, entry := range entries {
 			if entry.IsDir() {
 				subDirPath := fmt.Sprintf("%s/%s", root, entry.Name())
+				if slices.Contains(*exceptPaths, subDirPath) {
+					continue
+				}
 				*fullDirListPtr = append(*fullDirListPtr, subDirPath)
-				readThePaths(subDirPath, fullDirListPtr)
+				readTheSubPaths(subDirPath, fullDirListPtr, exceptPaths)
 			}
 		}
 	}

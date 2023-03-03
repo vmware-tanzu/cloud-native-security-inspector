@@ -39,7 +39,7 @@ const (
 	varLibKubeSchedulerPath         = "/var/lib/kube-scheduler"
 	varLibKubeControllerManagerPath = "/var/lib/kube-controller-manager"
 	etcSystemdPath                  = "/etc/systemd"
-	libSystemdPath                  = "/lib/systemd/"
+	libSystemdPath                  = "/lib/systemd/system"
 	srvKubernetesPath               = "/srv/kubernetes/"
 	etcKubernetesPath               = "/etc/kubernetes"
 	usrBinPath                      = "/usr/local/mount-from-host/bin"
