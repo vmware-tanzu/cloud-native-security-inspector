@@ -1,7 +1,7 @@
 # Cloud Native Security Inspector (Project Narrows)
 [![CodeQL](https://github.com/vmware-tanzu/cloud-native-security-inspector/actions/workflows/codeql.yml/badge.svg)](https://github.com/vmware-tanzu/cloud-native-security-inspector/actions/workflows/codeql.yml)
-[![Cypress](https://github.com/vmware-tanzu/cloud-native-security-inspector/actions/workflows/cypress.yml/badge.svg)](https://github.com/vmware-tanzu/cloud-native-security-inspector/actions/workflows/cypress.yml)
-
+[![Cypress](https://github.com/vmware-tanzu/cloud-native-security-inspector/actions/workflows/cypress.yml/badge.svg?branch=main)](https://github.com/vmware-tanzu/cloud-native-security-inspector/actions/workflows/cypress.yml)
+[![ci](https://github.com/vmware-tanzu/cloud-native-security-inspector/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/bahmutov/cypress-set-github-status/actions/workflows/main.yml)
 
 Cloud Native Security Inspector is an open source cloud native runtime security tool. It allows end users to assess
 the security posture of Kubernetes clusters at runtime. This project will add dynamic scanning giving Security Auditors

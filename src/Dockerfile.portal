@@ -2,7 +2,7 @@ FROM node:14.15 as builder
 
 WORKDIR /protal
 COPY frontend/ .
-RUN npm --unsafe-perm install 
+RUN npm --unsafe-perm install --production
 # Build
 RUN npm run build
 
