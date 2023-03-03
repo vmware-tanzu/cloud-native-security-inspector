@@ -4,6 +4,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
 	imagescannerpkg "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/inspectors/imagescanner/pkg"
@@ -32,9 +33,8 @@ func init() {
 func main() {
 	var policy string
 
-	//flag.StringVar(&policy, "policy", "", "name of the inspection policy")
-	//flag.Parse()
-	policy = "inspectionpolicy-sample"
+	flag.StringVar(&policy, "policy", "", "name of the inspection policy")
+	flag.Parse()
 	log.Infof("policy name %s", policy)
 	log.Info("inspector scanning")
 

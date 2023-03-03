@@ -3,17 +3,16 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"github.com/fsnotify/fsnotify"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/inspectors/kubebench/pkg"
-	"io/fs"
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	"os"
 	"os/exec"
-	"path/filepath"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"strings"
@@ -47,11 +46,7 @@ func init() {
 //+kubebuilder:rbac:groups="",resources=pods,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=apps,resources=replicasets,verbs=get;list;watch;create;update;patch;delete
 
-func scan() {
-	var policy string
-	flag.StringVar(&policy, "policy", "", "name of the inspection policy")
-	flag.Parse()
-	log.Infof("policy name %s", policy)
+func scan(policyName string) {
 	log.Info("kube-bench scanning...")
 
 	k8sClient, err := client.New(ctrl.GetConfigOrDie(), client.Options{
@@ -67,7 +62,7 @@ func scan() {
 
 	// Get the policy CR details.
 	inspectionPolicy := &v1alpha1.InspectionPolicy{}
-	if err := k8sClient.Get(ctx, client.ObjectKey{Name: policy}, inspectionPolicy); err != nil {
+	if err := k8sClient.Get(ctx, client.ObjectKey{Name: policyName}, inspectionPolicy); err != nil {
 		log.Error(err, "unable to retrieve the specified inspection policy")
 		os.Exit(1)
 	}
@@ -98,6 +93,11 @@ func getHostName() string {
 }
 
 func main() {
+	var policy string
+	flag.StringVar(&policy, "policy", "", "name of the inspection policy")
+	flag.Parse()
+	log.Infof("policy name %s", policy)
+
 	// Create new watcher.
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
@@ -106,7 +106,7 @@ func main() {
 	defer watcher.Close()
 	lastScanTime := time.Now()
 	// Do one round of scanning before listening on the events
-	scan()
+	scan(policy)
 	const coolDownSeconds = 60
 	// Start listening for events.
 	go func() {
@@ -124,7 +124,7 @@ func main() {
 					if diff.Seconds() > coolDownSeconds {
 						lastScanTime = now
 						log.Infof("past %d seconds since the last scan, will trigger a new one", coolDownSeconds)
-						scan()
+						scan(policy)
 					} else {
 						log.Debug("detected frequently change of the file, throttle the scan")
 					}
@@ -156,15 +156,7 @@ func main() {
 
 	var fullDirList []string
 	for _, rootPath := range rootPathList {
-		filepath.WalkDir(rootPath, func(s string, d fs.DirEntry, err error) error {
-			if err != nil {
-				return err
-			}
-			if !d.IsDir() {
-				fullDirList = append(fullDirList, d.Name())
-			}
-			return nil
-		})
+		readThePaths(rootPath, &fullDirList)
 	}
 
 	for _, path := range fullDirList {
@@ -176,4 +168,18 @@ func main() {
 	}
 	// Block main goroutine forever.
 	<-make(chan struct{})
+}
+
+func readThePaths(root string, fullDirListPtr *[]string) {
+	entries, err := os.ReadDir(root)
+	if err != nil {
+	} else {
+		for _, entry := range entries {
+			if entry.IsDir() {
+				subDirPath := fmt.Sprintf("%s/%s", root, entry.Name())
+				*fullDirListPtr = append(*fullDirListPtr, subDirPath)
+				readThePaths(subDirPath, fullDirListPtr)
+			}
+		}
+	}
 }
