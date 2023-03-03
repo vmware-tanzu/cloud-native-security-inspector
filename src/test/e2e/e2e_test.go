@@ -40,16 +40,13 @@ func TestMain(m *testing.M) {
 	testEnv.Setup(
 		envfuncs.CreateKindCluster(kindClusterName),
 		envfuncs.CreateNamespace(namespace),
-		envfuncs.SetupCRDs("../../tools/installation/yaml", "crd.yaml"),
 		envfuncs.SetupCRDs("../../tools/installation/yaml", "manager.yaml"),
 		envfuncs.SetupCRDs("../../tools/installation/yaml", "data-exporter.yaml"),
-		envfuncs.SetupCRDs("../../config/rbac/", "role.yaml"),
 	)
 
 	testEnv.Finish(
 		envfuncs.DeleteNamespace(namespace),
 		envfuncs.TeardownCRDs("../../tools/installation/yaml", "*"),
-		envfuncs.TeardownCRDs("../../configs/rbac", "role.yaml"),
 		envfuncs.DestroyKindCluster(kindClusterName),
 	)
 
