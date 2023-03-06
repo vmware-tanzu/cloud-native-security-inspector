@@ -199,19 +199,16 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
   getRiskList(query: any, callback: Function) {    
     this.dgLoading = true
     const opensearchbase: any = localStorage.getItem('cnsi-open-search')
-    // const elasticsearchbase: any = localStorage.getItem('cnsi-elastic-search')
     const opensearchInfoJson = window.atob(opensearchbase)
-    // const elasticsearchInfoJson = window.atob(elasticsearchbase)
     if (!opensearchInfoJson.slice(24)) {
       this.dgLoading = false
     } else {
       const opensearchInfo = JSON.parse(opensearchInfoJson.slice(24))   
-      // const elasticsearchInfo = JSON.parse(elasticsearchInfoJson.slice(24))  
       const client = 'opensearch'
       let ca = ''
       if (opensearchInfo.url) {
         this.opensearchInfo = opensearchInfo
-        this.assessmentService.getKubeBenchReport({url: this.opensearchInfo.url, index: 'risk_manager_report', username: this.opensearchInfo.user, password: this.opensearchInfo.pswd, query, client, ca}).subscribe(
+        this.assessmentService.getKubeBenchReport({url: this.opensearchInfo.url, index: 'risk_report', username: this.opensearchInfo.user, password: this.opensearchInfo.pswd, query, client, ca}).subscribe(
           data => {
             callback(data, this, query)
             this.pageMaxCount = Math.ceil( data.hits.total.value / this.defaultSize)

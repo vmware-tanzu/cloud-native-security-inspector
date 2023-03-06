@@ -107,26 +107,9 @@ export class ReportViewComponent implements OnInit, OnDestroy, AfterViewInit {
     console.log('report', report);
     
     this.showDetailFlag = true
-    const labels:{key:string, value:string}[] = []
-    const inspectionConfiguration: any = JSON.parse(report._source.inspectionConfiguration)
-    if (inspectionConfiguration && inspectionConfiguration.namespaceSelector) {
-      for (const key in inspectionConfiguration.namespaceSelector.matchLabels) {
-        labels.push({
-          key,
-          value: inspectionConfiguration.namespaceSelector.matchLabels[key]
-        })
-      }
-      inspectionConfiguration.namespaceSelector.matchLabels = labels
-      report._source.inspectionConfiguration = inspectionConfiguration
-    }
-
-    report._source.actionEnforcement = JSON.parse(report._source.actionEnforcement)
     report._source.failures = JSON.parse(report._source.failures)
 
     this.shardService.currentReport = report
-    // setTimeout(() => {
-    //   this.reportDetail.getRisk(this.shardService.currentReport)
-    // });
   }
   // change handler
   
@@ -247,7 +230,7 @@ export class ReportViewComponent implements OnInit, OnDestroy, AfterViewInit {
   extractKubeBenchApi(query: any, callback: Function) {    
     this.dgLoading = true    
     if (this.opensearchInfo.url) {
-      this.assessmentService.getKubeBenchReport({url: this.opensearchInfo.url, index: 'assessment_report', username: this.opensearchInfo.user, password: this.opensearchInfo.pswd, query, client: this.client, ca:this.ca}).subscribe(
+      this.assessmentService.getKubeBenchReport({url: this.opensearchInfo.url, index: 'image_report', username: this.opensearchInfo.user, password: this.opensearchInfo.pswd, query, client: this.client, ca:this.ca}).subscribe(
         data => {
           callback(data, this)
           this.pageMaxCount = Math.ceil(data.hits.total.value / this.defaultSize)
@@ -297,20 +280,12 @@ export class ReportViewComponent implements OnInit, OnDestroy, AfterViewInit {
   getAssessmentreports() {
     // open search
     const opensearchbase: any = localStorage.getItem('cnsi-open-search')
-    const elasticsearchbase: any = localStorage.getItem('cnsi-elastic-search')
     const opensearchInfoJson = window.atob(opensearchbase)
-    const elasticsearchInfoJson = window.atob(elasticsearchbase)
     let opensearchInfo: any = {}
-    let elasticsearchInfo: any  = {}
     if (opensearchInfoJson.slice(24)) opensearchInfo = JSON.parse(opensearchInfoJson.slice(24)) 
-    if (elasticsearchInfoJson.slice(24)) elasticsearchInfo = JSON.parse(elasticsearchInfoJson.slice(24))       
     if (opensearchInfo.url) {
       this.client = 'opensearch'
       this.opensearchInfo = opensearchInfo
-    } else if (elasticsearchInfo.url) {
-      this.opensearchInfo = elasticsearchInfo
-      this.client = 'elasticsearch'
-      this.ca = elasticsearchInfo.ca
     } else {
       this.dgLoading = false
     }
@@ -325,7 +300,7 @@ export class ReportViewComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       ]
     }
-    this.assessmentService.getKubeBenchReport({url: this.opensearchInfo.url, index: 'assessment_report', username: this.opensearchInfo.user, password: this.opensearchInfo.pswd, query, client: this.client, ca:this.ca}).subscribe(
+    this.assessmentService.getKubeBenchReport({url: this.opensearchInfo.url, index: 'image_report', username: this.opensearchInfo.user, password: this.opensearchInfo.pswd, query, client: this.client, ca:this.ca}).subscribe(
       data => {
         let lineDate: string[] = []
         let dataValue: any[] = []

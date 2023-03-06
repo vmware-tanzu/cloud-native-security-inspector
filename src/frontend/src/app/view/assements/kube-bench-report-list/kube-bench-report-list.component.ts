@@ -360,7 +360,7 @@ export class KubeBenchReportListComponent implements OnInit {
   extractKubeBenchApi(query: any, callback: Function) {    
     this.dgLoading = true    
     if (this.opensearchInfo.url) {
-      this.assessmentService.getKubeBenchReport({url: this.opensearchInfo.url, index: 'cis_report', username: this.opensearchInfo.user, password: this.opensearchInfo.pswd, query, client: this.client, ca:this.ca}).subscribe(
+      this.assessmentService.getKubeBenchReport({url: this.opensearchInfo.url, index: 'kubebench', username: this.opensearchInfo.user, password: this.opensearchInfo.pswd, query, client: this.client, ca:this.ca}).subscribe(
         data => {
           callback(data, this)
           this.pageMaxCount = Math.ceil(data.hits.total.value / this.defaultSize)
@@ -461,7 +461,7 @@ export class KubeBenchReportListComponent implements OnInit {
       ]       
     }
 
-    this.assessmentService.getKubeBenchReport({url: this.opensearchInfo.url, index: 'cis_report', username: this.opensearchInfo.user, password: this.opensearchInfo.pswd, query, client: this.client, ca:this.ca}).subscribe(
+    this.assessmentService.getKubeBenchReport({url: this.opensearchInfo.url, index: 'kubebench', username: this.opensearchInfo.user, password: this.opensearchInfo.pswd, query, client: this.client, ca:this.ca}).subscribe(
       data => {
         switch (id) {
           case '1':

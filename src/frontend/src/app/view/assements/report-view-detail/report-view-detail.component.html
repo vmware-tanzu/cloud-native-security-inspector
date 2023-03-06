@@ -29,173 +29,20 @@
           </li>
           <li>
             <b>Container Image: </b>
-            <span>{{shardService.currentReport?._source.containerName}}</span>
+            <span>{{shardService.currentReport?._source.containerImage}}</span>
           </li>
-          <!-- <li>
-            <b>Version: </b>
-            <span>
-              {{shardService.currentReport?.metadata.resourceVersion}}
-            </span>
-          </li> -->
           <li>
-            <b>Action Enforcement: </b>
-            <div *ngFor="let item of shardService.currentReport?._source.actionEnforcement">
-              <div>
-                <b class="content"> Action:</b>
-                <span>{{item.action.kind}}</span>
-              </div>
-              <div>
-                <b class="content"> Result:</b>
-                <span>{{item.result.status}}</span>
-  
-              </div>
-            </div>
+            <b>Passed: </b>
+            <span>{{shardService.currentReport?._source.passed}}</span>
+          </li>
+          <li>
+            <b>Created Time: </b>
+            <span>{{shardService.currentReport?._source.createTime}}</span>
           </li>
         </ul>
       </clr-accordion-content>
     </clr-accordion-panel>
-  
-    <!-- <clr-accordion-panel >
-      <clr-accordion-title>{{'Report_Detail.owner_references'| translate}}</clr-accordion-title>
-      <clr-accordion-content *clrIfExpanded>
-          <ul class="list warp-1 " *ngFor="let item of shardService.currentReport?.metadata.ownerReferences">
-            <li>
-              <b>Name: </b>
-              <span>{{item.name}}</span>
-            </li>
-            <li>
-              <b>Uid: </b>
-              <span>{{item.uid}}</span>
-            </li>
-            <li>
-              <b>ApiVersion: </b>
-              <span>{{item.apiVersion}}</span>
-            </li>
-            <li>
-              <b>{{'Report_Detail.block_owner_deletion'| translate}}: </b>
-              <span>{{item.blockOwnerDeletion}}</span>
-            </li>
-            <li>
-              <b>Type: </b>
-              <span>{{item.kind}}</span>
-            </li>
-          </ul>
-      </clr-accordion-content>
-    </clr-accordion-panel> -->
 
-    <clr-accordion-panel >
-      <clr-accordion-title>{{'Report_Detail.inspection_configuration'| translate}}</clr-accordion-title>
-      <clr-accordion-content *clrIfExpanded>
-        <ul class="list warp-1">
-          <li *ngIf="shardService.currentReport">
-            <b>{{'Report_Detail.actions'| translate}}:  </b>
-            <ul class="list wrap-2" *ngFor="let item of shardService.currentReport._source.inspectionConfiguration.actions">
-              <li>
-                <b>{{'Report_Detail.kind'| translate}}:  </b>
-                <span>{{item.kind}}</span>  
-              </li>
-            </ul>
-          </li>
-          <li>
-            <b>{{'Report_Detail.assessment'| translate}}:  </b>
-            <div>
-              <b>{{'Report_Detail.format'| translate}}: </b>
-              {{shardService.currentReport._source.inspectionConfiguration.assessment.format}}
-            </div>
-            <div>
-              <b>{{'Report_Detail.generate'| translate}}: </b>
-              {{shardService.currentReport._source.inspectionConfiguration.assessment.generate}}
-            </div>
-            <div>
-              <b>{{'Report_Detail.live_time'| translate}}: </b>
-              {{shardService.currentReport._source.inspectionConfiguration.assessment.liveTime}}
-            </div>
-            <div>
-              <b>{{'Report_Detail.managedBy'| translate}}: </b>
-              {{shardService.currentReport._source.inspectionConfiguration.assessment.managedBy}}
-            </div>
-          </li>
-          <li>
-            <b>{{'Report_Detail.baselines'| translate}}:  </b>
-            <ul class="list warp-2" *ngFor="let item of shardService.currentReport._source.inspectionConfiguration.baselines">
-              <li>
-                <b>{{'Report_Detail.baseline'| translate}}:  </b>
-                <span>{{item.baseline}}</span>
-              </li>
-              <li>
-                <b>{{'Report_Detail.kind'| translate}}:  </b>
-                <span>{{item.kind}}</span>
-              </li>
-              <li>
-                <b>{{'Report_Detail.scheme'| translate}}:  </b>
-                <span>{{item.scheme}}</span>
-              </li>
-              <li>
-                <b>Version:  </b>
-                <span>{{item.version}}</span>
-              </li>
-            </ul>
-          </li>
-          <li>
-            <b>Elastic Search:</b>
-            <ul class="list warp-2">
-              <li>
-                <b>{{'Policy.elasticSearchEnabled'|translate}}:</b>
-                <span>{{shardService.currentReport._source.inspectionConfiguration.assessment.elasticSearchEnabled}}</span>  
-              </li>
-              <div *ngIf="shardService.currentReport._source.inspectionConfiguration.assessment.elasticSearchEnabled">
-                <li>
-                  <b>{{'Policy.elasticSearchAddr'|translate}}:</b>
-                  <span>{{shardService.currentReport._source.inspectionConfiguration.assessment.elasticSearchAddr}}</span>  
-                </li>
-                <li>
-                  <b>{{'Policy.elasticSearchUser'|translate}}:</b>
-                  <span>{{shardService.currentReport._source.inspectionConfiguration.assessment.elasticSearchUser}}</span>  
-                </li>
-                <li>
-                  <b>{{'Policy.elasticSearchCert'|translate}}:</b>
-                  <span>{{shardService.currentReport._source.inspectionConfiguration.assessment.elasticSearchCert}}</span>  
-                </li>
-              </div>
-            </ul>
-          </li>
-          <li>
-            <b>Open Search:</b>
-            <ul class="list warp-2">
-              <li>
-                <b>{{'Policy.openSearchEnabled'|translate}}:</b>
-                <span>{{shardService.currentReport._source.inspectionConfiguration.assessment.openSearchEnabled}}</span>  
-              </li>
-              <div *ngIf="shardService.currentReport._source.inspectionConfiguration.assessment.openSearchEnabled">
-                <li>
-                  <b>{{'Policy.elasticSearchAddr'|translate}}:</b>
-                  <span>{{shardService.currentReport._source.inspectionConfiguration.assessment.openSearchAddr}}</span>  
-                </li>
-                <li>
-                  <b>{{'Policy.elasticSearchUser'|translate}}:</b>
-                  <span>{{shardService.currentReport._source.inspectionConfiguration.assessment.openSearchUser}}</span>  
-                </li>
-                <!-- <li>
-                  <b>{{'Policy.elasticSearchCert'|translate}}:</b>
-                  <span>{{shardService.currentReport._source.inspectionConfiguration.assessment.openSearchCert}}</span>  
-                </li> -->
-              </div>
-              </ul>
-          </li>
-        </ul>
-      </clr-accordion-content>
-    </clr-accordion-panel>
-    <clr-accordion-panel *ngIf="shardService.currentReport?._source.inspectionConfiguration.namespaceSelector">
-      <clr-accordion-title>Labels</clr-accordion-title>
-      <clr-accordion-content *clrIfExpanded>
-        <ul class="list warp-1">
-          <li *ngFor="let item of shardService.currentReport._source.inspectionConfiguration.namespaceSelector.matchLabels">
-            <b>{{item.key}}:  </b>
-            <span>{{item.value}}</span>
-          </li>
-        </ul>
-      </clr-accordion-content>
-    </clr-accordion-panel>
 
     <clr-accordion-panel [clrAccordionPanelOpen]='true' *ngIf="shardService.currentReport?._source.failures">
       <clr-accordion-title>{{'Report_Detail.failures'|translate}}</clr-accordion-title>
