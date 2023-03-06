@@ -51,7 +51,7 @@ help: ## Display this help.
 ##@ Development
 
 manifests: controller-gen ## Generate WebhookConfiguration, ClusterRole and CustomResourceDefinition objects.
-	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=cnsi-manager-role webhook paths="./..." output:crd:artifacts:config=config/crd/bases
+	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=manager-role webhook paths="./..." output:crd:artifacts:config=config/crd/bases
 
 generate: controller-gen ## Generate code containing DeepCopy, DeepCopyInto, and DeepCopyObject method implementations.
 	$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./..."
@@ -77,17 +77,16 @@ build-manager: generate fmt vet ## Build manager binary.
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o bin/manager main.go
 
 build-exporter: fmt vet
-	cd pkg/exporter
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/exporter
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/exporter pkg/exporter/cmd/main.go
 
 build-inspector: generate fmt vet ## Build inspector command.
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/inspector cmd/inspector/main.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/inspector pkg/inspectors/imagescanner/cmd/main.go
 
 build-kubebench: generate fmt vet ## Build inspector command.
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/kubebench cmd/kubebench/main.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/kubebench pkg/inspectors/kubebench/cmd/main.go
 
 build-risk: generate fmt vet ## Build risk command.
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/risk cmd/riskmanager/main.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/risk pkg/inspectors/riskmanager/cmd/main.go
 
 run: manifests generate fmt vet ## Run a controller from your host.
 	go run ./main.go
@@ -98,7 +97,7 @@ docker-build-manager: build-manager ## Build docker image with the manager.
 	$(DOCKERCMD) buildx build -t ${IMG_MANAGER} .
 
 docker-build-exporter: build-exporter ## Build the docker image of the Exporter.
-	$(DOCKERCMD) buildx build -t ${IMG_EXPORTER} -f pkg/exporter/Dockerfile pkg/exporter/
+	$(DOCKERCMD) buildx build -t ${IMG_EXPORTER} -f Dockerfile.exporter .
 
 docker-build-inspector: build-inspector ## Build docker image with inspector cmd.
 	$(DOCKERCMD) buildx build -t ${IMG_CMD_INSPECTOR} -f Dockerfile.inspection .
@@ -125,27 +124,12 @@ namespace:
 	$(KUBECTLCMD) create namespace cnsi-system --dry-run=client -o yaml | $(KUBECTLCMD) apply -f -
 
 
-gen-and-apply-crd: manifests kustomize ## Install CRDs into the K8s cluster specified in ~/.kube/config.
+gen-yaml-files: manifests kustomize ## Install CRDs into the K8s cluster specified in ~/.kube/config.
 	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG_MANAGER}
 	$(KUSTOMIZE) build config/default > tools/installation/yaml/manager.yaml
-	$(KUSTOMIZE) build config/crd | kubectl apply -f -
-
-uninstall-crd: manifests kustomize ## Uninstall CRDs from the K8s cluster specified in ~/.kube/config.
-	$(KUSTOMIZE) build config/crd | kubectl delete -f -
-
-deploy: portal manifests kustomize  ## Deploy controller to the K8s cluster specified in ~/.kube/config.
-	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG_MANAGER}
-	$(KUSTOMIZE) build config/default | kubectl apply -f -
-
-deploy-without-portal: manifests kustomize ## Deploy controller to the K8s cluster specified in ~/.kube/config.
-	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG_MANAGER}
-	$(KUSTOMIZE) build config/default | kubectl apply -f -
 
 remove_clusterrolebinding:
 	$(KUBECTLCMD) delete clusterrolebinding cnsi-inspector-rolebinding --ignore-not-found=true
-
-undeploy: remove_clusterrolebinding ## Undeploy controller from the K8s cluster specified in ~/.kube/config.
-	$(KUSTOMIZE) build config/default | kubectl delete -f -
 
 portal: namespace
 	$(KUBECTLCMD) apply -f frontend/scripts/cloud-native-security-inspector-portal-serviceaccount.yaml
@@ -156,16 +140,12 @@ portal: namespace
 
 # To install and uninstall CNSI components without golang and kustomize required. Probably this is the recommended commands for users currently.
 install: portal
-	$(KUBECTLCMD) apply -f config/crd/bases
 	$(KUBECTLCMD) apply -f tools/installation/yaml/manager.yaml
 	$(KUBECTLCMD) apply -f tools/installation/yaml/data-exporter.yaml
-	$(KUBECTLCMD) apply -f config/rbac/role.yaml
 
 uninstall: remove_clusterrolebinding
-	$(KUBECTLCMD) delete -f config/crd/bases --ignore-not-found=true
 	$(KUBECTLCMD) delete -f tools/installation/yaml/manager.yaml --ignore-not-found=true
 	$(KUBECTLCMD) delete -f tools/installation/yaml/data-exporter.yaml --ignore-not-found=true
-	$(KUBECTLCMD) delete -f config/rbac/role.yaml --ignore-not-found=true
 
 CONTROLLER_GEN = $(shell pwd)/bin/controller-gen
 controller-gen: tidy ## Download controller-gen locally if necessary.

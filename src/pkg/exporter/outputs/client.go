@@ -5,8 +5,8 @@ import (
 	"crypto/x509"
 	"encoding/base64"
 	"errors"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/exporter/types"
 	"io"
 	"net/http"
 	"net/url"
@@ -43,11 +43,11 @@ type Client struct {
 	CheckCert        bool
 	HeaderList       []Header
 	ContentType      string
-	Config           *types.Configuration
+	Config           *v1alpha1.ExportConfig
 }
 
 // NewClient returns a new output.Client
-func NewClient(defaultEndpointURL string, mutualTLSEnabled bool, checkCert bool, config *types.Configuration) (*Client, error) {
+func NewClient(defaultEndpointURL string, mutualTLSEnabled bool, checkCert bool, config *v1alpha1.ExportConfig) (*Client, error) {
 	reg := regexp.MustCompile(`(http|nats)(s?)://.*`)
 	if !reg.MatchString(defaultEndpointURL) {
 		log.Error("bad endpoint")

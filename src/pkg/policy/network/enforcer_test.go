@@ -4,11 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	rcworkload "github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/assets/workload"
 	"strings"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	netv1 "k8s.io/api/networking/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
@@ -26,7 +26,7 @@ var _ = Describe("Network Policy Enforcer", func() {
 		fakeEnforcer *Enforcer
 		err          error
 
-		workload          *v1alpha1.Workload
+		workload          *rcworkload.Workload
 		workloadPods      []string
 		workloadNamespace string
 
@@ -157,8 +157,7 @@ var _ = Describe("Network Policy Enforcer", func() {
 			It("default policy should be created and pod label should be updated", func() {
 				Expect(fakeNetworkPolicy.Name).To(Equal(fakedefaultPolicyName2))
 				Expect(fakeNetworkPolicy.Namespace).To(Equal(fakeNamespace2))
-				Expect((fakeNetworkPolicy.Spec)).To(Equal(denyAllPolicy))
-
+				Expect(fakeNetworkPolicy.Spec).To(Equal(denyAllPolicy))
 				Expect(fakePod.Labels).To(Equal(map[string]string{
 					matchPodLabelCtrl: cnsiVendor,
 					matchPodLabelRisk: risky,
@@ -226,13 +225,13 @@ var _ = Describe("Network Policy Enforcer", func() {
 		})
 	})
 
-	Describe("IsManaged", func() {
+	Describe("HasBeenEnforced", func() {
 		var (
-			isManaged bool
+			HasBeenEnforced bool
 		)
 
 		JustBeforeEach(func() {
-			isManaged, err = fakeEnforcer.IsManaged(ctx, workload)
+			HasBeenEnforced, err = fakeEnforcer.HasBeenEnforced(ctx, workload)
 		})
 
 		Context("managed workload", func() {
@@ -243,7 +242,7 @@ var _ = Describe("Network Policy Enforcer", func() {
 
 			It("should return true", func() {
 				Expect(err).ToNot(HaveOccurred())
-				Expect(isManaged).To(Equal(true))
+				Expect(HasBeenEnforced).To(Equal(true))
 			})
 		})
 
@@ -255,13 +254,13 @@ var _ = Describe("Network Policy Enforcer", func() {
 
 			It("should return false", func() {
 				Expect(err).ToNot(HaveOccurred())
-				Expect(isManaged).To(Equal(false))
+				Expect(HasBeenEnforced).To(Equal(false))
 			})
 		})
 
 		Context("nil workload", func() {
 			JustBeforeEach(func() {
-				isManaged, err = fakeEnforcer.IsManaged(ctx, nil)
+				HasBeenEnforced, err = fakeEnforcer.HasBeenEnforced(ctx, nil)
 			})
 
 			It("should return false", func() {
@@ -272,11 +271,11 @@ var _ = Describe("Network Policy Enforcer", func() {
 	})
 })
 
-func constructWorkLoad(podNames []string, ns string) *v1alpha1.Workload {
-	workload := &v1alpha1.Workload{}
+func constructWorkLoad(podNames []string, ns string) *rcworkload.Workload {
+	workload := &rcworkload.Workload{}
 	workload.Namespace = ns
 	for _, name := range podNames {
-		workload.Pods = append(workload.Pods, &v1alpha1.Pod{
+		workload.Pods = append(workload.Pods, &rcworkload.Pod{
 			ObjectReference: corev1.ObjectReference{
 				Namespace: ns,
 				Name:      name,

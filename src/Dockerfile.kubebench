@@ -16,7 +16,7 @@ RUN go mod download
 COPY ./ .
 
 # Build
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o kubebench cmd/kubebench/main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o kubebench pkg/inspectors/kubebench/cmd/main.go
 
 
 # Use distroless as minimal base image to package the manager binary
@@ -25,7 +25,7 @@ FROM ubuntu:22.04
 WORKDIR /
 COPY --from=builder /workspace/kubebench .
 # RUN mkdir -p cmd/kubebench
-ADD --chown=65532:65532 cmd/kubebench/ cmd/kubebench/
+ADD --chown=65532:65532 pkg/inspectors/kubebench/cfg/ cfg/
 USER 65532:65532
 
 ENTRYPOINT ["/kubebench"]

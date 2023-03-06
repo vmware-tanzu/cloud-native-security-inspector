@@ -5,9 +5,9 @@ package network
 import (
 	"context"
 	"fmt"
+	rcworkload "github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/assets/workload"
 
 	"github.com/pkg/errors"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/policy/enforcement"
 	corev1 "k8s.io/api/core/v1"
 	netv1 "k8s.io/api/networking/v1"
@@ -57,7 +57,7 @@ func (e *Enforcer) WithScheme(scheme *runtime.Scheme) *Enforcer {
 }
 
 // Enforce implements policy.Enforcer.
-func (e *Enforcer) Enforce(ctx context.Context, workload *v1alpha1.Workload, option ...enforcement.Option) error {
+func (e *Enforcer) Enforce(ctx context.Context, workload *rcworkload.Workload, option ...enforcement.Option) error {
 	if workload == nil {
 		return errors.New("empty workload for enforcing policy")
 	}
@@ -102,7 +102,7 @@ func (e *Enforcer) Enforce(ctx context.Context, workload *v1alpha1.Workload, opt
 }
 
 // Revoke implements policy.Enforcer.
-func (e *Enforcer) Revoke(ctx context.Context, workload *v1alpha1.Workload) error {
+func (e *Enforcer) Revoke(ctx context.Context, workload *rcworkload.Workload) error {
 	if workload == nil {
 		return errors.New("empty workload for revoking policy")
 	}
@@ -142,13 +142,13 @@ func (e *Enforcer) Revoke(ctx context.Context, workload *v1alpha1.Workload) erro
 	return e.removeNetworkPolicy(ctx, workload.Namespace)
 }
 
-// IsManaged implements policy.Enforcer.
-func (e *Enforcer) IsManaged(ctx context.Context, workload *v1alpha1.Workload) (bool, error) {
+// HasBeenEnforced implements policy.Enforcer.
+func (e *Enforcer) HasBeenEnforced(ctx context.Context, workload *rcworkload.Workload) (bool, error) {
 	if workload == nil {
 		return false, errors.New("empty workload for checking policy managed status")
 	}
 
-	isManaged := true
+	HasBeenEnforced := true
 	for _, po := range workload.Pods {
 		// Get pod object.
 		pod := &corev1.Pod{}
@@ -162,10 +162,10 @@ func (e *Enforcer) IsManaged(ctx context.Context, workload *v1alpha1.Workload) (
 		_, ok1 := pod.Labels[matchPodLabelCtrl]
 		_, ok2 := pod.Labels[matchPodLabelRisk]
 
-		isManaged = isManaged && ok1 && ok2
+		HasBeenEnforced = HasBeenEnforced && ok1 && ok2
 	}
 
-	return isManaged, nil
+	return HasBeenEnforced, nil
 }
 
 // ensureNetworkPolicy ensure the network policy for ns existing.

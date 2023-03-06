@@ -13,11 +13,10 @@ COPY go.sum go.sum
 RUN go mod download
 
 # Copy the go source
-# COPY cmd/inspector/main.go main.go
 COPY ./ .
 
 # Build
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o inspector cmd/inspector/main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o inspector pkg/inspectors/imagescanner/cmd/main.go
 
 # Use distroless as minimal base image to package the manager binary
 # Refer to https://github.com/GoogleContainerTools/distroless for more details

@@ -11,7 +11,7 @@ import (
 	"encoding/pem"
 	"errors"
 	"github.com/stretchr/testify/require"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/exporter/types"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
 	"math/big"
 	"net"
 	"net/http"
@@ -25,7 +25,7 @@ import (
 
 func TestNewClient(t *testing.T) {
 	u, _ := url.Parse("http://localhost")
-	config := &types.Configuration{}
+	config := &v1alpha1.ExportConfig{}
 	testClientOutput := Client{
 		EndpointURL:      u,
 		MutualTLSEnabled: false,
@@ -59,7 +59,7 @@ func TestPost(t *testing.T) {
 		"/200": nil,
 		"/400": errors.New("400 Bad Request"),
 	} {
-		nc, err := NewClient(ts.URL+i, false, true, &types.Configuration{})
+		nc, err := NewClient(ts.URL+i, false, true, &v1alpha1.ExportConfig{})
 		require.Nil(t, err)
 		require.NotEmpty(t, nc)
 
@@ -74,7 +74,7 @@ func TestAddHeader(t *testing.T) {
 		passedVal := r.Header.Get(headerKey)
 		require.Equal(t, passedVal, headerVal)
 	}))
-	nc, err := NewClient(ts.URL, false, true, &types.Configuration{})
+	nc, err := NewClient(ts.URL, false, true, &v1alpha1.ExportConfig{})
 	require.Nil(t, err)
 	require.NotEmpty(t, nc)
 
@@ -118,7 +118,7 @@ func TestAddBasicAuth(t *testing.T) {
 		require.Equal(t, passedPassword, password)
 		require.Equal(t, digest, "dXNlcjpwYXNz")
 	}))
-	nc, err := NewClient(ts.URL, false, true, &types.Configuration{})
+	nc, err := NewClient(ts.URL, false, true, &v1alpha1.ExportConfig{})
 	require.Nil(t, err)
 	require.NotEmpty(t, nc)
 
@@ -128,7 +128,7 @@ func TestAddBasicAuth(t *testing.T) {
 }
 
 func TestMutualTlsPost(t *testing.T) {
-	config := &types.Configuration{}
+	config := &v1alpha1.ExportConfig{}
 
 	serverTLSConf, err := certSetup(config)
 	if err != nil {
@@ -161,7 +161,7 @@ func TestMutualTlsPost(t *testing.T) {
 	os.RemoveAll(MutualTLSFilesPath)
 }
 
-func certSetup(config *types.Configuration) (serverTLSConf *tls.Config, err error) {
+func certSetup(config *v1alpha1.ExportConfig) (serverTLSConf *tls.Config, err error) {
 	// delete folder to avoid makedir failure
 	os.RemoveAll(MutualTLSFilesPath)
 	err = os.Mkdir(MutualTLSFilesPath, 0755)
