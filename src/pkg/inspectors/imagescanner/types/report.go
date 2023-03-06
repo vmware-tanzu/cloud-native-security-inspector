@@ -48,5 +48,6 @@ type AssessmentError struct {
 
 // AssessmentReport struct definition
 type AssessmentReport struct {
+	TimeStamp            string                 `json:"timeStamp"`
 	NamespaceAssessments []*NamespaceAssessment `json:"namespaceAssessments"`
 }

@@ -140,6 +140,7 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 
 	// Assessment report.
 	report := itypes.AssessmentReport{
+		TimeStamp:            time.Now().Format(time.RFC3339),
 		NamespaceAssessments: make([]*itypes.NamespaceAssessment, 0),
 	}
 
@@ -383,7 +384,7 @@ func ExportImageReports(report itypes.AssessmentReport, pl *v1alpha1.InspectionP
 				for _, container := range pod.Containers {
 					var doc itypes.AssessmentReportDoc
 					doc.PolicyName = pl.Name
-					doc.CreateTimestamp = time.Now().Format(time.RFC3339)
+					doc.CreateTimestamp = report.TimeStamp
 					doc.DocId = fmt.Sprintf("%s-%s", container.Name, doc.CreateTimestamp)
 					doc.UID = uuid.NewString()
 					doc.Namespace = pod.Namespace
