@@ -80,14 +80,8 @@ if [ $install ] && [ $build_source ]
 then
     check_kubectl
     check_docker
-    note "Docker build manager"
-    make docker-build-manager
-    note "Docker build inspector"
-    make docker-build-inspector
-    note "Docker build portal"
-    make docker-build-portal
-    note "Push images to registry"
-    make docker-push
+    note "Docker build images"
+    make docker-build-all
     note "Deploying ..."
     make deploy
     success "Project Narrows installed"
