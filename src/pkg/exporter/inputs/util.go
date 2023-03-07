@@ -19,10 +19,11 @@ func PostReport(exportStruct *v1alpha1.ReportData) error {
 		return err
 	}
 	var ns string
-	ns, err = os.ReadFile("/var/run/secrets/kubernetes.io/serviceaccount/namespace")
-	if err != nil {
+	if b, err := os.ReadFile("/var/run/secrets/kubernetes.io/serviceaccount/namespace"); err != nil {
 		log.Error(err, "failed to read the namespace from file")
 		ns = "cnsi-system"
+	} else {
+		ns = string(b)
 	}
 	resp, err := http.Post(
 		// servicename.namespace.svc.cluster.local
