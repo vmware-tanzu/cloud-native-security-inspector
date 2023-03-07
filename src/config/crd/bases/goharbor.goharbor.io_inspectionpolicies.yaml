@@ -155,11 +155,12 @@ spec:
                       governor:
                         description: Indicate whether to config of governor
                         properties:
-                          cspSecretName:
-                            description: Secret name where CSP api token is stored in cnsi-system namespace
-                            type: string
                           clusterId:
                             description: Unique identifier of the cluster
+                            type: string
+                          cspSecretName:
+                            description: Secret name where CSP api token is stored
+                              in cnsi-system namespace
                             type: string
                           enabled:
                             default: false
@@ -168,8 +169,6 @@ spec:
                           url:
                             description: Api url to send telemetry data
                             type: string
-                        required:
-                        - enabled
                         type: object
                       liveTime:
                         default: 86400
@@ -198,13 +197,6 @@ spec:
                       openSearchUser:
                         description: ElasticSearch username for the client
                         type: string
-                    required:
-                    - elasticSearchEnabled
-                    - format
-                    - generate
-                    - liveTime
-                    - managedBy
-                    - openSearchEnabled
                     type: object
                   baselines:
                     description: Baselines of cluster compliance.
@@ -361,8 +353,6 @@ spec:
                   riskImage:
                     description: Image of the risk.
                     type: string
-                required:
-                - imagePullPolicy
                 type: object
               schedule:
                 description: 'Schedule of the inspector. Cron format. Reference: https://en.wikipedia.org/wiki/Cron'
@@ -396,9 +386,6 @@ spec:
                   suspend:
                     description: Suspend the subsequent inspections temporarily.
                     type: boolean
-                required:
-                - concurrencyRule
-                - historyLimit
                 type: object
               workNamespace:
                 description: WorkNamespace specify the namespace for creating the
@@ -411,7 +398,6 @@ spec:
             - inspection
             - schedule
             - settingsName
-            - strategy
             type: object
           status:
             description: InspectionPolicyStatus defines the observed state of InspectionPolicy
