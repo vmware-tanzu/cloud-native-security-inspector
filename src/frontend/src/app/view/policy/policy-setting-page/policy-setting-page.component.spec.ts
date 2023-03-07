@@ -169,7 +169,6 @@ describe('PolicySettingPageComponent', () => {
       component.saveSchedule({})
       component.cancelSchedule()
       component.policyHandler('test')
-      component.testElasticSearch()
       component.getSettingList()
     });
   });
