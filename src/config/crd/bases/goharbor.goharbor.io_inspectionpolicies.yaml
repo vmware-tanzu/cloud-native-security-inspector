@@ -398,7 +398,6 @@ spec:
             - inspection
             - schedule
             - settingsName
-            - strategy
             type: object
           status:
             description: InspectionPolicyStatus defines the observed state of InspectionPolicy

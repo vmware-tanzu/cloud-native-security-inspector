@@ -257,6 +257,7 @@ type InspectionPolicySpec struct {
 	Inspection InspectionConfiguration `json:"inspection"`
 
 	// Strategy of the inspector.
+	// +kubebuilder:validation:Optional
 	Strategy Strategy `json:"strategy"`
 
 	// Inspector (image) for doing the inspection.
