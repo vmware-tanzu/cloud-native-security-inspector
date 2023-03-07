@@ -1,2 +1,2 @@
 Watch all components come up.
-  $ kubectl get pods -n cnsi-system
+  $ kubectl get pods -n [namespace-you-specified]
