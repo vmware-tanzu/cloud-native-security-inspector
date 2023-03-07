@@ -114,68 +114,7 @@
               <input clrPassword placeholder="Password please!" name="openSearchPasswd" formControlName="openSearchPasswd" />
             </clr-password-container>
     
-              
-            <!-- <div class="test-icon">
-              <button class="btn btn-info btn-sm" (click)="testElasticSearch()">
-                {{'CommonlyUse.test'| translate}}
-              </button>
-              <span  *ngIf="checkES === 'passed'">
-                <cds-icon class="passed" shape="check-circle" ></cds-icon> Successful
-              </span>
-              <span  *ngIf="checkES === 'not passed'" class="not-passed" >
-                <cds-icon  shape="times" class="not-passed"></cds-icon> Failed
-              </span>
-            </div> -->
           </div>
-
-        </div>
-
-         <!-- elasticSearchEnabled -->
-        <clr-toggle-container class="clr-inline">
-          <label class="w-200">{{'Policy.elasticSearchEnabled'|translate}}:</label>
-          <clr-toggle-wrapper>
-            <input type="checkbox" clrToggle name="elasticSearchEnabled" formControlName="elasticSearchEnabled" />
-          </clr-toggle-wrapper>
-        </clr-toggle-container>
-        <div *ngIf="policyForm.get('inspectionSetting')?.get('elasticSearchEnabled')?.value">
-          <div class="endpoint-container">
-            <label>{{'Policy.elasticSearchAddr' |translate}}: </label>
-            <select clrSelect name="elasticSearchAddrHeader" formControlName="elasticSearchAddrHeader">
-              <option value="http://">http</option>
-              <option value="https://">https</option>
-            </select>
-            <input clrInput placeholder="" name="elasticSearchAddr" formControlName="elasticSearchAddr"/>
-          </div>
-  
-          <clr-input-container class="w-230">
-            <label>{{'Policy.elasticSearchUser'|translate}}:  </label>
-            <input clrInput placeholder="" name="elasticSearchUser" formControlName="elasticSearchUser"/>
-          </clr-input-container>
-  
-          <div class="passwd-test">
-            <clr-password-container class="w-230-psd">
-              <label>{{'Policy.elasticSearchPasswd'|translate}}:</label>
-              <input clrPassword placeholder="Password please!" name="elasticSearchPasswd" formControlName="elasticSearchPasswd" />
-            </clr-password-container>
-
-              
-            <div class="test-icon">
-              <button class="btn btn-info btn-sm" (click)="testElasticSearch()">
-                {{'CommonlyUse.test'| translate}}
-              </button>
-              <span  *ngIf="checkES === 'passed'">
-                <cds-icon class="passed" shape="check-circle" ></cds-icon> Successful
-              </span>
-              <span  *ngIf="checkES === 'not passed'" class="not-passed" >
-                <cds-icon  shape="times" class="not-passed"></cds-icon> Failed
-              </span>
-            </div>
-          </div>
-
-          <clr-textarea-container>
-            <label>{{'Policy.elasticSearchCert'|translate}}</label>
-            <textarea style="width: 230px; height: 150px;" clrTextarea name="elasticSearchCert" formControlName="elasticSearchCert"></textarea>
-          </clr-textarea-container>
 
         </div>
 
@@ -199,7 +138,7 @@
                 </label>
                 <input style="color: #999;" clrInput placeholder="" name="kind" disabled [(ngModel)]="item.kind" [ngModelOptions]="{standalone: true}" />
               </clr-input-container> -->
-              <clr-select-container class="w-230" *ngIf="policyForm.get('inspectionResult')?.get('generate')?.value">
+              <clr-select-container class="w-230">
                 <label class="w-200">
                   {{'Policy.baseline'|translate}}
                   <cds-icon (click)="policySettingremoveItem('baseline', i)" style="color: hsl(9, 100%, 43%);" *ngIf="i!==0" shape="minus-circle" class="is-solid"></cds-icon>
@@ -275,35 +214,7 @@
     <clr-stepper-panel formGroupName="inspectionResult">
       <clr-step-title>{{'Setting.InspectionResult'| translate}}</clr-step-title>
       <clr-step-description>{{'Setting.InspectionResultDesc'| translate}}</clr-step-description>
-      <clr-step-content *clrIfExpanded>
-        <h4>{{'Policy.setting'|translate}}</h4>
-        <clr-toggle-container class="clr-inline">
-          <label class="w-200">{{'Policy.generate'|translate}}:</label>
-          <clr-toggle-wrapper>
-            <input  type="checkbox" clrToggle name="generate" formControlName="generate" />
-          </clr-toggle-wrapper>
-        </clr-toggle-container>              
-        
-        <!-- <clr-select-container *ngIf="policyForm.get('inspectionResult')?.get('generate')?.value">
-          <label class="w-200">{{'Policy.format'|translate}}</label>
-          <select clrSelect name="format" formControlName="format">
-            <option value="YAML">YAML</option>
-            <option value="JSON">JSON</option>
-          </select>
-        </clr-select-container> -->
-        
-        <clr-input-container class="w-230" *ngIf="policyForm.get('inspectionResult')?.get('generate')?.value">
-          <label>{{'Policy.live_time'|translate}}:   </label>
-          <input clrInput placeholder="" name="liveTime" formControlName="liveTime"/>
-        </clr-input-container>
-  
-        <!-- <clr-toggle-container *ngIf="policyForm.get('inspectionResult')?.get('generate')?.value" class="clr-inline">
-          <label class="w-200">{{'Policy.managedBy'|translate}}:</label>
-          <clr-toggle-wrapper>
-            <input  type="checkbox" clrToggle name="managedBy" formControlName="managedBy" />
-          </clr-toggle-wrapper>
-        </clr-toggle-container>  -->
-  
+      <clr-step-content *clrIfExpanded>  
         <div class="actions" >
           <h4 class="action-title">
             <div>
@@ -330,7 +241,7 @@
           </ul>
         </div>
         <div class="submit-btns">
-          <button data-cy="created" clrStepButton class="btn btn-primary" [disabled]="inspectionResultValid" type="submit" (click)="policyHandler(text)">{{'CommonlyUse.'+text|translate}}</button>
+          <button data-cy="created" clrStepButton class="btn btn-primary" type="submit" (click)="policyHandler(text)">{{'CommonlyUse.'+text|translate}}</button>
         </div>
       </clr-step-content>
     </clr-stepper-panel>

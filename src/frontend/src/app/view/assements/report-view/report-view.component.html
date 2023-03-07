@@ -35,7 +35,7 @@
       <clr-dg-cell>
         <a href="javascript:;" (click)="toReport(report)" >
           <cds-icon style="color: skyblue; cursor: pointer;" shape="pop-out"></cds-icon>
-          {{report._id}}
+          {{report._source.docId}}
         </a>
       </clr-dg-cell>
       <clr-dg-cell>{{report._source.workloadNamespace}}</clr-dg-cell>

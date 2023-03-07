@@ -76,7 +76,7 @@
       <clr-dg-cell *ngIf="kube">
         <a href="javascript:;" (click)="toKubeBenchReportTests(kube)" >
           <cds-icon shape="pop-out"></cds-icon>
-          {{kube._id}}
+          {{kube._source.docID}}
         </a>
       </clr-dg-cell>
       <clr-dg-cell *ngIf="kube">{{kube._source.text}}</clr-dg-cell>
