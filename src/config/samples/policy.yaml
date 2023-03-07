@@ -5,63 +5,33 @@ metadata:
 spec:
   settingsName: sample-setting
   enabled: true
-  workNamespace: cronjobs
-  schedule: "*/1 * * * *"
+  workNamespace: demo
+  schedule: "*/5 * * * *"
   strategy:
-    historyLimit: 5
+    historyLimit: 4
     suspend: false
     concurrencyRule: "Forbid"
   inspector:
     image: projects.registry.vmware.com/cnsi/inspector:0.3
     kubebenchImage: projects.registry.vmware.com/cnsi/kubebench:0.3
-    imagePullPolicy: Always
+    riskImage: projects.registry.vmware.com/cnsi/risk:0.3
+    governorImage:
+    imagePullPolicy: IfNotPresent
+    exportConfig:
+      openSearch:
+        hostport: "https://opensearch-cluster-master.demo:9200"
+        username: "admin"
+        password: "admin"
+        checkCert: false
+        mutualTLS: false
   inspection:
     namespaceSelector:
       matchLabels:
-        goharbor.io/watch: "true"
-    assessment:
-      generate: true
-      format: "YAML"
-      liveTime: 3600
-      managedBy: true
-      elasticSearchEnabled: false
-      elasticSearchAddr: "https://quickstart-es-http:9200"
-      elasticSearchUser: "elastic"
-      elasticSearchPasswd: "2NR422RahwP5NQXG971v74JY"
-      elasticSearchCert: |
-        -----BEGIN CERTIFICATE-----
-        MIID+DCCAuCgAwIBAgIQe0U9GLEJCE5uOkN8VItdWjANBgkqhkiG9w0BAQsFADAv
-        MRMwEQYDVQQLEwpxdWlja3N0YXJ0MRgwFgYDVQQDEw9xdWlja3N0YXJ0LWh0dHAw
-        HhcNMjIxMDE3MTQ1NDUzWhcNMjMxMDE3MTUwNDUzWjBDMRMwEQYDVQQLEwpxdWlj
-        a3N0YXJ0MSwwKgYDVQQDEyNxdWlja3N0YXJ0LWVzLWh0dHAuZGVmYXVsdC5lcy5s
-        b2NhbDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANrvvxft94rHYUd0
-        SYbyAXYfUbZL5RyWZlEiwWSbmWx2nd8+lfbZmaqjgUkffc7WbLbyVPAit2fBZDWj
-        J8SUawYNPYK3C46f9TWN5at4pPzwu9aq8/8FAXDF/aIPK7C2/nEc+x74rzUlDSwl
-        HdJ8ZPBu1GA8wV5buZTKYsfnN/rlWU3CYyzCLPZudYj6ED8DAqp2I3Mw7mbbs+t9
-        LgRqoEtVg9eo2rx0MBXcpWR2Ny/vQtK1KMVyYq8fwtA+phcVnTkjv1pW0SSGC2Sf
-        HabBBeZjIGcnQgoUssNRavqobTMhKwniDfI1MRSoUynx1AFgUOGKofDBLLarF+dk
-        iY8QwX0CAwEAAaOB+zCB+DAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYwFAYIKwYB
-        BQUHAwEGCCsGAQUFBwMCMB8GA1UdIwQYMBaAFHon0jDD/dvUcBhBtaZP5NvTlmnV
-        MIGlBgNVHREEgZ0wgZqCI3F1aWNrc3RhcnQtZXMtaHR0cC5kZWZhdWx0LmVzLmxv
-        Y2FsghJxdWlja3N0YXJ0LWVzLWh0dHCCHnF1aWNrc3RhcnQtZXMtaHR0cC5kZWZh
-        dWx0LnN2Y4IacXVpY2tzdGFydC1lcy1odHRwLmRlZmF1bHSCIyoucXVpY2tzdGFy
-        dC1lcy1kZWZhdWx0LmRlZmF1bHQuc3ZjMA0GCSqGSIb3DQEBCwUAA4IBAQBc2knb
-        OON5PBHVEVYCfGFRHHqEXHuSAZSvQmkkq3BFr1CPajAR4OujYm69qZoQs8B0PFRp
-        /MJC128N/BVreUj6E1NVe+AFU4tywUf/pmiWkQABKybPJHnKFVGt38IU51WYgXDP
-        7euaSOdoIY/fnZ7jCAT4Smcz9jGtbOWeiQQIM/Vbg1eznT8ZRj/MQ8isguAp7CPi
-        YHOmHMCxIIFBpugwbveWtq9Xf0I8iGJAwQArtLxi7UPn41qUY13RHqQWzYunU+q4
-        ng/XwELdHIyJNtBfMoQ9nbmW0Qhtqkwi6sKJikj0h6qwPWm5k9eCaDLzM9Xhmv9A
-        cMLCda4m/ySymHLt
-        -----END CERTIFICATE-----
-      openSearchEnabled: true
-      openSearchAddr: "https://opensearch-cluster-master.default:9200"
-      openSearchUser: "admin"
-      openSearchPasswd: "admin"
+        kubernetes.io/metadata.name: default
     baselines:
       - kind: "vulnerability"
-        baseline: "High"
+        baseline: "Medium"
         version: "v1.1"
         scheme: "application/vnd.security.vulnerability.report; version=1.1"
     actions:
-      #- kind: "forbid_vulnerable_deployment"
       - kind: "quarantine_vulnerable_workload"
