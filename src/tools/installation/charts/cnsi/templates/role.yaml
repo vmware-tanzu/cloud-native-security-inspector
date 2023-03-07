@@ -2,7 +2,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: cnsi-leader-election-role
-  namespace: cnsi-system
+  namespace: {{ .Release.Namespace }}
 rules:
   - apiGroups:
       - ""
@@ -295,7 +295,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: cloud-native-security-inspector-portal-role
-  namespace: cnsi-system
+  namespace: {{ .Release.Namespace }}
 rules:
   - apiGroups: ["","goharbor.goharbor.io","apiregistration.k8s.io"]
     resources: ["pods","namespaces","nodes","apiservices","inspectionpolicies","settings","secrets"]

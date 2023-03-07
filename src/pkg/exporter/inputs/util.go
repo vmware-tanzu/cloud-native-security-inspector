@@ -4,9 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
 	"net/http"
+	"os"
 )
 
 // PostReport is a util function which is used by the scanners to post the report
@@ -16,9 +18,15 @@ func PostReport(exportStruct *v1alpha1.ReportData) error {
 		log.Error(err, "failed to marshal the report data into the protocol")
 		return err
 	}
+	var ns string
+	ns, err = os.ReadFile("/var/run/secrets/kubernetes.io/serviceaccount/namespace")
+	if err != nil {
+		log.Error(err, "failed to read the namespace from file")
+		ns = "cnsi-system"
+	}
 	resp, err := http.Post(
 		// servicename.namespace.svc.cluster.local
-		"http://cnsi-exporter-service.cnsi-system.svc.cluster.local:6780/forward",
+		fmt.Sprintf("http://cnsi-exporter-service.%s.svc.cluster.local:6780/forward", ns),
 		"application/json; charset=utf-8",
 		bytes.NewReader(reportBytes),
 	)

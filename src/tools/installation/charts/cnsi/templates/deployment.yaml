@@ -4,7 +4,7 @@ metadata:
   labels:
     control-plane: cnsi-controller
   name: cnsi-controller-manager
-  namespace: cnsi-system
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   selector:
@@ -66,7 +66,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cnsi-exporter
-  namespace: cnsi-system
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   selector:
@@ -94,7 +94,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cloud-native-security-inspector-portal
-  namespace: cnsi-system
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   selector:
