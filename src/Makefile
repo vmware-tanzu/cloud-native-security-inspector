@@ -91,7 +91,9 @@ build-risk: generate fmt vet ## Build risk command.
 run: manifests generate fmt vet ## Run a controller from your host.
 	go run ./main.go
 
-docker-build-all: docker-build-manager docker-build-exporter docker-build-inspector docker-build-kubebench docker-build-portal docker-build-risk
+docker-build-backend: docker-build-manager docker-build-exporter docker-build-inspector docker-build-kubebench docker-build-risk
+
+docker-build-all: docker-build-backend docker-build-portal
 
 docker-build-manager: build-manager ## Build docker image with the manager.
 	$(DOCKERCMD) buildx build -t ${IMG_MANAGER} .
@@ -111,13 +113,15 @@ docker-build-portal:
 docker-build-risk: build-risk ## Build docker image with risk cmd.
 	$(DOCKERCMD) buildx build -t ${RISK} -f Dockerfile.riskmanager .
 
-docker-push: ## Push docker images with the manager.
+docker-push-backend:
 	$(DOCKERCMD) push ${IMG_MANAGER}
 	$(DOCKERCMD) push ${IMG_EXPORTER}
 	$(DOCKERCMD) push ${IMG_CMD_INSPECTOR}
 	$(DOCKERCMD) push ${IMG_CMD_KUBEBENCH}
-	$(DOCKERCMD) push ${PORTAl}
 	$(DOCKERCMD) push ${RISK}
+
+docker-push-all: docker-build-backend
+	$(DOCKERCMD) push ${PORTAl}
 
 ##@ Deployment
 namespace:
