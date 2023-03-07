@@ -5,7 +5,6 @@
 # It should be runtime by config/default
 resources:
 - bases/goharbor.goharbor.io_inspectionpolicies.yaml
-- bases/goharbor.goharbor.io_inspections.yaml
 - bases/goharbor.goharbor.io_settings.yaml
 #+kubebuilder:scaffold:crdkustomizeresource
 
