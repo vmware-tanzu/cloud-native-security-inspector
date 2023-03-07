@@ -20,7 +20,7 @@ $ helm uninstall [release-name]
 This will not delete CRD. You can get and delete CRD manually using below commands:
 ```shell
 $ kubectl get crd
-$ kubectl delete crd assessmentreports.goharbor.goharbor.io inspectionpolicies.goharbor.goharbor.io settings.goharbor.goharbor.io
+$ kubectl delete crd inspectionpolicies.goharbor.goharbor.io settings.goharbor.goharbor.io
 ```
 ## Configuration
 You can specify your own image registry and image tag to install.
