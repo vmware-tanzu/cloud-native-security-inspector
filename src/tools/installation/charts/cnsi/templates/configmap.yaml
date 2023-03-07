@@ -15,4 +15,4 @@ data:
 kind: ConfigMap
 metadata:
   name: cnsi-manager-config
-  namespace: cnsi-system
+  namespace: {{ .Release.Namespace }}

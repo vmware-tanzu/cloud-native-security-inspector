@@ -158,7 +158,7 @@ func main() {
 	var fullDirList []string
 	exceptPaths := []string{
 		"/var/lib/kubelet/pods", // This is under kubelet but is not about k8s configurations
-		"/var/lib/etcd/member/", // This is under etcd, can be frequently changed but is not about k8s configurations
+		"/var/lib/etcd/member",  // This is under etcd, can be frequently changed but is not about k8s configurations
 	}
 	for _, rootPath := range rootPathList {
 		readTheSubPaths(rootPath, &fullDirList, &exceptPaths)
