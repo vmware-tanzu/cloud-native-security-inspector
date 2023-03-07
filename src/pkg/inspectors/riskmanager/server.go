@@ -169,6 +169,7 @@ func (s *Server) exportRiskReport(risks riskdata.RiskCollection) error {
 	riskReport := &types.RiskReport{
 		ReportDetail:    details,
 		CreateTimestamp: currentTimeData,
+		DocID:           "risk-report-" + currentTimeData,
 	}
 	reportToBeSent := s.constructRiskExportStruct(riskReport)
 	if reportToBeSent != nil {

@@ -141,10 +141,12 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 }
 
 func (c *controller) constructCISExportStruct(pl *v1alpha1.InspectionPolicy, checkControls *check.Controls) *v1alpha1.ReportData {
+	nowTime := time.Now().Format(time.RFC3339)
 	cisReport := types.CISReport{
 		Controls:        *checkControls,
-		CreateTimestamp: time.Now().Format(time.RFC3339),
+		CreateTimestamp: nowTime,
 		NodeName:        c.hostname,
+		DocID:           "kubebench-report-" + nowTime,
 	}
 	bytes, err := json.Marshal(cisReport)
 	if err != nil {
@@ -152,7 +154,7 @@ func (c *controller) constructCISExportStruct(pl *v1alpha1.InspectionPolicy, che
 		return nil
 	}
 	reportData := &v1alpha1.ReportData{
-		Source:       "kubebench",
+		Source:       "kubebench_report",
 		ExportConfig: pl.Spec.Inspector.ExportConfig,
 		Payload:      string(bytes),
 	}

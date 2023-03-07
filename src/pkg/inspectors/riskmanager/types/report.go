@@ -14,4 +14,5 @@ type RiskDetail struct {
 type RiskReport struct {
 	ReportDetail    []RiskDetail
 	CreateTimestamp string `json:"createTime"`
+	DocID           string `json:"docID"`
 }

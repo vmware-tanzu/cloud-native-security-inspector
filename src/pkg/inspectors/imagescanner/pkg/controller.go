@@ -140,6 +140,7 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 
 	// Assessment report.
 	report := itypes.AssessmentReport{
+		TimeStamp:            time.Now().Format(time.RFC3339),
 		NamespaceAssessments: make([]*itypes.NamespaceAssessment, 0),
 	}
 
@@ -361,13 +362,29 @@ func (c *controller) revokeActionIfNeed(ctx context.Context, wl *wl.Workload, pl
 
 func ExportImageReports(report itypes.AssessmentReport, pl *v1alpha1.InspectionPolicy) {
 	// TODO: remove AssessmentReport, generate AssessmentReportDoc and send it directly for each container
+	// Currently AssessmentReport is still needed by the insight functionality on the UI
+	if bytes, err := json.Marshal(report); err != nil {
+		// Marshal failure should be fatal because it is unforgivable
+		log.Fatal(err, "failed to marshal the insight struct")
+	} else {
+		exportStruct := &v1alpha1.ReportData{
+			Source:       "insight_report",
+			ExportConfig: pl.Spec.Inspector.ExportConfig,
+			Payload:      string(bytes),
+		}
+		err = exporter_inputs.PostReport(exportStruct)
+		if err != nil {
+			// Post failure is error because network issues could happen
+			log.Error(err, "failed to post the insight report", "Policy", pl.Name)
+		}
+	}
 	for _, nsa := range report.NamespaceAssessments {
 		for _, workloadAssessment := range nsa.WorkloadAssessments {
 			for _, pod := range workloadAssessment.Workload.Pods {
 				for _, container := range pod.Containers {
 					var doc itypes.AssessmentReportDoc
 					doc.PolicyName = pl.Name
-					doc.CreateTimestamp = time.Now().Format(time.RFC3339)
+					doc.CreateTimestamp = report.TimeStamp
 					doc.DocId = fmt.Sprintf("%s-%s", container.Name, doc.CreateTimestamp)
 					doc.UID = uuid.NewString()
 					doc.Namespace = pod.Namespace
