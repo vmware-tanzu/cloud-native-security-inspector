@@ -154,7 +154,7 @@ func (c *controller) constructCISExportStruct(pl *v1alpha1.InspectionPolicy, che
 		return nil
 	}
 	reportData := &v1alpha1.ReportData{
-		Source:       "kubebench",
+		Source:       "kubebench_report",
 		ExportConfig: pl.Spec.Inspector.ExportConfig,
 		Payload:      string(bytes),
 	}
