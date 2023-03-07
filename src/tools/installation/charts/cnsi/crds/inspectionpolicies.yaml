@@ -29,14 +29,10 @@ spec:
           description: InspectionPolicy is the Schema for the inspectionpolicies API
           properties:
             apiVersion:
-              description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+              description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
               type: string
             kind:
-              description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+              description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
               type: string
             metadata:
               type: object
@@ -44,8 +40,7 @@ spec:
               description: InspectionPolicySpec defines the desired state of InspectionPolicy
               properties:
                 enabled:
-                  description: Enabled defines whether this inspection policy disable
-                    or enable, default is enabled.
+                  description: Enabled defines whether this inspection policy disable or enable, default is enabled.
                   type: boolean
                 inspection:
                   description: Inspection defines the configurations of the inspector.
@@ -53,37 +48,24 @@ spec:
                     actions:
                       description: Actions of protection.
                       items:
-                        description: FollowupAction defines what actions should be applied
-                          when security expectations are matched.
+                        description: FollowupAction defines what actions should be applied when security expectations are matched.
                         properties:
                           ignore:
-                            description: Ignore applying actions to the workloads with
-                              the specified labels.
+                            description: Ignore applying actions to the workloads with the specified labels.
                             properties:
                               matchExpressions:
-                                description: matchExpressions is a list of label selector
-                                  requirements. The requirements are ANDed.
+                                description: matchExpressions is a list of label selector requirements. The requirements are ANDed.
                                 items:
-                                  description: A label selector requirement is a selector
-                                    that contains values, a key, and an operator that
-                                    relates the key and values.
+                                  description: A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
                                   properties:
                                     key:
-                                      description: key is the label key that the selector
-                                        applies to.
+                                      description: key is the label key that the selector applies to.
                                       type: string
                                     operator:
-                                      description: operator represents a key's relationship
-                                        to a set of values. Valid operators are In,
-                                        NotIn, Exists and DoesNotExist.
+                                      description: operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
                                       type: string
                                     values:
-                                      description: values is an array of string values.
-                                        If the operator is In or NotIn, the values array
-                                        must be non-empty. If the operator is Exists
-                                        or DoesNotExist, the values array must be empty.
-                                        This array is replaced during a strategic merge
-                                        patch.
+                                      description: values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
                                       items:
                                         type: string
                                       type: array
@@ -95,11 +77,7 @@ spec:
                               matchLabels:
                                 additionalProperties:
                                   type: string
-                                description: matchLabels is a map of {key,value} pairs.
-                                  A single {key,value} in the matchLabels map is equivalent
-                                  to an element of matchExpressions, whose key field
-                                  is "key", the operator is "In", and the values array
-                                  contains only "value". The requirements are ANDed.
+                                description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
                                 type: object
                             type: object
                           kind:
@@ -118,78 +96,10 @@ spec:
                           - kind
                         type: object
                       type: array
-                    assessment:
-                      description: DataProvider is the data provider. DataProvider DataProvider
-                        `json:"dataProvider"` Assessment is the assessment report.
-                      properties:
-                        elasticSearchAddr:
-                          description: ElasticSearch endpoint
-                          type: string
-                        elasticSearchCert:
-                          description: ElasticSearch certificate for the client
-                          type: string
-                        elasticSearchEnabled:
-                          default: false
-                          description: Indicate whether to store the reports to elasticsearch
-                          type: boolean
-                        elasticSearchPasswd:
-                          description: ElasticSearch password for the client
-                          type: string
-                        elasticSearchUser:
-                          description: ElasticSearch username for the client
-                          type: string
-                        format:
-                          default: YAML
-                          description: Format of the assessment report data.
-                          enum:
-                            - JSON
-                            - YAML
-                          type: string
-                        generate:
-                          default: true
-                          description: Generate indicates whether generate the assessment
-                            report or not.
-                          type: boolean
-                        liveTime:
-                          default: 86400
-                          description: Live time of the generated report. Unit is second.
-                          format: int64
-                          type: integer
-                        managedBy:
-                          default: false
-                          description: Indicate whether the assessment reports are managed
-                            by the policy. If it is set to true, then the assessment
-                            report is owned by the policy.
-                          type: boolean
-                        openSearchAddr:
-                          description: ElasticSearch endpoint
-                          type: string
-                        openSearchCert:
-                          description: ElasticSearch certificate for the client
-                          type: string
-                        openSearchEnabled:
-                          default: false
-                          description: Indicate whether to store the reports to opensearch
-                          type: boolean
-                        openSearchPasswd:
-                          description: ElasticSearch password for the client
-                          type: string
-                        openSearchUser:
-                          description: ElasticSearch username for the client
-                          type: string
-                      required:
-                        - elasticSearchEnabled
-                        - format
-                        - generate
-                        - liveTime
-                        - managedBy
-                        - openSearchEnabled
-                      type: object
                     baselines:
                       description: Baselines of cluster compliance.
                       items:
-                        description: ComplianceBaseline defines the expecting compliance
-                          baseline.
+                        description: ComplianceBaseline defines the expecting compliance baseline.
                         properties:
                           baseline:
                             description: Baseline for the compliance of this kind.
@@ -207,8 +117,7 @@ spec:
                             description: Scheme of data.
                             type: string
                           version:
-                            description: Version of data scheme used for the compliance
-                              check.
+                            description: Version of data scheme used for the compliance check.
                             type: string
                         required:
                           - baseline
@@ -219,32 +128,21 @@ spec:
                       minItems: 1
                       type: array
                     namespaceSelector:
-                      description: NamespaceSelector provides a way to select the specified
-                        namespaces.
+                      description: NamespaceSelector provides a way to select the specified namespaces.
                       properties:
                         matchExpressions:
-                          description: matchExpressions is a list of label selector
-                            requirements. The requirements are ANDed.
+                          description: matchExpressions is a list of label selector requirements. The requirements are ANDed.
                           items:
-                            description: A label selector requirement is a selector
-                              that contains values, a key, and an operator that relates
-                              the key and values.
+                            description: A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
                             properties:
                               key:
-                                description: key is the label key that the selector
-                                  applies to.
+                                description: key is the label key that the selector applies to.
                                 type: string
                               operator:
-                                description: operator represents a key's relationship
-                                  to a set of values. Valid operators are In, NotIn,
-                                  Exists and DoesNotExist.
+                                description: operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
                                 type: string
                               values:
-                                description: values is an array of string values. If
-                                  the operator is In or NotIn, the values array must
-                                  be non-empty. If the operator is Exists or DoesNotExist,
-                                  the values array must be empty. This array is replaced
-                                  during a strategic merge patch.
+                                description: values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
                                 items:
                                   type: string
                                 type: array
@@ -256,40 +154,25 @@ spec:
                         matchLabels:
                           additionalProperties:
                             type: string
-                          description: matchLabels is a map of {key,value} pairs. A
-                            single {key,value} in the matchLabels map is equivalent
-                            to an element of matchExpressions, whose key field is "key",
-                            the operator is "In", and the values array contains only
-                            "value". The requirements are ANDed.
+                          description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
                           type: object
                       type: object
                     workloadSelector:
-                      description: WorkloadSelector provides a way to select the specified
-                        workloads.
+                      description: WorkloadSelector provides a way to select the specified workloads.
                       properties:
                         matchExpressions:
-                          description: matchExpressions is a list of label selector
-                            requirements. The requirements are ANDed.
+                          description: matchExpressions is a list of label selector requirements. The requirements are ANDed.
                           items:
-                            description: A label selector requirement is a selector
-                              that contains values, a key, and an operator that relates
-                              the key and values.
+                            description: A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
                             properties:
                               key:
-                                description: key is the label key that the selector
-                                  applies to.
+                                description: key is the label key that the selector applies to.
                                 type: string
                               operator:
-                                description: operator represents a key's relationship
-                                  to a set of values. Valid operators are In, NotIn,
-                                  Exists and DoesNotExist.
+                                description: operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
                                 type: string
                               values:
-                                description: values is an array of string values. If
-                                  the operator is In or NotIn, the values array must
-                                  be non-empty. If the operator is Exists or DoesNotExist,
-                                  the values array must be empty. This array is replaced
-                                  during a strategic merge patch.
+                                description: values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
                                 items:
                                   type: string
                                 type: array
@@ -301,20 +184,39 @@ spec:
                         matchLabels:
                           additionalProperties:
                             type: string
-                          description: matchLabels is a map of {key,value} pairs. A
-                            single {key,value} in the matchLabels map is equivalent
-                            to an element of matchExpressions, whose key field is "key",
-                            the operator is "In", and the values array contains only
-                            "value". The requirements are ANDed.
+                          description: matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
                           type: object
                       type: object
                   required:
-                    - assessment
                     - baselines
                   type: object
                 inspector:
                   description: Inspector (image) for doing the inspection.
                   properties:
+                    exportConfig:
+                      properties:
+                        openSearch:
+                          properties:
+                            checkCert:
+                              type: boolean
+                            hostport:
+                              type: string
+                            index:
+                              type: string
+                            mutualTLS:
+                              type: boolean
+                            password:
+                              type: string
+                            username:
+                              type: string
+                          required:
+                            - checkCert
+                            - hostport
+                            - mutualTLS
+                            - password
+                            - username
+                          type: object
+                      type: object
                     image:
                       description: Image of the inspector.
                       type: string
@@ -325,12 +227,10 @@ spec:
                     imagePullSecrets:
                       description: Image pull secrets.
                       items:
-                        description: LocalObjectReference contains enough information
-                          to let you locate the referenced object inside the same namespace.
+                        description: LocalObjectReference contains enough information to let you locate the referenced object inside the same namespace.
                         properties:
                           name:
-                            description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                            TODO: Add other useful fields. apiVersion, kind, uid?'
+                            description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?'
                             type: string
                         type: object
                       type: array
@@ -345,22 +245,17 @@ spec:
                   type: object
                 schedule:
                   description: 'Schedule of the inspector. Cron format. Reference: https://en.wikipedia.org/wiki/Cron'
-                  pattern: (@(annually|yearly|monthly|weekly|daily|hourly|reboot))|(@every
-                    (\d+(ns|us|µs|ms|s|m|h))+)|((((\d+,)+\d+|(\d+(\/|-)\d+)|\d+|\*)
-                    ?){5,7})
+                  pattern: (@(annually|yearly|monthly|weekly|daily|hourly|reboot))|(@every (\d+(ns|us|µs|ms|s|m|h))+)|((((\d+,)+\d+|(\d+(\/|-)\d+)|\d+|\*) ?){5,7})
                   type: string
                 settingsName:
-                  description: 'INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-                  Important: Run "make" to regenerate code after modifying this file
-                  DataSource is the data source definitions.'
+                  description: 'INSERT ADDITIONAL SPEC FIELDS - desired state of cluster Important: Run "make" to regenerate code after modifying this file DataSource is the data source definitions.'
                   type: string
                 strategy:
                   description: Strategy of the inspector.
                   properties:
                     concurrencyRule:
                       default: Forbid
-                      description: ConcurrencyRule indicates how to handle the overlapped
-                        inspector processes.
+                      description: ConcurrencyRule indicates how to handle the overlapped inspector processes.
                       enum:
                         - Allow
                         - Forbid
@@ -368,8 +263,7 @@ spec:
                       type: string
                     historyLimit:
                       default: 25
-                      description: HistoryLimit limits the max number of the completed
-                        inspections.
+                      description: HistoryLimit limits the max number of the completed inspections.
                       format: int32
                       type: integer
                     suspend:
@@ -380,11 +274,7 @@ spec:
                     - historyLimit
                   type: object
                 workNamespace:
-                  description: WorkNamespace specify the namespace for creating the
-                    underlying inspection resources. If it is not specified, a new namespace
-                    with the same name of this policy will be created. If the namespace
-                    with the name of this policy is existing and it's not created by
-                    the controller, conflict error will occur.
+                  description: WorkNamespace specify the namespace for creating the underlying inspection resources. If it is not specified, a new namespace with the same name of this policy will be created. If the namespace with the name of this policy is existing and it's not created by the controller, conflict error will occur.
                   type: string
               required:
                 - inspection
@@ -396,24 +286,13 @@ spec:
               description: InspectionPolicyStatus defines the observed state of InspectionPolicy
               properties:
                 inspectionExecutor:
-                  description: InspectionExecutor of this policy. It is always an object
-                    reference to the underlying cronjob.
+                  description: InspectionExecutor of this policy. It is always an object reference to the underlying cronjob.
                   properties:
                     apiVersion:
                       description: API version of the referent.
                       type: string
                     fieldPath:
-                      description: 'If referring to a piece of an object instead of
-                      an entire object, this string should contain a valid JSON/Go
-                      field access statement, such as desiredState.manifest.containers[2].
-                      For example, if the object reference is to a container within
-                      a pod, this would take on a value like: "spec.containers{name}"
-                      (where "name" refers to the name of the container that triggered
-                      the event) or if no container name is specified "spec.containers[2]"
-                      (container with index 2 in this pod). This syntax is chosen
-                      only to have some well-defined way of referencing a part of
-                      an object. TODO: this design is not final and this field is
-                      subject to change in the future.'
+                      description: 'If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.'
                       type: string
                     kind:
                       description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
@@ -425,69 +304,48 @@ spec:
                       description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
                       type: string
                     resourceVersion:
-                      description: 'Specific resourceVersion to which this reference
-                      is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                      description: 'Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
                       type: string
                     uid:
                       description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
                       type: string
                   type: object
                 kubebenchExecutor:
-                  description: KubebenchExecutor of this policy. It is always an object
-                    reference to the underlying cronjob.
-                  properties:
-                    apiVersion:
-                      description: API version of the referent.
-                      type: string
-                    fieldPath:
-                      description: 'If referring to a piece of an object instead of
-                      an entire object, this string should contain a valid JSON/Go
-                      field access statement, such as desiredState.manifest.containers[2].
-                      For example, if the object reference is to a container within
-                      a pod, this would take on a value like: "spec.containers{name}"
-                      (where "name" refers to the name of the container that triggered
-                      the event) or if no container name is specified "spec.containers[2]"
-                      (container with index 2 in this pod). This syntax is chosen
-                      only to have some well-defined way of referencing a part of
-                      an object. TODO: this design is not final and this field is
-                      subject to change in the future.'
-                      type: string
-                    kind:
-                      description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
-                      type: string
-                    name:
-                      description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
-                      type: string
-                    namespace:
-                      description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
-                      type: string
-                    resourceVersion:
-                      description: 'Specific resourceVersion to which this reference
-                      is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
-                      type: string
-                    uid:
-                      description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
-                      type: string
-                  type: object
+                  description: KubebenchExecutor of this policy. It is always an object reference to the underlying cronjob.
+                  items:
+                    description: "ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs.  1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage.  2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular     restrictions like, \"must refer only to types A and B\" or \"UID not honored\" or \"name must be restricted\".     Those cannot be well described when embedded.  3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen.  4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity     during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple     and the version of the actual struct is irrelevant.  5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type     will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. \n Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 ."
+                    properties:
+                      apiVersion:
+                        description: API version of the referent.
+                        type: string
+                      fieldPath:
+                        description: 'If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.'
+                        type: string
+                      kind:
+                        description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                        type: string
+                      name:
+                        description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                        type: string
+                      namespace:
+                        description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                        type: string
+                      resourceVersion:
+                        description: 'Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                        type: string
+                      uid:
+                        description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                        type: string
+                    type: object
+                  type: array
                 riskExecutor:
-                  description: RiskExecutor of this policy. It is always an object reference
-                    to the underlying cronjob.
+                  description: RiskExecutor of this policy. It is always an object reference to the underlying cronjob.
                   properties:
                     apiVersion:
                       description: API version of the referent.
                       type: string
                     fieldPath:
-                      description: 'If referring to a piece of an object instead of
-                      an entire object, this string should contain a valid JSON/Go
-                      field access statement, such as desiredState.manifest.containers[2].
-                      For example, if the object reference is to a container within
-                      a pod, this would take on a value like: "spec.containers{name}"
-                      (where "name" refers to the name of the container that triggered
-                      the event) or if no container name is specified "spec.containers[2]"
-                      (container with index 2 in this pod). This syntax is chosen
-                      only to have some well-defined way of referencing a part of
-                      an object. TODO: this design is not final and this field is
-                      subject to change in the future.'
+                      description: 'If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.'
                       type: string
                     kind:
                       description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
@@ -499,8 +357,7 @@ spec:
                       description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
                       type: string
                     resourceVersion:
-                      description: 'Specific resourceVersion to which this reference
-                      is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                      description: 'Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
                       type: string
                     uid:
                       description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'

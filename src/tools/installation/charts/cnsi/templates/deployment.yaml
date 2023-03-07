@@ -22,6 +22,7 @@ spec:
             - --logtostderr=true
             - --v=10
           image: {{ .Values.image.repository }}/kubebuilder/kube-rbac-proxy:v0.8.0
+          imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" }}
           name: kube-rbac-proxy
           ports:
             - containerPort: 8443
@@ -33,6 +34,7 @@ spec:
           command:
             - /manager
           image: {{ .Values.image.repository }}/manager:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" }}
           livenessProbe:
             httpGet:
               path: /healthz
@@ -77,6 +79,7 @@ spec:
     spec:
       containers:
         - image: {{ .Values.image.repository }}/exporter:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" }}
           ports:
             - containerPort: 6780
               name: http
@@ -86,3 +89,26 @@ spec:
       securityContext:
         runAsNonRoot: true
       terminationGracePeriodSeconds: 10
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloud-native-security-inspector-portal
+  namespace: cnsi-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      cloud-native-security-inspector-portal: portal
+  template:
+    metadata:
+      labels:
+        cloud-native-security-inspector-portal: portal
+    spec:
+      serviceAccountName: cloud-native-security-inspector-portal-serviceaccount
+      containers:
+        - name: cloud-native-security-inspector-frontend
+          image: {{ .Values.image.repository }}/portal:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" }}
+          ports:
+            - containerPort: 3800

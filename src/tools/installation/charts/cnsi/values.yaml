@@ -7,3 +7,7 @@ image:
   # override image tag, which is .Chart.AppVersion by default
   tag: "0.3"
   pullPolicy: "IfNotPresent"
+
+opensearch:
+  persistence:
+    enabled: false

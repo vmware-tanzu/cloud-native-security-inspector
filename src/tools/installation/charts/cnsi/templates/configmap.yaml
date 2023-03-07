@@ -1,8 +1,4 @@
 apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: cnsi-manager-config
-  namespace: cnsi-system
 data:
   controller_manager_config.yaml: |
     apiVersion: controller-runtime.sigs.k8s.io/v1alpha1
@@ -16,3 +12,7 @@ data:
     leaderElection:
       leaderElect: true
       resourceName: 0c59c3f7.goharbor.io
+kind: ConfigMap
+metadata:
+  name: cnsi-manager-config
+  namespace: cnsi-system

@@ -67,50 +67,6 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: assessment-editor-role
-rules:
-  - apiGroups:
-      - goharbor.goharbor.io
-    resources:
-      - assessments
-    verbs:
-      - create
-      - delete
-      - get
-      - list
-      - patch
-      - update
-      - watch
-  - apiGroups:
-      - goharbor.goharbor.io
-    resources:
-      - assessments/status
-    verbs:
-      - get
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: assessment-viewer-role
-rules:
-  - apiGroups:
-      - goharbor.goharbor.io
-    resources:
-      - assessments
-    verbs:
-      - get
-      - list
-      - watch
-  - apiGroups:
-      - goharbor.goharbor.io
-    resources:
-      - assessments/status
-    verbs:
-      - get
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
   creationTimestamp: null
   name: cnsi-manager-role
 rules:
@@ -220,32 +176,6 @@ rules:
     verbs:
       - get
       - list
-  - apiGroups:
-      - goharbor.goharbor.io
-    resources:
-      - assessmentreports
-    verbs:
-      - create
-      - delete
-      - get
-      - list
-      - patch
-      - update
-      - watch
-  - apiGroups:
-      - goharbor.goharbor.io
-    resources:
-      - assessmentreports/finalizers
-    verbs:
-      - update
-  - apiGroups:
-      - goharbor.goharbor.io
-    resources:
-      - assessmentreports/status
-    verbs:
-      - get
-      - patch
-      - update
   - apiGroups:
       - goharbor.goharbor.io
     resources:
@@ -361,3 +291,12 @@ rules:
       - update
       - watch
 ---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cloud-native-security-inspector-portal-role
+  namespace: cnsi-system
+rules:
+  - apiGroups: ["","goharbor.goharbor.io","apiregistration.k8s.io"]
+    resources: ["pods","namespaces","nodes","apiservices","inspectionpolicies","settings","secrets"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]

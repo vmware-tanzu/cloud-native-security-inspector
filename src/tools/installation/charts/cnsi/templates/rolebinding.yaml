@@ -38,3 +38,16 @@ subjects:
     name: cnsi-controller-manager
     namespace: cnsi-system
 ---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cloud-native-security-inspector-portal-rolebinding
+  namespace: cnsi-system
+subjects:
+  - kind: ServiceAccount
+    name: cloud-native-security-inspector-portal-serviceaccount
+    namespace: cnsi-system
+roleRef:
+  kind: ClusterRole
+  name: cloud-native-security-inspector-portal-role
+  apiGroup: rbac.authorization.k8s.io
