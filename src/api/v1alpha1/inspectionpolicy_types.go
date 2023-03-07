@@ -64,6 +64,7 @@ type DataProvider struct {
 type Connection struct {
 	// Insecure HTTP client will be used to connect to the provider.
 	// +kubebuilder:default:=true
+	// +kubebuilder:validation:Optional
 	Insecure bool `json:"insecure"`
 }
 
@@ -71,21 +72,26 @@ type Connection struct {
 type Assessment struct {
 	// Generate indicates whether generate the assessment report or not.
 	// +kubebuilder:default:=true
+	// +kubebuilder:validation:Optional
 	Generate bool `json:"generate"`
 	// Format of the assessment report data.
 	// +kubebuilder:validation:Enum:=JSON;YAML
 	// +kubebuilder:default:=YAML
+	// +kubebuilder:validation:Optional
 	Format string `json:"format"`
 	// Live time of the generated report.
 	// Unit is second.
 	// +kubebuilder:default:=86400
+	// +kubebuilder:validation:Optional
 	LiveTime int64 `json:"liveTime"`
 	// Indicate whether the assessment reports are managed by the policy.
 	// If it is set to true, then the assessment report is owned by the policy.
 	// +kubebuilder:default:=false
+	// +kubebuilder:validation:Optional
 	ManagedBy bool `json:"managedBy"`
 	// Indicate whether to store the reports to elasticsearch
 	// +kubebuilder:default:=false
+	// +kubebuilder:validation:Optional
 	ElasticSearchEnabled bool `json:"elasticSearchEnabled"`
 	// ElasticSearch endpoint
 	// +kubebuilder:validation:Optional
@@ -101,6 +107,7 @@ type Assessment struct {
 	ElasticSearchCert string `json:"elasticSearchCert"`
 	// Indicate whether to store the reports to opensearch
 	// +kubebuilder:default:=false
+	// +kubebuilder:validation:Optional
 	OpenSearchEnabled bool `json:"openSearchEnabled"`
 	// ElasticSearch endpoint
 	// +kubebuilder:validation:Optional
@@ -123,6 +130,7 @@ type Assessment struct {
 type Governor struct {
 	// Indicate whether to send the reports to governor
 	// +kubebuilder:default:=false
+	// +kubebuilder:validation:Optional
 	Enabled bool `json:"enabled"`
 	// Unique identifier of the cluster
 	// +kubebuilder:validation:Optional
@@ -188,6 +196,7 @@ type InspectionConfiguration struct {
 type Strategy struct {
 	// HistoryLimit limits the max number of the completed inspections.
 	// +kubebuilder:default:=25
+	// +kubebuilder:validation:Optional
 	HistoryLimit *int32 `json:"historyLimit"`
 	// Suspend the subsequent inspections temporarily.
 	// +kubebuilder:validation:Optional
@@ -195,6 +204,7 @@ type Strategy struct {
 	// ConcurrencyRule indicates how to handle the overlapped inspector processes.
 	// +kubebuilder:validation:Enum:=Allow;Forbid;Replace
 	// +kubebuilder:default:=Forbid
+	// +kubebuilder:validation:Optional
 	ConcurrencyRule ConcurrencyRule `json:"concurrencyRule"`
 }
 
@@ -211,6 +221,7 @@ type Inspector struct {
 	RiskImage string `json:"riskImage"`
 	// Image pull policy.
 	// +kubebuilder:default:=IfNotPresent
+	// +kubebuilder:validation:Optional
 	ImagePullPolicy corev1.PullPolicy `json:"imagePullPolicy"`
 	// Image pull secrets.
 	// +kubebuilder:validation:Optional
