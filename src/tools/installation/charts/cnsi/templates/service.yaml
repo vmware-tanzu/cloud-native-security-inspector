@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    control-plane: cnsi-controller
+  name: cnsi-controller-manager-metrics-service
+  namespace: cnsi-system
+spec:
+  ports:
+    - name: https
+      port: 8443
+      targetPort: https
+  selector:
+    control-plane: cnsi-controller
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cnsi-exporter-service
+  namespace: cnsi-system
+spec:
+  type: ClusterIP
+  ports:
+    - name: exporter-svc
+      port: 6780
+      targetPort: http
+  selector:
+    control-plane: cnsi-exporter
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: cloud-native-security-inspector-portal-service
+  namespace: cnsi-system
+spec:
+  selector:
+    cloud-native-security-inspector-portal: portal
+  ports:
+    - protocol: TCP
+      port: 3800
+      targetPort: 3800
+      nodePort: 30150
+  type: NodePort

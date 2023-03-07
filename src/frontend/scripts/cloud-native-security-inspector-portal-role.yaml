@@ -7,5 +7,5 @@ metadata:
   namespace: cnsi-system
 rules:
   - apiGroups: ["","goharbor.goharbor.io","apiregistration.k8s.io"]
-    resources: ["pods","namespaces","nodes","apiservices","assessmentreports","inspectionpolicies","settings","secrets"]
+    resources: ["pods","namespaces","nodes","apiservices","inspectionpolicies","settings","secrets"]
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]

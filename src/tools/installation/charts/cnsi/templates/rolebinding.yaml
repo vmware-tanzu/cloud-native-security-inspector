@@ -1,0 +1,53 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cnsi-manager-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cnsi-manager-role
+subjects:
+  - kind: ServiceAccount
+    name: cnsi-controller-manager
+    namespace: cnsi-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cnsi-proxy-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cnsi-proxy-role
+subjects:
+  - kind: ServiceAccount
+    name: cnsi-controller-manager
+    namespace: cnsi-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cnsi-leader-election-rolebinding
+  namespace: cnsi-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: cnsi-leader-election-role
+subjects:
+  - kind: ServiceAccount
+    name: cnsi-controller-manager
+    namespace: cnsi-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cloud-native-security-inspector-portal-rolebinding
+  namespace: cnsi-system
+subjects:
+  - kind: ServiceAccount
+    name: cloud-native-security-inspector-portal-serviceaccount
+    namespace: cnsi-system
+roleRef:
+  kind: ClusterRole
+  name: cloud-native-security-inspector-portal-role
+  apiGroup: rbac.authorization.k8s.io
