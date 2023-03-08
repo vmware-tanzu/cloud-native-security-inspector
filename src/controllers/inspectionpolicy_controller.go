@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	appsv1 "k8s.io/api/apps/v1"
+	"os"
 	"strconv"
 
 	"strings"
@@ -50,9 +51,10 @@ const (
 // InspectionPolicyReconciler reconciles a InspectionPolicy object
 type InspectionPolicyReconciler struct {
 	client.Client
-	Scheme   *runtime.Scheme
-	nodeList []string
-	pathList []string
+	Scheme    *runtime.Scheme
+	nodeList  []string
+	pathList  []string
+	namespace string
 }
 
 //+kubebuilder:rbac:groups=goharbor.goharbor.io,resources=inspectionpolicies,verbs=get;list;watch;create;update;patch;delete
@@ -86,6 +88,15 @@ func (r *InspectionPolicyReconciler) Reconcile(ctx context.Context, req ctrl.Req
 		r.nodeList = append(r.nodeList, node.ObjectMeta.Name)
 	}
 	log.Info("Node list:", "nodes:", r.nodeList)
+
+	// Here we need to get the namespace of the narrows system, plant it in the env of the scanner pods.
+	// So that the scanners will know the exporter is in which namespace later.
+	if b, err := os.ReadFile("/var/run/secrets/kubernetes.io/serviceaccount/namespace"); err != nil {
+		log.Error(err, "failed to read the namespace of narrows system from file")
+		r.namespace = "cnsi-system"
+	} else {
+		r.namespace = string(b)
+	}
 
 	// First, get the inspector policy.
 	policy := &goharborv1.InspectionPolicy{}
@@ -203,6 +214,12 @@ func (r *InspectionPolicyReconciler) constructKubebenchDaemonSet(
 		Args: []string{
 			"--policy",
 			policy.Name,
+		},
+		Env: []corev1.EnvVar{
+			{
+				Name:  "NARROWS_NAMESPACE",
+				Value: r.namespace,
+			},
 		},
 	}
 	r.addVolumeMountsToContainer(&container)
@@ -629,6 +646,12 @@ func (r *InspectionPolicyReconciler) generateCronJobCR(policy *goharborv1.Inspec
 										"--policy",
 										policy.Name,
 									},
+									Env: []corev1.EnvVar{
+										{
+											Name:  "NARROWS_NAMESPACE",
+											Value: r.namespace,
+										},
+									},
 								},
 							},
 							RestartPolicy:      corev1.RestartPolicyOnFailure,
@@ -641,36 +664,39 @@ func (r *InspectionPolicyReconciler) generateCronJobCR(policy *goharborv1.Inspec
 	}
 
 	if cronjobType == goharborv1.CronjobRisk {
-		cj.Spec.JobTemplate.Spec.Template.Spec.Containers[0].Env = []corev1.EnvVar{
-			{
+		cj.Spec.JobTemplate.Spec.Template.Spec.Containers[0].Env = append(cj.Spec.JobTemplate.Spec.Template.Spec.Containers[0].Env,
+			corev1.EnvVar{
 				Name:  "SERVER_ADDR",
 				Value: "http://127.0.0.1:8080",
-			},
-		}
-		cj.Spec.JobTemplate.Spec.Template.Spec.Containers = append(cj.Spec.JobTemplate.Spec.Template.Spec.Containers, corev1.Container{
-			Name:            "server",
-			Image:           image,
-			ImagePullPolicy: getImagePullPolicy(policy),
-			Command:         []string{command},
-			Args: []string{
-				"--policy",
-				policy.Name,
-				"--mode",
-				"server-only",
-			},
-			Env: []corev1.EnvVar{
-				{
-					Name:  "SERVER_ADDR",
-					Value: ":8080",
-				},
-			},
-			Ports: []corev1.ContainerPort{
-				{
-					ContainerPort: 8080,
-				},
-			},
-		})
+			})
 	}
+	cj.Spec.JobTemplate.Spec.Template.Spec.Containers = append(cj.Spec.JobTemplate.Spec.Template.Spec.Containers, corev1.Container{
+		Name:            "server",
+		Image:           image,
+		ImagePullPolicy: getImagePullPolicy(policy),
+		Command:         []string{command},
+		Args: []string{
+			"--policy",
+			policy.Name,
+			"--mode",
+			"server-only",
+		},
+		Env: []corev1.EnvVar{
+			{
+				Name:  "SERVER_ADDR",
+				Value: ":8080",
+			},
+			{
+				Name:  "NARROWS_NAMESPACE",
+				Value: r.namespace,
+			},
+		},
+		Ports: []corev1.ContainerPort{
+			{
+				ContainerPort: 8080,
+			},
+		},
+	})
 
 	if policy.Spec.Inspector != nil {
 		if len(policy.Spec.Inspector.ImagePullSecrets) > 0 {
