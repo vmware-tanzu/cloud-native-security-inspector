@@ -3,7 +3,7 @@ Catalog Governor Service REST API
 
 This is the service to track assets deployed in customer clusters
 
-API version: 0.1.0
+API version: ${project.version}
 Contact: content-building-ecosystem@vmware.com
 */
 
@@ -20,32 +20,31 @@ import (
 	"strings"
 )
 
-
 type ClustersApi interface {
 
 	/*
-	FetchAgentConfig fetch cluster agent configuration manifest
+		GenerateAgentConfig Generate cluster agent configuration manifest
 
-	fetch the agent configuration manifest data for a cluster in an organization. OrgId is fetched from CSP token.
+		Generates the agent configuration manifest data for a cluster in an organization. OrgId is fetched from CSP token.
 
-	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param clusterId A string as the identifier of a cluster
-	@return ApiFetchAgentConfigRequest
+		@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+		@param clusterId A string as the identifier of a cluster
+		@return ApiGenerateAgentConfigRequest
 	*/
-	FetchAgentConfig(ctx context.Context, clusterId string) ApiFetchAgentConfigRequest
+	GenerateAgentConfig(ctx context.Context, clusterId string) ApiGenerateAgentConfigRequest
 
-	// FetchAgentConfigExecute executes the request
+	// GenerateAgentConfigExecute executes the request
 	//  @return string
-	FetchAgentConfigExecute(r ApiFetchAgentConfigRequest) (string, *http.Response, error)
+	GenerateAgentConfigExecute(r ApiGenerateAgentConfigRequest) (string, *http.Response, error)
 
 	/*
-	GetCluster Get cluster and workload telemetry
+		GetCluster Get cluster and workload telemetry
 
-	Returns information about a cluster and its workloads deployed for an organization. OrgId is fetched from CSP token.
+		Returns information about a cluster and its workloads deployed for an organization. OrgId is fetched from CSP token.
 
-	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param clusterId A string as the identifier of a cluster
-	@return ApiGetClusterRequest
+		@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+		@param clusterId A string as the identifier of a cluster
+		@return ApiGetClusterRequest
 	*/
 	GetCluster(ctx context.Context, clusterId string) ApiGetClusterRequest
 
@@ -54,12 +53,12 @@ type ClustersApi interface {
 	GetClusterExecute(r ApiGetClusterRequest) (*KubernetesClusterDetailedResponse, *http.Response, error)
 
 	/*
-	GetClusters Get information about all clusters and their workloads
+		GetClusters Get information about all clusters and their workloads
 
-	Returns all clusters and their workloads for an organization. OrgId is fetched from CSP token.
+		Returns all clusters and their workloads for an organization. OrgId is fetched from CSP token.
 
-	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@return ApiGetClustersRequest
+		@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+		@return ApiGetClustersRequest
 	*/
 	GetClusters(ctx context.Context) ApiGetClustersRequest
 
@@ -68,12 +67,12 @@ type ClustersApi interface {
 	GetClustersExecute(r ApiGetClustersRequest) ([]KubernetesClusterResponse, *http.Response, error)
 
 	/*
-	RegisterCluster Register a cluster
+		RegisterCluster Register a cluster
 
-	Registers a new cluster to start receiving telemetry. OrgId is fetched from CSP token.
+		Registers a new cluster to start receiving telemetry. OrgId is fetched from CSP token.
 
-	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@return ApiRegisterClusterRequest
+		@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+		@return ApiRegisterClusterRequest
 	*/
 	RegisterCluster(ctx context.Context) ApiRegisterClusterRequest
 
@@ -81,13 +80,13 @@ type ClustersApi interface {
 	RegisterClusterExecute(r ApiRegisterClusterRequest) (*http.Response, error)
 
 	/*
-	UnregisterCluster Unregister a cluster
+		UnregisterCluster Unregister a cluster
 
-	Unregisters a cluster. OrgId is fetched from CSP token.
+		Unregisters a cluster. OrgId is fetched from CSP token.
 
-	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param clusterId A string as the identifier of a cluster
-	@return ApiUnregisterClusterRequest
+		@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+		@param clusterId A string as the identifier of a cluster
+		@return ApiUnregisterClusterRequest
 	*/
 	UnregisterCluster(ctx context.Context, clusterId string) ApiUnregisterClusterRequest
 
@@ -95,13 +94,13 @@ type ClustersApi interface {
 	UnregisterClusterExecute(r ApiUnregisterClusterRequest) (*http.Response, error)
 
 	/*
-	UpdateTelemetry Save/update cluster workload telemetry
+		UpdateTelemetry Save/update cluster workload telemetry
 
-	Saves/updates information about the running workloads in a cluster for an organization. OrgId is fetched from CSP token.
+		Saves/updates information about the running workloads in a cluster for an organization. OrgId is fetched from CSP token.
 
-	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param clusterId A string as the identifier of a cluster
-	@return ApiUpdateTelemetryRequest
+		@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+		@param clusterId A string as the identifier of a cluster
+		@return ApiUpdateTelemetryRequest
 	*/
 	UpdateTelemetry(ctx context.Context, clusterId string) ApiUpdateTelemetryRequest
 
@@ -112,51 +111,52 @@ type ClustersApi interface {
 // ClustersApiService ClustersApi service
 type ClustersApiService service
 
-type ApiFetchAgentConfigRequest struct {
-	ctx context.Context
-	ApiService ClustersApi
-	clusterId string
+type ApiGenerateAgentConfigRequest struct {
+	ctx                          context.Context
+	ApiService                   ClustersApi
+	clusterId                    string
 	kubernetesAgentConfigRequest *KubernetesAgentConfigRequest
 }
 
-// Details of the agent properties for fetching agent configuration
-func (r ApiFetchAgentConfigRequest) KubernetesAgentConfigRequest(kubernetesAgentConfigRequest KubernetesAgentConfigRequest) ApiFetchAgentConfigRequest {
+// Details of the agent properties for generating agent configuration
+func (r ApiGenerateAgentConfigRequest) KubernetesAgentConfigRequest(kubernetesAgentConfigRequest KubernetesAgentConfigRequest) ApiGenerateAgentConfigRequest {
 	r.kubernetesAgentConfigRequest = &kubernetesAgentConfigRequest
 	return r
 }
 
-func (r ApiFetchAgentConfigRequest) Execute() (string, *http.Response, error) {
-	return r.ApiService.FetchAgentConfigExecute(r)
+func (r ApiGenerateAgentConfigRequest) Execute() (string, *http.Response, error) {
+	return r.ApiService.GenerateAgentConfigExecute(r)
 }
 
 /*
-FetchAgentConfig fetch cluster agent configuration manifest
+GenerateAgentConfig Generate cluster agent configuration manifest
 
-fetch the agent configuration manifest data for a cluster in an organization. OrgId is fetched from CSP token.
+Generates the agent configuration manifest data for a cluster in an organization. OrgId is fetched from CSP token.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param clusterId A string as the identifier of a cluster
- @return ApiFetchAgentConfigRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param clusterId A string as the identifier of a cluster
+	@return ApiGenerateAgentConfigRequest
 */
-func (a *ClustersApiService) FetchAgentConfig(ctx context.Context, clusterId string) ApiFetchAgentConfigRequest {
-	return ApiFetchAgentConfigRequest{
+func (a *ClustersApiService) GenerateAgentConfig(ctx context.Context, clusterId string) ApiGenerateAgentConfigRequest {
+	return ApiGenerateAgentConfigRequest{
 		ApiService: a,
-		ctx: ctx,
-		clusterId: clusterId,
+		ctx:        ctx,
+		clusterId:  clusterId,
 	}
 }
 
 // Execute executes the request
-//  @return string
-func (a *ClustersApiService) FetchAgentConfigExecute(r ApiFetchAgentConfigRequest) (string, *http.Response, error) {
+//
+//	@return string
+func (a *ClustersApiService) GenerateAgentConfigExecute(r ApiGenerateAgentConfigRequest) (string, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  string
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue string
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ClustersApiService.FetchAgentConfig")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ClustersApiService.GenerateAgentConfig")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
@@ -257,9 +257,9 @@ func (a *ClustersApiService) FetchAgentConfigExecute(r ApiFetchAgentConfigReques
 }
 
 type ApiGetClusterRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService ClustersApi
-	clusterId string
+	clusterId  string
 }
 
 func (r ApiGetClusterRequest) Execute() (*KubernetesClusterDetailedResponse, *http.Response, error) {
@@ -271,26 +271,27 @@ GetCluster Get cluster and workload telemetry
 
 Returns information about a cluster and its workloads deployed for an organization. OrgId is fetched from CSP token.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param clusterId A string as the identifier of a cluster
- @return ApiGetClusterRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param clusterId A string as the identifier of a cluster
+	@return ApiGetClusterRequest
 */
 func (a *ClustersApiService) GetCluster(ctx context.Context, clusterId string) ApiGetClusterRequest {
 	return ApiGetClusterRequest{
 		ApiService: a,
-		ctx: ctx,
-		clusterId: clusterId,
+		ctx:        ctx,
+		clusterId:  clusterId,
 	}
 }
 
 // Execute executes the request
-//  @return KubernetesClusterDetailedResponse
+//
+//	@return KubernetesClusterDetailedResponse
 func (a *ClustersApiService) GetClusterExecute(r ApiGetClusterRequest) (*KubernetesClusterDetailedResponse, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *KubernetesClusterDetailedResponse
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *KubernetesClusterDetailedResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ClustersApiService.GetCluster")
@@ -389,7 +390,7 @@ func (a *ClustersApiService) GetClusterExecute(r ApiGetClusterRequest) (*Kuberne
 }
 
 type ApiGetClustersRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService ClustersApi
 }
 
@@ -402,24 +403,25 @@ GetClusters Get information about all clusters and their workloads
 
 Returns all clusters and their workloads for an organization. OrgId is fetched from CSP token.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetClustersRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetClustersRequest
 */
 func (a *ClustersApiService) GetClusters(ctx context.Context) ApiGetClustersRequest {
 	return ApiGetClustersRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return []KubernetesClusterResponse
+//
+//	@return []KubernetesClusterResponse
 func (a *ClustersApiService) GetClustersExecute(r ApiGetClustersRequest) ([]KubernetesClusterResponse, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []KubernetesClusterResponse
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []KubernetesClusterResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ClustersApiService.GetClusters")
@@ -507,8 +509,8 @@ func (a *ClustersApiService) GetClustersExecute(r ApiGetClustersRequest) ([]Kube
 }
 
 type ApiRegisterClusterRequest struct {
-	ctx context.Context
-	ApiService ClustersApi
+	ctx                              context.Context
+	ApiService                       ClustersApi
 	registerKubernetesClusterRequest *RegisterKubernetesClusterRequest
 }
 
@@ -527,22 +529,22 @@ RegisterCluster Register a cluster
 
 Registers a new cluster to start receiving telemetry. OrgId is fetched from CSP token.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiRegisterClusterRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiRegisterClusterRequest
 */
 func (a *ClustersApiService) RegisterCluster(ctx context.Context) ApiRegisterClusterRequest {
 	return ApiRegisterClusterRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *ClustersApiService) RegisterClusterExecute(r ApiRegisterClusterRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ClustersApiService.RegisterCluster")
@@ -636,9 +638,9 @@ func (a *ClustersApiService) RegisterClusterExecute(r ApiRegisterClusterRequest)
 }
 
 type ApiUnregisterClusterRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService ClustersApi
-	clusterId string
+	clusterId  string
 }
 
 func (r ApiUnregisterClusterRequest) Execute() (*http.Response, error) {
@@ -650,24 +652,24 @@ UnregisterCluster Unregister a cluster
 
 Unregisters a cluster. OrgId is fetched from CSP token.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param clusterId A string as the identifier of a cluster
- @return ApiUnregisterClusterRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param clusterId A string as the identifier of a cluster
+	@return ApiUnregisterClusterRequest
 */
 func (a *ClustersApiService) UnregisterCluster(ctx context.Context, clusterId string) ApiUnregisterClusterRequest {
 	return ApiUnregisterClusterRequest{
 		ApiService: a,
-		ctx: ctx,
-		clusterId: clusterId,
+		ctx:        ctx,
+		clusterId:  clusterId,
 	}
 }
 
 // Execute executes the request
 func (a *ClustersApiService) UnregisterClusterExecute(r ApiUnregisterClusterRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ClustersApiService.UnregisterCluster")
@@ -747,9 +749,9 @@ func (a *ClustersApiService) UnregisterClusterExecute(r ApiUnregisterClusterRequ
 }
 
 type ApiUpdateTelemetryRequest struct {
-	ctx context.Context
-	ApiService ClustersApi
-	clusterId string
+	ctx                        context.Context
+	ApiService                 ClustersApi
+	clusterId                  string
 	kubernetesTelemetryRequest *KubernetesTelemetryRequest
 }
 
@@ -768,24 +770,24 @@ UpdateTelemetry Save/update cluster workload telemetry
 
 Saves/updates information about the running workloads in a cluster for an organization. OrgId is fetched from CSP token.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param clusterId A string as the identifier of a cluster
- @return ApiUpdateTelemetryRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param clusterId A string as the identifier of a cluster
+	@return ApiUpdateTelemetryRequest
 */
 func (a *ClustersApiService) UpdateTelemetry(ctx context.Context, clusterId string) ApiUpdateTelemetryRequest {
 	return ApiUpdateTelemetryRequest{
 		ApiService: a,
-		ctx: ctx,
-		clusterId: clusterId,
+		ctx:        ctx,
+		clusterId:  clusterId,
 	}
 }
 
 // Execute executes the request
 func (a *ClustersApiService) UpdateTelemetryExecute(r ApiUpdateTelemetryRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ClustersApiService.UpdateTelemetry")

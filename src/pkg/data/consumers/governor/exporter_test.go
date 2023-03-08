@@ -6,8 +6,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	api "github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/cspauth/mocks"
+	cspauth_mocks "github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/cspauth/mocks"
 	openapi "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers/governor/go-client"
+	openapi_mocks "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/consumers/governor/mocks"
 	v1 "k8s.io/api/core/v1"
 	"net/http"
 	"testing"
@@ -20,6 +21,7 @@ var (
 	name              = "name"
 	image             = "image"
 	imageID           = "imageId"
+	id                = "6e476de6-168b-4d75-9b9d-a8802333969a"
 	replicaCount      = 2
 	testHeader        = "testHeader"
 	testHeaderValue   = "testHeaderValue"
@@ -34,6 +36,7 @@ const (
 )
 
 func TestSendReportToGovernor(t *testing.T) {
+
 	testDataStruct := []struct {
 		testCaseDescription string
 		testHost            string
@@ -60,6 +63,7 @@ func TestSendReportToGovernor(t *testing.T) {
 						Pods: []*api.Pod{{Containers: []*api.Container{{
 							Name:    name,
 							Image:   image,
+							ID:      id,
 							ImageID: imageID,
 						}}}}}}}}}}},
 			testClusterID:     clusterID,
@@ -163,7 +167,7 @@ func TestSendReportToGovernor(t *testing.T) {
 				ApiClient: clusterClient,
 				ClusterID: tt.testClusterID,
 			}
-			mockAPIClient := new(ClustersApi)
+			mockAPIClient := new(openapi_mocks.ClustersApi)
 
 			response := openapi.ApiUpdateTelemetryRequest{
 				ApiService: mockAPIClient,
@@ -180,7 +184,7 @@ func TestSendReportToGovernor(t *testing.T) {
 				ctx = context.WithValue(ctx, "cspSecretName", tt.testSecretName)
 			}
 
-			provider := new(mocks.Provider)
+			provider := new(cspauth_mocks.Provider)
 			if tt.authToken == "" {
 				provider.On("GetBearerToken", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(tt.authToken, errors.New("Failed to fetch CSP auth token"))
 			} else {
