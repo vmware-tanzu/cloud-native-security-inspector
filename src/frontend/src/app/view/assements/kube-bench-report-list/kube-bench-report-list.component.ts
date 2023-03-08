@@ -114,6 +114,7 @@ export class KubeBenchReportListComponent implements OnInit {
         }
       },
       err => {
+        this.echartsLoading = false
         console.log('err', err);
       }
     )

@@ -24,18 +24,6 @@
             <span>{{shardService.currentReport?._source.workloadNamespace}}</span>
           </li>
           <li>
-            <b>Container Name: </b>
-            <span>{{shardService.currentReport?._source.containerName}}</span>
-          </li>
-          <li>
-            <b>Container Image: </b>
-            <span>{{shardService.currentReport?._source.containerImage}}</span>
-          </li>
-          <li>
-            <b>Passed: </b>
-            <span>{{shardService.currentReport?._source.passed}}</span>
-          </li>
-          <li>
             <b>Created Time: </b>
             <span>{{shardService.currentReport?._source.createTime}}</span>
           </li>
@@ -43,8 +31,83 @@
       </clr-accordion-content>
     </clr-accordion-panel>
 
+    <clr-accordion-panel [clrAccordionPanelOpen]='true'>
+      <clr-accordion-title>{{'Workload.list'|translate}}</clr-accordion-title>
+      <clr-accordion-content *clrIfExpanded>
+        <clr-datagrid style="height:  200px; overflow:  auto;">
+          <clr-dg-column [clrDgField]="'container.name'">Uid</clr-dg-column>
+          <clr-dg-column [clrDgField]="'container.name'">
+            Name
+          </clr-dg-column>
+          <clr-dg-column >Namespace</clr-dg-column>
+          <clr-dg-column >Kind</clr-dg-column>
+          <clr-dg-column >Passed</clr-dg-column>
 
-    <clr-accordion-panel [clrAccordionPanelOpen]='true' *ngIf="shardService.currentReport?._source.failures">
+          <clr-dg-row *clrDgItems="let wd of shardService.currentReport?.workloadAssessments" [clrDgItem]="wd">
+            <clr-dg-cell>
+              {{wd.workload.metadata.uid}}
+            </clr-dg-cell>
+            <clr-dg-cell>
+              <a href="javascript:;" (click)="showDetail(wd)">
+                {{wd.workload.metadata.name}}
+              </a>  
+            </clr-dg-cell>
+            <clr-dg-cell>{{wd.workload.metadata.namespace}}</clr-dg-cell>
+            <clr-dg-cell>{{wd.workload.metadata.kind}}</clr-dg-cell>
+            <clr-dg-cell>{{wd.passed}}</clr-dg-cell>
+          </clr-dg-row>
+          <clr-dg-footer>
+            <clr-dg-pagination #pagination_wordloads [clrDgPageSize]="10">
+                <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">wordloads per page</clr-dg-page-size>
+                {{pagination_wordloads.firstItem + 1}} - {{pagination_wordloads.lastItem + 1}}
+                of {{pagination_wordloads.totalItems}} wordloads
+            </clr-dg-pagination>
+        </clr-dg-footer>
+        </clr-datagrid>
+      </clr-accordion-content>
+    </clr-accordion-panel>
+    <clr-accordion-panel [clrAccordionPanelOpen]='true' *ngIf="showDetailFlag && currentWordloadInfo">
+      <clr-accordion-title>Pods</clr-accordion-title>
+      <clr-accordion-content *clrIfExpanded>
+        <ul class="list">
+          <li *ngFor="let pod of currentWordloadInfo?.workload.pods">
+            <span>
+              <b>Pod Name</b>: {{pod.metadata.name}}
+            </span>
+            <br>
+            <span>
+              <b>Pod Namespace</b>: {{pod.metadata.namespace}}
+            </span>
+            <h4>Containers</h4>
+            <clr-datagrid style="height:  200px; overflow:  auto;">
+              <clr-dg-column [clrDgField]="'container.name'">Name</clr-dg-column>
+              <clr-dg-column >Image</clr-dg-column>
+              <clr-dg-column >{{'Report_Detail.isInit'|translate}}</clr-dg-column>
+    
+              <clr-dg-row *clrDgItems="let cn of pod.containers" [clrDgItem]="cn">
+                <clr-dg-cell>
+                  {{cn.name}}
+                </clr-dg-cell>
+                <clr-dg-cell>
+                  {{cn.image}}
+                </clr-dg-cell>
+                <clr-dg-cell>{{cn.isInit}}</clr-dg-cell>
+              </clr-dg-row>
+              <clr-dg-footer>
+                <clr-dg-pagination #pagination_containers [clrDgPageSize]="10">
+                    <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">containers per page</clr-dg-page-size>
+                    {{pagination_containers.firstItem + 1}} - {{pagination_containers.lastItem + 1}}
+                    of {{pagination_containers.totalItems}} containers
+                </clr-dg-pagination>
+            </clr-dg-footer>
+            </clr-datagrid>
+          </li>
+        </ul>
+      </clr-accordion-content>
+    </clr-accordion-panel>
+
+
+    <clr-accordion-panel [clrAccordionPanelOpen]='true' *ngIf="showDetailFlag && currentWordloadInfo && !currentWordloadInfo.passed">
       <clr-accordion-title>{{'Report_Detail.failures'|translate}}</clr-accordion-title>
       <clr-accordion-content *clrIfExpanded>
         <clr-datagrid style="height:  200px; overflow:  auto;">
@@ -54,7 +117,7 @@
           <clr-dg-column >Cause</clr-dg-column>
           <clr-dg-column >Error</clr-dg-column>
 
-          <clr-dg-row *clrDgItems="let failure of shardService.currentReport?._source.failures" [clrDgItem]="failure">
+          <clr-dg-row *clrDgItems="let failure of currentWordloadInfo?.failures" [clrDgItem]="failure">
             <clr-dg-cell>
               {{failure.container.name}}
             </clr-dg-cell>

@@ -35,7 +35,7 @@ describe('ReportViewDetailComponent', () => {
   });
   describe('functions ', () => {
     it('other test', () => {
-      component.setCurrentReport({})
+      component.showDetail({})
     })
   })
 

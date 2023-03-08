@@ -18,7 +18,6 @@ import { LoginComponent } from './view/login/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HistogramComponent } from './view/report/histogram/histogram.component';
 import { LineComponent } from './view/report/line/line.component';
-import { CornComponent } from './view/corn/corn.component'
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { NamespaceComponent } from './view/summary/namespace/namespace.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -134,7 +133,6 @@ ClarityIcons.addIcons(
     LoginComponent,
     HistogramComponent,
     LineComponent,
-    CornComponent,
     NamespaceComponent,
     ReportViewDetailComponent,
     ReportViewComponent,

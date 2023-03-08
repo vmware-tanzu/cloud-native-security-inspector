@@ -14,8 +14,9 @@ import { ShardService } from 'src/app/service/shard.service'
 })
 export class ReportViewDetailComponent implements OnInit {
   public pageSizeOptions = [10, 20, 50, 100, 500];
-  public currentReport:any = {}
   public workloadInfo!:any
+  showDetailFlag = false
+  currentWordloadInfo!: any
   constructor(
     public shardService:ShardService,
     private assessmentService: AssessmentService
@@ -23,7 +24,9 @@ export class ReportViewDetailComponent implements OnInit {
 
   ngOnInit(): void { 
   }
-  setCurrentReport(data:any) {    
-    this.currentReport = data
+
+  showDetail(wd: any) {
+    this.currentWordloadInfo = wd
+    this.showDetailFlag = true
   }
 }

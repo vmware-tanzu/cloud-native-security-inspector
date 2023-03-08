@@ -49,16 +49,12 @@ export class DgFilterComponent
         private policyService:PolicyService, 
         private shardService:ShardService,
         ) {}
-  
-      labelFilterInput () {
 
-      }
-
-      get filteredLabels() {
-          return this.dataSource.filter((label: any) =>
-              label.name.includes(this.labelFilter)
-          );
-      }
+    //   get filteredLabels() {
+    //       return this.dataSource.filter((label: any) =>
+    //           label.name.includes(this.labelFilter)
+    //       );
+    //   }
   
       isActive(): boolean {
           return this.selectedLabels.size > 0;
@@ -68,20 +64,19 @@ export class DgFilterComponent
           return true
           
       }
+    //   selectLabel(label: any) {
+    //       this.selectedLabels.set(label.id, true);
+    //       this.changes.emit();
+    //   }
   
-      selectLabel(label: any) {
-          this.selectedLabels.set(label.id, true);
-          this.changes.emit();
-      }
+    //   unselectLabel(label: any) {
+    //       this.selectedLabels.delete(label.id);
+    //       this.changes.emit(true);
+    //   }
   
-      unselectLabel(label: any) {
-          this.selectedLabels.delete(label.id);
-          this.changes.emit(true);
-      }
-  
-      isSelected(label: any) {
-          return this.selectedLabels.has(label.id);
-      }
+    //   isSelected(label: any) {
+    //       return this.selectedLabels.has(label.id);
+    //   }
 
       search() {
           if (this.label) {
@@ -90,11 +85,7 @@ export class DgFilterComponent
                 key: this.labelKey
             })            
           } else {
-              this.policyService.getNamespaceAssessmentreports(this.labelFilter, this.pageSize, '').subscribe(
-                  data => {
-                    this.shardService.reportslist = data.items
-                  }
-              )
+            return
           }
       }
   }

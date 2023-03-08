@@ -27,7 +27,14 @@ describe('ReportViewComponent', () => {
           },
           hits: [{
             _source: {
-              failures: "[]"
+              failures: "[]",
+              namespaceAssessments: [{
+                workloadAssessments: [
+                  {
+                    failures: []
+                  }
+                ]
+              }]
             },
             createTime: '2023-02-22T05:50:03Z'
           }]
@@ -74,7 +81,14 @@ describe('ReportViewComponent', () => {
     it('other test', () => {
       const report = {
         _source: {
-          actionEnforcement: "[]",
+          namespaceAssessments: [
+            {
+              namespace: {
+                name: ''
+              },
+              workloadAssessments: []
+            }
+          ],
           failures: "[]",
           inspectionConfiguration: '{"namespaceSelector": {"matchLabels": [{"key": "kubernetes.io/metadata.name","value": "default"}]}}'
         }

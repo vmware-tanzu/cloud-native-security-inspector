@@ -322,7 +322,13 @@ export class PolicySettingPageComponent implements OnInit {
               })
             }
           }
-
+          const opensearchInfo =  {
+            url: policyList[0].spec.inspector.exportConfig.openSearch.hostport,
+            user: policyList[0].spec.inspector.exportConfig.openSearch.username,
+            pswd: policyList[0].spec.inspector.exportConfig.openSearch.password
+          }
+  
+          localStorage.setItem('cnsi-open-search', window.btoa('u749VQF7hEqDTZ2y161R9J8F'+JSON.stringify(opensearchInfo)))  
 
         } else {
           this.isDisabled = false
@@ -351,15 +357,8 @@ export class PolicySettingPageComponent implements OnInit {
           this.namespacelabels = []
           this.workloadlabels = []
           this.schedule = '*/3 * * * *'
+          localStorage.removeItem('cnsi-open-search')
         }
-
-        const opensearchInfo =  {
-          url: policyList[0].spec.inspector.exportConfig.openSearch.hostport,
-          user: policyList[0].spec.inspector.exportConfig.openSearch.username,
-          pswd: policyList[0].spec.inspector.exportConfig.openSearch.password
-        }
-
-        localStorage.setItem('cnsi-open-search', window.btoa('u749VQF7hEqDTZ2y161R9J8F'+JSON.stringify(opensearchInfo)))
 
       },
       err => {
@@ -375,67 +374,63 @@ export class PolicySettingPageComponent implements OnInit {
       this.modifyPolicy()
     }
   }
-  createPolicy (testData?: any) {   
+  createPolicy () {   
     this.checkES = ''
     let data:any = {}
-    if (testData) { // unit test
-      data = testData
-    } else {
-      const imagesList = this.policyForm.get('inspectionSetting')?.get('image')?.value
-      data = {
-        apiVersion: "goharbor.goharbor.io/v1alpha1",
-        kind: "InspectionPolicy",
-        metadata: {
-          name: this.policyForm.get('inspectionSetting')?.get('name')?.value,
+    const imagesList = this.policyForm.get('inspectionSetting')?.get('image')?.value
+    data = {
+      apiVersion: "goharbor.goharbor.io/v1alpha1",
+      kind: "InspectionPolicy",
+      metadata: {
+        name: this.policyForm.get('inspectionSetting')?.get('name')?.value,
+      },
+      spec: {
+        enabled: this.enabledSettings,
+        settingsName: this.policyForm.get('inspectionSetting')?.get('settingsName')?.value,
+        workNamespace: this.policyForm.get('inspectionSetting')?.get('namespace')?.value,
+        schedule: this.schedule,
+        strategy: {
+          concurrencyRule: this.policyForm.get('inspectionSetting')?.get('concurrencyRule')?.value,
+          historyLimit: +this.policyForm.get('inspectionSetting')?.get('historyLimit')?.value,
+          suspend: this.policyForm.get('inspectionSetting')?.get('suspend')?.value
         },
-        spec: {
-          enabled: this.enabledSettings,
-          settingsName: this.policyForm.get('inspectionSetting')?.get('settingsName')?.value,
-          workNamespace: this.policyForm.get('inspectionSetting')?.get('namespace')?.value,
-          schedule: this.schedule,
-          strategy: {
-            concurrencyRule: this.policyForm.get('inspectionSetting')?.get('concurrencyRule')?.value,
-            historyLimit: +this.policyForm.get('inspectionSetting')?.get('historyLimit')?.value,
-            suspend: this.policyForm.get('inspectionSetting')?.get('suspend')?.value
-          },
-          inspector: {
-            imagePullPolicy: this.policyForm.get('inspectionSetting')?.get('imagePullPolicy')?.value,
-            imagePullSecrets: [],
-            exportConfig: {
-              openSearch: {
-                hostport: this.policyForm.get('inspectionSetting')?.get('openSearchAddrHeader')?.value + this.policyForm.get('inspectionSetting')?.get('openSearchAddr')?.value,
-                username: this.policyForm.get('inspectionSetting')?.get('openSearchUser')?.value,
-                password: this.policyForm.get('inspectionSetting')?.get('openSearchPasswd')?.value,
-                checkCert: false,
-                mutualTLS: false
-              }
+        inspector: {
+          imagePullPolicy: this.policyForm.get('inspectionSetting')?.get('imagePullPolicy')?.value,
+          imagePullSecrets: [],
+          exportConfig: {
+            openSearch: {
+              hostport: this.policyForm.get('inspectionSetting')?.get('openSearchAddrHeader')?.value + this.policyForm.get('inspectionSetting')?.get('openSearchAddr')?.value,
+              username: this.policyForm.get('inspectionSetting')?.get('openSearchUser')?.value,
+              password: this.policyForm.get('inspectionSetting')?.get('openSearchPasswd')?.value,
+              checkCert: false,
+              mutualTLS: false
             }
+          }
+        },
+        inspection: {
+          baselines: this.baselines,
+          namespaceSelector: {
+            matchExpressions: [],
+            matchLabels: {}
           },
-          inspection: {
-            baselines: this.baselines,
-            namespaceSelector: {
-              matchExpressions: [],
-              matchLabels: {}
-            },
-            workloadSelector: {
-              matchExpressions: [],
-              matchLabels: {}
-            }
-          },
+          workloadSelector: {
+            matchExpressions: [],
+            matchLabels: {}
+          }
+        },
 
 
-        }
       }
-      imagesList.forEach((image: any) => {
-        if (image === 'inspector') {
-          data.spec.inspector.image = this.imageList[0].url
-        } else if (image === 'kubebench') {
-          data.spec.inspector.kubebenchImage = this.imageList[1].url
-        } else if (image === 'risk') {
-          data.spec.inspector.riskImage= this.imageList[2].url
-        }
-      });
     }
+    imagesList.forEach((image: any) => {
+      if (image === 'inspector') {
+        data.spec.inspector.image = this.imageList[0].url
+      } else if (image === 'kubebench') {
+        data.spec.inspector.kubebenchImage = this.imageList[1].url
+      } else if (image === 'risk') {
+        data.spec.inspector.riskImage= this.imageList[2].url
+      }
+    });
     if(this.policyForm.get('inspectionResult')?.get('actions')?.value){
       data.spec.inspection.actions = [
         {

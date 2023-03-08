@@ -14,6 +14,9 @@ import { ShardService } from 'src/app/service/shard.service'
 })
 export class WorkloadPageComponent implements OnInit, AfterViewInit {
   public pageSizeOptions = [10, 20, 50, 100, 500];
+  testMousedown: any
+  testMousemove: any
+  testMouseup: any
   constructor(
     public shardService:ShardService,
     private assessmentService: AssessmentService
@@ -29,10 +32,10 @@ export class WorkloadPageComponent implements OnInit, AfterViewInit {
     var right: any = document.getElementById("work-right");
     var box: any = document.getElementById("work-box");
     console.log('init');
-    resize.onmousedown = function (e: any) {
+    this.testMousedown = resize.onmousedown = function (e: any) {
         var startX = e.clientX;          
         resize.left = resizeLeft;          
-          document.onmousemove = function (e) {
+          this.testMousemove = document.onmousemove = function (e) {
             var endX = e.clientX;
             
             var moveLen = resize.left + (startX - endX);
@@ -45,7 +48,7 @@ export class WorkloadPageComponent implements OnInit, AfterViewInit {
             right.style.width = moveLen + "px";
             left.style.width = (box.clientWidth - moveLen - 5) + "px";
         }
-        document.onmouseup = function (evt) {
+        this.testMouseup = document.onmouseup = function (evt) {
             document.onmousemove = null;
             document.onmouseup = null;
             resize.releaseCapture && resize.releaseCapture();
