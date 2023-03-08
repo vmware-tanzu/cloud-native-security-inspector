@@ -5,8 +5,6 @@ package pkg
 import (
 	"context"
 	"encoding/json"
-	"fmt"
-	"github.com/google/uuid"
 	wl "github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/assets/workload"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
 	exporter_inputs "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/exporter/inputs"
@@ -14,7 +12,6 @@ import (
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/policy/enforcement"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
-	"strconv"
 	"time"
 
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/policy"
@@ -139,8 +136,10 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 	}
 
 	// Assessment report.
+	timeNow := time.Now().Format(time.RFC3339)
 	report := itypes.AssessmentReport{
-		TimeStamp:            time.Now().Format(time.RFC3339),
+		TimeStamp:            timeNow,
+		DocID:                "image-report-" + timeNow,
 		NamespaceAssessments: make([]*itypes.NamespaceAssessment, 0),
 	}
 
@@ -361,8 +360,6 @@ func (c *controller) revokeActionIfNeed(ctx context.Context, wl *wl.Workload, pl
 }
 
 func ExportImageReports(report itypes.AssessmentReport, pl *v1alpha1.InspectionPolicy) {
-	// TODO: remove AssessmentReport, generate AssessmentReportDoc and send it directly for each container
-	// Currently AssessmentReport is still needed by the insight functionality on the UI
 	if bytes, err := json.Marshal(report); err != nil {
 		// Marshal failure should be fatal because it is unforgivable
 		log.Fatal(err, "failed to marshal the insight struct")
@@ -377,55 +374,5 @@ func ExportImageReports(report itypes.AssessmentReport, pl *v1alpha1.InspectionP
 			// Post failure is error because network issues could happen
 			log.Error(err, "failed to post the insight report", "Policy", pl.Name)
 		}
-	}
-	for _, nsa := range report.NamespaceAssessments {
-		for _, workloadAssessment := range nsa.WorkloadAssessments {
-			for _, pod := range workloadAssessment.Workload.Pods {
-				for _, container := range pod.Containers {
-					var doc itypes.AssessmentReportDoc
-					doc.PolicyName = pl.Name
-					doc.CreateTimestamp = report.TimeStamp
-					doc.DocId = fmt.Sprintf("%s-%s", container.Name, doc.CreateTimestamp)
-					doc.UID = uuid.NewString()
-					doc.Namespace = pod.Namespace
-					doc.Passed = strconv.FormatBool(workloadAssessment.Passed)
-					b, err := json.Marshal(workloadAssessment.Failures)
-					if err == nil {
-						doc.Failures = string(b)
-					}
-					doc.Kind = workloadAssessment.Workload.Kind
-					doc.ContainerName = container.Name
-					doc.ContainerId = container.ID
-					doc.ContainerImage = container.Image
-					doc.ContainerImageId = container.ImageID
-					doc.IsInit = strconv.FormatBool(container.IsInit)
-					exportStruct, err := constructExportStruct(&doc, pl)
-					if err != nil {
-						log.Error(err, "failed to construct the export struct")
-						continue
-					}
-					err = exporter_inputs.PostReport(exportStruct)
-					if err != nil {
-						// log the error and continue the next one. We should not let an anomaly
-						// to broke down the whole picture
-						log.Error(err, "failed to post the report", "Policy", doc.PolicyName, "Container Name", doc.ContainerName)
-					}
-				}
-			}
-		}
-	}
-}
-
-func constructExportStruct(doc *itypes.AssessmentReportDoc, pl *v1alpha1.InspectionPolicy) (*v1alpha1.ReportData, error) {
-	if bytes, err := json.Marshal(doc); err != nil {
-		log.Error(err, "failed to marshal the assessment report doc")
-		return nil, err
-	} else {
-		exportStruct := &v1alpha1.ReportData{
-			Source:       "image_report",
-			ExportConfig: pl.Spec.Inspector.ExportConfig,
-			Payload:      string(bytes),
-		}
-		return exportStruct, nil
 	}
 }
