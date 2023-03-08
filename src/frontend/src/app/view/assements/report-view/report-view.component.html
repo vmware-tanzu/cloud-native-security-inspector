@@ -35,11 +35,11 @@
       <clr-dg-cell>
         <a href="javascript:;" (click)="toReport(report)" >
           <cds-icon style="color: skyblue; cursor: pointer;" shape="pop-out"></cds-icon>
-          {{report._source.docId}}
+          {{report._source.docID}}
         </a>
       </clr-dg-cell>
-      <clr-dg-cell>{{report._source.workloadNamespace}}</clr-dg-cell>
-      <clr-dg-cell>{{report._source.createTime}}</clr-dg-cell>
+      <clr-dg-cell>{{report._source.namespaceAssessments[0].namespace.name}}</clr-dg-cell>
+      <clr-dg-cell>{{report._source.timeStamp}}</clr-dg-cell>
     </clr-dg-row>
     <clr-dg-footer>
       <clr-dg-pagination #pagination [clrDgPageInputDisabled]="true" [clrDgPageSize]="defaultSize" [clrDgLastPage]="pageMaxCount">

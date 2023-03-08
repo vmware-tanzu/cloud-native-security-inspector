@@ -312,7 +312,7 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
     this.getRiskList(query, this.getRiskReportListCallBack)
   }
   getRiskReportListCallBack(data: any, that: any, query: any) {
-    if (this.riskCallBackReset) {
+    if (that.riskCallBackReset) {
       that.riskList = []        
       data.hits.hits.forEach((item: any) => {
         let risk_number = 0

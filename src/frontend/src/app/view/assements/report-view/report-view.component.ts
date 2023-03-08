@@ -103,13 +103,17 @@ export class ReportViewComponent implements OnInit, OnDestroy, AfterViewInit {
   
   ngOnDestroy(): void {}
     
-  toReport(report: any) {
-    console.log('report', report);
-    
+  toReport(report: any) {    
     this.showDetailFlag = true
-    report._source.failures = JSON.parse(report._source.failures)
-
-    this.shardService.currentReport = report
+    this.shardService.currentReport = {
+      _source: {
+        reportUID: report._id,
+        docId: report._source.docID,
+        workloadNamespace: report._source.namespaceAssessments[0].namespace.name,
+        createTime: report._source.timeStamp
+      },
+      workloadAssessments: report._source.namespaceAssessments[0].workloadAssessments
+    }
   }
   // change handler
   
@@ -159,7 +163,7 @@ export class ReportViewComponent implements OnInit, OnDestroy, AfterViewInit {
       from: filter.from ? filter.from: 0,
       sort: [
         {
-          createTime: {
+          timeStamp: {
             order: "desc"
           }
         }
@@ -230,7 +234,7 @@ export class ReportViewComponent implements OnInit, OnDestroy, AfterViewInit {
   extractKubeBenchApi(query: any, callback: Function) {    
     this.dgLoading = true    
     if (this.opensearchInfo.url) {
-      this.assessmentService.getKubeBenchReport({url: this.opensearchInfo.url, index: 'image_report', username: this.opensearchInfo.user, password: this.opensearchInfo.pswd, query, client: this.client, ca:this.ca}).subscribe(
+      this.assessmentService.getKubeBenchReport({url: this.opensearchInfo.url, index: 'insight_report', username: this.opensearchInfo.user, password: this.opensearchInfo.pswd, query, client: this.client, ca:this.ca}).subscribe(
         data => {
           callback(data, this)
           this.pageMaxCount = Math.ceil(data.hits.total.value / this.defaultSize)
@@ -252,7 +256,7 @@ export class ReportViewComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.isOder) {
       query['sort'] =[
         {
-          createTime: {
+          timeStamp: {
             order: "desc"
           }
         }
@@ -295,24 +299,30 @@ export class ReportViewComponent implements OnInit, OnDestroy, AfterViewInit {
       from: 0,
       sort: [
         {
-          createTime: {
+          timeStamp: {
             order: "desc"
           }
         }
       ]
     }
-    this.assessmentService.getKubeBenchReport({url: this.opensearchInfo.url, index: 'image_report', username: this.opensearchInfo.user, password: this.opensearchInfo.pswd, query, client: this.client, ca:this.ca}).subscribe(
+    this.assessmentService.getKubeBenchReport({url: this.opensearchInfo.url, index: 'insight_report', username: this.opensearchInfo.user, password: this.opensearchInfo.pswd, query, client: this.client, ca:this.ca}).subscribe(
       data => {
         let lineDate: string[] = []
         let dataValue: any[] = []
 
 
         const result = data.hits.hits
-        result.forEach((rp: {_source: {failures: string, createTime: string}}) => {
-          const failures= JSON.parse(rp._source.failures) || []
-          rp._source.createTime = moment(rp._source.createTime).format('LLL')
-          lineDate.push(rp._source.createTime)
-          let abCount = failures.length
+        result.forEach((rp: {_source: {namespaceAssessments: {workloadAssessments: {failures: []}[]}[], timeStamp: string}}) => {
+          rp._source.timeStamp = moment(rp._source.timeStamp).format('LLL')
+          let failures = 0
+          rp._source.namespaceAssessments.forEach(ns => {
+            ns.workloadAssessments.forEach(wd => {
+              failures += wd.failures.length
+            });
+          })
+
+          lineDate.push(rp._source.timeStamp)
+          let abCount = failures
           dataValue.push(abCount)
         })
         this.echartsRender(lineDate, dataValue)
