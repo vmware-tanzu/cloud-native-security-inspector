@@ -28,6 +28,7 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
   public showDetailFlag = false
   echartsLoading = true
   riskList: any[] = []
+  riskCallBackReset = true
   constructor(
     private assessmentService: AssessmentService,
     private policyService: PolicyService
@@ -96,6 +97,9 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
         }
       },
       err => {
+        this.echartsRender([], [])
+        this.echartsLoading = false
+        this.dgLoading = false
         console.log('err', err);
       }
     )
@@ -304,50 +308,50 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
         }
       ]
     };
-    function callBack(data: any, that: any, query: any) {
-      if (reset) {
-        that.riskList = []        
-        data.hits.hits.forEach((item: any) => {
-          let risk_number = 0
-          if (item._source && item._source.ReportDetail && item._source.ReportDetail.length > 0) {
-            item._source.ReportDetail.forEach((re: any) => {
-              risk_number+=re.Detail.length
-            });
-          }
-          item['risk_number'] = risk_number
-          that.riskList.push(item)
-        });
-
-        that.pageMaxCount = Math.ceil( data.hits.total.value / query.size)
-        that.pagination.lastPage = that.pageMaxCount        
-        that.pagination.page.change   
-        that.dgLoading = false;
-
-        if (that.echartsLoading) {
-          const dateList: any = []
-          const valueList: any = []
-  
-          that.riskList.forEach((el: any) => {
-            if (el.risk_number) {
-              dateList.push(moment(el._source.createTime).format('LLL'))
-              valueList.push(el.risk_number)
-            }
-          })
-          if (that.riskImage) {
-            that.echartsRender(dateList, valueList)
-          }
-          that.echartsLoading = false
-        }          
-
-      } else {
-        that.riskCallBack(data,that, query, data.hits.total.value)
-      }
-      
-
-    }
-    this.getRiskList(query, callBack)
+    this.riskCallBackReset = reset
+    this.getRiskList(query, this.getRiskReportListCallBack)
   }
+  getRiskReportListCallBack(data: any, that: any, query: any) {
+    if (this.riskCallBackReset) {
+      that.riskList = []        
+      data.hits.hits.forEach((item: any) => {
+        let risk_number = 0
+        if (item._source && item._source.ReportDetail && item._source.ReportDetail.length > 0) {
+          item._source.ReportDetail.forEach((re: any) => {
+            risk_number+=re.Detail.length
+          });
+        }
+        item['risk_number'] = risk_number
+        that.riskList.push(item)
+      });
 
+      that.pageMaxCount = Math.ceil( data.hits.total.value / query.size)
+      that.pagination.lastPage = that.pageMaxCount        
+      that.pagination.page.change   
+      that.dgLoading = false;
+
+      if (that.echartsLoading) {
+        const dateList: any = []
+        const valueList: any = []
+
+        that.riskList.forEach((el: any) => {
+          if (el.risk_number) {
+            dateList.push(moment(el._source.createTime).format('LLL'))
+            valueList.push(el.risk_number)
+          }
+        })
+        if (that.riskImage) {
+          that.echartsRender(dateList, valueList)
+        }
+        that.echartsLoading = false
+      }          
+
+    } else {
+      that.riskCallBack(data,that, query, data.hits.total.value)
+    }
+    
+
+  }
 
   showDetail(detail: any) {
     this.showDetailFlag = true

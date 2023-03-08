@@ -22,7 +22,23 @@ describe('KubeBenchReportTestDetailComponent', () => {
     fixture = TestBed.createComponent(KubeBenchReportTestDetailComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    sessionStorage.setItem('cnsi_report_id', 'G-H0uYYBMJJS-ugUjm21')
+    sessionStorage.setItem('G-H0uYYBMJJS-ugUjm21', '{"desc": "","_source":{"tests": []},"results": [], "info": 0, "pass": 0, "warn": 0, "fail": 0}')
   });
+
+
+  describe('functions ', () => {
+
+    it('getLocalhostData', ()=> {
+      component.getLocalhostData()
+    })
+
+    it('chartInit', ()=> {
+      component.testId = 'G-H0uYYBMJJS-ugUjm21'
+      component.chartInit()
+    })
+
+  })
 
   it('should create', () => {
     expect(component).toBeTruthy();

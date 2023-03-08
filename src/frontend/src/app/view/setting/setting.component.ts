@@ -5,7 +5,6 @@
 
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, RequiredValidator, Validators } from '@angular/forms';
-import { CornComponent } from '../corn/corn.component';
 import { HarborService } from '../../service/harbor.service'
 import { ShardService } from '../../service/shard.service'
 import { HarborModel, SecretModel, knownRegistrieType } from 'src/app/service/harbor-model-type';
@@ -17,7 +16,6 @@ import { PolicyService } from 'src/app/service/policy.service';
   styleUrls: ['./setting.component.less']
 })
 export class SettingComponent implements OnInit, OnDestroy {
-  @ViewChild('corn') corn!: CornComponent;
   public secretsList: SecretModel[] = []
   public harborSetingList: any = [];
   public deleteModal = false;

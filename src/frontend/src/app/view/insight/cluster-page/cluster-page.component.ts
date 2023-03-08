@@ -94,18 +94,13 @@ export class ClusterPageComponent implements OnInit {
         abnormal: this.shardService.allAbnormal,
         compliant: this.shardService.allCompliant,
       }    
-      // this.packedbubbleRender(data)
       setTimeout(() => {
         if (this.packedbubble) {
           this.packedbubble.getSeries(data.normal, data.abnormal)
         }
       });
-      // this.lineRender()
-      this.summary = value
-
-    } else {
-      this.summary = value
-    }
+    } 
+    this.summary = value
   }
 
   get violationsFlag () {

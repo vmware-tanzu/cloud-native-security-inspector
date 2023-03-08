@@ -287,6 +287,7 @@ export class ReportViewComponent implements OnInit, OnDestroy, AfterViewInit {
       this.client = 'opensearch'
       this.opensearchInfo = opensearchInfo
     } else {
+      this.echartsRender([], [])
       this.dgLoading = false
     }
     const query: any = { 
