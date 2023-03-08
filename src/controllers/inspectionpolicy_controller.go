@@ -669,34 +669,34 @@ func (r *InspectionPolicyReconciler) generateCronJobCR(policy *goharborv1.Inspec
 				Name:  "SERVER_ADDR",
 				Value: "http://127.0.0.1:8080",
 			})
+		cj.Spec.JobTemplate.Spec.Template.Spec.Containers = append(cj.Spec.JobTemplate.Spec.Template.Spec.Containers, corev1.Container{
+			Name:            "server",
+			Image:           image,
+			ImagePullPolicy: getImagePullPolicy(policy),
+			Command:         []string{command},
+			Args: []string{
+				"--policy",
+				policy.Name,
+				"--mode",
+				"server-only",
+			},
+			Env: []corev1.EnvVar{
+				{
+					Name:  "SERVER_ADDR",
+					Value: ":8080",
+				},
+				{
+					Name:  "NARROWS_NAMESPACE",
+					Value: r.namespace,
+				},
+			},
+			Ports: []corev1.ContainerPort{
+				{
+					ContainerPort: 8080,
+				},
+			},
+		})
 	}
-	cj.Spec.JobTemplate.Spec.Template.Spec.Containers = append(cj.Spec.JobTemplate.Spec.Template.Spec.Containers, corev1.Container{
-		Name:            "server",
-		Image:           image,
-		ImagePullPolicy: getImagePullPolicy(policy),
-		Command:         []string{command},
-		Args: []string{
-			"--policy",
-			policy.Name,
-			"--mode",
-			"server-only",
-		},
-		Env: []corev1.EnvVar{
-			{
-				Name:  "SERVER_ADDR",
-				Value: ":8080",
-			},
-			{
-				Name:  "NARROWS_NAMESPACE",
-				Value: r.namespace,
-			},
-		},
-		Ports: []corev1.ContainerPort{
-			{
-				ContainerPort: 8080,
-			},
-		},
-	})
 
 	if policy.Spec.Inspector != nil {
 		if len(policy.Spec.Inspector.ImagePullSecrets) > 0 {
