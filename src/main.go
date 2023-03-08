@@ -83,7 +83,7 @@ func main() {
 		log.Fatalf("unable to set up ready check, error: %s", err)
 	}
 
-	log.Info("starting k8s-security-inspector manager")
+	log.Info("starting cloud-native-security-inspector manager")
 	if err := mgr.Start(ctrl.SetupSignalHandler()); err != nil {
 		log.Fatalf("problem running manager, error: %s", err)
 	}
