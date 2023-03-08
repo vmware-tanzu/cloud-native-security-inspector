@@ -30,11 +30,11 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: cloud-native-security-inspector-portal-service
+  name: cnsi-portal-service
   namespace: {{ .Release.Namespace }}
 spec:
   selector:
-    cloud-native-security-inspector-portal: portal
+    cnsi-portal: portal
   ports:
     - protocol: TCP
       port: 3800

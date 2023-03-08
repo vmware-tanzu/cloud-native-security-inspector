@@ -93,19 +93,19 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cloud-native-security-inspector-portal
+  name: cnsi-portal
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      cloud-native-security-inspector-portal: portal
+      cnsi-portal: portal
   template:
     metadata:
       labels:
-        cloud-native-security-inspector-portal: portal
+        cnsi-portal: portal
     spec:
-      serviceAccountName: cloud-native-security-inspector-portal-serviceaccount
+      serviceAccountName: cnsi-portal-serviceaccount
       containers:
         - name: cloud-native-security-inspector-frontend
           image: {{ .Values.image.repository }}/portal:{{ .Values.image.tag }}
