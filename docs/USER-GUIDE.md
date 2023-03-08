@@ -1,19 +1,16 @@
 # User Guide
-  - [1. To start using Cloud Native Security Inspector](#1-to-start-using-narrows)
+  - [1. To start using Narrows](#1-to-start-using-narrows)
     - [1.1 With portal (recommended)](#11-with-portal--recommended-)
       - [1.1.1 Configurations](#111-configurations)
         - [Secret](#secret)
         - [Setting](#setting)
-          - [DataSource](#datasource)
-          - [KnownRegistry](#knownregistry)
+          - [Required fields](#required-fields)
+          - [Known registry](#known-registry)
           - [Cache](#cache)
         - [Policy](#policy)
-          - [Inspection Settings](#inspection-settings)
-          - [Baselines](#baselines)
-          - [Namespace Labels Selectors](#namespace-labels-selectors)
-          - [Workload Labels Selectors](#workload-labels-selectors)
-          - [Assessment Settings](#assessment-settings)
-          - [Actions](#actions)
+          - [Inspection setting](#inspection-setting)
+          - [Inspection standard setting](#inspection-standard-setting)
+          - [Inspection result setting](#inspection-result-setting)
       - [1.1.2 Assessments](#112-assessments)
         - [Image scanning reports](#image-scanning-reports)
         - [Kubebench scanning reports](#kubebench-scanning-reports)
@@ -29,6 +26,7 @@
       - [1.2.3 Assessment report](#123-assessment-report)
   - [2. Troubleshooting](#2-troubleshooting)
     - [2.1 With portal](#21-build-portal-from-scratch)
+    - [2.2 Cannot find report on open search](#22-cannot-find-the-report-on-opensearch)
 ----
 
 ## 1. To start using Narrows
@@ -140,6 +138,7 @@ We don't purge the obsolete data in release 0.3, users need to manager the lifec
 The action kind is about what to do if Narrows find vulnerable workloads, currently the only option is to quarantine the workload.
 Narrows will add tags for the vulnerable workloads, and create a network policy to block the ingress and egress of the workload.
 
+###### Inspection result setting
 When the vulnerabilities are resolved, the labels will be revoked so that the network policy will not take effect on the workload.
 
 | Field Name      | Field Type | Description                                                                       |
