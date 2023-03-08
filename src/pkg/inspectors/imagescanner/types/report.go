@@ -49,5 +49,6 @@ type AssessmentError struct {
 // AssessmentReport struct definition
 type AssessmentReport struct {
 	TimeStamp            string                 `json:"timeStamp"`
+	DocID                string                 `json:"docID"`
 	NamespaceAssessments []*NamespaceAssessment `json:"namespaceAssessments"`
 }
