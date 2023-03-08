@@ -12,6 +12,9 @@ Else, the deployment is expected to fail.
 - You need to have the full access of the K8s cluster, because clusterRoleBinding will be created by the chart.
 ## Installing
 ```shell
+$ helm install [release-name] oci://projects.registry.vmware.com/cnsi/cnsi --version 0.3.0 -n [namespace] --create-namespace
+
+# Alternatively, you can install CNSI using the Helm chart in local directory as well
 $ helm install [release-name] src/tools/installation/charts/cnsi -n [namespace] --create-namespace
 ```
 ## Uninstalling
