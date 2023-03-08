@@ -294,7 +294,7 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: cloud-native-security-inspector-portal-role
+  name: cnsi-portal-role
   namespace: {{ .Release.Namespace }}
 rules:
   - apiGroups: ["","goharbor.goharbor.io","apiregistration.k8s.io"]

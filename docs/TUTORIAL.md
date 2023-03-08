@@ -1,8 +1,5 @@
 # Tutorial
-In this tutorial, we will from scratch to install a MiniKube for Kubernetes
-and deploy the cloud native security inspector (CNSI) on it. We will install a
-Nginx workload for demo purpose, and use CNSI to scan the vulnerability of this
-Nginx workload.
+In this tutorial, we will from scratch to install a MiniKube for Kubernetes and deploy Narrows on it. We will install a Nginx workload for demo purpose, and use Narrows to scan the vulnerability of this Nginx workload.
 
 ## Prerequisite
 * A Linux machine. The verified OS is CentOS Linux release 7.9.2009 (Core).
@@ -32,7 +29,7 @@ kube-system   kube-scheduler-control-plane.minikube.internal            1/1     
 kube-system   storage-provisioner                                       1/1     Running   0          9m48s
 ```
 
-## Deploy CNSI on the K8s cluster
+## Deploy Narrows on the K8s cluster
 
 ### Install the dependencies
 ```
@@ -41,65 +38,74 @@ wget https://get.helm.sh/helm-v3.9.0-linux-amd64.tar.gz
 tar -zxvf helm-v3.9.0-linux-amd64.tar.gz
 mv linux-amd64/helm /usr/local/bin/helm
 ```
-### Install CNSI
+### Install Narrows
 ```
 git clone https://github.com/vmware-tanzu/cloud-native-security-inspector.git
 cd cloud-native-security-inspector
 ./deploy.sh install
 ```
 The `./deploy.sh install` command will help you install an Opensearch service by helm.
-Opensearch is used to store the assessment reports. CNSI supports using [Open Search](https://opensearch.org/) and
-[Elastic Search](https://www.elastic.co/) to store the assessment reports.
+Opensearch is used to store the assessment reports. Currently Narrows supports using [Open Search](https://opensearch.org/) and
+[Elastic Search](https://www.elastic.co/) to store assessment reports. 
 
 The user is responsible for preparing Opensearch or Elasticsearch. The one installed by deploy.sh
 is for POC purpose.
+
+After that, put the endpoint of the report consumer in the policy, then the Exporter component of Narrows is able to forward the report to the consumer.
 
 Verification:
 
 ```
 ➜  ~  kubectl get all -n cnsi-system
 NAME                                                          READY   STATUS    RESTARTS   AGE
-pod/cloud-native-security-inspector-portal-6656444dd5-nx5x5   1/1     Running   0          20h
-pod/cnsi-controller-manager-7c756fd8d8-lhk85                  2/2     Running   0          7m13s
+pod/cloud-native-security-inspector-portal-7b4fb65c59-q6frt   1/1     Running   0          2m20s
+pod/cnsi-controller-manager-5586dcc798-zpq78                  2/2     Running   0          2m19s
+pod/cnsi-exporter-69c786c9f-4xtsf                             1/1     Running   0          2m18s
 
-NAME                                                     TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
-service/cloud-native-security-inspector-portal-service   NodePort    10.107.70.236   <none>        3800:30150/TCP   20h
-service/cnsi-controller-manager-metrics-service          ClusterIP   10.101.31.8     <none>        8443/TCP         7m13s
+NAME                                                     TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+service/cloud-native-security-inspector-portal-service   NodePort    10.99.242.121    <none>        3800:30150/TCP   2m19s
+service/cnsi-controller-manager-metrics-service          ClusterIP   10.109.123.209   <none>        8443/TCP         2m19s
+service/cnsi-exporter-service                            ClusterIP   10.100.148.44    <none>        6780/TCP         2m18s
 
 NAME                                                     READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/cloud-native-security-inspector-portal   1/1     1            1           20h
-deployment.apps/cnsi-controller-manager                  1/1     1            1           7m13s
+deployment.apps/cloud-native-security-inspector-portal   1/1     1            1           2m20s
+deployment.apps/cnsi-controller-manager                  1/1     1            1           2m19s
+deployment.apps/cnsi-exporter                            1/1     1            1           2m18s
 
 NAME                                                                DESIRED   CURRENT   READY   AGE
-replicaset.apps/cloud-native-security-inspector-portal-6656444dd5   1         1         1       20h
-replicaset.apps/cnsi-controller-manager-7c756fd8d8                  1         1         1       7m13s
+replicaset.apps/cloud-native-security-inspector-portal-7b4fb65c59   1         1         1       2m20s
+replicaset.apps/cnsi-controller-manager-5586dcc798                  1         1         1       2m19s
+replicaset.apps/cnsi-exporter-69c786c9f                             1         1         1       2m18s
 ```
 
-Now you are able to access the CNSI portal through clusterIp:30150, because the portal is a NodePort service.
+Now you are able to access the Narrows portal by clusterIp:30150, because the portal is a NodePort service.
+```
+service/cloud-native-security-inspector-portal-service   NodePort    10.99.242.121    <none>        3800:30150/TCP   2m19s
+```
 
-Now verify the OpenSearch service is deployed properly:
+Verify the OpenSearch service is deployed properly:
 ```
 ➜  ~  kubectl get all -n opensearch
-NAME                              READY   STATUS    RESTARTS   AGE
-pod/opensearch-cluster-master-0   1/1     Running   0          119s
-pod/opensearch-cluster-master-1   1/1     Running   0          119s
-pod/opensearch-cluster-master-2   1/1     Running   0          119s
+NAME                                                              READY   STATUS    RESTARTS   AGE
+pod/opensearch-cluster-master-0                                   1/1     Running   0          3m26s
+pod/opensearch-cluster-master-1                                   1/1     Running   0          3m26s
+pod/opensearch-cluster-master-2                                   1/1     Running   0          3m26s
 
-NAME                                         TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)             AGE
-service/opensearch-cluster-master            ClusterIP   10.108.254.0   <none>        9200/TCP,9300/TCP   11m
-service/opensearch-cluster-master-headless   ClusterIP   None           <none>        9200/TCP,9300/TCP   11m
+NAME                                                 TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)             AGE
+service/opensearch-cluster-master                    ClusterIP   10.105.148.154   <none>        9200/TCP,9300/TCP   3m26s
+service/opensearch-cluster-master-headless           ClusterIP   None             <none>        9200/TCP,9300/TCP   3m26s
 
 NAME                                         READY   AGE
-statefulset.apps/opensearch-cluster-master   3/3     11m
+statefulset.apps/opensearch-cluster-master   3/3     3m26s
 ```
-The OpenSearch endpoint is `opensearch-cluster-master.opensearch:9200`.
+The in-cluster OpenSearch endpoint is `opensearch-cluster-master.opensearch:9200`.
 
-We will configure this OpenSearch endpoint in the CNSI's portal.
+Later, we will set this OpenSearch endpoint in policy.
 
 ## Inspect the workload with CNSI
 ### Create a Setting
 Now type `<your_node_ip>:30150` on the browser of your laptop (which must have
-network access to your CentOS node). You will see the CNSI portal UI:
+network access to your CentOS node). You will see the Portal UI:
 <img src="./pictures/initial-ui.png">
 
 However, the UI is empty for now, you need to start from the Setting and the Policy.
@@ -119,143 +125,111 @@ Then create a new Setting:
 <img src="./pictures/create-setting.png">
 Remember to change the Harbor endpoint to yours.
 
+In the second section "Known Registries", you can configure docker.io as a registry.
+This is the ace feature of Harbor: as a image cache for any registry. Check more
+details [here](https://goharbor.io/docs/2.3.0/administration/configuring-replication/).
+
 Then verify that the setting is in healthy status:
 
 <img src="./pictures/setting-healthy.png">
 
 ### Create a Workload which will be inspected
 
-For demo purpose, we create a nginx workload.
+We create a prometheus workload to inspect:
+```
+helm install my-release bitnami/kube-prometheus -n prometheus --create-namespace
+```
 
-```
-cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: workloads
-  labels:
-    goharbor.io/watch: "true"
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: regcred
-  namespace: workloads
-data:
-  .dockerconfigjson: eyJhdXRocyI6eyIxMC4yMTIuNDcuMTU3Ijp7InVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6IkhhcmJvcjEyMzQ1IiwiYXV0aCI6IllXUnRhVzQ2U0dGeVltOXlNVEl6TkRVPSJ9fX0=
-type: kubernetes.io/dockerconfigjson
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nginx-sample
-  namespace: workloads
-  labels:
-    app: nginx
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: nginx
-  template:
-    metadata:
-      labels:
-        app: nginx
-    spec:
-      containers:
-        - name: nginx
-          image: <your harbor instance>/nginx-slim:0.26
-          ports:
-            - containerPort: 80
-      imagePullSecrets:
-        - name: regcred
-EOF
-```
-This image should be from your harbor instance.
 
 Verification:
 ```
-➜  ~  kubectl get all -n workloads
-NAME                                READY   STATUS    RESTARTS   AGE
-pod/nginx-sample-6bcd9f8d57-crx9s   1/1     Running   0          17s
+➜  ~  kubectl get all -n prometheus
+NAME                                                                READY   STATUS    RESTARTS   AGE
+pod/alertmanager-my-release-kube-prometheus-alertmanager-0          2/2     Running   1          25m
+pod/my-release-kube-prometheus-blackbox-exporter-56d78b857b-nsvmp   1/1     Running   0          25m
+pod/my-release-kube-prometheus-operator-85dfdb86dd-xn9j9            1/1     Running   0          25m
+pod/my-release-kube-state-metrics-77846699c6-52rrg                  1/1     Running   0          25m
+pod/my-release-node-exporter-7thxl                                  1/1     Running   0          25m
+pod/prometheus-my-release-kube-prometheus-prometheus-0              2/2     Running   0          25m
 
-NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/nginx-sample   1/1     1            1           17s
+NAME                                                   TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
+service/alertmanager-operated                          ClusterIP   None             <none>        9093/TCP,9094/TCP,9094/UDP   25m
+service/my-release-kube-prometheus-alertmanager        ClusterIP   10.97.136.59     <none>        9093/TCP                     25m
+service/my-release-kube-prometheus-blackbox-exporter   ClusterIP   10.98.0.24       <none>        19115/TCP                    25m
+service/my-release-kube-prometheus-operator            ClusterIP   10.104.91.120    <none>        8080/TCP                     25m
+service/my-release-kube-prometheus-prometheus          ClusterIP   10.97.199.150    <none>        9090/TCP                     25m
+service/my-release-kube-state-metrics                  ClusterIP   10.100.110.196   <none>        8080/TCP                     25m
+service/my-release-node-exporter                       ClusterIP   10.104.50.246    <none>        9100/TCP                     25m
+service/prometheus-operated                            ClusterIP   None             <none>        9090/TCP                     25m
 
-NAME                                      DESIRED   CURRENT   READY   AGE
-replicaset.apps/nginx-sample-6bcd9f8d57   1         1         1       17s
+NAME                                      DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+daemonset.apps/my-release-node-exporter   1         1         1       1            1           <none>          25m
+
+NAME                                                           READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/my-release-kube-prometheus-blackbox-exporter   1/1     1            1           25m
+deployment.apps/my-release-kube-prometheus-operator            1/1     1            1           25m
+deployment.apps/my-release-kube-state-metrics                  1/1     1            1           25m
+
+NAME                                                                      DESIRED   CURRENT   READY   AGE
+replicaset.apps/my-release-kube-prometheus-blackbox-exporter-56d78b857b   1         1         1       25m
+replicaset.apps/my-release-kube-prometheus-operator-85dfdb86dd            1         1         1       25m
+replicaset.apps/my-release-kube-state-metrics-77846699c6                  1         1         1       25m
+
+NAME                                                                    READY   AGE
+statefulset.apps/alertmanager-my-release-kube-prometheus-alertmanager   1/1     25m
+statefulset.apps/prometheus-my-release-kube-prometheus-prometheus       1/1     25m
 ```
 
-### Create a Policy for inspection
-The CNSI Policy defines 3 things:
-1. Which scanner will be used to scan which namespace or workload.
-2. The scanning will be conducted by what frequency.
-3. Where to export the assessment results.
+### Create a Policy
+The Narrows Policy defines 3 things:
+1. The scanners to be used.
+2. The frequency of the scanning.
+3. The consumers of the reports.
 
 <img src="pictures/policy-inspection-setting.png">
 
 We selected all the 3 supported scanners and configured the open search endpoint.
-Then click "next" until the policy is created.
 
-Creating this policy also means creating cronjobs in the work namespace.
+In the next section, we set the label of the prometheus namespace.
+
+<img src="pictures/policy-label-selector.png">
+
+Then click next and click create button to create the policy.
+
+After the policy is created, the scanner workloads will be provisioned to scan the
+namespace `prometheus`.
+
 ```
 ➜  ~  kubectl get all -n cronjobs
+09:26:59 root@example cloud-native-security-inspector ±|develop-0-3|→ kubectl get all -n narrows-workspace
 NAME                                             READY   STATUS      RESTARTS   AGE
-pod/demo-policygfmnf--inspector-27834141-l2b6p   0/1     Completed   0          12m
-pod/demo-policygfmnf--inspector-27834144-q5hm7   0/1     Completed   0          9m47s
-pod/demo-policygfmnf--inspector-27834147-ls67v   0/1     Completed   0          6m47s
-pod/demo-policygfmnf--inspector-27834150-rkvrv   0/1     Completed   0          3m47s
-pod/demo-policygfmnf--inspector-27834153-l4vk5   0/1     Completed   0          47s
-pod/demo-policynf8nh--kubebench-27834141-hx47c   0/1     Completed   0          12m
-pod/demo-policynf8nh--kubebench-27834144-r6j9j   0/1     Completed   0          9m47s
-pod/demo-policynf8nh--kubebench-27834147-dcp9j   0/1     Completed   0          6m47s
-pod/demo-policynf8nh--kubebench-27834150-t4d6j   0/1     Completed   0          3m47s
-pod/demo-policynf8nh--kubebench-27834153-gkllz   0/1     Completed   0          47s
-pod/demo-policyp5lrl--risk-27834141-8qssz        0/2     Completed   0          12m
-pod/demo-policyp5lrl--risk-27834144-v62q7        0/2     Completed   0          9m47s
-pod/demo-policyp5lrl--risk-27834147-c6pzj        0/2     Completed   0          6m47s
-pod/demo-policyp5lrl--risk-27834150-kkqmk        0/2     Completed   0          3m47s
-pod/demo-policyp5lrl--risk-27834153-g2rsc        0/2     Completed   0          47s
+pod/demo-policy-kubebench-daemonset-5gfgh        1/1     Running     0          12m
+pod/demo-policy7fqsb--inspector-27970719-q69qh   0/1     Completed   0          2m22s
+pod/demo-policydxjxs--risk-27970719-fdt6w        0/2     Completed   0          2m22s
+
+NAME                                             DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+daemonset.apps/demo-policy-kubebench-daemonset   1         1         1       1            1           <none>          12m
 
 NAME                                        SCHEDULE      SUSPEND   ACTIVE   LAST SCHEDULE   AGE
-cronjob.batch/demo-policygfmnf--inspector   */3 * * * *   False     0        47s             61m
-cronjob.batch/demo-policynf8nh--kubebench   */3 * * * *   False     0        47s             61m
-cronjob.batch/demo-policyp5lrl--risk        */3 * * * *   False     0        47s             61m
+cronjob.batch/demo-policy7fqsb--inspector   */3 * * * *   False     0        2m22s           12m
+cronjob.batch/demo-policydxjxs--risk        */3 * * * *   False     0        2m22s           12m
 
 NAME                                             COMPLETIONS   DURATION   AGE
-job.batch/demo-policygfmnf--inspector-27834141   1/1           3s         12m
-job.batch/demo-policygfmnf--inspector-27834144   1/1           2s         9m47s
-job.batch/demo-policygfmnf--inspector-27834147   1/1           2s         6m47s
-job.batch/demo-policygfmnf--inspector-27834150   1/1           3s         3m47s
-job.batch/demo-policygfmnf--inspector-27834153   1/1           2s         47s
-job.batch/demo-policynf8nh--kubebench-27834141   1/1           4s         12m
-job.batch/demo-policynf8nh--kubebench-27834144   1/1           2s         9m47s
-job.batch/demo-policynf8nh--kubebench-27834147   1/1           2s         6m47s
-job.batch/demo-policynf8nh--kubebench-27834150   1/1           4s         3m47s
-job.batch/demo-policynf8nh--kubebench-27834153   1/1           2s         47s
-job.batch/demo-policyp5lrl--risk-27834141        1/1           39s        12m
-job.batch/demo-policyp5lrl--risk-27834144        1/1           38s        9m47s
-job.batch/demo-policyp5lrl--risk-27834147        1/1           38s        6m47s
-job.batch/demo-policyp5lrl--risk-27834150        1/1           39s        3m47s
-job.batch/demo-policyp5lrl--risk-27834153        1/1           38s        47s
+job.batch/demo-policy7fqsb--inspector-27970719   1/1           19s        2m22s
+job.batch/demo-policydxjxs--risk-27970719        1/1           57s        2m22s
 ```
-As `historyLimit` is specified to 5, we can check at most 5 historical cronjobs of each scanner.
 
-We will find that assessment reports are generated as well:
-```
-➜  ~ kubectl get assessmentreport -n cronjobs
-NAME                                 AGE
-assessment-report-20221203-0536-02   58m
-assessment-report-20221203-0539-02   55m
-...
-assessment-report-20221203-0633-01   97s
-```
+For Narrows 0.3, the image scanner and the risk scanner are triggered by CronJob.
+The Kubebench scanner is in the form of DaemonSet.
+Image scanner will dynamically monitor the security posture of the images.
+For Kubebench scanner, it is triggered by events: when there are modifications in the K8s config files,
+this scanner will be triggered to scan the configuration security issues immediately.
 
 ### Check the assessment reports
-We can check the assessment reports generated by the 3 scanners/
+We can check the assessment reports generated by the 3 scanners.
 
 #### Image scanning reports
-We can check the time series trend of the vulnerabilities discovered by the Image vulnerability scanner.
+We can check the trend of the vulnerabilities discovered by the Image vulnerability scanner.
 
 <img src="pictures/report-harbor-scanner.png">
 
@@ -264,7 +238,7 @@ Click the buttons under the "Action" column can navigate you to the details of a
 <img src="pictures/report-harbor-detail.png">
 
 #### Kubebench scanning reports
-We can check the Kubebench reports:
+We can check the Kubebench reports of a certain node.
 
 <img src="pictures/report-kubebench-scanner.png">
 
@@ -290,7 +264,7 @@ For the detailed explanation of the reports, please check [User Guide](USER-GUID
 
 ### Check the insights
 
-We support inspecting the insights from 3 different perspectives, in release 0.2 the insight functionality only covers the image scanner.
+We support inspecting the insights from 3 different perspectives, in release 0.3 the insight functionality only covers the image scanner.
 
 #### cluster perspective
 
