@@ -112,10 +112,10 @@ func extractVersion(data []byte) (*KubeVersion, error) {
 
 func getWebData(srvURL, token string, cacert *tls.Certificate) ([]byte, error) {
 	log.Info(fmt.Sprintf("getWebData srvURL: %s\n", srvURL))
-
+	skipCertVerify := true
 	tlsConf := &tls.Config{
 		Certificates:       []tls.Certificate{*cacert},
-		InsecureSkipVerify: true,
+		InsecureSkipVerify: skipCertVerify,
 	}
 	tr := &http.Transport{
 		TLSClientConfig: tlsConf,
