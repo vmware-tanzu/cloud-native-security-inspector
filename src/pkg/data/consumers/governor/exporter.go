@@ -81,6 +81,7 @@ func (g GovernorExporter) getGovernorAPIPayload() openapi.KubernetesTelemetryReq
 				containerData := openapi.NewContainerWithDefaults()
 				for _, container := range pod.Containers {
 					containerData.Name = container.Name
+					containerData.Id = container.ID
 					containerData.ImageId = container.ImageID
 					containerData.Image = container.Image
 					kubernetesWorkloads.Containers = append(kubernetesWorkloads.Containers, *containerData)

@@ -3,7 +3,7 @@ Catalog Governor Service REST API
 
 This is the service to track assets deployed in customer clusters
 
-API version: 0.1.0
+API version: ${project.version}
 Contact: content-building-ecosystem@vmware.com
 */
 
@@ -20,7 +20,7 @@ type MatchLabel struct {
 	// MatchLabel key
 	Key string `json:"key"`
 	// MatchLabel value
-	Value string `json:"value"`
+	Value                string `json:"value"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -162,5 +162,3 @@ func (v *NullableMatchLabel) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

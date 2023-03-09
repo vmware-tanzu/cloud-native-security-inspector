@@ -3,7 +3,7 @@ Catalog Governor Service REST API
 
 This is the service to track assets deployed in customer clusters
 
-API version: 0.1.0
+API version: ${project.version}
 Contact: content-building-ecosystem@vmware.com
 */
 
@@ -18,7 +18,7 @@ import (
 // RegisterKubernetesClusterRequest Payload to request registering a Kubernetes cluster
 type RegisterKubernetesClusterRequest struct {
 	// Name of the cluster to be registered
-	Name string `json:"name"`
+	Name                 string `json:"name"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -131,5 +131,3 @@ func (v *NullableRegisterKubernetesClusterRequest) UnmarshalJSON(src []byte) err
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

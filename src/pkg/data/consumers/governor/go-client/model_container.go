@@ -3,7 +3,7 @@ Catalog Governor Service REST API
 
 This is the service to track assets deployed in customer clusters
 
-API version: 0.1.0
+API version: ${project.version}
 Contact: content-building-ecosystem@vmware.com
 */
 
@@ -23,6 +23,8 @@ type Container struct {
 	Image string `json:"image"`
 	// Image ID
 	ImageId string `json:"image_id"`
+	// Identifier of the container
+	Id                   string `json:"id,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -32,9 +34,10 @@ type _Container Container
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewContainer(name string, image string, imageId string) *Container {
+func NewContainer(name string, image string, imageId string, id string) *Container {
 	this := Container{}
 	this.Name = name
+	this.Id = id
 	this.Image = image
 	this.ImageId = imageId
 	return &this
@@ -120,6 +123,38 @@ func (o *Container) SetImageId(v string) {
 	o.ImageId = v
 }
 
+// GetId returns the Id field value if set, zero value otherwise.
+func (o *Container) GetId() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+	return o.Id
+}
+
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Container) GetIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Id, true
+}
+
+// HasId returns a boolean if a field has been set.
+func (o *Container) HasId() bool {
+	if o != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetId gets a reference to the given string and assigns it to the Id field.
+func (o *Container) SetId(v string) {
+	o.Id = v
+}
+
 func (o Container) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if true {
@@ -130,6 +165,9 @@ func (o Container) MarshalJSON() ([]byte, error) {
 	}
 	if true {
 		toSerialize["image_id"] = o.ImageId
+	}
+	if true {
+		toSerialize["id"] = o.Id
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -152,6 +190,7 @@ func (o *Container) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "name")
 		delete(additionalProperties, "image")
 		delete(additionalProperties, "image_id")
+		delete(additionalProperties, "id")
 		o.AdditionalProperties = additionalProperties
 	}
 
@@ -193,5 +232,3 @@ func (v *NullableContainer) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

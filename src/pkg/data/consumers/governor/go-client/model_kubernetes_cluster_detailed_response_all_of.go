@@ -3,7 +3,7 @@ Catalog Governor Service REST API
 
 This is the service to track assets deployed in customer clusters
 
-API version: 0.1.0
+API version: ${project.version}
 Contact: content-building-ecosystem@vmware.com
 */
 
@@ -17,7 +17,7 @@ import (
 
 // KubernetesClusterDetailedResponseAllOf struct for KubernetesClusterDetailedResponseAllOf
 type KubernetesClusterDetailedResponseAllOf struct {
-	Telemetry *KubernetesTelemetryResponse `json:"telemetry,omitempty"`
+	Telemetry            *KubernetesTelemetryResponse `json:"telemetry,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -137,5 +137,3 @@ func (v *NullableKubernetesClusterDetailedResponseAllOf) UnmarshalJSON(src []byt
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

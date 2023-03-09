@@ -3,7 +3,7 @@ Catalog Governor Service REST API
 
 This is the service to track assets deployed in customer clusters
 
-API version: 0.1.0
+API version: ${project.version}
 Contact: content-building-ecosystem@vmware.com
 */
 
@@ -17,9 +17,10 @@ import (
 
 // KubernetesAgentConfigRequest Payload to request agent config manifest for a cluster
 type KubernetesAgentConfigRequest struct {
-	MatchLabels []MatchLabel `json:"match_labels"`
+	SettingsName string       `json:"settings_name"`
+	MatchLabels  []MatchLabel `json:"match_labels"`
 	// API token for agent running in a cluster
-	ApiToken string `json:"api_token"`
+	ApiToken             string `json:"api_token"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -29,8 +30,9 @@ type _KubernetesAgentConfigRequest KubernetesAgentConfigRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewKubernetesAgentConfigRequest(matchLabels []MatchLabel, apiToken string) *KubernetesAgentConfigRequest {
+func NewKubernetesAgentConfigRequest(settingsName string, matchLabels []MatchLabel, apiToken string) *KubernetesAgentConfigRequest {
 	this := KubernetesAgentConfigRequest{}
+	this.SettingsName = settingsName
 	this.MatchLabels = matchLabels
 	this.ApiToken = apiToken
 	return &this
@@ -42,6 +44,30 @@ func NewKubernetesAgentConfigRequest(matchLabels []MatchLabel, apiToken string) 
 func NewKubernetesAgentConfigRequestWithDefaults() *KubernetesAgentConfigRequest {
 	this := KubernetesAgentConfigRequest{}
 	return &this
+}
+
+// GetSettingsName returns the SettingsName field value
+func (o *KubernetesAgentConfigRequest) GetSettingsName() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.SettingsName
+}
+
+// GetSettingsNameOk returns a tuple with the SettingsName field value
+// and a boolean to check if the value has been set.
+func (o *KubernetesAgentConfigRequest) GetSettingsNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.SettingsName, true
+}
+
+// SetSettingsName sets field value
+func (o *KubernetesAgentConfigRequest) SetSettingsName(v string) {
+	o.SettingsName = v
 }
 
 // GetMatchLabels returns the MatchLabels field value
@@ -95,6 +121,9 @@ func (o *KubernetesAgentConfigRequest) SetApiToken(v string) {
 func (o KubernetesAgentConfigRequest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if true {
+		toSerialize["settings_name"] = o.SettingsName
+	}
+	if true {
 		toSerialize["match_labels"] = o.MatchLabels
 	}
 	if true {
@@ -118,6 +147,7 @@ func (o *KubernetesAgentConfigRequest) UnmarshalJSON(bytes []byte) (err error) {
 	additionalProperties := make(map[string]interface{})
 
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+		delete(additionalProperties, "settings_name")
 		delete(additionalProperties, "match_labels")
 		delete(additionalProperties, "api_token")
 		o.AdditionalProperties = additionalProperties
@@ -161,5 +191,3 @@ func (v *NullableKubernetesAgentConfigRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-
