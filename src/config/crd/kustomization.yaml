@@ -5,8 +5,6 @@
 # It should be runtime by config/default
 resources:
 - bases/goharbor.goharbor.io_inspectionpolicies.yaml
-- bases/goharbor.goharbor.io_inspections.yaml
-- bases/goharbor.goharbor.io_assessmentreports.yaml
 - bases/goharbor.goharbor.io_settings.yaml
 #+kubebuilder:scaffold:crdkustomizeresource
 
@@ -15,14 +13,12 @@ patchesStrategicMerge:
 # patches here are for enabling the conversion webhook for each CRD
 #- patches/webhook_in_inspectionpolicies.yaml
 #- patches/webhook_in_inspections.yaml
-#- patches/webhook_in_assessmentreports.yaml
 #+kubebuilder:scaffold:crdkustomizewebhookpatch
 
 # [CERTMANAGER] To enable webhook, uncomment all the sections with [CERTMANAGER] prefix.
 # patches here are for enabling the CA injection for each CRD
 #- patches/cainjection_in_inspectionpolicies.yaml
 #- patches/cainjection_in_inspections.yaml
-#- patches/cainjection_in_assessmentreports.yaml
 #+kubebuilder:scaffold:crdkustomizecainjectionpatch
 
 # the following config is for teaching kustomize how to do kustomization for CRDs.

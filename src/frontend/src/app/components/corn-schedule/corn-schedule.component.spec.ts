@@ -48,10 +48,75 @@ describe('CornScheduleComponent', () => {
       component.setTimePicker({hour: {value: 10}, minute: {value: 10}})
     })
 
-    it('setTimePicker', () => {
-      component.setTimePicker({hour: {value: 10}, minute: {value: 10}})
+    it('sharedChangeHandle', () => {
+      component.sharedChangeHandle({
+        target: {
+          checked: true
+        }
+      }, 'day', 1)
+      component.sharedChangeHandle({
+        target: {
+          checked: true
+        }
+      }, 'week', 1)
+
+      component.sharedChangeHandle({
+        target: {
+          checked: true
+        }
+      }, 'month', 1)
+
+      component.sharedChangeHandle({
+        target: {
+          checked: false
+        }
+      }, 'day', 1)
+      component.sharedChangeHandle({
+        target: {
+          checked: false
+        }
+      }, 'week', 1)
+
+      component.sharedChangeHandle({
+        target: {
+          checked: false
+        }
+      }, 'month', 1)
+
     })
 
+    it('save', () => {
+      component.cornType = 'customize'
+      component.save()
+
+      component.getMultipleType = 'week'
+      component.save()
+
+      component.getMultipleType = 'other'
+      component.save()
+
+      component.cornType = 'daily'
+      component.save()
+
+      component.cornType = 'hourly'
+      component.save()
+
+      component.cornType = 'other'
+      component.save()   
+      
+      component.timeType = false
+      component.save()   
+
+      component.timeTypeIsFalseFuc()
+
+
+    })
+
+    it('other ', () => {
+      component.cancel()
+
+      component.spacedTypeChange()
+    })
 
 });
 

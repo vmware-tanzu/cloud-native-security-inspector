@@ -33,6 +33,11 @@ describe('ReportViewDetailComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
+  describe('functions ', () => {
+    it('other test', () => {
+      component.showDetail({})
+    })
+  })
 
   it('should create', () => {
     expect(component).toBeTruthy();

@@ -177,56 +177,7 @@ export class CornScheduleComponent implements OnInit {
                 break;
             }
           } else {
-            let minute = '';
-            let hour = '';
-            let day = '';
-            let month = '';
-            let week = '';
-            this.spaced[this.spacedType].pre = this.preValue
-            for (const key in this.spaced) {
-              switch (key) {
-                case 'minute':
-                  if (isTrue(this.spaced[key], 'pre')) {
-                    minute = this.spaced[key].pre+'/'+this.spaced[key].next
-                  } else {
-                    minute = '*'
-                  }
-                  break;
-                case 'hour':
-                  if (isTrue(this.spaced[key], 'pre')) {
-                    hour = this.spaced[key].pre+'/'+this.spaced[key].next
-                  } else {
-                    hour = '*'
-                  }
-                  break;
-                case 'day':
-                  if (isTrue(this.spaced[key], 'pre')) {
-                    day = this.spaced[key].pre+'/'+this.spaced[key].next
-                  } else {
-                    day = '*'
-                  }
-                  break;
-                case 'month':
-                  if (isTrue(this.spaced[key], 'pre')) {
-                    month = this.spaced[key].pre+'/'+this.spaced[key].next
-                  } else {
-                    month = '*'
-                  }
-                  break;
-                case 'week':
-                  if (isTrue(this.spaced[key], 'pre')) {
-                    week = this.spaced[key].pre+'/'+this.spaced[key].next
-                  } else {
-                    week = '*'
-                  }
-                  break;
-                                  
-                default:
-                  break;
-              }
-            }
-            // data=minute+hour+day+month+week
-            data=`${minute} ${hour} ${day} ${month} ${week}`
+            data = this.timeTypeIsFalseFuc()
           }
         }
         break;
@@ -241,6 +192,61 @@ export class CornScheduleComponent implements OnInit {
         break;
     }
     this.saveSchedule.emit(data)
+  }
+
+  timeTypeIsFalseFuc() {
+    let data = ''
+    let minute = '';
+    let hour = '';
+    let day = '';
+    let month = '';
+    let week = '';
+    this.spaced[this.spacedType].pre = this.preValue
+    for (const key in this.spaced) {
+      switch (key) {
+        case 'minute':
+          if (isTrue(this.spaced[key], 'pre')) {
+            minute = this.spaced[key].pre+'/'+this.spaced[key].next
+          } else {
+            minute = '*'
+          }
+          break;
+        case 'hour':
+          if (isTrue(this.spaced[key], 'pre')) {
+            hour = this.spaced[key].pre+'/'+this.spaced[key].next
+          } else {
+            hour = '*'
+          }
+          break;
+        case 'day':
+          if (isTrue(this.spaced[key], 'pre')) {
+            day = this.spaced[key].pre+'/'+this.spaced[key].next
+          } else {
+            day = '*'
+          }
+          break;
+        case 'month':
+          if (isTrue(this.spaced[key], 'pre')) {
+            month = this.spaced[key].pre+'/'+this.spaced[key].next
+          } else {
+            month = '*'
+          }
+          break;
+        case 'week':
+          if (isTrue(this.spaced[key], 'pre')) {
+            week = this.spaced[key].pre+'/'+this.spaced[key].next
+          } else {
+            week = '*'
+          }
+          break;
+                          
+        default:
+          break;
+      }
+    }
+    // data=minute+hour+day+month+week
+    return data=`${minute} ${hour} ${day} ${month} ${week}`
+
   }
   cancel(){
     this.cornType = 'weekly'

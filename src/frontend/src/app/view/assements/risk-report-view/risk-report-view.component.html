@@ -21,7 +21,7 @@
       <clr-dg-cell *ngIf="kube" >
         <a style="cursor: pointer;" (click)="showDetail(kube)" href="javascript:;">
           <cds-icon style="color: skyblue" shape="pop-out"></cds-icon>
-          {{kube._id}}
+          {{kube._source.docID}}
         </a>
       </clr-dg-cell>
       <clr-dg-cell *ngIf="kube" >{{kube._source.createTime | date: 'medium'}}</clr-dg-cell>

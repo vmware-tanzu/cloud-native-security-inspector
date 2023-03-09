@@ -4,6 +4,7 @@
  */
 
 import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AssessmentService } from 'src/app/service/assessment.service';
 import { ShardService } from 'src/app/service/shard.service'
 
 @Component({
@@ -13,11 +14,16 @@ import { ShardService } from 'src/app/service/shard.service'
 })
 export class WorkloadPageComponent implements OnInit, AfterViewInit {
   public pageSizeOptions = [10, 20, 50, 100, 500];
+  testMousedown: any
+  testMousemove: any
+  testMouseup: any
   constructor(
-    public shardService:ShardService
+    public shardService:ShardService,
+    private assessmentService: AssessmentService
   ) { }
 
-  ngOnInit(): void { 
+  ngOnInit(): void {
+    this.getNewReport() 
   }
   ngAfterViewInit(): void {
     let resizeLeft = 445
@@ -26,10 +32,10 @@ export class WorkloadPageComponent implements OnInit, AfterViewInit {
     var right: any = document.getElementById("work-right");
     var box: any = document.getElementById("work-box");
     console.log('init');
-    resize.onmousedown = function (e: any) {
+    this.testMousedown = resize.onmousedown = function (e: any) {
         var startX = e.clientX;          
         resize.left = resizeLeft;          
-          document.onmousemove = function (e) {
+          this.testMousemove = document.onmousemove = function (e) {
             var endX = e.clientX;
             
             var moveLen = resize.left + (startX - endX);
@@ -42,7 +48,7 @@ export class WorkloadPageComponent implements OnInit, AfterViewInit {
             right.style.width = moveLen + "px";
             left.style.width = (box.clientWidth - moveLen - 5) + "px";
         }
-        document.onmouseup = function (evt) {
+        this.testMouseup = document.onmouseup = function (evt) {
             document.onmousemove = null;
             document.onmouseup = null;
             resize.releaseCapture && resize.releaseCapture();
@@ -58,6 +64,41 @@ export class WorkloadPageComponent implements OnInit, AfterViewInit {
     // this.resetWorkload('workloadDetailFlag')
   }
 
+  getNewReport() {    
+    const opensearchbase: any = localStorage.getItem('cnsi-open-search')
+    const opensearchInfoJson = window.atob(opensearchbase)
+    if (!opensearchInfoJson.slice(24)) {
+      return
+    } else {
+      const opensearchInfo = JSON.parse(opensearchInfoJson.slice(24))   
+      const client = 'opensearch'
+      if (opensearchInfo.url) {
+        this.assessmentService.getKubeBenchReport({url: opensearchInfo.url, index: 'insight_report', username: opensearchInfo.user, password: opensearchInfo.pswd, query: {
+          size: 1,
+          from: 0,
+          "query": {
+            "match_all": {}
+          }
+        }, client, ca: ''}).subscribe(
+          data => {
+
+            this.shardService.allWorkloadList = []
+            data.hits.hits.forEach((el: any) => {
+              el._source.namespaceAssessments[0].workloadAssessments.forEach((workload: any) => {
+                this.shardService.allWorkloadList.push({
+                  namespace: el._source.namespaceAssessments[0].namespace.name,
+                  workload: workload
+                })
+              });
+
+            })
+          },
+          err => {}
+        )
+      }
+    }
+
+  }
   showDetail(event:any) {
     for (let index = 0; index < event.target.classList.length; index++) {      
       if (event.target.classList[index] === 'report-detai-bg' || event.target.classList[index]  === 'report-detai-left') {

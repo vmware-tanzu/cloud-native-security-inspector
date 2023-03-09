@@ -13,322 +13,129 @@
         <ul class="list warp-1">
           <li>
             <b>UID: </b>
-            <span>{{shardService.currentReport?.metadata.uid}}</span>
+            <span>{{shardService.currentReport?._source.reportUID}}</span>
           </li>
           <li>
             <b>Name: </b>
-            <span>{{shardService.currentReport?.metadata.name}}</span>
+            <span>{{shardService.currentReport?._source.docId}}</span>
           </li>
           <li>
             <b>Namespace: </b>
-            <span>{{shardService.currentReport?.metadata.namespace}}</span>
+            <span>{{shardService.currentReport?._source.workloadNamespace}}</span>
           </li>
           <li>
-            <b>Version: </b>
-            <span>
-              {{shardService.currentReport?.metadata.resourceVersion}}
-            </span>
-          </li>
-          <li>
-            <b>Annotations: </b>
-            <div *ngFor="let item of shardService.currentReport?.metadata.annotations">
-              <b class="content">{{item.key}}</b>
-              <span>{{item.value}}</span>
-            </div>
-          </li>
-        </ul>
-      </clr-accordion-content>
-    </clr-accordion-panel>
-  
-    <clr-accordion-panel >
-      <clr-accordion-title>{{'Report_Detail.owner_references'| translate}}</clr-accordion-title>
-      <clr-accordion-content *clrIfExpanded>
-          <ul class="list warp-1 " *ngFor="let item of shardService.currentReport?.metadata.ownerReferences">
-            <li>
-              <b>Name: </b>
-              <span>{{item.name}}</span>
-            </li>
-            <li>
-              <b>Uid: </b>
-              <span>{{item.uid}}</span>
-            </li>
-            <li>
-              <b>ApiVersion: </b>
-              <span>{{item.apiVersion}}</span>
-            </li>
-            <li>
-              <b>{{'Report_Detail.block_owner_deletion'| translate}}: </b>
-              <span>{{item.blockOwnerDeletion}}</span>
-            </li>
-            <li>
-              <b>Type: </b>
-              <span>{{item.kind}}</span>
-            </li>
-          </ul>
-      </clr-accordion-content>
-    </clr-accordion-panel>
-  
-    <clr-accordion-panel >
-      <clr-accordion-title>{{'Report_Detail.inspection_configuration'| translate}}</clr-accordion-title>
-      <clr-accordion-content *clrIfExpanded>
-        <ul class="list warp-1">
-          <li *ngIf="shardService.currentReport">
-            <b>{{'Report_Detail.actions'| translate}}:  </b>
-            <ul class="list wrap-2" *ngFor="let item of shardService.currentReport.spec.inspectionConfiguration.actions">
-              <li>
-                <b>{{'Report_Detail.kind'| translate}}:  </b>
-                <span>{{item.kind}}</span>  
-              </li>
-            </ul>
-          </li>
-          <li>
-            <b>{{'Report_Detail.assessment'| translate}}:  </b>
-            <div>
-              <b>{{'Report_Detail.format'| translate}}: </b>
-              {{shardService.currentReport.spec.inspectionConfiguration.assessment.format}}
-            </div>
-            <div>
-              <b>{{'Report_Detail.generate'| translate}}: </b>
-              {{shardService.currentReport.spec.inspectionConfiguration.assessment.generate}}
-            </div>
-            <div>
-              <b>{{'Report_Detail.live_time'| translate}}: </b>
-              {{shardService.currentReport.spec.inspectionConfiguration.assessment.liveTime}}
-            </div>
-            <div>
-              <b>{{'Report_Detail.managedBy'| translate}}: </b>
-              {{shardService.currentReport.spec.inspectionConfiguration.assessment.managedBy}}
-            </div>
-          </li>
-          <li>
-            <b>{{'Report_Detail.baselines'| translate}}:  </b>
-            <ul class="list warp-2" *ngFor="let item of shardService.currentReport.spec.inspectionConfiguration.baselines">
-              <li>
-                <b>{{'Report_Detail.baseline'| translate}}:  </b>
-                <span>{{item.baseline}}</span>
-              </li>
-              <li>
-                <b>{{'Report_Detail.kind'| translate}}:  </b>
-                <span>{{item.kind}}</span>
-              </li>
-              <li>
-                <b>{{'Report_Detail.scheme'| translate}}:  </b>
-                <span>{{item.scheme}}</span>
-              </li>
-              <li>
-                <b>Version:  </b>
-                <span>{{item.version}}</span>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </clr-accordion-content>
-    </clr-accordion-panel>
-  
-    <clr-accordion-panel *ngIf="shardService.currentReport?.spec.inspectionConfiguration.dataProvider">
-      <clr-accordion-title>{{'Report_Detail.data_provider'| translate}}</clr-accordion-title>
-      <clr-accordion-content *clrIfExpanded>
-        <ul class="list warp-1">
-  
-          <li >
-            <b>{{'Report_Detail.endpoint'| translate}}:  </b>
-            <span>{{shardService.currentReport.spec.inspectionConfiguration.dataProvider.endpoint}}</span>
-          </li>
-          <li >
-            <b>{{'Report_Detail.provider'| translate}}:  </b>
-            <span>{{shardService.currentReport.spec.inspectionConfiguration.dataProvider.provider}}</span>
-          </li>
-        </ul>
-      </clr-accordion-content>
-    </clr-accordion-panel>
-  
-    <clr-accordion-panel *ngIf="shardService.currentReport?.spec?.inspectionConfiguration?.namespaceSelector">
-      <clr-accordion-title>Labels</clr-accordion-title>
-      <clr-accordion-content *clrIfExpanded>
-        <ul class="list warp-1">
-          <li *ngFor="let item of shardService.currentReport.spec.inspectionConfiguration.namespaceSelector.matchLabels">
-            <b>{{item.key}}:  </b>
-            <span>{{item.value}}</span>
+            <b>Created Time: </b>
+            <span>{{shardService.currentReport?._source.createTime}}</span>
           </li>
         </ul>
       </clr-accordion-content>
     </clr-accordion-panel>
 
-    <clr-accordion-panel [clrAccordionPanelOpen]='true' *ngIf="shardService.currentReport?.spec">
-      <clr-accordion-title>{{'Report_Detail.namespace_assessments'| translate}}</clr-accordion-title>
+    <clr-accordion-panel [clrAccordionPanelOpen]='true'>
+      <clr-accordion-title>{{'Workload.list'|translate}}</clr-accordion-title>
       <clr-accordion-content *clrIfExpanded>
-        <ul class="nav" role="tablist">
-          <li *ngFor="let namespace of shardService.currentReport.spec.namespaceAssessments" class="nav-item">
-              <button class="btn btn-link nav-link" (click)="setCurrentReport(namespace)" [class]="{active:  namespace.namespace.name===currentReport?.namespace?.name}"
-                     type="button">{{namespace.namespace.name}}</button>
-          </li>
-      </ul>
-      <section>
         <clr-datagrid style="height:  200px; overflow:  auto;">
-          <clr-dg-column [clrDgField]="'attributes.pool'">Name</clr-dg-column>
-          <clr-dg-column >Type</clr-dg-column>
+          <clr-dg-column [clrDgField]="'container.name'">Uid</clr-dg-column>
+          <clr-dg-column [clrDgField]="'container.name'">
+            Name
+          </clr-dg-column>
+          <clr-dg-column >Namespace</clr-dg-column>
+          <clr-dg-column >Kind</clr-dg-column>
           <clr-dg-column >Passed</clr-dg-column>
 
-          <clr-dg-row *ngFor="let workload of currentReport.workloadAssessments" [clrDgItem]="workload">
+          <clr-dg-row *clrDgItems="let wd of shardService.currentReport?.workloadAssessments" [clrDgItem]="wd">
             <clr-dg-cell>
-              <a href="javascript:;" (click)="getRisk(workload)">{{workload.workload?.metadata.name}}</a>
+              {{wd.workload.metadata.uid}}
             </clr-dg-cell>
-            <clr-dg-cell>{{workload.workload?.metadata.kind}}</clr-dg-cell>
-            <clr-dg-cell>{{workload.passed}}</clr-dg-cell>
+            <clr-dg-cell>
+              <a href="javascript:;" (click)="showDetail(wd)">
+                {{wd.workload.metadata.name}}
+              </a>  
+            </clr-dg-cell>
+            <clr-dg-cell>{{wd.workload.metadata.namespace}}</clr-dg-cell>
+            <clr-dg-cell>{{wd.workload.metadata.kind}}</clr-dg-cell>
+            <clr-dg-cell>{{wd.passed}}</clr-dg-cell>
           </clr-dg-row>
+          <clr-dg-footer>
+            <clr-dg-pagination #pagination_wordloads [clrDgPageSize]="10">
+                <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">wordloads per page</clr-dg-page-size>
+                {{pagination_wordloads.firstItem + 1}} - {{pagination_wordloads.lastItem + 1}}
+                of {{pagination_wordloads.totalItems}} wordloads
+            </clr-dg-pagination>
+        </clr-dg-footer>
         </clr-datagrid>
-      </section>
-      <div *ngIf="workloadInfo" class="card pods">
-        <h4>{{workloadInfo.workload?.metadata.name}}</h4>
-        <h5>Pods:  </h5>
-        <div *ngFor="let item of workloadInfo.workload.pods">
-          <h4>
-            <cds-icon shape="info-circle"></cds-icon>
-            {{'CommonlyUse.information' | translate}}</h4>
-          <ul class="list">
-            <li>
-              <b>Name: </b>
-              <span>{{item?.metadata.name}}</span>
-            </li>
-            <li>
-              <b>Uid: </b>
-              <span>{{item?.metadata.uid}}</span>
-            </li>
-            <li>
-              <b>{{'Report_Detail.resource_version'|translate}}: </b>
-              <span>{{item?.metadata.resourceVersion}}</span>
-            </li>
-            <li>
-              <b>ApiVersion: </b>
-              <span>{{item?.metadata.apiVersion}}</span>
-            </li>
-          </ul>
-          <h4>
-            <cds-icon shape="bars"></cds-icon>
-            {{'CommonlyUse.containers' | translate}}</h4>
-
-          <clr-datagrid>
-            <clr-dg-column [clrDgField]="'attributes.pool'">Name</clr-dg-column>
-            <clr-dg-column >ID</clr-dg-column>
-            <clr-dg-column >Image</clr-dg-column>
-            <clr-dg-column >Image ID</clr-dg-column>
-            <clr-dg-column >{{'Report_Detail.isInit'|translate}}</clr-dg-column>
-  
-            <clr-dg-row *ngFor="let container of item.containers" [clrDgItem]="workloadInfo">
-              <clr-dg-cell>{{container.name}}</clr-dg-cell>
-              <clr-dg-cell>{{container.id}}</clr-dg-cell>
-              <clr-dg-cell>{{container.image}}</clr-dg-cell>
-              <clr-dg-cell>{{container.imageID}}</clr-dg-cell>
-              <clr-dg-cell>{{container.isInit}}</clr-dg-cell>
-            </clr-dg-row>
-          </clr-datagrid>
-
-          <h4 *ngIf="item.detail && item.detail.length > 0 ">
-            <cds-icon shape="details"></cds-icon>
-            {{'CommonlyUse.details' | translate}}</h4>
-          <clr-datagrid *ngIf="item.detail && item.detail.length > 0 ">
-            <clr-dg-column [clrDgField]="'score'">score</clr-dg-column>
-            <clr-dg-column [clrDgField]="'scale'">scale</clr-dg-column>
-            <clr-dg-column [clrDgField]="'vuln.package'">package</clr-dg-column>
-            <clr-dg-column [clrDgField]="'vuln.version'">{{'CommonlyUse.version'|translate}}</clr-dg-column>
-            <clr-dg-column [clrDgField]="'vuln.fix_version'">{{'CommonlyUse.fix_version'|translate}}</clr-dg-column>
-            <clr-dg-column [clrDgField]="'reason'">{{'Kube_bench_list.reason'|translate}}</clr-dg-column>
-            <clr-dg-column >{{'CommonlyUse.description'|translate}}</clr-dg-column>
-  
-            <clr-dg-row *clrDgItems="let detail of item.detail" [clrDgItem]="detail">
-              <clr-dg-cell>{{detail.score}}</clr-dg-cell>
-              <clr-dg-cell>{{detail.scale}}</clr-dg-cell>
-              <clr-dg-cell>{{detail.vuln.package}}</clr-dg-cell>
-              <clr-dg-cell>{{detail.vuln.version}}</clr-dg-cell>
-              <clr-dg-cell>{{detail.vuln.fix_version}}</clr-dg-cell>
-              <clr-dg-cell>{{detail.reason}}</clr-dg-cell>
-
-              <clr-dg-cell>{{detail.vuln.description}}</clr-dg-cell>
-            </clr-dg-row>
-
-            <clr-dg-footer>
-              <clr-dg-pagination #pagination [clrDgPageSize]="10">
-                  <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">deatil per page</clr-dg-page-size>
-                  {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
-                  of {{pagination.totalItems}} deatils
-              </clr-dg-pagination>
-          </clr-dg-footer>
-          </clr-datagrid>
-
-        </div>
-      </div>
-      <section class="workload-section" *ngIf="workloadInfo && !workloadInfo.passed">
-        <div class="card failures">
-          <h5>{{'Report_Detail.failures'|translate}}:  </h5>
-          <div>
-            <ul class="list " *ngFor="let item of workloadInfo.failures">
-              <li>
-                <b>{{'Report_Detail.cause'|translate}}: </b>
-                <span>{{item.assessmentError?.cause}}</span>
-              </li>
-              <li>
-                <b>{{'Report_Detail.error_message'|translate}}: </b>
-                <span>{{item?.assessmentError?.error}}</span>
-              </li>
-              <li>
-                <b>{{'Report_Detail.baselines'|translate}}:  </b>
-                <div >
-                  <b>{{'Report_Detail.baseline'|translate}}: </b>
-                  <span>{{item.baseline?.baseline}}</span>
-                </div>
-                <div >
-                  <b>{{'Report_Detail.kind'|translate}}: </b>
-                  <span>{{item.baseline?.kind}}</span>
-                </div>
-                <div >
-                  <b>{{'Report_Detail.scheme'|translate}}: </b>
-                  <span>{{item.baseline?.scheme}}</span>
-                </div>
-                <div >
-                  <b>Version: </b>
-                  <span>{{item.baseline?.version}}</span>
-                </div>
-              </li>
-              <li>
-                <b>Container:  </b>
-                <div >
-                  <b>Name: </b>
-                  <span>{{item.container?.name}}</span>
-                </div>
-                <div >
-                  <b>ID: </b>
-                  <span>{{item.container?.id}}</span>
-                </div>
-                <div >
-                  <b>Image: </b>
-                  <span>{{item.container?.image}}</span>
-                </div>
-                <div >
-                  <b>Image ID: </b>
-                  <span>{{item.container?.imageID}}</span>
-                </div>
-              </li>
-            </ul>
-
-          </div>
-        </div>
-        <div class="card">
-          <h5>{{'Report_Detail.action_enforcements'|translate}}</h5>
-          <ul class="list" *ngFor="let item of workloadInfo.actionEnforcements">
-            <li >
-              <b>{{'CommonlyUse.action'|translate}}:  </b>
-              <span>{{item.action.kind}}</span>
-            </li>
-            <li>
-              <b>Result:  </b>
-              <span>{{item.result.status}}</span>
-            </li>
-          </ul>
-
-        </div>
-      </section>
+      </clr-accordion-content>
+    </clr-accordion-panel>
+    <clr-accordion-panel [clrAccordionPanelOpen]='true' *ngIf="showDetailFlag && currentWordloadInfo">
+      <clr-accordion-title>Pods</clr-accordion-title>
+      <clr-accordion-content *clrIfExpanded>
+        <ul class="list">
+          <li *ngFor="let pod of currentWordloadInfo?.workload.pods">
+            <span>
+              <b>Pod Name</b>: {{pod.metadata.name}}
+            </span>
+            <br>
+            <span>
+              <b>Pod Namespace</b>: {{pod.metadata.namespace}}
+            </span>
+            <h4>Containers</h4>
+            <clr-datagrid style="height:  200px; overflow:  auto;">
+              <clr-dg-column [clrDgField]="'container.name'">Name</clr-dg-column>
+              <clr-dg-column >Image</clr-dg-column>
+              <clr-dg-column >{{'Report_Detail.isInit'|translate}}</clr-dg-column>
+    
+              <clr-dg-row *clrDgItems="let cn of pod.containers" [clrDgItem]="cn">
+                <clr-dg-cell>
+                  {{cn.name}}
+                </clr-dg-cell>
+                <clr-dg-cell>
+                  {{cn.image}}
+                </clr-dg-cell>
+                <clr-dg-cell>{{cn.isInit}}</clr-dg-cell>
+              </clr-dg-row>
+              <clr-dg-footer>
+                <clr-dg-pagination #pagination_containers [clrDgPageSize]="10">
+                    <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">containers per page</clr-dg-page-size>
+                    {{pagination_containers.firstItem + 1}} - {{pagination_containers.lastItem + 1}}
+                    of {{pagination_containers.totalItems}} containers
+                </clr-dg-pagination>
+            </clr-dg-footer>
+            </clr-datagrid>
+          </li>
+        </ul>
       </clr-accordion-content>
     </clr-accordion-panel>
 
+
+    <clr-accordion-panel [clrAccordionPanelOpen]='true' *ngIf="showDetailFlag && currentWordloadInfo && !currentWordloadInfo.passed">
+      <clr-accordion-title>{{'Report_Detail.failures'|translate}}</clr-accordion-title>
+      <clr-accordion-content *clrIfExpanded>
+        <clr-datagrid style="height:  200px; overflow:  auto;">
+          <clr-dg-column [clrDgField]="'container.name'">Name</clr-dg-column>
+          <clr-dg-column >Image</clr-dg-column>
+          <clr-dg-column >{{'Report_Detail.isInit'|translate}}</clr-dg-column>
+          <clr-dg-column >Cause</clr-dg-column>
+          <clr-dg-column >Error</clr-dg-column>
+
+          <clr-dg-row *clrDgItems="let failure of currentWordloadInfo?.failures" [clrDgItem]="failure">
+            <clr-dg-cell>
+              {{failure.container.name}}
+            </clr-dg-cell>
+            <clr-dg-cell>{{failure.container.image}}</clr-dg-cell>
+            <clr-dg-cell>{{failure.container.isInit}}</clr-dg-cell>
+            <clr-dg-cell>{{failure.assessmentError.cause}}</clr-dg-cell>
+            <clr-dg-cell>{{failure.assessmentError.error}}</clr-dg-cell>
+          </clr-dg-row>
+          <clr-dg-placeholder *ngIf="false"></clr-dg-placeholder>
+          <clr-dg-footer>
+            <clr-dg-pagination #pagination [clrDgPageSize]="10">
+                <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">failures per page</clr-dg-page-size>
+                {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                of {{pagination.totalItems}} failures
+            </clr-dg-pagination>
+        </clr-dg-footer>
+        </clr-datagrid>
+      </clr-accordion-content>
+    </clr-accordion-panel>
   </clr-accordion>
 </div>

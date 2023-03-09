@@ -23,6 +23,32 @@ describe('RiskReportDetailComponent', () => {
     fixture.detectChanges();
   });
 
+
+  describe('functions ', () => {
+
+    
+    it('dataSourceHandle', ()=> {
+      component.myChart = {
+        clear: () => {},
+        setOption: (arg: any) => {}
+      }
+      component.detailInfo = {
+        _source: {
+          ReportDetail: [{
+            Detail: [],
+            name: ''
+          }]
+        }
+      }
+      component.dataSourceHandle()
+    })
+
+    it('showDetail', ()=> {
+      component.showDetail({})
+    })
+
+  })
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });

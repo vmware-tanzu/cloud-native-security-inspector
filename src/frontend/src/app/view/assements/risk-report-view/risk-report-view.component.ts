@@ -28,6 +28,7 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
   public showDetailFlag = false
   echartsLoading = true
   riskList: any[] = []
+  riskCallBackReset = true
   constructor(
     private assessmentService: AssessmentService,
     private policyService: PolicyService
@@ -96,6 +97,9 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
         }
       },
       err => {
+        this.echartsRender([], [])
+        this.echartsLoading = false
+        this.dgLoading = false
         console.log('err', err);
       }
     )
@@ -199,19 +203,16 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
   getRiskList(query: any, callback: Function) {    
     this.dgLoading = true
     const opensearchbase: any = localStorage.getItem('cnsi-open-search')
-    // const elasticsearchbase: any = localStorage.getItem('cnsi-elastic-search')
     const opensearchInfoJson = window.atob(opensearchbase)
-    // const elasticsearchInfoJson = window.atob(elasticsearchbase)
     if (!opensearchInfoJson.slice(24)) {
       this.dgLoading = false
     } else {
       const opensearchInfo = JSON.parse(opensearchInfoJson.slice(24))   
-      // const elasticsearchInfo = JSON.parse(elasticsearchInfoJson.slice(24))  
       const client = 'opensearch'
       let ca = ''
       if (opensearchInfo.url) {
         this.opensearchInfo = opensearchInfo
-        this.assessmentService.getKubeBenchReport({url: this.opensearchInfo.url, index: 'risk_manager_report', username: this.opensearchInfo.user, password: this.opensearchInfo.pswd, query, client, ca}).subscribe(
+        this.assessmentService.getKubeBenchReport({url: this.opensearchInfo.url, index: 'risk_report', username: this.opensearchInfo.user, password: this.opensearchInfo.pswd, query, client, ca}).subscribe(
           data => {
             callback(data, this, query)
             this.pageMaxCount = Math.ceil( data.hits.total.value / this.defaultSize)
@@ -307,50 +308,50 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
         }
       ]
     };
-    function callBack(data: any, that: any, query: any) {
-      if (reset) {
-        that.riskList = []        
-        data.hits.hits.forEach((item: any) => {
-          let risk_number = 0
-          if (item._source && item._source.ReportDetail && item._source.ReportDetail.length > 0) {
-            item._source.ReportDetail.forEach((re: any) => {
-              risk_number+=re.Detail.length
-            });
-          }
-          item['risk_number'] = risk_number
-          that.riskList.push(item)
-        });
-
-        that.pageMaxCount = Math.ceil( data.hits.total.value / query.size)
-        that.pagination.lastPage = that.pageMaxCount        
-        that.pagination.page.change   
-        that.dgLoading = false;
-
-        if (that.echartsLoading) {
-          const dateList: any = []
-          const valueList: any = []
-  
-          that.riskList.forEach((el: any) => {
-            if (el.risk_number) {
-              dateList.push(moment(el._source.createTime).format('LLL'))
-              valueList.push(el.risk_number)
-            }
-          })
-          if (that.riskImage) {
-            that.echartsRender(dateList, valueList)
-          }
-          that.echartsLoading = false
-        }          
-
-      } else {
-        that.riskCallBack(data,that, query, data.hits.total.value)
-      }
-      
-
-    }
-    this.getRiskList(query, callBack)
+    this.riskCallBackReset = reset
+    this.getRiskList(query, this.getRiskReportListCallBack)
   }
+  getRiskReportListCallBack(data: any, that: any, query: any) {
+    if (that.riskCallBackReset) {
+      that.riskList = []        
+      data.hits.hits.forEach((item: any) => {
+        let risk_number = 0
+        if (item._source && item._source.ReportDetail && item._source.ReportDetail.length > 0) {
+          item._source.ReportDetail.forEach((re: any) => {
+            risk_number+=re.Detail.length
+          });
+        }
+        item['risk_number'] = risk_number
+        that.riskList.push(item)
+      });
 
+      that.pageMaxCount = Math.ceil( data.hits.total.value / query.size)
+      that.pagination.lastPage = that.pageMaxCount        
+      that.pagination.page.change   
+      that.dgLoading = false;
+
+      if (that.echartsLoading) {
+        const dateList: any = []
+        const valueList: any = []
+
+        that.riskList.forEach((el: any) => {
+          if (el.risk_number) {
+            dateList.push(moment(el._source.createTime).format('LLL'))
+            valueList.push(el.risk_number)
+          }
+        })
+        if (that.riskImage) {
+          that.echartsRender(dateList, valueList)
+        }
+        that.echartsLoading = false
+      }          
+
+    } else {
+      that.riskCallBack(data,that, query, data.hits.total.value)
+    }
+    
+
+  }
 
   showDetail(detail: any) {
     this.showDetailFlag = true

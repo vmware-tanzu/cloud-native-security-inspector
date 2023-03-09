@@ -30,7 +30,15 @@ describe('NamespaceComponent', () => {
     fixture = TestBed.createComponent(NamespaceComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    component.shardService.namespaceList = [{name: 'test', workloads: {workloads: {violationList: []}}}] as any
   });
+
+  describe('functions ', () => {
+
+    it('switchNamespace',() => {
+      component.switchNamespace('test')
+    })
+  })
 
   it('should create', () => {
     expect(component).toBeTruthy();

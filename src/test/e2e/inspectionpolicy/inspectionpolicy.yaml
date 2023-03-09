@@ -5,16 +5,16 @@ metadata:
 spec:
   settingsName: setting-test
   enabled: true
-  workNamespace: cronjobs
+  workNamespace: narrows-workspace
   schedule: "*/1 * * * *"
   strategy:
     historyLimit: 5
     suspend: false
     concurrencyRule: "Forbid"
   inspector:
-    image: projects.registry.vmware.com/cnsi/inspector:0.2
-    kubebenchImage: projects.registry.vmware.com/cnsi/kubebench:0.2
-    riskImage: projects.registry.vmware.com/cnsi/risk:0.2
+    image: projects.registry.vmware.com/cnsi/inspector:0.3
+    kubebenchImage: projects.registry.vmware.com/cnsi/kubebench:0.3
+    riskImage: projects.registry.vmware.com/cnsi/risk:0.3
     imagePullPolicy: Always
   inspection:
     namespaceSelector:
