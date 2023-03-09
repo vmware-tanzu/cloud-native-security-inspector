@@ -4,6 +4,9 @@ import (
 	"context"
 	"fmt"
 	"github.com/goharbor/harbor/src/pkg/scan/vuln"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/core"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/providers"
 	appsv1 "k8s.io/api/apps/v1"
@@ -119,21 +122,45 @@ func (r *ResourceItem) IsSecret() bool {
 }
 
 // GetImages get images from a pod
-func (r *ResourceItem) GetImages() (images []*ImageItem) {
-
+func (r *ResourceItem) GetImages(ctx context.Context, adapter providers.Adapter, baselines []*v1alpha1.ComplianceBaseline) (images []*ImageItem) {
+	// Build data read options.
+	// Only read the data for the inspection dimension defined in the baseline.
+	var readOps []data.ReadOption
+	for _, bl := range baselines {
+		readOps = append(readOps, data.WithMetadata(core.Metadata{
+			Kind:    string(bl.Kind),
+			Version: bl.Version,
+			Scheme:  bl.Scheme,
+		}))
+	}
 	//Only pod is added to image related items
 	if r.IsPod() {
 		for _, ct := range r.Pod.Status.ContainerStatuses {
 			aid := core.ParseArtifactIDFrom(ct.Image, ct.ImageID)
 			images = append(images, NewImageItem(ct.Image, aid))
+			r.replication(ctx, aid, adapter, readOps)
 		}
 		for _, ct := range r.Pod.Status.InitContainerStatuses {
 			aid := core.ParseArtifactIDFrom(ct.Image, ct.ImageID)
 			images = append(images, NewImageItem(ct.Image, aid))
+			r.replication(ctx, aid, adapter, readOps)
 		}
 	}
 
 	return
+}
+
+func (r *ResourceItem) replication(ctx context.Context, aid core.ArtifactID, adapter providers.Adapter, readOps []data.ReadOption) {
+	_, err := adapter.Read(ctx, aid, readOps...)
+	if err != nil {
+		if core.IsArtifactNotFoundError(err) {
+			// request data if artifact not found
+			reqErr := adapter.Request(ctx, aid)
+			if reqErr != nil {
+				log.Error(reqErr, " request data ", " artifactID ", aid)
+			}
+		}
+	}
 }
 
 // GenerateReportItems generate report Item

@@ -1,6 +1,7 @@
 package riskmanager
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -38,6 +39,7 @@ type Server struct {
 	Last      int64
 	adapter   providers.Adapter
 	policy    *v1alpha1.InspectionPolicy
+	ctx       context.Context
 }
 
 // NewServer new server instance
@@ -61,6 +63,11 @@ func (s *Server) WithPolicy(policy *v1alpha1.InspectionPolicy) *Server {
 	return s
 }
 
+func (s *Server) WithContext(ctx context.Context) *Server {
+	s.ctx = ctx
+	return s
+}
+
 // postResource adds an album from JSON received in the request body.
 func (s *Server) postResource(c *gin.Context) {
 	log.Info("come in postResource request")
@@ -74,7 +81,7 @@ func (s *Server) postResource(c *gin.Context) {
 		return
 	}
 
-	images := v.GetImages()
+	images := v.GetImages(s.ctx, s.adapter, s.policy.Spec.Inspection.Baselines)
 	for _, i := range images {
 		if _, ok := s.Images[i.UUID()]; !ok {
 			s.Images[i.UUID()] = riskdata.NewImageItem(i.ImageName, i.ArtifactID)
