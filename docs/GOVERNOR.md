@@ -25,4 +25,32 @@ Integration with VAC is very straightforward. VAC is a SaaS product and as long 
 When using the Governor component with CNSI and VAC, assessment report telemetry data is sent to VMware. If you don't will to send any data to our systems then you should avoid turning on the Governance capability.
 
 ## 2 Minutes Setup
-To Be Done
+1. <b>Register Cluster</b> 
+   - Register your cluster with VAC using below POST API:<br><br>
+     curl --location --request POST 'https://api.app-catalog.vmware.com/catalog-governor/v1/clusters' \
+     --header 'Content-Type: application/json' \
+     --data-raw '{
+       "name": "<b>New Cluster Name</b>"
+     }'
+2. <b>Create Manifest</b>
+   - Manifest is set of configurations you need to apply on your kubernetes environment in order to integrate with VAC. VAC Governor provides api to generate your manifest using below POST API. Below command provides manifest in base64 encoded form, to apply same you would need to decode the output of below command:<br><br>
+     curl --location --request POST 'https://api.int.app-catalog.vmware.com/catalog-governor/v1/clusters/0130e295-1f10-42bb-8a94-2c5d8dbeb23d/agent-config' \
+     --header 'Content-Type: application/json' \
+     --data-raw '{\
+     "match_labels": [\
+     {\
+     "key": "<b>label_key</b>",\
+     "value": "<b>label_value</b>"\
+     }\
+     ],\
+     "api_token": "<b>vmware_csp_token_for_your_org</b>",\
+     "settings_name": "<b>name_of_harbor_setting</b>"\
+     }'
+   - <b>match_labels</b> is used for selecting namespaces.
+   - <b>api_token</b> is used for authentication.
+   - <b>settings_name</b> holds Harbor settings. Harbor provides static analysis of vulnerabilities in images through the open source projects.
+3. <b>Apply Manifest</b>
+   - Once output of "Create Manifest" API call is decoded, You can simply use kubectl apply function for applying your manifest onto kubernetes. Example:<br><br>
+     cat <<EOF | kubectl apply -f - \
+     <<b>Create manifest output(decoded)</b>> \
+     EOF \
