@@ -70,8 +70,15 @@ This is a rough outline of what a contributor's workflow looks like:
 * Create a topic branch in your fork from where you want to base your work
 * Make commits of logical units
 * Make sure your commit messages are with the proper format, quality and descriptiveness (see below)
+* Run `make generate` and `make gen-yaml-files` to generate the deepcopy functions if you have changed the CRD.
 * Push your changes to the topic branch in your fork
-* Create a pull request containing that commit
+* Run `make test` to make sure you pass the e2e test locally. But we have some dependencies:
+  * You need to have [Kind](https://kind.sigs.k8s.io/) installed
+  * Build the necessary docker images locally by `make docker-build-xxx`, push to a certain registry if necessary
+    * If you changed the manager, before running e2e test, you should temporarily modify (don't commit) the [manager.yaml](src/tools/installation/yaml/manager.yaml) file, point the image to yours
+    * If you changed the scanners, similarly, you should point the image to yours in the [policy.yaml](src/test/e2e/inspectionpolicy/inspectionpolicy.yaml) file
+* If e2e test can pass locally, create your pull request
+* We expect you to add unit test and e2e test cases to cover your new code when you file a pull request
 
 We follow the GitHub workflow and you can find more details on the
 [GitHub flow documentation](https://docs.github.com/en/get-started/quickstart/github-flow).
