@@ -151,10 +151,13 @@ func (r *InspectionPolicyReconciler) Reconcile(ctx context.Context, req ctrl.Req
 	// Process the cronjob for risk
 	var statusNeedUpdateForRisk bool
 	statusNeedUpdateForRisk, err = r.cronjobForInspection(ctx, policy, goharborv1.CronjobRisk)
+	// Process the cronjob for workloadscanner
+	var statusNeedUpdateForWorkloadScanner bool
+	statusNeedUpdateForWorkloadScanner, err = r.cronjobForInspection(ctx, policy, goharborv1.CronjobWorkloadscanner)
 
-	// either inspection or kubebench needs update, it should be updated
+	// either inspection or kubebench or risk or workloadscanner needs update, it should be updated
 	var statusNeedUpdate bool
-	if statusNeedUpdateForInspection || statusNeedUpdateForKubebench || statusNeedUpdateForRisk {
+	if statusNeedUpdateForInspection || statusNeedUpdateForKubebench || statusNeedUpdateForRisk || statusNeedUpdateForWorkloadScanner {
 		statusNeedUpdate = true
 	}
 
@@ -280,6 +283,8 @@ func (r *InspectionPolicyReconciler) cronjobForInspection(ctx context.Context, p
 	if cronjobType == goharborv1.CronjobInpsection && policy.Spec.Inspector.Image == "" {
 		return false, nil
 	} else if cronjobType == goharborv1.CronjobRisk && policy.Spec.Inspector.RiskImage == "" {
+		return false, nil
+	} else if cronjobType == goharborv1.CronjobWorkloadscanner && policy.Spec.Inspector.WorkloadScannerImage == "" {
 		return false, nil
 	}
 	var cj *batchv1.CronJob
@@ -545,6 +550,8 @@ func (r *InspectionPolicyReconciler) checkCronJob(ctx context.Context, policy *g
 		exec = policy.Status.InspectionExecutor
 	} else if cronjobType == goharborv1.CronjobRisk {
 		exec = policy.Status.RiskExecutor
+	} else if cronjobType == goharborv1.CronjobWorkloadscanner {
+		exec = policy.Status.WorkloadScannerExecutor
 	}
 
 	if exec != nil {
@@ -613,6 +620,9 @@ func (r *InspectionPolicyReconciler) generateCronJobCR(policy *goharborv1.Inspec
 	} else if cronjobType == goharborv1.CronjobRisk {
 		name = "risk"
 		command = "/risk"
+	} else if cronjobType == goharborv1.CronjobWorkloadscanner {
+		name = "workloadscanner"
+		command = "/workloadscanner"
 	}
 	image = getImage(policy, cronjobType)
 
@@ -726,6 +736,8 @@ func getImage(policy *goharborv1.InspectionPolicy, cronjobType string) string {
 			return policy.Spec.Inspector.Image
 		} else if cronjobType == goharborv1.CronjobRisk {
 			return policy.Spec.Inspector.RiskImage
+		} else if cronjobType == goharborv1.CronjobWorkloadscanner {
+			return policy.Spec.Inspector.WorkloadScannerImage
 		}
 	}
 	return fmt.Sprintf("%s:%s", defaultImage, defaultImageTag)

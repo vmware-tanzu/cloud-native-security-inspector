@@ -22,6 +22,8 @@ const (
 	DaemonSetKubebench = "Kubebench"
 	// CronjobRisk describes the Risk type of the cronjob.
 	CronjobRisk = "Risk"
+	// CronjobWorkloadscanner describes the Workloadscanner type of the cronjob
+	CronjobWorkloadscanner = "Workloadscanner"
 )
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
@@ -166,6 +168,9 @@ type Inspector struct {
 	// Image of the risk.
 	// +kubebuilder:validation:Optional
 	RiskImage string `json:"riskImage"`
+	// Image of the workloadscanner.
+	// +kubebuilder:validation:Optional
+	WorkloadScannerImage string `json:"workloadscannerImage"`
 	// Image pull policy.
 	// +kubebuilder:default:=IfNotPresent
 	ImagePullPolicy corev1.PullPolicy `json:"imagePullPolicy"`
@@ -226,6 +231,10 @@ type InspectionPolicyStatus struct {
 	// RiskExecutor of this policy. It is always an object reference to the underlying cronjob.
 	// +kubebuilder:validation:Optional
 	RiskExecutor *corev1.ObjectReference `json:"riskExecutor"`
+
+	// WorkloadscannerExecutor of this policy. It is always an object reference to the underlying cronjob.
+	// +kubebuilder:validation:Optional
+	WorkloadScannerExecutor *corev1.ObjectReference `json:"workloadScannerExecutor"`
 
 	// Status of the policy.
 	// Pending, Standby, Suspend.
