@@ -74,7 +74,10 @@ func main() {
 		conf := riskmanager.ReadEnvConfig()
 
 		log.Info("mode server-only")
-		server := riskmanager.NewServer().WithAdapter(provider).WithPolicy(inspectionPolicy)
+		server := riskmanager.NewServer().
+			WithAdapter(provider).
+			WithPolicy(inspectionPolicy).
+			WithContext(ctx)
 		server.Run(conf.Server)
 	} else {
 		runner := riskmanager.NewController().
