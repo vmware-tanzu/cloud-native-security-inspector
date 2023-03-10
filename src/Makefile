@@ -14,6 +14,7 @@ IMG_CMD_INSPECTOR ?= $(REGISTRY)/inspector:$(IMG_TAG)
 IMG_CMD_KUBEBENCH ?= $(REGISTRY)/kubebench:$(IMG_TAG)
 PORTAl ?= $(REGISTRY)/portal:$(IMG_TAG)
 RISK ?= $(REGISTRY)/risk:$(IMG_TAG)
+IMG_CMD_WORKLOAD_SCANNER ?= $(REGISTRY)/workloadscanner:$(IMG_TAG)
 
 # Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
 CRD_OPTIONS ?= "crd:trivialVersions=true,preserveUnknownFields=false"
@@ -82,16 +83,19 @@ build-exporter: fmt vet
 build-inspector: generate fmt vet ## Build inspector command.
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/inspector pkg/inspectors/imagescanner/cmd/main.go
 
-build-kubebench: generate fmt vet ## Build inspector command.
+build-kubebench: generate fmt vet ## Build kubebench command.
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/kubebench pkg/inspectors/kubebench/cmd/main.go
 
 build-risk: generate fmt vet ## Build risk command.
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/risk pkg/inspectors/riskmanager/cmd/main.go
 
+build-workloadscanner: generate fmt vet ## Build workloadscanner command.
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/workloadscanner pkg/inspectors/workloadscanner/cmd/main.go
+
 run: manifests generate fmt vet ## Run a controller from your host.
 	go run ./main.go
 
-docker-build-backend: docker-build-manager docker-build-exporter docker-build-inspector docker-build-kubebench docker-build-risk
+docker-build-backend: docker-build-manager docker-build-exporter docker-build-inspector docker-build-kubebench docker-build-risk docker-build-workloadscanner
 
 docker-build-all: docker-build-backend docker-build-portal
 
@@ -113,12 +117,16 @@ docker-build-portal:
 docker-build-risk: build-risk ## Build docker image with risk cmd.
 	$(DOCKERCMD) buildx build -t ${RISK} -f Dockerfile.riskmanager .
 
+docker-build-workloadscanner: build-workloadscanner ## Build docker image with workloadscanner cmd.
+	$(DOCKERCMD) buildx build -t ${IMG_CMD_WORKLOAD_SCANNER} -f Dockerfile.workloadscanner .
+
 docker-push-backend:
 	$(DOCKERCMD) push ${IMG_MANAGER}
 	$(DOCKERCMD) push ${IMG_EXPORTER}
 	$(DOCKERCMD) push ${IMG_CMD_INSPECTOR}
 	$(DOCKERCMD) push ${IMG_CMD_KUBEBENCH}
 	$(DOCKERCMD) push ${RISK}
+	$(DOCKERCMD) push ${IMG_CMD_WORKLOAD_SCANNER}
 
 docker-push-all: docker-build-backend
 	$(DOCKERCMD) push ${PORTAl}

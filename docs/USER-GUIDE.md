@@ -345,7 +345,7 @@ spec:
     image: projects.registry.vmware.com/cnsi/inspector:0.3
     kubebenchImage: projects.registry.vmware.com/cnsi/kubebench:0.3
     riskImage: projects.registry.vmware.com/cnsi/risk:0.3
-    governorImage:
+    workloadScanner: projects.registry.vmware.com/cnsi/workloadscanner:0.3
     imagePullPolicy: IfNotPresent
     exportConfig:
       openSearch:
