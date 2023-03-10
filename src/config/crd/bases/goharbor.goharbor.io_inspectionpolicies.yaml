@@ -298,6 +298,9 @@ spec:
                   riskImage:
                     description: Image of the risk.
                     type: string
+                  workloadScanner:
+                    description: Image of the workload scanner.
+                    type: string
                 required:
                 - imagePullPolicy
                 type: object

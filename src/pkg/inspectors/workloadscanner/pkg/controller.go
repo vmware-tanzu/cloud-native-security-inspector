@@ -10,7 +10,7 @@ import (
 	wl "github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/assets/workload"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
 	exporter_inputs "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/exporter/inputs"
-	itypes "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/inspectors/imagescanner/types"
+	itypes "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/inspectors/workloadscanner/types"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/runtime/grpool"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -88,13 +88,13 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 	}
 
 	// Assessment report.
-	report := itypes.AssessmentReport{
-		NamespaceAssessments: make([]*itypes.NamespaceAssessment, 0),
+	report := itypes.WorkloadReport{
+		NamespaceInfos: make([]*itypes.NamespaceInfo, 0),
 	}
 
 	// Use closure to warp the related parameters.
-	inspectFac := func() func(workload wl.Workload) *itypes.WorkloadAssessment {
-		return func(workload wl.Workload) *itypes.WorkloadAssessment {
+	inspectFac := func() func(workload wl.Workload) *itypes.WorkloadInfo {
+		return func(workload wl.Workload) *itypes.WorkloadInfo {
 			// Single pod
 			if workload.Name == "" && len(workload.Pods) == 1 {
 				workload.Name = workload.Pods[0].Name
@@ -102,7 +102,7 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 				workload.APIVersion = workload.Pods[0].APIVersion
 			}
 
-			wa := &itypes.WorkloadAssessment{
+			wa := &itypes.WorkloadInfo{
 				Workload: workload,
 			}
 
@@ -126,15 +126,15 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 		log.Info("Scan workloads under namespace", "namespace", ns)
 
 		// Add namespace assessment to the report.
-		na := &itypes.NamespaceAssessment{
+		na := &itypes.NamespaceInfo{
 			Namespace: corev1.LocalObjectReference{
 				Name: ns.Name,
 			},
-			WorkloadAssessments: make([]*itypes.WorkloadAssessment, 0),
+			WorkloadInfos: make([]*itypes.WorkloadInfo, 0),
 		}
-		report.NamespaceAssessments = append(report.NamespaceAssessments, na)
+		report.NamespaceInfos = append(report.NamespaceInfos, na)
 
-		pool.Queue(func(nsAssessment *itypes.NamespaceAssessment) grpool.Job {
+		pool.Queue(func(nsAssessment *itypes.NamespaceInfo) grpool.Job {
 			return func(ctx context.Context) <-chan error {
 				ech := make(chan error, 1)
 				defer close(ech)
@@ -148,7 +148,7 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 				for _, wl := range wls {
 					log.Info("Inspecting workload", "namespace", wl.Namespace, "name", wl.Name)
 					wla := inspect(*wl)
-					nsAssessment.WorkloadAssessments = append(nsAssessment.WorkloadAssessments, wla)
+					nsAssessment.WorkloadInfos = append(nsAssessment.WorkloadInfos, wla)
 				}
 				return ech
 			}
@@ -165,10 +165,10 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 	return nil
 }
 
-func ExportImageReports(report itypes.AssessmentReport, pl *v1alpha1.InspectionPolicy) {
+func ExportImageReports(report itypes.WorkloadReport, pl *v1alpha1.InspectionPolicy) {
 	if bytes, err := json.Marshal(report); err != nil {
 		// Marshal failure should be fatal because it is unforgivable
-		log.Fatal(err, "failed to marshal the insight struct")
+		log.Fatal(err, "failed to marshal the workload report struct")
 	} else {
 		exportStruct := &v1alpha1.ReportData{
 			ExportConfig: pl.Spec.Inspector.ExportConfig,
@@ -177,7 +177,7 @@ func ExportImageReports(report itypes.AssessmentReport, pl *v1alpha1.InspectionP
 		err = exporter_inputs.PostReport(exportStruct)
 		if err != nil {
 			// Post failure is error because network issues could happen
-			log.Error(err, "failed to post the insight report", "Policy", pl.Name)
+			log.Error(err, "failed to post the workload report", "Policy", pl.Name)
 		}
 	}
 }

@@ -8,21 +8,21 @@ import (
 	v1 "k8s.io/api/core/v1"
 )
 
-// NamespaceAssessment defines assessment results for each Namespace.
-type NamespaceAssessment struct {
+// NamespaceInfo defines information for each Namespace.
+type NamespaceInfo struct {
 	// Which namespace?
 	Namespace v1.LocalObjectReference `json:"namespace"`
 	// Assessments contains results of namespace assessments.
-	WorkloadAssessments []*WorkloadAssessment `json:"workloadAssessments"`
+	WorkloadInfos []*WorkloadInfo `json:"workloadInfos"`
 }
 
-// WorkloadAssessment defines assessment results for each Workload.
-type WorkloadAssessment struct {
+// WorkloadInfo defines information for each Workload.
+type WorkloadInfo struct {
 	// For which workload is assessing?
 	Workload workload.Workload `json:"workload"`
 }
 
-// AssessmentReport struct definition
-type AssessmentReport struct {
-	NamespaceAssessments []*NamespaceAssessment `json:"namespaceAssessments"`
+// WorkloadReport struct definition
+type WorkloadReport struct {
+	NamespaceInfos []*NamespaceInfo `json:"namespaceInfos"`
 }
