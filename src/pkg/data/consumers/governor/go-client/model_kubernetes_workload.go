@@ -23,9 +23,7 @@ type KubernetesWorkload struct {
 	Namespace string `json:"namespace"`
 	// Kind of the workload Resource
 	Kind string `json:"kind"`
-	// Replicas of Workload
-	Replicas             int32       `json:"replicas"`
-	Containers           []Container `json:"containers"`
+	Containers []Container `json:"containers"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -35,12 +33,11 @@ type _KubernetesWorkload KubernetesWorkload
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewKubernetesWorkload(name string, namespace string, kind string, replicas int32, containers []Container) *KubernetesWorkload {
+func NewKubernetesWorkload(name string, namespace string, kind string, containers []Container) *KubernetesWorkload {
 	this := KubernetesWorkload{}
 	this.Name = name
 	this.Namespace = namespace
 	this.Kind = kind
-	this.Replicas = replicas
 	this.Containers = containers
 	return &this
 }
@@ -125,30 +122,6 @@ func (o *KubernetesWorkload) SetKind(v string) {
 	o.Kind = v
 }
 
-// GetReplicas returns the Replicas field value
-func (o *KubernetesWorkload) GetReplicas() int32 {
-	if o == nil {
-		var ret int32
-		return ret
-	}
-
-	return o.Replicas
-}
-
-// GetReplicasOk returns a tuple with the Replicas field value
-// and a boolean to check if the value has been set.
-func (o *KubernetesWorkload) GetReplicasOk() (*int32, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Replicas, true
-}
-
-// SetReplicas sets field value
-func (o *KubernetesWorkload) SetReplicas(v int32) {
-	o.Replicas = v
-}
-
 // GetContainers returns the Containers field value
 func (o *KubernetesWorkload) GetContainers() []Container {
 	if o == nil {
@@ -185,9 +158,6 @@ func (o KubernetesWorkload) MarshalJSON() ([]byte, error) {
 		toSerialize["kind"] = o.Kind
 	}
 	if true {
-		toSerialize["replicas"] = o.Replicas
-	}
-	if true {
 		toSerialize["containers"] = o.Containers
 	}
 
@@ -211,7 +181,6 @@ func (o *KubernetesWorkload) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "name")
 		delete(additionalProperties, "namespace")
 		delete(additionalProperties, "kind")
-		delete(additionalProperties, "replicas")
 		delete(additionalProperties, "containers")
 		o.AdditionalProperties = additionalProperties
 	}
@@ -254,3 +223,5 @@ func (v *NullableKubernetesWorkload) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+
+

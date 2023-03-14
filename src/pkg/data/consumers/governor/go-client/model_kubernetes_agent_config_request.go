@@ -17,10 +17,10 @@ import (
 
 // KubernetesAgentConfigRequest Payload to request agent config manifest for a cluster
 type KubernetesAgentConfigRequest struct {
-	SettingsName string       `json:"settings_name"`
-	MatchLabels  []MatchLabel `json:"match_labels"`
+	SettingsName string `json:"settings_name"`
+	MatchLabels []MatchLabel `json:"match_labels"`
 	// API token for agent running in a cluster
-	ApiToken             string `json:"api_token"`
+	ApiToken string `json:"api_token"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -191,3 +191,5 @@ func (v *NullableKubernetesAgentConfigRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+
+
