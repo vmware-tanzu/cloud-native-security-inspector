@@ -60,6 +60,7 @@ type DataProvider struct {
 	// +kubebuilder:validation:Optional
 	Cache *Cache `json:"cache,omitempty"`
 	// Connection settings.
+	// +kubebuilder:validation:Optional
 	Connection Connection `json:"connection"`
 }
 
@@ -67,6 +68,7 @@ type DataProvider struct {
 type Connection struct {
 	// Insecure HTTP client will be used to connect to the provider.
 	// +kubebuilder:default:=true
+	// +kubebuilder:validation:Optional
 	Insecure bool `json:"insecure"`
 }
 
@@ -125,10 +127,6 @@ type ExportConfig struct {
 
 // GovernorOutputConfig contains policies for governor to send report
 type GovernorOutputConfig struct {
-	// Indicate whether to send the reports to governor
-	// +kubebuilder:default:=false
-	// +kubebuilder:validation:Optional
-	Enabled bool `json:"enabled"`
 	// Unique identifier of the cluster
 	// +kubebuilder:validation:Optional
 	ClusterID string `json:"clusterId"`
@@ -164,12 +162,14 @@ type ReportData struct {
 type Strategy struct {
 	// HistoryLimit limits the max number of the completed inspections.
 	// +kubebuilder:default:=25
+	// +kubebuilder:validation:Optional
 	HistoryLimit *int32 `json:"historyLimit"`
 	// Suspend the subsequent inspections temporarily.
 	// +kubebuilder:validation:Optional
 	Suspend *bool `json:"suspend,omitempty"`
 	// ConcurrencyRule indicates how to handle the overlapped inspector processes.
 	// +kubebuilder:validation:Enum:=Allow;Forbid;Replace
+	// +kubebuilder:validation:Optional
 	// +kubebuilder:default:=Forbid
 	ConcurrencyRule ConcurrencyRule `json:"concurrencyRule"`
 }
@@ -192,6 +192,7 @@ type Inspector struct {
 	WorkloadScannerImage string `json:"workloadscannerImage"`
 	// Image pull policy.
 	// +kubebuilder:default:=IfNotPresent
+	// +kubebuilder:validation:Optional
 	ImagePullPolicy corev1.PullPolicy `json:"imagePullPolicy"`
 	// Image pull secrets.
 	// +kubebuilder:validation:Optional
@@ -227,6 +228,7 @@ type InspectionPolicySpec struct {
 	Inspection InspectionConfiguration `json:"inspection"`
 
 	// Strategy of the inspector.
+	// +kubebuilder:validation:Optional
 	Strategy Strategy `json:"strategy"`
 
 	// Inspector (image) for doing the inspection.
