@@ -203,7 +203,7 @@ type InspectionPolicySpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 	// DataSource is the data source definitions.
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	SettingsName string `json:"settingsName"`
 
 	// Enabled defines whether this inspection policy disable or enable, default is enabled.

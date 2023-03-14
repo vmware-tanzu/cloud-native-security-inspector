@@ -369,7 +369,6 @@ spec:
             required:
             - inspection
             - schedule
-            - settingsName
             - strategy
             type: object
           status:
