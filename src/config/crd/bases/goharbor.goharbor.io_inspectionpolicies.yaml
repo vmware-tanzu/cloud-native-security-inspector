@@ -251,6 +251,25 @@ spec:
                 properties:
                   exportConfig:
                     properties:
+                      governor:
+                        description: GovernorOutputConfig contains policies for governor
+                          to send report
+                        properties:
+                          clusterId:
+                            description: Unique identifier of the cluster
+                            type: string
+                          cspSecretName:
+                            description: Secret name where CSP api token is stored
+                              in cnsi-system namespace
+                            type: string
+                          enabled:
+                            default: false
+                            description: Indicate whether to send the reports to governor
+                            type: boolean
+                          url:
+                            description: Api url to send telemetry data
+                            type: string
+                        type: object
                       openSearch:
                         properties:
                           checkCert:
