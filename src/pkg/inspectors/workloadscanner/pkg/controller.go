@@ -84,8 +84,7 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 	// Just in case.
 	if len(nsl) == 0 {
 		log.Info("no namespaces found")
-		emptyWorkload := itypes.WorkloadReport{}
-		ExportImageReports(emptyWorkload, policy)
+		ExportImageReports(itypes.WorkloadReport{}, policy)
 		return nil
 	}
 

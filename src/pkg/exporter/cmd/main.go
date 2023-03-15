@@ -74,8 +74,8 @@ func forwardEvent(reportData *v1alpha1.ReportData) {
 			enabledOutputs = append(enabledOutputs, "openSearch")
 		}
 	}
-	if !config.Governor.Enabled || config.Governor.URL == "" || config.Governor.ClusterID == "" || config.Governor.CspSecretName == "" {
-		log.Error("Either governor is not enabled or ClusterID or URL or CSPSecretName is empty")
+	if config.Governor.URL == "" || config.Governor.ClusterID == "" || config.Governor.CspSecretName == "" {
+		log.Error("Either URL or ClusterID or CSPSecretName is empty")
 		return
 	} else {
 		governorClient, err := outputs.NewClient(
