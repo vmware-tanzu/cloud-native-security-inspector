@@ -15,9 +15,9 @@ import (
 	"encoding/json"
 )
 
-// Error Note: It follows [RFC-7807](https://tools.ietf.org/html/rfc7807#page-9) **proposed** standard  Error object returned on any failure. It can be extended to add more params
+// Error Note: It follows [RFC-7807](https://tools.ietf.org/html/rfc7807#page-9) **proposed** standard  Error object returned on any failure. It can be extended to add more params 
 type Error struct {
-	// A URI reference that identifies the problem type  When dereferenced, it provide human-readable documentation for the problem type using HTML
+	// A URI reference that identifies the problem type  When dereferenced, it provide human-readable documentation for the problem type using HTML 
 	Type string `json:"type"`
 	// A short, human-readable summary of the problem type
 	Title string `json:"title"`
@@ -25,8 +25,8 @@ type Error struct {
 	Status *int32 `json:"status,omitempty"`
 	// A human-readable explanation specific to this occurrence of the problem
 	Detail *string `json:"detail,omitempty"`
-	// A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced
-	Instance             *string `json:"instance,omitempty"`
+	// A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced 
+	Instance *string `json:"instance,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -276,3 +276,5 @@ func (v *NullableError) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+
+

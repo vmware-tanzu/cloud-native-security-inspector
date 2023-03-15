@@ -24,7 +24,8 @@ type Container struct {
 	// Image ID
 	ImageId string `json:"image_id"`
 	// Identifier of the container
-	Id                   string `json:"id,omitempty"`
+	Id *string `json:"id,omitempty"`
+	Product *Product `json:"product,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -34,10 +35,9 @@ type _Container Container
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewContainer(name string, image string, imageId string, id string) *Container {
+func NewContainer(name string, image string, imageId string) *Container {
 	this := Container{}
 	this.Name = name
-	this.Id = id
 	this.Image = image
 	this.ImageId = imageId
 	return &this
@@ -125,25 +125,25 @@ func (o *Container) SetImageId(v string) {
 
 // GetId returns the Id field value if set, zero value otherwise.
 func (o *Container) GetId() string {
-	if o == nil {
+	if o == nil || o.Id == nil {
 		var ret string
 		return ret
 	}
-	return o.Id
+	return *o.Id
 }
 
 // GetIdOk returns a tuple with the Id field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *Container) GetIdOk() (*string, bool) {
-	if o == nil {
+	if o == nil || o.Id == nil {
 		return nil, false
 	}
-	return &o.Id, true
+	return o.Id, true
 }
 
 // HasId returns a boolean if a field has been set.
 func (o *Container) HasId() bool {
-	if o != nil {
+	if o != nil && o.Id != nil {
 		return true
 	}
 
@@ -152,7 +152,39 @@ func (o *Container) HasId() bool {
 
 // SetId gets a reference to the given string and assigns it to the Id field.
 func (o *Container) SetId(v string) {
-	o.Id = v
+	o.Id = &v
+}
+
+// GetProduct returns the Product field value if set, zero value otherwise.
+func (o *Container) GetProduct() Product {
+	if o == nil || o.Product == nil {
+		var ret Product
+		return ret
+	}
+	return *o.Product
+}
+
+// GetProductOk returns a tuple with the Product field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Container) GetProductOk() (*Product, bool) {
+	if o == nil || o.Product == nil {
+		return nil, false
+	}
+	return o.Product, true
+}
+
+// HasProduct returns a boolean if a field has been set.
+func (o *Container) HasProduct() bool {
+	if o != nil && o.Product != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetProduct gets a reference to the given Product and assigns it to the Product field.
+func (o *Container) SetProduct(v Product) {
+	o.Product = &v
 }
 
 func (o Container) MarshalJSON() ([]byte, error) {
@@ -166,8 +198,11 @@ func (o Container) MarshalJSON() ([]byte, error) {
 	if true {
 		toSerialize["image_id"] = o.ImageId
 	}
-	if true {
+	if o.Id != nil {
 		toSerialize["id"] = o.Id
+	}
+	if o.Product != nil {
+		toSerialize["product"] = o.Product
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -191,6 +226,7 @@ func (o *Container) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "image")
 		delete(additionalProperties, "image_id")
 		delete(additionalProperties, "id")
+		delete(additionalProperties, "product")
 		o.AdditionalProperties = additionalProperties
 	}
 
@@ -232,3 +268,5 @@ func (v *NullableContainer) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+
+
