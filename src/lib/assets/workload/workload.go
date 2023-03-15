@@ -40,8 +40,6 @@ var AllWorkloads = []string{
 type Workload struct {
 	// For pure Pod, no object reference.
 	corev1.ObjectReference `json:"metadata"`
-	// Replicas of this workload.
-	Replicas int32 `json:"replicas"`
 	// Pods of this workload.
 	Pods []*Pod `json:"pods"`
 }

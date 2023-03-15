@@ -12,51 +12,58 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 )
 
-// GovernorPost posts event to GovernorAPI
-func (c *Client) GovernorPost(payloadStr string) {
-	var workloadReport itypes.WorkloadReport
-	err := json.Unmarshal([]byte(payloadStr), &workloadReport)
-	if err != nil {
-		log.Errorf("failed to unmarshal workloadInfos, payload: %s, %v", payloadStr, err)
-	}
-
-	exportReportToGovernor(&workloadReport, &c.Config.Governor)
+type Governor struct {
+	Payload string
+	Config  v1alpha1.ExportConfig
 }
 
-func exportReportToGovernor(report *itypes.WorkloadReport, governorConfig *v1alpha1.Governor) error {
+func IntializeGovernor(payload string, config v1alpha1.ExportConfig) Governor {
+	return Governor{
+		Payload: payload,
+		Config:  config,
+	}
+}
+
+// GovernorPost posts event to GovernorAPI
+func (g *Governor) GovernorPost() {
+	var workloadReport itypes.WorkloadReport
+	err := json.Unmarshal([]byte(g.Payload), &workloadReport)
+	if err != nil {
+		log.Errorf("failed to unmarshal workloadInfos, payload: %s, %v", g.Payload, err)
+	}
+
+	g.exportReportToGovernor(&workloadReport)
+}
+
+func (g *Governor) exportReportToGovernor(report *itypes.WorkloadReport) {
 	// Create api client to governor api.
 	config := openapi.NewConfiguration()
 	config.Servers = openapi.ServerConfigurations{{
-		URL: governorConfig.URL,
+		URL: g.Config.Governor.URL,
 	}}
 	apiClient := openapi.NewAPIClient(config)
 
 	cspClient, err := cspauth.NewCspHTTPClient()
 	if err != nil {
 		log.Errorf("Initializing CSP : %v", err)
-		return err
 	}
 	provider := &cspauth.CspAuth{CspClient: cspClient}
 
 	clientSet, err := kubernetes.NewForConfig(ctrl.GetConfigOrDie())
 	if err != nil {
 		log.Error(err, "Failed to get kubernetes clientSet, check if kube config is correctly configured!")
-		return err
 	}
 
 	exporter := governor.GovernorExporter{
 		Report:        report,
-		ClusterID:     governorConfig.ClusterID,
+		ClusterID:     g.Config.Governor.ClusterID,
 		ApiClient:     apiClient,
 		CspProvider:   provider,
 		KubeInterface: clientSet,
-		CspSecretName: governorConfig.CspSecretName,
+		CspSecretName: g.Config.Governor.CspSecretName,
 	}
 
 	if apiResponseErr := exporter.SendReportToGovernor(); apiResponseErr != nil {
 		log.Error("Err response from governor exporter", apiResponseErr)
-		return apiResponseErr
 	}
-
-	return nil
 }

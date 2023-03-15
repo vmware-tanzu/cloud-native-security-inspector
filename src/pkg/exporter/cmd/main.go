@@ -76,16 +76,10 @@ func forwardEvent(reportData *v1alpha1.ReportData) {
 	}
 	if config.Governor.URL == "" || config.Governor.ClusterID == "" || config.Governor.CspSecretName == "" {
 		log.Error("Either URL or ClusterID or CSPSecretName is empty")
-		return
 	} else {
-		governorClient, err := outputs.NewClient(
-			config.Governor.URL, false, false, &config)
-		if err != nil {
-			log.Errorf("failed to create the governor client, err: %s", err.Error())
-		} else {
-			go governorClient.GovernorPost(reportData.Payload)
-			enabledOutputs = append(enabledOutputs, "governor")
-		}
+		governorClient := outputs.IntializeGovernor(reportData.Payload, config)
+		go governorClient.GovernorPost()
+		enabledOutputs = append(enabledOutputs, "governor")
 	}
 	// To developers:
 	// launch more goroutines to forward to other consumers
