@@ -107,7 +107,7 @@ type InspectionConfiguration struct {
 	// +kubebuilder:validation:Optional
 	Actions []*FollowupAction `json:"actions"`
 	// Baselines of cluster compliance.
-	// +kubebuilder:validation:MinItems:=1
+	// +kubebuilder:validation:Optional
 	Baselines []*ComplianceBaseline `json:"baselines"`
 	// NamespaceSelector provides a way to select the specified namespaces.
 	// +kubebuilder:validation:Optional

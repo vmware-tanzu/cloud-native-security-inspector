@@ -151,7 +151,6 @@ spec:
                       - scheme
                       - version
                       type: object
-                    minItems: 1
                     type: array
                   namespaceSelector:
                     description: NamespaceSelector provides a way to select the specified
@@ -243,8 +242,6 @@ spec:
                           "value". The requirements are ANDed.
                         type: object
                     type: object
-                required:
-                - baselines
                 type: object
               inspector:
                 description: Inspector (image) for doing the inspection.
