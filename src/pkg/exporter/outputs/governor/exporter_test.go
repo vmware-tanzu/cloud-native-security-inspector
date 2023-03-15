@@ -59,7 +59,7 @@ func TestSendReportToGovernor(t *testing.T) {
 				NamespaceInfos: []*itypes.NamespaceInfo{{Namespace: v1.LocalObjectReference{
 					Name: namespace,
 				},
-					WorkloadInfos: []*itypes.WorkloadInfo{{Workload: workload.Workload{Replicas: int32(replicaCount),
+					WorkloadInfos: []*itypes.WorkloadInfo{{Workload: workload.Workload{
 						Pods: []*workload.Pod{{Containers: []*workload.Container{{
 							Name:    name,
 							Image:   image,
