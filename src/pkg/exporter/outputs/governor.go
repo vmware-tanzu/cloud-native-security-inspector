@@ -50,7 +50,7 @@ func exportReportToGovernor(report *itypes.WorkloadReport, governorConfig *v1alp
 		ApiClient:     apiClient,
 		CspProvider:   provider,
 		KubeInterface: clientSet,
-		Config:        governorConfig,
+		CspSecretName: governorConfig.CspSecretName,
 	}
 
 	if apiResponseErr := exporter.SendReportToGovernor(); apiResponseErr != nil {

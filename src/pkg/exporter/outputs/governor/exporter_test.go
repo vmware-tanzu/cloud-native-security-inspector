@@ -163,9 +163,10 @@ func TestSendReportToGovernor(t *testing.T) {
 			clusterClient = openapi.NewAPIClient(mockConfig)
 
 			g := GovernorExporter{
-				Report:    tt.testReportData,
-				ApiClient: clusterClient,
-				ClusterID: tt.testClusterID,
+				Report:        tt.testReportData,
+				ApiClient:     clusterClient,
+				ClusterID:     tt.testClusterID,
+				CspSecretName: tt.testSecretName,
 			}
 			mockAPIClient := new(openapi_mocks.ClustersApi)
 

@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	api "github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/cspauth"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
 	openapi "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/exporter/outputs/governor/go-client"
@@ -23,7 +22,7 @@ type GovernorExporter struct {
 	ApiClient     *openapi.APIClient
 	CspProvider   cspauth.Provider
 	KubeInterface kubernetes.Interface
-	Config        *api.Governor
+	CspSecretName string
 }
 
 // SendReportToGovernor is used to send report to governor url http end point.
@@ -35,12 +34,11 @@ func (g GovernorExporter) SendReportToGovernor() error {
 	log.Info("Payload data for governor:")
 	log.Info(kubernetesCluster)
 
-	cspSecretName := g.Config.CspSecretName
-	if cspSecretName == "" {
+	if g.CspSecretName == "" {
 		log.Error("Error while retrieving access token !")
 		return errors.New("CSP secret name must be set to connect to Governor")
 	}
-	governorAccessToken, err := g.CspProvider.GetBearerToken(g.KubeInterface, ctx, cspSecretNamespace, cspSecretName)
+	governorAccessToken, err := g.CspProvider.GetBearerToken(g.KubeInterface, ctx, cspSecretNamespace, g.CspSecretName)
 	if err != nil {
 		log.Error("Error while retrieving access token !")
 		return err
