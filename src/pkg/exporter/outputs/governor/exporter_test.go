@@ -174,7 +174,7 @@ func TestSendReportToGovernor(t *testing.T) {
 				ApiService: mockAPIClient,
 			}
 			clusterClient.ClustersApi = mockAPIClient
-			response.KubernetesTelemetryRequest(g.getGovernorAPIPayload())
+			response.KubernetesTelemetryRequest(g.getAPIPayload())
 			mockAPIClient.On("UpdateTelemetry", mock.Anything, mock.Anything).Return(response)
 			mockAPIClient.On("UpdateTelemetryExecute", mock.Anything).Return(&http.Response{
 				StatusCode: tt.testStatusCode,
@@ -188,7 +188,7 @@ func TestSendReportToGovernor(t *testing.T) {
 			}
 			g.CspProvider = provider
 
-			errFromSendReportToGovernor := g.SendReportToGovernor()
+			errFromSendReportToGovernor := g.SendReport()
 			if tt.testStatusCode != http.StatusNoContent {
 				assert.Error(t, errFromSendReportToGovernor)
 			} else {

@@ -25,11 +25,11 @@ type GovernorExporter struct {
 	CspSecretName string
 }
 
-// SendReportToGovernor is used to send report to governor url http end point.
-func (g GovernorExporter) SendReportToGovernor() error {
+// SendReport is used to send report to governor url http end point.
+func (g GovernorExporter) SendReport() error {
 	ctx := context.Background()
 	// Get governor api request model from assessment report.
-	kubernetesCluster := g.getGovernorAPIPayload()
+	kubernetesCluster := g.getAPIPayload()
 
 	log.Info("Payload data for governor:")
 	log.Info(kubernetesCluster)
@@ -67,7 +67,7 @@ func (g GovernorExporter) SendReportToGovernor() error {
 }
 
 // getGovernorAPIPayload is used to map assessment report to client model.
-func (g GovernorExporter) getGovernorAPIPayload() openapi.KubernetesTelemetryRequest {
+func (g GovernorExporter) getAPIPayload() openapi.KubernetesTelemetryRequest {
 	kubernetesCluster := openapi.NewKubernetesTelemetryRequestWithDefaults()
 	kubernetesCluster.Workloads = make([]openapi.KubernetesWorkload, 0)
 	for _, nsa := range g.Report.NamespaceInfos {

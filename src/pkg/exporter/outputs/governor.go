@@ -24,18 +24,18 @@ func IntializeGovernor(payload string, config v1alpha1.ExportConfig) Governor {
 	}
 }
 
-// GovernorPost posts event to GovernorAPI
-func (g *Governor) GovernorPost() {
+// Post posts event to GovernorAPI
+func (g *Governor) Post() {
 	var workloadReport itypes.WorkloadReport
 	err := json.Unmarshal([]byte(g.Payload), &workloadReport)
 	if err != nil {
 		log.Errorf("failed to unmarshal workloadInfos, payload: %s, %v", g.Payload, err)
 	}
 
-	g.exportReportToGovernor(&workloadReport)
+	g.exportReport(&workloadReport)
 }
 
-func (g *Governor) exportReportToGovernor(report *itypes.WorkloadReport) {
+func (g *Governor) exportReport(report *itypes.WorkloadReport) {
 	// Create api client to governor api.
 	config := openapi.NewConfiguration()
 	config.Servers = openapi.ServerConfigurations{{
@@ -63,7 +63,7 @@ func (g *Governor) exportReportToGovernor(report *itypes.WorkloadReport) {
 		CspSecretName: g.Config.Governor.CspSecretName,
 	}
 
-	if apiResponseErr := exporter.SendReportToGovernor(); apiResponseErr != nil {
+	if apiResponseErr := exporter.SendReport(); apiResponseErr != nil {
 		log.Error("Err response from governor exporter", apiResponseErr)
 	}
 }
