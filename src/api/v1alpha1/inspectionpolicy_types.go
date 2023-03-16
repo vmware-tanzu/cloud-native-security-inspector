@@ -60,7 +60,6 @@ type DataProvider struct {
 	// +kubebuilder:validation:Optional
 	Cache *Cache `json:"cache,omitempty"`
 	// Connection settings.
-	// +kubebuilder:validation:Optional
 	Connection Connection `json:"connection"`
 }
 
@@ -68,7 +67,6 @@ type DataProvider struct {
 type Connection struct {
 	// Insecure HTTP client will be used to connect to the provider.
 	// +kubebuilder:default:=true
-	// +kubebuilder:validation:Optional
 	Insecure bool `json:"insecure"`
 }
 
