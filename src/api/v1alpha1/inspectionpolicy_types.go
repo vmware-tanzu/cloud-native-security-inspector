@@ -105,7 +105,7 @@ type InspectionConfiguration struct {
 	// +kubebuilder:validation:Optional
 	Actions []*FollowupAction `json:"actions"`
 	// Baselines of cluster compliance.
-	// +kubebuilder:validation:MinItems:=1
+	// +kubebuilder:validation:Optional
 	Baselines []*ComplianceBaseline `json:"baselines"`
 	// NamespaceSelector provides a way to select the specified namespaces.
 	// +kubebuilder:validation:Optional
@@ -119,8 +119,21 @@ type ExportConfig struct {
 	// +kubebuilder:validation:Optional
 	OpenSearch OpensearchOutputConfig `json:"openSearch,omitempty"`
 	// +kubebuilder:validation:Optional
-	Governor Governor `json:"governor"`
+	Governor GovernorOutputConfig `json:"governor,omitempty"`
 	// Extend this struct for more consumers
+}
+
+// GovernorOutputConfig contains policies for governor to send report
+type GovernorOutputConfig struct {
+	// Unique identifier of the cluster
+	// +kubebuilder:validation:Optional
+	ClusterID string `json:"clusterId"`
+	// Api url to send telemetry data
+	// +kubebuilder:validation:Optional
+	URL string `json:"url"`
+	// Secret name where CSP api token is stored in cnsi-system namespace
+	// +kubebuilder:validation:Optional
+	CspSecretName string `json:"cspSecretName"`
 }
 
 type OpensearchOutputConfig struct {
@@ -164,12 +177,14 @@ type ReportData struct {
 type Strategy struct {
 	// HistoryLimit limits the max number of the completed inspections.
 	// +kubebuilder:default:=25
+	// +kubebuilder:validation:Optional
 	HistoryLimit *int32 `json:"historyLimit"`
 	// Suspend the subsequent inspections temporarily.
 	// +kubebuilder:validation:Optional
 	Suspend *bool `json:"suspend,omitempty"`
 	// ConcurrencyRule indicates how to handle the overlapped inspector processes.
 	// +kubebuilder:validation:Enum:=Allow;Forbid;Replace
+	// +kubebuilder:validation:Optional
 	// +kubebuilder:default:=Forbid
 	ConcurrencyRule ConcurrencyRule `json:"concurrencyRule"`
 }
@@ -192,6 +207,7 @@ type Inspector struct {
 	WorkloadScannerImage string `json:"workloadscannerImage"`
 	// Image pull policy.
 	// +kubebuilder:default:=IfNotPresent
+	// +kubebuilder:validation:Optional
 	ImagePullPolicy corev1.PullPolicy `json:"imagePullPolicy"`
 	// Image pull secrets.
 	// +kubebuilder:validation:Optional
@@ -203,7 +219,7 @@ type InspectionPolicySpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 	// DataSource is the data source definitions.
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	SettingsName string `json:"settingsName"`
 
 	// Enabled defines whether this inspection policy disable or enable, default is enabled.
@@ -227,6 +243,7 @@ type InspectionPolicySpec struct {
 	Inspection InspectionConfiguration `json:"inspection"`
 
 	// Strategy of the inspector.
+	// +kubebuilder:validation:Optional
 	Strategy Strategy `json:"strategy"`
 
 	// Inspector (image) for doing the inspection.
