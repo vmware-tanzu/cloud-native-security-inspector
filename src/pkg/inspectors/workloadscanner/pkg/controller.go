@@ -84,6 +84,7 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 	// Just in case.
 	if len(nsl) == 0 {
 		log.Info("no namespaces found")
+		ExportImageReports(itypes.WorkloadReport{}, policy)
 		return nil
 	}
 
@@ -166,6 +167,8 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 }
 
 func ExportImageReports(report itypes.WorkloadReport, pl *v1alpha1.InspectionPolicy) {
+	log.Debugf("Sending workload infos to exporter: %v", report)
+
 	if bytes, err := json.Marshal(report); err != nil {
 		// Marshal failure should be fatal because it is unforgivable
 		log.Fatal(err, "failed to marshal the workload report struct")

@@ -146,6 +146,23 @@ type OpensearchOutputConfig struct {
 	MutualTLS bool   `json:"mutualTLS"`
 }
 
+// Governor contains policies for governor to send report
+type Governor struct {
+	// Indicate whether to send the reports to governor
+	// +kubebuilder:default:=false
+	// +kubebuilder:validation:Optional
+	Enabled bool `json:"enabled"`
+	// Unique identifier of the cluster
+	// +kubebuilder:validation:Optional
+	ClusterID string `json:"clusterId"`
+	// Api url to send telemetry data
+	// +kubebuilder:validation:Optional
+	URL string `json:"url"`
+	// Secret name where CSP api token is stored in cnsi-system namespace
+	// +kubebuilder:validation:Optional
+	CspSecretName string `json:"cspSecretName"`
+}
+
 // ReportData defines the protocol between scanners and exporters
 type ReportData struct {
 	// Source indicates the report is from which source

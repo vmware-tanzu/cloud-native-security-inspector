@@ -74,6 +74,11 @@ func forwardEvent(reportData *v1alpha1.ReportData) {
 			enabledOutputs = append(enabledOutputs, "openSearch")
 		}
 	}
+	if config.Governor.URL != "" && config.Governor.ClusterID != "" && config.Governor.CspSecretName != "" {
+		governorClient := outputs.IntializeGovernor(reportData.Payload, config)
+		go governorClient.Post()
+		enabledOutputs = append(enabledOutputs, "governor")
+	}
 	// To developers:
 	// launch more goroutines to forward to other consumers
 	log.Infof("the enabled outputs: %s", enabledOutputs)
