@@ -26,7 +26,7 @@ spec:
         mutualTLS: false
       governor:
         clusterId: "65a03970-c53a-4ba1-8d1f-42c9f95d2761"
-        url: "https://api.int.app-catalog.vmware.com/catalog-governor/v1"
+        url: <please_specify_the_URL_of_governor>
         cspSecretName: "csp-secret"
   inspection:
     namespaceSelector:
