@@ -687,14 +687,9 @@ spec:
                                   - metadata
                                   type: object
                                 type: array
-                              replicas:
-                                description: Replicas of this workload.
-                                format: int32
-                                type: integer
                             required:
                             - metadata
                             - pods
-                            - replicas
                             type: object
                         required:
                         - passed

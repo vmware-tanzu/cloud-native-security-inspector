@@ -17,7 +17,7 @@ import (
 
 // KubernetesTelemetryRequest Request for updating telemetry for a cluster
 type KubernetesTelemetryRequest struct {
-	Workloads            []KubernetesWorkload `json:"workloads"`
+	Workloads []KubernetesWorkload `json:"workloads"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -130,3 +130,5 @@ func (v *NullableKubernetesTelemetryRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+
+

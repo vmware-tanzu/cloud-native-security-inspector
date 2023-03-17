@@ -29,7 +29,7 @@ type KubernetesClusterResponse struct {
 	// User who created the cluster
 	CreatedBy *string `json:"created_by,omitempty"`
 	// User who last updated the cluster
-	UpdatedBy            *string `json:"updated_by,omitempty"`
+	UpdatedBy *string `json:"updated_by,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -315,3 +315,5 @@ func (v *NullableKubernetesClusterResponse) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+
+

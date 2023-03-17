@@ -59,7 +59,7 @@ func TestSendReportToGovernor(t *testing.T) {
 				Spec: api.AssessmentReportSpec{NamespaceAssessments: []*api.NamespaceAssessment{{Namespace: v1.LocalObjectReference{
 					Name: namespace,
 				},
-					WorkloadAssessments: []*api.WorkloadAssessment{{Workload: api.Workload{Replicas: int32(replicaCount),
+					WorkloadAssessments: []*api.WorkloadAssessment{{Workload: api.Workload{
 						Pods: []*api.Pod{{Containers: []*api.Container{{
 							Name:    name,
 							Image:   image,
