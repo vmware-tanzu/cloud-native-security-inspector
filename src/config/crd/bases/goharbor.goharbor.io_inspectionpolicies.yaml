@@ -151,7 +151,6 @@ spec:
                       - scheme
                       - version
                       type: object
-                    minItems: 1
                     type: array
                   namespaceSelector:
                     description: NamespaceSelector provides a way to select the specified
@@ -243,14 +242,27 @@ spec:
                           "value". The requirements are ANDed.
                         type: object
                     type: object
-                required:
-                - baselines
                 type: object
               inspector:
                 description: Inspector (image) for doing the inspection.
                 properties:
                   exportConfig:
                     properties:
+                      governor:
+                        description: GovernorOutputConfig contains policies for governor
+                          to send report
+                        properties:
+                          clusterId:
+                            description: Unique identifier of the cluster
+                            type: string
+                          cspSecretName:
+                            description: Secret name where CSP api token is stored
+                              in cnsi-system namespace
+                            type: string
+                          url:
+                            description: Api url to send telemetry data
+                            type: string
+                        type: object
                       openSearch:
                         properties:
                           checkCert:
@@ -301,8 +313,6 @@ spec:
                   workloadscannerImage:
                     description: Image of the workloadscanner.
                     type: string
-                required:
-                - imagePullPolicy
                 type: object
               schedule:
                 description: 'Schedule of the inspector. Cron format. Reference: https://en.wikipedia.org/wiki/Cron'
@@ -336,9 +346,6 @@ spec:
                   suspend:
                     description: Suspend the subsequent inspections temporarily.
                     type: boolean
-                required:
-                - concurrencyRule
-                - historyLimit
                 type: object
               workNamespace:
                 description: WorkNamespace specify the namespace for creating the
@@ -350,8 +357,6 @@ spec:
             required:
             - inspection
             - schedule
-            - settingsName
-            - strategy
             type: object
           status:
             description: InspectionPolicyStatus defines the observed state of InspectionPolicy

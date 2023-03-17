@@ -15,7 +15,7 @@ spec:
     image: projects.registry.vmware.com/cnsi/inspector:0.3
     kubebenchImage: projects.registry.vmware.com/cnsi/kubebench:0.3
     riskImage: projects.registry.vmware.com/cnsi/risk:0.3
-    workloadScanner: projects.registry.vmware.com/cnsi/workloadscanner:0.3
+    workloadscannerImage: projects.registry.vmware.com/cnsi/workloadscanner:0.3
     imagePullPolicy: IfNotPresent
     exportConfig:
       openSearch:
@@ -24,6 +24,10 @@ spec:
         password: "admin"
         checkCert: false
         mutualTLS: false
+      governor:
+        clusterId: "65a03970-c53a-4ba1-8d1f-42c9f95d2761"
+        url: <please_specify_the_URL_of_governor>
+        cspSecretName: "csp-secret"
   inspection:
     namespaceSelector:
       matchLabels:
