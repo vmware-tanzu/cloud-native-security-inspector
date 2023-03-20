@@ -18,7 +18,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd src/frontend
+          cd cnsi-portal
           if [ -e yarn.lock ]; then
           yarn install --frozen-lockfile
           elif [ -e package-lock.json ]; then
@@ -31,7 +31,7 @@ jobs:
         uses: cypress-io/github-action@v5
         with:
           install: false
-          working-directory: src/frontend
+          working-directory: cnsi-portal
           start: npm run start
           wait-on: 'http://localhost:4004'
           wait-on-timeout: 120
