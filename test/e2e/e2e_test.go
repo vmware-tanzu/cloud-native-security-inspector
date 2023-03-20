@@ -99,13 +99,13 @@ func TestE2E(t *testing.T) {
 					log.Error(err)
 					t.Fail()
 				}
-				deploymentName := "cnsi-manager"
+				deploymentName := "cnsi-controller-manager"
 				err = r.Get(ctx, deploymentName, "cnsi-system", &managerDeployment)
 				if err != nil {
 					log.Errorf("failed to check the pod readiness for %s exist, err: %s", deploymentName, err)
 					t.Fail()
 				} else {
-					err = waitPodReady(ctx, r, "cnsi-manager", "cnsi-system", 30, 10, 1)
+					err = waitPodReady(ctx, r, deploymentName, "cnsi-system", 30, 10, 1)
 					if err != nil {
 						log.Errorf("failed to check the pod readiness, err: %s", err.Error())
 						t.Fail()
