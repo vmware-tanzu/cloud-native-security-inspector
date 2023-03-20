@@ -40,13 +40,13 @@ func TestMain(m *testing.M) {
 	testEnv.Setup(
 		envfuncs.CreateKindCluster(kindClusterName),
 		envfuncs.CreateNamespace(namespace),
-		envfuncs.SetupCRDs("../../tools/deployments/yaml", "manager.yaml"),
-		envfuncs.SetupCRDs("../../tools/deployments/yaml", "data-exporter.yaml"),
+		envfuncs.SetupCRDs("../../deployments/yaml", "manager.yaml"),
+		envfuncs.SetupCRDs("../../deployments/yaml", "data-exporter.yaml"),
 	)
 
 	testEnv.Finish(
 		envfuncs.DeleteNamespace(namespace),
-		envfuncs.TeardownCRDs("../../tools/deployments/yaml", "*"),
+		envfuncs.TeardownCRDs("../../deployments/yaml", "*"),
 		envfuncs.DestroyKindCluster(kindClusterName),
 	)
 
@@ -105,7 +105,7 @@ func TestE2E(t *testing.T) {
 					log.Errorf("failed to check the pod readiness for %s exist, err: %s", deploymentName, err)
 					t.Fail()
 				} else {
-					err = waitPodReady(ctx, r, "cnsi-controller-manager", "cnsi-system", 30, 10, 1)
+					err = waitPodReady(ctx, r, "cnsi-manager", "cnsi-system", 30, 10, 1)
 					if err != nil {
 						log.Errorf("failed to check the pod readiness, err: %s", err.Error())
 						t.Fail()

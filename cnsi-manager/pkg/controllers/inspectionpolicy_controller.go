@@ -12,8 +12,8 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	goharborv1 "github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
+	goharborv1 "github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/api/v1alpha1"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/lib/log"
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"github.com/pkg/errors"
 
-	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/policy/network"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/pkg/policy/network"
 	"k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )

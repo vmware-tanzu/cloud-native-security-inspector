@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/goark/go-cvss/v3/metric"
 	"github.com/goharbor/harbor/src/pkg/scan/vuln"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/lib/log"
 )
 
 // Evaluator Interface

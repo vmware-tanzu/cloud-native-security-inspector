@@ -17,7 +17,7 @@ import (
 
 // KubernetesClusterDetailedResponseAllOf struct for KubernetesClusterDetailedResponseAllOf
 type KubernetesClusterDetailedResponseAllOf struct {
-	Telemetry *KubernetesTelemetryResponse `json:"telemetry,omitempty"`
+	Telemetry            *KubernetesTelemetryResponse `json:"telemetry,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -137,5 +137,3 @@ func (v *NullableKubernetesClusterDetailedResponseAllOf) UnmarshalJSON(src []byt
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

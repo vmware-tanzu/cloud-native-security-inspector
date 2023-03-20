@@ -11,7 +11,7 @@ import (
 	"encoding/pem"
 	"errors"
 	"github.com/stretchr/testify/require"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/api/v1alpha1"
 	"math/big"
 	"net"
 	"net/http"

@@ -5,10 +5,10 @@ package network
 import (
 	"context"
 	"fmt"
-	rcworkload "github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/assets/workload"
+	rcworkload "github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-inspector/pkg/assets/workload"
 
 	"github.com/pkg/errors"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/policy/enforcement"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/pkg/policy/enforcement"
 	corev1 "k8s.io/api/core/v1"
 	netv1 "k8s.io/api/networking/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"

@@ -27,7 +27,7 @@ type Product struct {
 	// The date-time which the product was released at
 	ReleasedAt time.Time `json:"released_at"`
 	// Last release version of product
-	LastVersionReleased *string `json:"last_version_released,omitempty"`
+	LastVersionReleased  *string `json:"last_version_released,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -270,5 +270,3 @@ func (v *NullableProduct) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

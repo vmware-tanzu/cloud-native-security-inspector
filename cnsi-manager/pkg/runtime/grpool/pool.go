@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/pkg/errors"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/lib/log"
 	"sync"
 )
 

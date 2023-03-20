@@ -1,7 +1,7 @@
 package outputs
 
 import (
-	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/lib/log"
 )
 
 // OpenSearchPost posts event to OpenSearch

@@ -21,8 +21,8 @@ type KubernetesTelemetryResponse struct {
 	// Last synchronization of telemetry time
 	SyncAt *time.Time `json:"sync_at,omitempty"`
 	// User who sent last telemetry data
-	SyncBy *string `json:"sync_by,omitempty"`
-	Workloads []KubernetesWorkload `json:"workloads"`
+	SyncBy               *string              `json:"sync_by,omitempty"`
+	Workloads            []KubernetesWorkload `json:"workloads"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -207,5 +207,3 @@ func (v *NullableKubernetesTelemetryResponse) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -3,9 +3,9 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/exporter/outputs"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-exporter/pkg/outputs"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/api/v1alpha1"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/lib/log"
 	"io"
 	"net/http"
 )

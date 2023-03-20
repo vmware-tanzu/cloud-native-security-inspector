@@ -4,8 +4,8 @@ package policy
 
 import (
 	"context"
-	rcworkload "github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/assets/workload"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/policy/enforcement"
+	rcworkload "github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-inspector/pkg/assets/workload"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/pkg/policy/enforcement"
 )
 
 // Enforcer to enforce policy.

@@ -3,8 +3,8 @@ package cspauth
 import (
 	"context"
 	"fmt"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/retry"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/lib/log"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/lib/retry"
 	v12 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"

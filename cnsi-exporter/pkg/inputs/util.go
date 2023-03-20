@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/api/v1alpha1"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/lib/log"
 	"net/http"
 	"os"
 )

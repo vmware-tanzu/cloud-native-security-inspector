@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 package providers
 
-import "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data"
+import "github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/pkg/data"
 
 // Adapter for handing data from the upstream data provider.
 type Adapter interface {

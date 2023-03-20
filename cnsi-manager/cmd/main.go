@@ -4,7 +4,7 @@ package main
 
 import (
 	"flag"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/lib/log"
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
 	// to ensure that exec-entrypoint and runtime can make use of them.
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
@@ -16,8 +16,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	cnsiv1alpha1 "github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/src/controllers"
+	cnsiv1alpha1 "github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/api/v1alpha1"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/pkg/controllers"
 	//+kubebuilder:scaffold:imports
 )
 

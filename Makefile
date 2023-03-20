@@ -6,7 +6,7 @@ KUBECTLCMD=$(shell which kubectl)
 SWAGGER := $(DOCKERCMD) run --rm -it -v $(HOME):$(HOME) -w $(shell pwd) quay.io/goswagger/swagger
 
 REGISTRY ?= projects.registry.vmware.com/cnsi
-IMG_TAG = 0.3
+IMG_TAG = dev
 # Image URL to use all building/pushing image targets
 IMG_MANAGER ?= $(REGISTRY)/manager:$(IMG_TAG)
 IMG_EXPORTER ?= $(REGISTRY)/exporter:$(IMG_TAG)
@@ -55,7 +55,7 @@ manifests: controller-gen ## Generate WebhookConfiguration, ClusterRole and Cust
 	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=manager-role webhook paths="./..." output:crd:artifacts:config=config/crd/bases
 
 generate: controller-gen ## Generate code containing DeepCopy, DeepCopyInto, and DeepCopyObject method implementations.
-	$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./..."
+	$(CONTROLLER_GEN) object:headerFile="tools/boilerplate.go.txt" paths="./..."
 
 tidy: ## Run go mod tidy
 	go mod tidy
@@ -75,50 +75,50 @@ test: fmt vet ## Run tests.
 ##@ Build
 
 build-manager: generate fmt vet ## Build manager binary.
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o bin/manager main.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o bin/manager cnsi-manager/cmd/main.go
 
 build-exporter: fmt vet
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/exporter pkg/exporter/cmd/main.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/exporter cnsi-exporter/cmd/main.go
 
-build-inspector: generate fmt vet ## Build inspector command.
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/inspector pkg/inspectors/imagescanner/cmd/main.go
+build-image-scanner: generate fmt vet ## Build inspector command.
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/inspector cnsi-inspector/cmd/image-scanner/main.go
 
-build-kubebench: generate fmt vet ## Build kubebench command.
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/kubebench pkg/inspectors/kubebench/cmd/main.go
+build-kube-bench: generate fmt vet ## Build kubebench command.
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/kubebench cnsi-inspector/cmd/kube-bench/main.go
 
 build-risk: generate fmt vet ## Build risk command.
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/risk pkg/inspectors/riskmanager/cmd/main.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/risk cnsi-inspector/cmd/risk-scanner/main.go
 
 build-workloadscanner: generate fmt vet ## Build workloadscanner command.
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/workloadscanner pkg/inspectors/workloadscanner/cmd/main.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/workloadscanner cnsi-inspector/cmd/workload-scanner/main.go
 
 run: manifests generate fmt vet ## Run a controller from your host.
-	go run ./main.go
+	go run cnsi-manager/cmd/main.go
 
 docker-build-backend: docker-build-manager docker-build-exporter docker-build-inspector docker-build-kubebench docker-build-risk docker-build-workloadscanner
 
 docker-build-all: docker-build-backend docker-build-portal
 
 docker-build-manager: build-manager ## Build docker image with the manager.
-	$(DOCKERCMD) buildx build -t ${IMG_MANAGER} .
+	$(DOCKERCMD) buildx build -t ${IMG_MANAGER} -f deployments/dockerfiles/Dockerfile.manager .
 
 docker-build-exporter: build-exporter ## Build the docker image of the Exporter.
-	$(DOCKERCMD) buildx build -t ${IMG_EXPORTER} -f Dockerfile.exporter .
+	$(DOCKERCMD) buildx build -t ${IMG_EXPORTER} -f deployments/dockerfiles/Dockerfile.exporter .
 
 docker-build-inspector: build-inspector ## Build docker image with inspector cmd.
-	$(DOCKERCMD) buildx build -t ${IMG_CMD_INSPECTOR} -f Dockerfile.inspection .
+	$(DOCKERCMD) buildx build -t ${IMG_CMD_INSPECTOR} -f deployments/dockerfiles/Dockerfile.imagescanner .
 
 docker-build-kubebench: build-kubebench ## Build docker image with kubebench cmd.
-	$(DOCKERCMD) buildx build -t ${IMG_CMD_KUBEBENCH} -f Dockerfile.kubebench .
+	$(DOCKERCMD) buildx build -t ${IMG_CMD_KUBEBENCH} -f deployments/dockerfiles/Dockerfile.kubebench .
 
 docker-build-portal:
-	$(DOCKERCMD) buildx build -t ${PORTAl} -f Dockerfile.portal .
+	$(DOCKERCMD) buildx build -t ${PORTAl} -f deployments/dockerfiles/Dockerfile.portal .
 
 docker-build-risk: build-risk ## Build docker image with risk cmd.
-	$(DOCKERCMD) buildx build -t ${RISK} -f Dockerfile.riskmanager .
+	$(DOCKERCMD) buildx build -t ${RISK} -f deployments/dockerfiles/Dockerfile.riskmanager .
 
 docker-build-workloadscanner: build-workloadscanner ## Build docker image with workloadscanner cmd.
-	$(DOCKERCMD) buildx build -t ${IMG_CMD_WORKLOAD_SCANNER} -f Dockerfile.workloadscanner .
+	$(DOCKERCMD) buildx build -t ${IMG_CMD_WORKLOAD_SCANNER} -f deployments/dockerfiles/Dockerfile.workloadscanner .
 
 docker-push-backend:
 	$(DOCKERCMD) push ${IMG_MANAGER}
@@ -138,26 +138,26 @@ namespace:
 
 gen-yaml-files: manifests kustomize ## Install CRDs into the K8s cluster specified in ~/.kube/config.
 	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG_MANAGER}
-	$(KUSTOMIZE) build config/default > tools/installation/yaml/manager.yaml
+	$(KUSTOMIZE) build config/default > deployments/yaml/manager.yaml
 
 remove_clusterrolebinding:
 	$(KUBECTLCMD) delete clusterrolebinding cnsi-inspector-rolebinding --ignore-not-found=true
 
 portal: namespace
-	$(KUBECTLCMD) apply -f frontend/scripts/cloud-native-security-inspector-portal-serviceaccount.yaml
-	$(KUBECTLCMD) apply -f frontend/scripts/cloud-native-security-inspector-portal-role.yaml
-	$(KUBECTLCMD) apply -f frontend/scripts/cloud-native-security-inspector-portal-rolebinding.yaml
-	$(KUBECTLCMD) apply -f frontend/scripts/cloud-native-security-inspector-portal.yaml
-	$(KUBECTLCMD) apply -f frontend/scripts/cloud-native-security-inspector-portal-service.yaml
+	$(KUBECTLCMD) apply -f cnsi-portal/scripts/cloud-native-security-inspector-portal-serviceaccount.yaml
+	$(KUBECTLCMD) apply -f cnsi-portal/scripts/cloud-native-security-inspector-portal-role.yaml
+	$(KUBECTLCMD) apply -f cnsi-portal/scripts/cloud-native-security-inspector-portal-rolebinding.yaml
+	$(KUBECTLCMD) apply -f cnsi-portal/scripts/cloud-native-security-inspector-portal.yaml
+	$(KUBECTLCMD) apply -f cnsi-portal/scripts/cloud-native-security-inspector-portal-service.yaml
 
 # To install and uninstall CNSI components without golang and kustomize required. Probably this is the recommended commands for users currently.
 install: portal
-	$(KUBECTLCMD) apply -f tools/installation/yaml/manager.yaml
-	$(KUBECTLCMD) apply -f tools/installation/yaml/data-exporter.yaml
+	$(KUBECTLCMD) apply -f deployments/yaml/manager.yaml
+	$(KUBECTLCMD) apply -f deployments/yaml/data-exporter.yaml
 
 uninstall: remove_clusterrolebinding
-	$(KUBECTLCMD) delete -f tools/installation/yaml/manager.yaml --ignore-not-found=true
-	$(KUBECTLCMD) delete -f tools/installation/yaml/data-exporter.yaml --ignore-not-found=true
+	$(KUBECTLCMD) delete -f deployments/yaml/manager.yaml --ignore-not-found=true
+	$(KUBECTLCMD) delete -f deployments/yaml/data-exporter.yaml --ignore-not-found=true
 
 CONTROLLER_GEN = $(shell pwd)/bin/controller-gen
 controller-gen: tidy ## Download controller-gen locally if necessary.

@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	rcworkload "github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/assets/workload"
+	rcworkload "github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-inspector/pkg/assets/workload"
 	"strings"
 
 	. "github.com/onsi/ginkgo"

@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"encoding/pem"
 	"fmt"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/lib/log"
 	"io/ioutil"
 	"net/http"
 	"os"

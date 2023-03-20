@@ -5,9 +5,9 @@ package main
 import (
 	"context"
 	"flag"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
-	imagescannerpkg "github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/inspectors/imagescanner/pkg"
+	imagescannerpkg "github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-inspector/pkg/image-scanner"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/api/v1alpha1"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/lib/log"
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"

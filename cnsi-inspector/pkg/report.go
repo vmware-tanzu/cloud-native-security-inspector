@@ -5,9 +5,9 @@ package pkg
 
 import (
 	"github.com/aquasecurity/kube-bench/check"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/assets/workload"
-
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-inspector/pkg/assets/workload"
+	wl "github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-inspector/pkg/assets/workload"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/api/v1alpha1"
 	v1 "k8s.io/api/core/v1"
 )
 
@@ -22,7 +22,7 @@ type NamespaceAssessment struct {
 // WorkloadAssessment defines assessment results for each Workload.
 type WorkloadAssessment struct {
 	// For which workload is assessing?
-	Workload workload.Workload `json:"workload"`
+	Workload wl.Workload `json:"workload"`
 	// Indicates if all the compliance checks are passed.
 	Passed bool `json:"passed"`
 	// Keep all the failures of the assessment when passed is false.

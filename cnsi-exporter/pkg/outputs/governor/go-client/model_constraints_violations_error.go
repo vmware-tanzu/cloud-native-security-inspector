@@ -18,7 +18,7 @@ import (
 // ConstraintsViolationsError Error object extension for returning a constraints violation error
 type ConstraintsViolationsError struct {
 	Violations []ConstraintsViolation `json:"violations"`
-	// A URI reference that identifies the problem type  When dereferenced, it provide human-readable documentation for the problem type using HTML 
+	// A URI reference that identifies the problem type  When dereferenced, it provide human-readable documentation for the problem type using HTML
 	Type string `json:"type"`
 	// A short, human-readable summary of the problem type
 	Title string `json:"title"`
@@ -26,8 +26,8 @@ type ConstraintsViolationsError struct {
 	Status *int32 `json:"status,omitempty"`
 	// A human-readable explanation specific to this occurrence of the problem
 	Detail *string `json:"detail,omitempty"`
-	// A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced 
-	Instance *string `json:"instance,omitempty"`
+	// A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced
+	Instance             *string `json:"instance,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -305,5 +305,3 @@ func (v *NullableConstraintsViolationsError) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

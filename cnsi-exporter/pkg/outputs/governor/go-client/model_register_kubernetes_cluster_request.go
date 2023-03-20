@@ -18,7 +18,7 @@ import (
 // RegisterKubernetesClusterRequest Payload to request registering a Kubernetes cluster
 type RegisterKubernetesClusterRequest struct {
 	// Name of the cluster to be registered
-	Name string `json:"name"`
+	Name                 string `json:"name"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -131,5 +131,3 @@ func (v *NullableRegisterKubernetesClusterRequest) UnmarshalJSON(src []byte) err
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

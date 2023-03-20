@@ -3,8 +3,8 @@
 package types
 
 import (
-	"github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/core"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/api/v1alpha1"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/pkg/data/core"
 )
 
 // Store for holding the security data read from the upstream data provider.

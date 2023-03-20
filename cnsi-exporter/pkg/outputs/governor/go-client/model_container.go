@@ -24,8 +24,8 @@ type Container struct {
 	// Image ID
 	ImageId string `json:"image_id"`
 	// Identifier of the container
-	Id *string `json:"id,omitempty"`
-	Product *Product `json:"product,omitempty"`
+	Id                   *string  `json:"id,omitempty"`
+	Product              *Product `json:"product,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -268,5 +268,3 @@ func (v *NullableContainer) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

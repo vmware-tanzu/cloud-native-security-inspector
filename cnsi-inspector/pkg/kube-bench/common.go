@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/aquasecurity/kube-bench/check"
 	"github.com/spf13/viper"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/lib/log"
 	"io/ioutil"
 	"os"
 	"path/filepath"

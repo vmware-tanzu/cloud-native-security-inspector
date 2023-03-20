@@ -15,7 +15,7 @@ RUN go mod download
 COPY ./ .
 
 # Build
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o kubebench pkg/inspectors/kubebench/cmd/main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o kubebench cnsi-inspector/cmd/kube-bench/main.go
 
 
 # Use distroless as minimal base image to package the manager binary

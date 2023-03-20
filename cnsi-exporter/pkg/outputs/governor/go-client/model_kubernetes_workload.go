@@ -22,8 +22,8 @@ type KubernetesWorkload struct {
 	// Namespace where the workload is deployed
 	Namespace string `json:"namespace"`
 	// Kind of the workload Resource
-	Kind string `json:"kind"`
-	Containers []Container `json:"containers"`
+	Kind                 string      `json:"kind"`
+	Containers           []Container `json:"containers"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -223,5 +223,3 @@ func (v *NullableKubernetesWorkload) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

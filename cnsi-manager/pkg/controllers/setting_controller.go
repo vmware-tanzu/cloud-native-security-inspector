@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/goharbor/harbor/src/lib/errors"
-	goharborv1alpha1 "github.com/vmware-tanzu/cloud-native-security-inspector/src/api/v1alpha1"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/src/lib/log"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/src/pkg/data/providers"
+	goharborv1alpha1 "github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/api/v1alpha1"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/pkg/data/providers"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/lib/log"
 	"k8s.io/apimachinery/pkg/api/equality"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

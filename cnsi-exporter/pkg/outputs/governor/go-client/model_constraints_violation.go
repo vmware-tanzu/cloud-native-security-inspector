@@ -20,7 +20,7 @@ type ConstraintsViolation struct {
 	// The field that is causing the constraints violation
 	Field string `json:"field"`
 	// The human-readable constraints violation description
-	Message string `json:"message"`
+	Message              string `json:"message"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -162,5 +162,3 @@ func (v *NullableConstraintsViolation) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-
