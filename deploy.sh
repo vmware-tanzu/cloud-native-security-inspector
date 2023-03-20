@@ -3,7 +3,7 @@ set -e
 
 usage=$'Run "./deploy install" to install Project Narrows. Please set --build-source if needs build from scratch.'
 
-source src/tools/installation/common.sh
+source deployments/common.sh
 set +o noglob
 
 with_portal=true
@@ -16,7 +16,7 @@ if [ $# -eq 0 ]; then
 fi
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
-source $DIR/src/tools/installation/common.sh
+source $DIR/deployments/common.sh
 
 
 function install_opensearch() {
@@ -56,7 +56,6 @@ while [ $# -gt 0 ]; do
 done
 
 
-cd src/
 if [ $install ] && [ $with_portal ]
 then
     check_kubectl
