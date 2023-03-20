@@ -75,7 +75,7 @@ $ cd src/frontend
 $ npm run test
 
 ```
-5. You can view the test coverage of each file by modifying [karma.conf.js](../src/frontend/karma.conf.js) as follows。
+5. You can view the test coverage of each file by modifying [karma.conf.js](../cnsi-portal/karma.conf.js) as follows。
 
 ```js
     coverageReporter: {
@@ -95,7 +95,7 @@ e2e test
 ============
 1. [Cypress](https://docs.cypress.io/api/commands/and) learning and using official documents
 
-2. When modifying or creating a new UI page, it is necessary to perform synchronous automated testing on the newly added code. The test code can follow the [policy.cy.ts](../src/frontend/cypress/e2e/policy.cy.ts) below.
+2. When modifying or creating a new UI page, it is necessary to perform synchronous automated testing on the newly added code. The test code can follow the [policy.cy.ts](../cnsi-portal/cypress/e2e/policy.cy.ts) below.
 
 ```ts
 describe('Setting Test', () => {
