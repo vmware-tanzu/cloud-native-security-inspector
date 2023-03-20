@@ -349,6 +349,7 @@ spec:
                     format: int32
                     type: integer
                   suspend:
+                    default: false
                     description: Suspend the subsequent inspections temporarily.
                     type: boolean
                 type: object

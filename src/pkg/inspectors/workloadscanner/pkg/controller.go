@@ -84,7 +84,7 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 	// Just in case.
 	if len(nsl) == 0 {
 		log.Info("no namespaces found")
-		ExportImageReports(itypes.WorkloadReport{}, policy)
+		ExportWorkloadsReports(itypes.WorkloadReport{}, policy)
 		return nil
 	}
 
@@ -161,12 +161,12 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 		return err
 	}
 
-	ExportImageReports(report, policy)
+	ExportWorkloadsReports(report, policy)
 
 	return nil
 }
 
-func ExportImageReports(report itypes.WorkloadReport, pl *v1alpha1.InspectionPolicy) {
+func ExportWorkloadsReports(report itypes.WorkloadReport, pl *v1alpha1.InspectionPolicy) {
 	log.Debugf("Sending workload infos to exporter: %v", report)
 
 	if bytes, err := json.Marshal(report); err != nil {

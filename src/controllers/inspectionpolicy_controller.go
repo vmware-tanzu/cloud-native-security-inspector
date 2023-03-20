@@ -128,12 +128,14 @@ func (r *InspectionPolicyReconciler) Reconcile(ctx context.Context, req ctrl.Req
 	policy.Spec.WorkNamespace = wns
 
 	// Ensure Setting is correctly configured.
-	datasource, err := r.EnsureSettings(ctx, policy)
-	if err != nil {
-		log.Error(err, "unable to ensure the settings in inspection policy")
-		return ctrl.Result{}, err
+	if policy.Spec.Inspector.Image != "" || policy.Spec.Inspector.KubebenchImage != "" || policy.Spec.Inspector.RiskImage != "" {
+		datasource, err := r.EnsureSettings(ctx, policy)
+		if err != nil {
+			log.Error(err, "unable to ensure the settings in inspection policy")
+			return ctrl.Result{}, err
+		}
+		log.Info("Ensure settings in inspection policy", "datasource in settings", datasource)
 	}
-	log.Info("Ensure settings in inspection policy", "datasource in settings", datasource)
 
 	// Ensure RBAC is correctly configured.
 	if err := r.ensureRBAC(ctx, *wns); err != nil {
