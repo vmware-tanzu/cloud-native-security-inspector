@@ -880,7 +880,7 @@ status:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: cnsi-controller-manager
+  name: cnsi-manager
   namespace: cnsi-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
