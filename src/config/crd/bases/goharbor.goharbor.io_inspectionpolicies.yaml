@@ -326,6 +326,8 @@ spec:
                   DataSource is the data source definitions.'
                 type: string
               strategy:
+                default:
+                  suspend: false
                 description: Strategy of the inspector.
                 properties:
                   concurrencyRule:
@@ -344,7 +346,6 @@ spec:
                     format: int32
                     type: integer
                   suspend:
-                    default: false
                     description: Suspend the subsequent inspections temporarily.
                     type: boolean
                 type: object

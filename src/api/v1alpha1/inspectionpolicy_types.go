@@ -163,7 +163,6 @@ type Strategy struct {
 	// +kubebuilder:validation:Optional
 	HistoryLimit *int32 `json:"historyLimit"`
 	// Suspend the subsequent inspections temporarily.
-	// +kubebuilder:default:=false
 	// +kubebuilder:validation:Optional
 	Suspend *bool `json:"suspend,omitempty"`
 	// ConcurrencyRule indicates how to handle the overlapped inspector processes.
@@ -227,6 +226,7 @@ type InspectionPolicySpec struct {
 	Inspection InspectionConfiguration `json:"inspection"`
 
 	// Strategy of the inspector.
+	// +kubebuilder:default:={suspend: false}
 	// +kubebuilder:validation:Optional
 	Strategy Strategy `json:"strategy"`
 
