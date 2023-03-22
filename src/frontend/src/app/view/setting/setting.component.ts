@@ -153,7 +153,6 @@ export class SettingComponent implements OnInit, OnDestroy {
       return 
     }
     const secret: SecretModel = {
-      apiVersion: 'v1',
       data: {
         accessKey: window.btoa(this.secretForm.get('secret_accessKey')?.value),
         accessSecret: window.btoa(this.secretForm.get('secret_accessSecret')?.value)
@@ -161,8 +160,7 @@ export class SettingComponent implements OnInit, OnDestroy {
       kind: 'Secret',
       metadata: {
         name: this.secretForm.get('secret_name')?.value,
-        namespace: this.secretForm.get('secret_namespace')?.value,
-        creationTimestamp: ''
+        namespace: this.secretForm.get('secret_namespace')?.value
       },
       type: 'Opaque'
     }

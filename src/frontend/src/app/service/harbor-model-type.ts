@@ -53,7 +53,6 @@ export interface knownRegistrieType {
 }
 
 export interface SecretModel {
-  readonly apiVersion: 'v1',
   data: {
     accessKey: string,
     accessSecret: string
@@ -63,7 +62,7 @@ export interface SecretModel {
   metadata: {
     name: string,
     namespace: string,
-    creationTimestamp: string
+    creationTimestamp?: string
   },
   readonly type: 'Opaque'
 }
