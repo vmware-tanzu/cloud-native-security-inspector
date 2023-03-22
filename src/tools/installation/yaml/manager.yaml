@@ -331,6 +331,8 @@ spec:
                   DataSource is the data source definitions.'
                 type: string
               strategy:
+                default:
+                  suspend: false
                 description: Strategy of the inspector.
                 properties:
                   concurrencyRule:
