@@ -62,6 +62,7 @@ export interface SecretModel {
   metadata: {
     name: string,
     namespace: string,
+    creationTimestamp?: string
   },
   readonly type: 'Opaque'
 }
