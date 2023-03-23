@@ -40,16 +40,26 @@
   </div>
 
   <clr-datagrid [clrDgLoading]="dgLoading" (clrDgRefresh)="pageChange($event)">
-    <clr-dg-column >{{'CommonlyUse.typeId'|translate}}</clr-dg-column>
-    <clr-dg-column >{{'CommonlyUse.name'|translate}}</clr-dg-column>
-    <clr-dg-column class="namespace-filter">
-      {{'CommonlyUse.type'|translate}}
+    <clr-dg-column  class="namespace-filter">
+      {{'CommonlyUse.typeId'|translate}}
       <cds-icon shape="filter-grid" class="is-solid" (click)="kubeTypeFilterFlag = !kubeTypeFilterFlag"></cds-icon>
       <div class="filter-warp" *ngIf="kubeTypeFilterFlag">
         <cds-icon style="position: absolute; right: 10px; top: 10px;" shape="window-close" (click)="kubeTypeFilterFlag=false"></cds-icon>
-        <app-dg-filter label="kube" labelKey="text" [pageSize]="10" (updateListHandler)="getKubeBenchReportList($event)">
+        <app-dg-filter label="kube" labelKey="id" [pageSize]="10" (updateListHandler)="getKubeBenchReportList($event)">
         </app-dg-filter>
       </div>
+    </clr-dg-column>
+    <clr-dg-column  class="namespace-filter">
+      {{'CommonlyUse.name'|translate}}
+      <cds-icon shape="filter-grid" class="is-solid" (click)="kubeNameFilterFlag = !kubeNameFilterFlag"></cds-icon>
+      <div class="filter-warp" *ngIf="kubeNameFilterFlag">
+        <cds-icon style="position: absolute; right: 10px; top: 10px;" shape="window-close" (click)="kubeNameFilterFlag=false"></cds-icon>
+        <app-dg-filter label="kube" labelKey="docID" [pageSize]="10" (updateListHandler)="getKubeBenchReportList($event)">
+        </app-dg-filter>
+      </div>
+      </clr-dg-column>
+    <clr-dg-column>
+      {{'CommonlyUse.type'|translate}}
     </clr-dg-column>
     <!-- <clr-dg-column class="namespace-filter">
       {{'Kube_bench_list.node_name'|translate}}     

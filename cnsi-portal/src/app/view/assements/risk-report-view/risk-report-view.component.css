@@ -59,3 +59,11 @@
   width: calc(100% - 450px);
   height: 100%;
 }
+clr-datagrid::ng-deep .sort {
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+}
+clr-datagrid::ng-deep .sort cds-icon.oder {
+  transform: rotate(180deg);
+}

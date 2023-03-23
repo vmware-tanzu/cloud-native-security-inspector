@@ -13,6 +13,7 @@
     <clr-dg-column >
       <div class="sort">
         {{'CommonlyUse.create_time'|translate}}
+        <cds-icon (click)="createTimeSort()" shape="arrow" [class]="{oder: isOder}"></cds-icon>  
       </div>
     </clr-dg-column>
     <clr-dg-column >{{'Risk_view.numberOfVulnerabilities'|translate}}</clr-dg-column>

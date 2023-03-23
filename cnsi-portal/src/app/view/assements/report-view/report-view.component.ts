@@ -47,7 +47,10 @@ export class ReportViewComponent implements OnInit, OnDestroy, AfterViewInit {
   from = 0
   isOder = true
   getKubeBenchReportListQuery!:any
-  getKubeBenchReportListFilter!:any
+  getKubeBenchReportListFilter:any = {
+    arg: {},
+    reset: false
+  }
 
   // unit test arg
   testMousedown:any = (e: any) => {}
@@ -121,7 +124,10 @@ export class ReportViewComponent implements OnInit, OnDestroy, AfterViewInit {
     if (event.page.current <= 1) {// size change
       if (event.page.size !== this.defaultSize) {
         this.getKubeBenchReportList(
-          {key: this.oldKey, value: this.oldValue, size: event.page.size, from: 0, reset: true})
+          // {key: this.oldKey, value: this.oldValue, size: event.page.size, from: 0, reset: true})
+          {arg: {
+            [this.oldKey]: this.oldValue
+          }, size: event.page.size, from: 0, reset: true})
       } else {
       }
     } else {// page change
@@ -130,26 +136,30 @@ export class ReportViewComponent implements OnInit, OnDestroy, AfterViewInit {
         if (event.page.current === this.pageMaxCount) {
           //lastpage
           this.getKubeBenchReportList(
-            {key: this.oldKey, value: this.oldValue, size: event.page.size, from: event.page.size * (this.pageMaxCount - 1), reset: false}
+            // {key: this.oldKey, value: this.oldValue, size: event.page.size, from: event.page.size * (this.pageMaxCount - 1), reset: false}
+            {arg: {[this.oldKey]: this.oldValue}, size: event.page.size, from: event.page.size * (this.pageMaxCount - 1), reset: false}
             )
         } else {
           // pre / next
           this.getKubeBenchReportList(
-            {key: this.oldKey, value: this.oldValue, size: event.page.size, from: event.page.from, reset: false}
-          )
+            // {key: this.oldKey, value: this.oldValue, size: event.page.size, from: event.page.from, reset: false}
+            {arg: {[this.oldKey]: this.oldValue}, size: event.page.size, from: event.page.from, reset: false}
+            )
         }
       } else {
         // size and current change
         if (this.defaultSize === event.page.size) {
           // current change
           this.getKubeBenchReportList(
-            {key: this.oldKey, value: this.oldValue, size: event.page.size, from: event.page.from, reset: false})
+            // {key: this.oldKey, value: this.oldValue, size: event.page.size, from: event.page.from, reset: false})
+            {arg: {[this.oldKey]: this.oldValue}, size: event.page.size, from: event.page.from, reset: false})
         } else {
           // size change
           this.pagination.currentPage = 1  
           event.page.size = 10
           this.getKubeBenchReportList(
-            {key: this.oldKey, value: this.oldValue, size: event.page.size, from: 0, reset: true})
+            // {key: this.oldKey, value: this.oldValue, size: event.page.size, from: 0, reset: true})
+            {arg: {[this.oldKey]: this.oldValue}, size: event.page.size, from: 0, reset: true})
         }
       }
 
@@ -157,7 +167,7 @@ export class ReportViewComponent implements OnInit, OnDestroy, AfterViewInit {
     this.defaultSize = event.page.size
 
   }
-  getKubeBenchReportList(filter: {key:string, value: string, size?: number, from?:number, reset: boolean}) {    
+  getKubeBenchReportList(filter: {arg: {[key: string]: string}, size?: number, from?:number, reset: boolean}) {    
     const query: any = { 
       size: filter.size ? filter.size :10,
       from: filter.from ? filter.from: 0,
@@ -169,33 +179,28 @@ export class ReportViewComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       ]
     };
-    if (filter.key) {
-      if (!this.oldKey) {
-        this.oldKey = filter.key
-        this.oldValue = filter.value
-        this.pagination.page.size = 10
-        filter.reset = true
-      } else {
-        if (this.oldKey === filter.key) {
-          if (this.oldValue === filter.value) {
-            filter.reset = false
-          } else {
-            filter.reset = true
-          }
-        } else {
-          filter.reset = true
+    if (filter.arg) {
+      query.query = {
+        bool: {
+          filter: [] as any[]
+        },
+      }
+      for (const key in filter.arg) {
+        this.getKubeBenchReportListFilter.arg[key] = filter.arg[key]
+      }
+
+      for (const key in this.getKubeBenchReportListFilter.arg) {
+        if (this.getKubeBenchReportListFilter.arg[key]) {
+          query.query.bool.filter.push({
+            match: {
+              [key]:  this.getKubeBenchReportListFilter.arg[key]
+            }
+          })
         }
       }
-      if (filter.value) {
-        query.query = {
-          match: {} as any,
-        }
-        query.query.match[filter.key] = filter.value
-      } else {
-        this.oldKey = ''
-        this.oldValue = ''
-      }
+      this.getKubeBenchReportListFilter.reset = true
     }
+
     this.getKubeBenchReportListQuery = query
     this.getKubeBenchReportListFilter = filter    
     this.extractKubeBenchApi(query, this.getKubeBenchReportListCallBack)
