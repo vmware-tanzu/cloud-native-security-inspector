@@ -51,12 +51,12 @@
     </clr-dg-column>
     <clr-dg-column  class="namespace-filter">
       {{'CommonlyUse.name'|translate}}
-      <cds-icon shape="filter-grid" class="is-solid" (click)="kubeNameFilterFlag = !kubeNameFilterFlag"></cds-icon>
+      <!-- <cds-icon shape="filter-grid" class="is-solid" (click)="kubeNameFilterFlag = !kubeNameFilterFlag"></cds-icon>
       <div class="filter-warp" *ngIf="kubeNameFilterFlag">
         <cds-icon style="position: absolute; right: 10px; top: 10px;" shape="window-close" (click)="kubeNameFilterFlag=false"></cds-icon>
         <app-dg-filter label="kube" labelKey="docID" [pageSize]="10" (updateListHandler)="getKubeBenchReportList($event)">
         </app-dg-filter>
-      </div>
+      </div> -->
       </clr-dg-column>
     <clr-dg-column>
       {{'CommonlyUse.type'|translate}}
