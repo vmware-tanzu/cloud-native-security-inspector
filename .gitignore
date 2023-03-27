@@ -14,8 +14,10 @@
 .vscode
 
 .envrc
+.DS_Store
 
 # tar balls
+
 *.tar.gz
 
 # Except this file
