@@ -312,12 +312,14 @@ export class ReportViewComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
         const result = data.hits.hits
-        result.forEach((rp: {_source: {namespaceAssessments: {workloadAssessments: {failures: []}[]}[], timeStamp: string}}) => {
+        result.forEach((rp: {_source: {namespaceAssessments: {workloadAssessments: {failures: [], passed: boolean}[]}[], timeStamp: string}}) => {
           rp._source.timeStamp = moment(rp._source.timeStamp).format('LLL')
           let failures = 0
           rp._source.namespaceAssessments.forEach(ns => {
             ns.workloadAssessments.forEach(wd => {
-              failures += wd.failures.length
+              if (!wd.passed) {
+                failures += wd.failures.length
+              }
             });
           })
 
