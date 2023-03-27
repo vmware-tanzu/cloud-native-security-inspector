@@ -1,0 +1,18 @@
+body {
+  color: #fff;
+  font-size: 16px;
+}
+a {
+  color: #fff;
+  text-decoration: none;
+}
+ul,ol {
+  list-style: none;
+}
+body, h1, h2, h3, h4, h5, p{
+  margin: 0;
+}
+
+button {
+  outline: none;
+}
