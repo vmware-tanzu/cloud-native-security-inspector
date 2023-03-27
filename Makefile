@@ -6,7 +6,7 @@ KUBECTLCMD=$(shell which kubectl)
 SWAGGER := $(DOCKERCMD) run --rm -it -v $(HOME):$(HOME) -w $(shell pwd) quay.io/goswagger/swagger
 
 REGISTRY ?= projects.registry.vmware.com/cnsi
-IMG_TAG = dev
+IMG_TAG = 0.3
 # Image URL to use all building/pushing image targets
 IMG_MANAGER ?= $(REGISTRY)/manager:$(IMG_TAG)
 IMG_EXPORTER ?= $(REGISTRY)/exporter:$(IMG_TAG)
