@@ -51,7 +51,7 @@ from the image vulnerability report, then reports scored-risks it observed in th
 There are 2 options to deploy project Narrows if you would like to use the pre-built images from `projects.registry.vmware.com`.
 
 ### Option 1: Using Helm chart
-Check this [doc](src/tools/installation/charts/cnsi/README.md) for details.
+Check this [doc](deployments/charts/cnsi/README.md) for details.
 
 ### Option 2: Using our deploy.sh script
 You need to clone the source code if you choose this option.

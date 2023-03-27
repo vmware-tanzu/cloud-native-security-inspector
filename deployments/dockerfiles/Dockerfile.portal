@@ -1,0 +1,22 @@
+FROM node:14.15 as builder
+
+WORKDIR /cnsi-portal
+COPY cnsi-portal/ .
+RUN npm --unsafe-perm install --production
+# Build
+RUN npm run build
+
+FROM docker.io/ubuntu:18.04 
+WORKDIR /workspace
+RUN apt-get update && apt-get install -y wget 
+
+RUN wget https://nodejs.org/download/release/v14.15.5/node-v14.15.5-linux-x64.tar.gz && \ 
+    tar -xzf node-v14.15.5-linux-x64.tar.gz && \
+    mv node-v14.15.5-linux-x64 /usr/local/nodejs && ln -s /usr/local/nodejs/bin/node /usr/local/bin/ && ln -s /usr/local/nodejs/bin/npm /usr/local/bin/ && \
+    rm node-v14.15.5-linux-x64.tar.gz 
+COPY --from=builder /protal/dist .
+COPY cnsi-portal/node-server.js .
+COPY cnsi-portal/express-package.json package.json
+RUN npm install
+RUN apt-get remove wget -y
+ENTRYPOINT node node-server.js

@@ -30,17 +30,17 @@ it just adds it as the header when sending payloads to the Exporter
 
 ### Extend the exporter
 
-You need to add a go file under this [dir](../src/pkg/exporter/outputs), called slack.go, and add a function
+You need to add a go file under this [dir](../cnsi-exporter/pkg/outputs), called slack.go, and add a function
 called `SlackPost`. The parameter should be a string payload which is from the scanners. The job of `SlackPost`
 is to convert this payload to something Slack can recognize. So you need to define a struct based on Slack's
 protocol, construct it based on the payload and unmarshal it into a string then forward to the Slack endpoint.
 
-Your `SlackPost` function should be based on our `Post` function in [client.go](../src/pkg/exporter/outputs/client.go)
+Your `SlackPost` function should be based on our `Post` function in [client.go](../cnsi-exporter/pkg/outputs/client.go)
 to send the http request to Slack endpoint. We should consider reusing our code first, because using a SDK
 provided by Slack could make the image larger. If every developer extend the Exporter like that, the image size
 of Exporter could be too large.
 
-In the [main.go](../src/pkg/exporter/cmd/main.go) file, you need also to extend the forwardEvent function.
+In the [main.go](../cnsi-exporter/cmd/main.go) file, you need also to extend the forwardEvent function.
 Append the logic at the end of the function, which establish the connection with Slack anb calls your `SlackPost`
 function.
 
@@ -56,11 +56,11 @@ extend the `Inspector` struct, add a field to point to your scanner's image.
 
 ### Extend the policy's reconciler
 At release 0.3, Narrows provisions the scanner workloads during reconciling the policy. You need to add the
-logic about how to provision your scanner in [inspectionpolicy_controller.go](../src/controllers/inspectionpolicy_controller.go).
+logic about how to provision your scanner in [inspectionpolicy_controller.go](../cnsi-manager/pkg/controllers/inspectionpolicy_controller.go).
 
 ## Add UT and e2e test
 
 UT file should be added beside the production code file.
 
-E2E file should be added under the [e2e](../src/test/e2e) directory. Please check the [contributing doc](../CONTRIBUTING.md)
+E2E file should be added under the [e2e](../test/e2e) directory. Please check the [contributing doc](../CONTRIBUTING.md)
 for the detail.

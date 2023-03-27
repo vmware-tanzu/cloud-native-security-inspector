@@ -35,13 +35,13 @@ jobs:
         
       - name: Unit test
         run: |
-          cd ${{ github.repository }}/src
+          cd ${{ github.repository }}
           make test
 
       - uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-          files: ${{ github.repository }}/src/cover.out
+          files: ${{ github.repository }}/cover.out
           flags: unittests # optional
           name: codecov-umbrella # optional
           fail_ci_if_error: true # optional (default = false)
@@ -64,12 +64,12 @@ jobs:
       - name: script
         run: |
           pwd
-          cd ${{ github.repository }}/src
-          cd frontend
+          cd ${{ github.repository }}
+          cd cnsi-portal
           bash ./test/ui_unit.sh
           df -h
       - name: Codecov For UI
         uses: codecov/codecov-action@v3
         with:
-          file:  ${{ github.repository }}/src/frontend/coverage/icov.info
+          file:  ${{ github.repository }}/cnsi-portal/coverage/icov.info
           flags: unittests
