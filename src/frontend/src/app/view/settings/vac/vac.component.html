@@ -1,0 +1,35 @@
+<div class="policy-page">
+  <div class="sddc-header">
+    <h2 class="sddc-title">VAC</h2>
+  </div>
+</div>
+
+<div class="vac-setting">
+  <button class="btn btn-primary btn-sm create" routerLink="/modify-vac/create">
+    <cds-icon shape="plus"></cds-icon>
+    {{'CommonlyUse.new'|translate}}</button>
+
+  <clr-datagrid [clrDgLoading]="vacLoading">
+    <clr-dg-column>{{'CommonlyUse.name' | translate}}</clr-dg-column>
+    <clr-dg-column>{{'VAC.branch' | translate}}</clr-dg-column>
+    <clr-dg-column>{{'CommonlyUse.version'| translate}}</clr-dg-column>
+    <clr-dg-column>{{'VAC.releasedTime'| translate}}</clr-dg-column>
+    <clr-dg-column>{{'CommonlyUse.status'| translate}}</clr-dg-column>
+
+    <clr-dg-row *clrDgItems="let vac of vacList">
+        <clr-dg-cell>{{vac.name}}</clr-dg-cell>
+        <clr-dg-cell>{{vac.branch}}</clr-dg-cell>
+        <clr-dg-cell>{{vac.version}}</clr-dg-cell>
+        <clr-dg-cell>{{vac.released_at | date}}</clr-dg-cell>
+        <clr-dg-cell class="status-warp">
+          <span [ngClass]="{'status': vac.status === 'DEPRECATED'}">{{vac.status}}</span>
+        </clr-dg-cell>
+    </clr-dg-row>
+
+    <clr-dg-footer>
+      <clr-dg-pagination #pagination [clrDgPageSize]="10">
+          <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Secrets per page</clr-dg-page-size>
+      </clr-dg-pagination>
+  </clr-dg-footer>
+</clr-datagrid>
+</div>

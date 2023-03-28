@@ -218,6 +218,13 @@
     "remediation": "Remediation",
     "current_node": "Current Node"
   },
+  "VAC": {
+    "branch": "Branch",
+    "releasedTime": "Released Time",
+    "vacView": "VAC View",
+    "deprecationPolicy": "Deprecation Policy",
+    "nonsupportpolicy": "Nonsupport Policy"
+  },
   "en": "English",
   "zh_CN": "中文 (简体)"
 }

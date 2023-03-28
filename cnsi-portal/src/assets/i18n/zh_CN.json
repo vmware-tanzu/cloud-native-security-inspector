@@ -217,6 +217,13 @@
     "remediation": "修改建议",
     "current_node": "当前节点"
   },
+  "VAC": {
+    "branch": "分支",
+    "releasedTime": "发布时间",
+    "vacView": "VAC详情",
+    "deprecationPolicy": "弃用策略",
+    "nonsupportpolicy": "不支持策略"
+  },
   "en": "English",
   "zh_CN": "中文 (简体)"
 }
