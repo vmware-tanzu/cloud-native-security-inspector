@@ -6,7 +6,7 @@ KUBECTLCMD=$(shell which kubectl)
 SWAGGER := $(DOCKERCMD) run --rm -it -v $(HOME):$(HOME) -w $(shell pwd) quay.io/goswagger/swagger
 
 REGISTRY ?= projects.registry.vmware.com/cnsi
-IMG_TAG = 0.3
+IMG_TAG = 0.3.1
 # Image URL to use all building/pushing image targets
 IMG_MANAGER ?= $(REGISTRY)/manager:$(IMG_TAG)
 IMG_EXPORTER ?= $(REGISTRY)/exporter:$(IMG_TAG)
@@ -47,7 +47,7 @@ SHELL = /usr/bin/env bash -o pipefail
 # http://linuxcommand.org/lc3_adv_awk.php
 
 help: ## Display this help.
-	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n"} /^[a-zA-Z_0-9-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
+	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n"} /^[a-zA-Z_0-9-]+:.*?##/ { printf "  \033[36m%-30s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 
 ##@ Development
 
@@ -72,55 +72,54 @@ test: fmt vet ## Run tests.
 	test -f ${ENVTEST_ASSETS_DIR}/setup-envtest.sh || curl -sSLo ${ENVTEST_ASSETS_DIR}/setup-envtest.sh https://raw.githubusercontent.com/kubernetes-sigs/controller-runtime/v0.8.3/hack/setup-envtest.sh
 	source ${ENVTEST_ASSETS_DIR}/setup-envtest.sh; fetch_envtest_tools $(ENVTEST_ASSETS_DIR); setup_envtest_env $(ENVTEST_ASSETS_DIR); go test ./... -coverprofile cover.out
 
-##@ Build
+##@ Build binaries
 
 build-manager: generate fmt vet ## Build manager binary.
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o bin/manager cnsi-manager/cmd/main.go
 
-build-exporter: fmt vet
+build-exporter: fmt vet ## Build exporter binary.
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/exporter cnsi-exporter/cmd/main.go
 
-build-image-scanner: generate fmt vet ## Build inspector command.
+build-image-scanner: generate fmt vet ## Build inspector binary.
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/inspector cnsi-inspector/cmd/image-scanner/main.go
 
-build-kube-bench: generate fmt vet ## Build kubebench command.
+build-kube-bench: generate fmt vet ## Build kubebench binary.
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/kubebench cnsi-inspector/cmd/kube-bench/main.go
 
-build-risk: generate fmt vet ## Build risk command.
+build-risk: generate fmt vet ## Build risk binary.
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/risk cnsi-inspector/cmd/risk-scanner/main.go
 
-build-workloadscanner: generate fmt vet ## Build workloadscanner command.
+build-workloadscanner: generate fmt vet ## Build workloadscanner binary.
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/workloadscanner cnsi-inspector/cmd/workload-scanner/main.go
 
-run: manifests generate fmt vet ## Run a controller from your host.
-	go run cnsi-manager/cmd/main.go
+##@ Build OCI images
 
 docker-build-backend: docker-build-manager docker-build-exporter docker-build-inspector docker-build-kubebench docker-build-risk docker-build-workloadscanner
 
 docker-build-all: docker-build-backend docker-build-portal
 
-docker-build-manager: build-manager ## Build docker image with the manager.
+docker-build-manager: build-manager ## Build docker image of the manager.
 	$(DOCKERCMD) buildx build -t ${IMG_MANAGER} -f deployments/dockerfiles/Dockerfile.manager .
 
-docker-build-exporter: build-exporter ## Build the docker image of the Exporter.
+docker-build-exporter: build-exporter ## Build docker image of the exporter.
 	$(DOCKERCMD) buildx build -t ${IMG_EXPORTER} -f deployments/dockerfiles/Dockerfile.exporter .
 
-docker-build-inspector: build-inspector ## Build docker image with inspector cmd.
-	$(DOCKERCMD) buildx build -t ${IMG_CMD_INSPECTOR} -f deployments/dockerfiles/Dockerfile.imagescanner .
-
-docker-build-kubebench: build-kubebench ## Build docker image with kubebench cmd.
-	$(DOCKERCMD) buildx build -t ${IMG_CMD_KUBEBENCH} -f deployments/dockerfiles/Dockerfile.kubebench .
-
-docker-build-portal:
+docker-build-portal: ## Build docker image of portal.
 	$(DOCKERCMD) buildx build -t ${PORTAl} -f deployments/dockerfiles/Dockerfile.portal .
 
-docker-build-risk: build-risk ## Build docker image with risk cmd.
+docker-build-inspector: build-image-scanner ## Build docker image of image scanner.
+	$(DOCKERCMD) buildx build -t ${IMG_CMD_INSPECTOR} -f deployments/dockerfiles/Dockerfile.imagescanner .
+
+docker-build-kubebench: build-kube-bench ## Build docker image of kube-bench scanner.
+	$(DOCKERCMD) buildx build -t ${IMG_CMD_KUBEBENCH} -f deployments/dockerfiles/Dockerfile.kubebench .
+
+docker-build-risk: build-risk ## Build docker image of risk scanner.
 	$(DOCKERCMD) buildx build -t ${RISK} -f deployments/dockerfiles/Dockerfile.riskmanager .
 
-docker-build-workloadscanner: build-workloadscanner ## Build docker image with workloadscanner cmd.
+docker-build-workloadscanner: build-workloadscanner ## Build docker image with workload scanner.
 	$(DOCKERCMD) buildx build -t ${IMG_CMD_WORKLOAD_SCANNER} -f deployments/dockerfiles/Dockerfile.workloadscanner .
 
-docker-push-backend:
+docker-push-backend: ## Build all the images except portal.
 	$(DOCKERCMD) push ${IMG_MANAGER}
 	$(DOCKERCMD) push ${IMG_EXPORTER}
 	$(DOCKERCMD) push ${IMG_CMD_INSPECTOR}
@@ -128,7 +127,7 @@ docker-push-backend:
 	$(DOCKERCMD) push ${RISK}
 	$(DOCKERCMD) push ${IMG_CMD_WORKLOAD_SCANNER}
 
-docker-push-all: docker-build-backend
+docker-push-all: docker-build-all docker-push-backend ## Push all the images to registry.
 	$(DOCKERCMD) push ${PORTAl}
 
 ##@ Deployment
@@ -143,19 +142,19 @@ gen-yaml-files: manifests kustomize ## Install CRDs into the K8s cluster specifi
 remove_clusterrolebinding:
 	$(KUBECTLCMD) delete clusterrolebinding cnsi-inspector-rolebinding --ignore-not-found=true
 
-portal: namespace
+portal: namespace  ## Install CNSI portal
 	$(KUBECTLCMD) apply -f cnsi-portal/scripts/cloud-native-security-inspector-portal-serviceaccount.yaml
 	$(KUBECTLCMD) apply -f cnsi-portal/scripts/cloud-native-security-inspector-portal-role.yaml
 	$(KUBECTLCMD) apply -f cnsi-portal/scripts/cloud-native-security-inspector-portal-rolebinding.yaml
 	$(KUBECTLCMD) apply -f cnsi-portal/scripts/cloud-native-security-inspector-portal.yaml
 	$(KUBECTLCMD) apply -f cnsi-portal/scripts/cloud-native-security-inspector-portal-service.yaml
 
-# To install and uninstall CNSI components without golang and kustomize required. Probably this is the recommended commands for users currently.
-install: portal
+
+install: portal ## Install all the CNSI components without golang and kustomize required.
 	$(KUBECTLCMD) apply -f deployments/yaml/manager.yaml
 	$(KUBECTLCMD) apply -f deployments/yaml/data-exporter.yaml
 
-uninstall: remove_clusterrolebinding
+uninstall: remove_clusterrolebinding  ## Uninstall CNSI components
 	$(KUBECTLCMD) delete -f deployments/yaml/manager.yaml --ignore-not-found=true
 	$(KUBECTLCMD) delete -f deployments/yaml/data-exporter.yaml --ignore-not-found=true
 
@@ -187,3 +186,5 @@ HARBOR_CLIENT_DIR =./pkg/harbor
 gen-harbor-api:
 	@$(SWAGGER) generate client -f ${HARBOR_SPEC} --target=$(HARBOR_CLIENT_DIR) --template=stratoscale --additional-initialism=CVE --additional-initialism=GC --additional-initialism=OIDC
 
+run: manifests generate fmt vet ## Run a controller from your host.
+	go run cnsi-manager/cmd/main.go

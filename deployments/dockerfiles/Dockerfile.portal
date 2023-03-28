@@ -14,7 +14,7 @@ RUN wget https://nodejs.org/download/release/v14.15.5/node-v14.15.5-linux-x64.ta
     tar -xzf node-v14.15.5-linux-x64.tar.gz && \
     mv node-v14.15.5-linux-x64 /usr/local/nodejs && ln -s /usr/local/nodejs/bin/node /usr/local/bin/ && ln -s /usr/local/nodejs/bin/npm /usr/local/bin/ && \
     rm node-v14.15.5-linux-x64.tar.gz 
-COPY --from=builder /protal/dist .
+COPY --from=builder /cnsi-portal/dist .
 COPY cnsi-portal/node-server.js .
 COPY cnsi-portal/express-package.json package.json
 RUN npm install
