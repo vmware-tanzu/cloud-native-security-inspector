@@ -56,43 +56,43 @@ app.get('/', (req, res) => {
   res.render(data, {})
 })
 
-app.post('/es-test', (req, res) => {
-  const body = req.body
-  const httpsAgent = new https.Agent({
-    ca: body.cert,
-  })
-  config = {}
-  config['headers'] = {
-    'Accept':  'application/json',
-    'Authorization':'Basic '+ body.basic
-  }
-  config['httpsAgent'] = httpsAgent
-  const options = {
-    url: body.url,
-    ca: body.cert,
-    // rejectUnauthorized : false,
-    strictSSL: false,
-    headers: {
-      'Accept':  'application/json',
-      'Authorization':'Basic '+ body.basic
-    }
-  };
-  console.log('body', body)
-  console.log('options', options)
-  const response = request.get(options)
-  response.on('error', err => {
-    console.log(1, err)
-    res.status(501).send('test failed')
-  })
-  response.on('data', data => {
-    console.log(2, data)
-    res.status(501).send('test failed')
-  })
-  response.on('response', response => {
-    console.log(3, response.statusCode)
-    res.status(response.statusCode).send('test result')
-  })
-})
+// app.post('/es-test', (req, res) => {
+//   const body = req.body
+//   const httpsAgent = new https.Agent({
+//     ca: body.cert,
+//   })
+//   config = {}
+//   config['headers'] = {
+//     'Accept':  'application/json',
+//     'Authorization':'Basic '+ body.basic
+//   }
+//   config['httpsAgent'] = httpsAgent
+//   const options = {
+//     url: body.url,
+//     ca: body.cert,
+//     // rejectUnauthorized : false,
+//     strictSSL: false,
+//     headers: {
+//       'Accept':  'application/json',
+//       'Authorization':'Basic '+ body.basic
+//     }
+//   };
+//   console.log('body', body)
+//   console.log('options', options)
+//   const response = request.get(options)
+//   response.on('error', err => {
+//     console.log(1, err)
+//     res.status(501).send('test failed')
+//   })
+//   response.on('data', data => {
+//     console.log(2, data)
+//     res.status(501).send('test failed')
+//   })
+//   response.on('response', response => {
+//     console.log(3, response.statusCode)
+//     res.status(response.statusCode).send('test result')
+//   })
+// })
 
 app.post('/open-search', (req, res) => {
   const body = req.body

@@ -24,7 +24,7 @@ FROM ubuntu:22.04
 WORKDIR /
 COPY --from=builder /workspace/kubebench .
 # RUN mkdir -p cmd/kubebench
-ADD --chown=65532:65532 pkg/inspectors/kubebench/cfg/ cfg/
+ADD --chown=65532:65532 ../../cnsi-inspector/pkg/kube-bench/cfg/ cfg/
 USER 65532:65532
 
 ENTRYPOINT ["/kubebench"]
