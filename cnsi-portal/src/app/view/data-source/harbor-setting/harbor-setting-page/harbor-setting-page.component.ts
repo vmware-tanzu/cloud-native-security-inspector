@@ -96,7 +96,7 @@ export class HarborSettingPageComponent implements OnInit {
       data => {
         this.text = data.id
         if (!this.text) {
-          this.router.navigateByUrl('/setting')
+          this.router.navigateByUrl('/data-source')
         }
       }
     )
@@ -233,7 +233,7 @@ export class HarborSettingPageComponent implements OnInit {
         this.updateDisabled = true   
         this.createButtonFlag = false
         this.router.navigate(
-          ['/setting'],
+          ['/data-source'],
           { queryParams: { secret: false } }
         );
       },
@@ -272,7 +272,7 @@ export class HarborSettingPageComponent implements OnInit {
         this.messageHarborFlag = 'success'
         this.messageContent = 'Update and apply settings successfully!' 
         this.router.navigate(
-          ['/setting'],
+          ['/data-source'],
           { queryParams: { secret: false } }
         );
       },

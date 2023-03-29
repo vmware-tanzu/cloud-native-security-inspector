@@ -47,13 +47,14 @@
   "Nav": {
     "Assessments": {
       "title": "评估报告",
+      "nav": "报告",
       "report_view": "报告",
       "Kube_bench": "kubebench扫描报告",
       "image_nspector_reports": "镜像扫描报告",
       "risk": "风险扫描报告"
     },
     "Insight": {
-      "title": "安全状态",
+      "title": "资产",
       "cluster": "集群",
       "namespace": "命名空间",
       "workload": "工作负载"
@@ -63,6 +64,9 @@
     },
     "Setting": {
       "title": "设置"
+    },
+    "dataSource": {
+      "title": "数据源"
     }
   },
   "Report_View": {

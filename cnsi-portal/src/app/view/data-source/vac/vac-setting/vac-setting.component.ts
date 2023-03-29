@@ -37,7 +37,7 @@ export class VacSettingComponent implements OnInit {
       data => {
         this.text = data.id
         if (!this.text) {
-          this.router.navigateByUrl('/setting')
+          this.router.navigateByUrl('/data-source')
         }
       }
     )

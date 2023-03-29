@@ -12,10 +12,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PolicyService } from 'src/app/service/policy.service';
 @Component({
   selector: 'app-setting',
-  templateUrl: './setting.component.html',
-  styleUrls: ['./setting.component.less']
+  templateUrl: './harbor-setting.componen.html',
+  styleUrls: ['./harbor-setting.component.less']
 })
-export class SettingComponent implements OnInit, OnDestroy {
+export class HarborSettingComponent implements OnInit, OnDestroy {
   public secretsList: SecretModel[] = []
   public harborSetingList: any = [];
   public deleteModal = false;
@@ -132,7 +132,7 @@ export class SettingComponent implements OnInit, OnDestroy {
     )
   }
   modifyPolicy() {
-    this.router.navigateByUrl('/modify-setting/update')
+    this.router.navigateByUrl('/modify-data-source/update')
   }
 
   // secret func

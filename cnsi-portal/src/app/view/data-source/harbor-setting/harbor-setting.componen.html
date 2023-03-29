@@ -48,7 +48,7 @@
         <ng-template [clrIfActive]="!isSecret">
           <clr-tab-content>
             <clr-tab-content> 
-              <button *ngIf="harborSetingList.length === 0"  class="btn btn-primary btn-sm create" routerLink="/modify-setting/create">
+              <button *ngIf="harborSetingList.length === 0"  class="btn btn-primary btn-sm create" routerLink="/modify-data-source/create">
                 <cds-icon shape="plus"></cds-icon>
                 {{'CommonlyUse.new'|translate}} </button>
               <clr-datagrid [clrDgLoading]="settingLoading">

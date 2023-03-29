@@ -13,7 +13,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { NavComponent } from './components/nav/nav.component';
 import { ClusterComponent } from './view/summary/cluster/cluster.component'
 import { PackedbubbleComponent } from './view/report/packedbubble/packedbubble.component';
-import { SettingComponent } from './view/setting/harbor-setting/setting.component';
+import { HarborSettingComponent } from './view/data-source/harbor-setting/harbor-setting.component';
 import { LoginComponent } from './view/login/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HistogramComponent } from './view/report/histogram/histogram.component';
@@ -38,7 +38,7 @@ import { ClusterLineComponent } from './view/report/cluster-line/cluster-line.co
 import { NamesapcePolarComponent } from './view/report/namesapce-polar/namesapce-polar.component';
 import { NamesapceHistogramComponent } from './view/report/namesapce-histogram/namesapce-histogram.component'
 import { DgFilterComponent } from './components/dg-filter/dg-filter.component';
-import { HarborSettingPageComponent } from './view/setting/harbor-setting/harbor-setting-page/harbor-setting-page.component';
+import { HarborSettingPageComponent } from './view/data-source/harbor-setting/harbor-setting-page/harbor-setting-page.component';
 import { PolicySettingPageComponent } from './view/policy/policy-setting-page/policy-setting-page.component';
 import { KubeBenchReportListComponent } from './view/assements/kube-bench-report-list/kube-bench-report-list.component';
 import { KubeBenchReportTestViewComponent } from './view/assements/kube-bench-report-test-view/kube-bench-report-test-view.component';
@@ -46,8 +46,8 @@ import { KubeBenchReportTestDetailComponent } from './view/assements/kube-bench-
 import { KubeBenchReportComponent } from './view/assements/kube-bench-report/kube-bench-report.component';
 import { RiskReportViewComponent } from './view/assements/risk-report-view/risk-report-view.component';
 import { RiskReportDetailComponent } from './view/assements/risk-report-detail/risk-report-detail.component'
-import { VacComponent } from './view/setting/vac/vac.component';
-import { VacSettingComponent } from './view/setting/vac/vac-setting/vac-setting.component';
+import { VacComponent } from './view/data-source/vac/vac.component';
+import { VacSettingComponent } from './view/data-source/vac/vac-setting/vac-setting.component';
 
 import '@cds/core/icon/register.js';
 import { 
@@ -86,6 +86,7 @@ import {
   cpuIcon,
   memoryIcon
 } from '@cds/core/icon';
+import { DoshboardComponent } from './view/doshboard/doshboard.component';
 
 ClarityIcons.addIcons(
   userIcon,
@@ -132,7 +133,7 @@ ClarityIcons.addIcons(
     NavComponent,
     ClusterComponent,
     PackedbubbleComponent,
-    SettingComponent,
+    HarborSettingComponent,
     LoginComponent,
     HistogramComponent,
     LineComponent,
@@ -160,7 +161,8 @@ ClarityIcons.addIcons(
     RiskReportViewComponent,
     RiskReportDetailComponent,
     VacComponent,
-    VacSettingComponent
+    VacSettingComponent,
+    DoshboardComponent
   ],
   imports: [
     BrowserModule,

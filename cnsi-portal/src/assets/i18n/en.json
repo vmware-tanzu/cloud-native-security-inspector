@@ -47,13 +47,14 @@
   "Nav": {
     "Assessments": {
       "title": "Assessments",
+      "nav": "Reports",
       "report_view": "Reports",
       "Kube_bench": "Kubebench Scanning Reports",
       "image_nspector_reports": "Image Scanning Reports",
       "risk": "Risk Scanning Reports"
     },
     "Insight": {
-      "title": "Insight",
+      "title": "Assets",
       "cluster": "Cluster",
       "namespace": " Namespace",
       "workload": "Workload"
@@ -63,6 +64,9 @@
     },
     "Setting": {
       "title": "Setting"
+    },
+    "dataSource": {
+      "title": "Data Source"
     }
   },
   "Report_View": {
