@@ -31,7 +31,7 @@ body {
 }
 .header .options span {
   font-size: 1.2rem;
-  font-size: 700;
+  font-weight: 900;
   cursor: pointer;
 }
 .header .options a:hover {
