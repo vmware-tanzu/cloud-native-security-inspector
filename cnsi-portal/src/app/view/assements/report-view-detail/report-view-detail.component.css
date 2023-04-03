@@ -113,6 +113,15 @@ clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content .po
   width: auto;
   padding: 10px;
 }
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content .vac-container .list {
+  padding-left: 5px;
+}
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content .vac-container .list li b {
+  margin-right: 15px;
+}
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content .vac-container .vac-policy {
+  padding-left: 20px;
+}
 clr-accordion ::ng-deep .clr-accordion-header .clr-accordion-title {
   color: #fff;
 }

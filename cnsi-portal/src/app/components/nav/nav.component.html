@@ -4,10 +4,10 @@
 -->
 
 <clr-vertical-nav [clrVerticalNavCollapsible]="true">
-  <a clrVerticalNavLink [routerLink]="['/doshboard']" routerLinkActive='active'>
+  <!-- <a clrVerticalNavLink [routerLink]="['/doshboard']" routerLinkActive='active'>
     <cds-icon clrVerticalNavIcon shape="file-settings" ></cds-icon>
     <b>Doshboard</b>
-  </a>
+  </a> -->
   <a clrVerticalNavLink [routerLink]="['/policy']" routerLinkActive='active'>
     <cds-icon clrVerticalNavIcon shape="file-settings" ></cds-icon>
     <b>{{'Nav.Policy.title'| translate}}</b>
@@ -49,14 +49,22 @@
         </a>
     </clr-vertical-nav-group-children>
     <clr-vertical-nav-group-children>
-        <a 
-            clrVerticalNavLink
-           routerLink="/assessments/risk"
-           routerLinkActive="active">
-           {{'Nav.Assessments.risk'| translate}}
-        </a>
-    </clr-vertical-nav-group-children>
-  </clr-vertical-nav-group>
+      <a 
+          clrVerticalNavLink
+         routerLink="/assessments/risk"
+         routerLinkActive="active">
+         {{'Nav.Assessments.risk'| translate}}
+      </a>
+  </clr-vertical-nav-group-children>
+  <clr-vertical-nav-group-children>
+    <a 
+        clrVerticalNavLink
+       routerLink="/assessments/trivy"
+       routerLinkActive="active">
+       {{'Nav.Assessments.trivy'| translate}}
+    </a>
+</clr-vertical-nav-group-children>
+</clr-vertical-nav-group>
   <clr-vertical-nav-group
           routerLinkActive="active">
       <cds-icon shape="organization" clrVerticalNavIcon></cds-icon>
@@ -82,9 +90,9 @@
       </clr-vertical-nav-group-children>
   </clr-vertical-nav-group>
 
-  <a clrVerticalNavLink [routerLink]="['/setting']" routerLinkActive='active'>
+  <!-- <a clrVerticalNavLink [routerLink]="['/setting']" routerLinkActive='active'>
     <cds-icon clrVerticalNavIcon shape="cog" ></cds-icon>
     <b>{{'Nav.Setting.title'| translate}}</b>
-  </a>
+  </a> -->
 
 </clr-vertical-nav>

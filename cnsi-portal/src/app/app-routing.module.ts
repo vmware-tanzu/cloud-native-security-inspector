@@ -25,6 +25,7 @@ import { VacComponent } from 'src/app/view/data-source/vac/vac.component'
 import { VacSettingComponent } from 'src/app/view/data-source/vac/vac-setting/vac-setting.component'
 import { DoshboardComponent } from 'src/app/view/doshboard/doshboard.component'
 import { SettingComponent } from 'src/app/view/setting/setting.component'
+import { TrivyViewComponent } from 'src/app/view/assements/trivy-view/trivy-view.component'
 
 const routes: Routes = [
   {
@@ -68,6 +69,10 @@ const routes: Routes = [
           {
             path: 'risk',
             component: RiskReportViewComponent
+          },
+          {
+            path: 'trivy',
+            component: TrivyViewComponent
           },
           {
             path: '',
@@ -135,7 +140,7 @@ const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'doshboard'
+        redirectTo: 'policy'
       }
     ]
   },

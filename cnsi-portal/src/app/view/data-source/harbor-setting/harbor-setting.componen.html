@@ -31,7 +31,7 @@
                 <clr-dg-row *clrDgItems="let secret of secretsList">
                     <clr-dg-cell>{{secret.metadata.name}}</clr-dg-cell>
                     <clr-dg-cell>{{secret.metadata.namespace}}</clr-dg-cell>
-                    <clr-dg-cell>{{secret.metadata?.creationTimestamp | date}}</clr-dg-cell>
+                    <clr-dg-cell>{{secret.metadata.creationTimestamp | date}}</clr-dg-cell>
                 </clr-dg-row>
             
                 <clr-dg-footer>

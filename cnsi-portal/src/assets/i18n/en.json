@@ -39,7 +39,8 @@
     "description": "Description",
     "scanInspector": "Scanners",
     "typeId": "Type ID",
-    "information": "Information"
+    "information": "Information",
+    "title": "Title"
   },
   "Header": {
     "title": "Cloud Native Security Inspector"
@@ -49,9 +50,10 @@
       "title": "Assessments",
       "nav": "Reports",
       "report_view": "Reports",
-      "Kube_bench": "Kubebench Scanning Reports",
-      "image_nspector_reports": "Image Scanning Reports",
-      "risk": "Risk Scanning Reports"
+      "Kube_bench": "Cluster Vulnerability Reports",
+      "image_nspector_reports": "Images Risks Reports",
+      "risk": "ArkSec Risk Reports",
+      "trivy": "Trivy Scanning Reports"
     },
     "Insight": {
       "title": "Assets",
@@ -102,6 +104,20 @@
   },
   "Risk_view": {
     "numberOfVulnerabilities": "number of vulnerabilities"
+  },
+  "Trivy_view": {
+    "target": "Target",
+    "class": "Class",
+    "type": "Type",
+    "misconfiguration_successes": "Misconfiguration Successes",
+    "misconfiguration_failures": "Misconfiguration Failures",
+    "misconfiguration_exceptions": "Misconfiguration Exceptions",
+    "results_list": "Results List",
+    "os": "OS",
+    "image": "Images",
+    "result": "Results",
+    "severity": "Severity",
+    "misconfigurations": "Misconfigurations"
   },
   "Cluster": {
     "kubernetes_version": "Kubernetes version",

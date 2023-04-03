@@ -51,7 +51,8 @@
       "report_view": "报告",
       "Kube_bench": "kubebench扫描报告",
       "image_nspector_reports": "镜像扫描报告",
-      "risk": "风险扫描报告"
+      "risk": "风险扫描报告",
+      "trivy": "Trivy扫描报告"
     },
     "Insight": {
       "title": "资产",
@@ -101,6 +102,14 @@
   },
   "Risk_view": {
     "numberOfVulnerabilities": "漏洞数量"
+  },
+  "Trivy_view": {
+    "target": "目标",
+    "class": "类",
+    "type": "类型",
+    "misconfiguration_successes": "错误配置项成功条数",
+    "misconfiguration_failures": "错误配置项失败条数",
+    "misconfiguration_exceptions": "错误配置项例外条数"
   },
   "Cluster": {
     "kubernetes_version": "Kubernetes版本",

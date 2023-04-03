@@ -84,9 +84,12 @@ import {
   plusCircleIcon,
   minusCircleIcon,
   cpuIcon,
-  memoryIcon
+  memoryIcon,
+  viewListIcon
 } from '@cds/core/icon';
 import { DoshboardComponent } from './view/doshboard/doshboard.component';
+import { TrivyViewComponent } from './view/assements/trivy-view/trivy-view.component';
+import { TrivyViewDetailComponent } from './view/assements/trivy-view-detail/trivy-view-detail.component';
 
 ClarityIcons.addIcons(
   userIcon,
@@ -121,7 +124,8 @@ ClarityIcons.addIcons(
   plusCircleIcon,
   minusCircleIcon,
   cpuIcon,
-  memoryIcon
+  memoryIcon,
+  viewListIcon
 );
 
 
@@ -162,7 +166,9 @@ ClarityIcons.addIcons(
     RiskReportDetailComponent,
     VacComponent,
     VacSettingComponent,
-    DoshboardComponent
+    DoshboardComponent,
+    TrivyViewComponent,
+    TrivyViewDetailComponent
   ],
   imports: [
     BrowserModule,

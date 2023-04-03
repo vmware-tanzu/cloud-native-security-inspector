@@ -1,0 +1,101 @@
+.report {
+  position: relative;
+  padding: 15px;
+  h2 {
+    color: #fff;
+  }
+  .report-detai-bg {
+    position: absolute;
+    z-index: 1000;
+    right: 0;
+    top: 0;
+    background-color: rgba(28,42,50, 0);
+    width: 100%;
+    height: 100%;
+    .report-detai {
+      position: absolute;
+      right: -700px;
+      top: 0;
+      width: 1200px;
+      height: auto;
+      min-height: 100vh;
+      opacity: 0;
+      transition: right 5s, opacity 2s;
+      &.show {
+        right: 0;
+        opacity: 1;
+        transition: right 5s, opacity 2s;
+      }
+    }
+  }
+  .echarts-loading {
+    position: relative;
+    width: 1400px;
+    .spinner {
+      position: absolute;
+      left: 50%;
+      top: 150px
+    }
+  }
+  #risk-box {
+    flex: 1;
+    #risk-resize {
+      width: 5px;
+      height: 100%;
+      cursor: w-resize;
+      float: left;
+      position: relative;
+      left: 0;
+      background-color: #21333B;
+    }
+    #risk-right {
+      width: 445px;
+      float: right;
+    }
+    #risk-left {
+      float: left;
+      width: calc(100% - 450px);
+      height: 100%;
+    }
+  }
+}
+clr-datagrid {
+  &::ng-deep {
+
+    .sort {
+      display: flex;
+      flex: 1;
+      justify-content: space-between;
+      cds-icon {
+        &.oder {
+          transform: rotate(180deg);
+        }
+      }
+    }
+  }
+}
+
+.report-detai-bg {
+  position: absolute;
+  z-index: 1000;
+  right: 0;
+  top: 0;
+  background-color: rgba(28,42,50, 0);
+  width: 100%;
+  height: 100%;
+  .report-detai {
+    position: absolute;
+    right: -700px;
+    top: 0;
+    width: 1200px;
+    height: auto;
+    min-height: 100vh;
+    opacity: 0;
+    transition: right 5s, opacity 2s;
+    &.show {
+      right: 0;
+      opacity: 1;
+      transition: right 5s, opacity 2s;
+    }
+  }
+}
