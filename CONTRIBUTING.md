@@ -96,7 +96,7 @@ When your branch gets out of sync with the vmware-tanzu/main branch, use the fol
 ```shell
 git checkout my-new-feature
 git fetch -a
-git pull --rebase upstream master
+git pull --rebase upstream main
 git push --force-with-lease origin my-new-feature
 ```
 
@@ -115,7 +115,7 @@ If you need to squash changes into an earlier commit, you can use:
 ```shell
 git add .
 git commit --fixup <commit>
-git rebase -i --autosquash master
+git rebase -i --autosquash main
 git push --force-with-lease origin my-new-feature
 ```
 Be sure to add a comment to the PR indicating your new changes are ready to review, as GitHub does not generate a notification when you git push.
