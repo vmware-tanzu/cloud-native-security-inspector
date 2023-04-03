@@ -1,0 +1,217 @@
+body {
+  background-color: #1B2A32;
+}
+.header {
+  height: 60px;
+  width: 100%;
+  position: fixed;
+  box-sizing: border-box;
+  background-color: #0F171B;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  z-index: 99999;
+}
+/* logo */
+.header .logo {
+  height: 60px;
+  display: flex;
+  align-items: center;
+}
+.header .logo h1 {
+  font-size: 1.4rem;
+}
+/* options */
+.header .options {
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  width: 30rem;
+  justify-content: space-evenly;
+}
+.header .options span {
+  font-size: 1.2rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+.header .options a:hover {
+  color: #aaa;
+}
+
+.features{
+  background-color: #2C5C81;
+  height: 30rem;
+  padding-top: 60px;
+  margin-bottom: 18rem;
+}
+
+
+/* title */
+.features .title {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.features .title .name {
+  display: flex;
+  align-items: center;
+}
+
+.features .title .name h2 {
+  font-size: 4rem;
+  margin-left: 10px;
+}
+
+.features .title .readme {
+  font-size: 2rem;
+}
+
+/* cards */
+.features .cards {
+  display: flex;
+  justify-content: space-evenly;
+  position: relative;
+  top: -4rem;
+}
+.features .cards li {
+  width: 16.25rem;
+  height: 16.25rem;
+  padding: 0.5rem;
+  border-radius: 3%;
+  background-color: #fff;
+  color: #333;
+  box-shadow: 0px 1px 10px #ddd;
+}
+.features .cards li img{
+  display: block;
+  width: 9.375rem;
+  height: 6.125rem;
+  margin: 0 auto;
+}
+.features .cards li .content{
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+}
+.features .cards li .content span{
+  position: relative;
+  padding-left: 1.2rem;
+  font-size: 1rem;
+  margin-left: 0.5rem;
+  color: #444;
+}
+.features .cards li .content .content-title {
+  padding-left: 0;
+  font-size: 1.5rem;
+  color: #000;
+  font-weight: 900;
+}
+
+.features .cards li .content .content-title-2 {
+  padding-left: 1.2rem;
+  font-size: 1.25rem;
+  color: #333;
+  font-weight: 500;
+}
+.features .cards li .content .content-span {
+  padding-left: 1.8rem;
+}
+
+.features .cards li .content span .i{
+  position: absolute;
+  left: 0.3rem;
+}
+
+.features .cards li .content span i{
+  position: absolute;
+  left: 0px;
+}
+/* what-narrows */
+.what-narrows {
+  height: 10rem;
+  margin: 4rem 0;
+}
+
+.what-narrows h3 {
+  font-size: 2rem;
+  text-align: center;
+  padding-top: 0.2rem;
+}
+.what-narrows p {
+  font-size: 1.35rem;
+  width: 50%;
+  margin: 1.5rem auto;
+  font-weight: 500;
+  text-align: center;
+}
+/* design */
+.design, .roadmap {
+  background-color: #F8F9FA;
+  width: 80%;
+  margin: 0 auto;
+  border-top: 1px solid #F8F9FA;
+  position: relative;
+  border-radius: 5px;
+}
+
+.design h3::before, .roadmap h3::before {
+    left: 50%;
+    margin-left: -30px;
+    top: -1px;
+    border-style: solid;
+    border-width: 25px 30px 0;
+    border-color: #1B2A32 transparent transparent transparent;
+    z-index: 3;
+    position: absolute;
+    content: "";
+}
+.design h3, .roadmap h3{
+  color: #333;
+  font-size: 2rem;
+  text-align: center;
+  margin: 2rem 0;
+}
+.design img, .roadmap img {
+  width: 100%;
+  height: 100%;
+}
+
+.roadmap {
+  margin-top: 4rem;
+}
+/* use-by */
+
+.use-by  {
+  height: 10rem;
+  margin: 4rem 0;
+  background-color: #fff;
+}
+
+.use-by  h3 {
+  font-size: 2rem;
+  text-align: center;
+  padding-top: 0.4rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+.use-by ul {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.use-by ul li img {
+  display: block;
+  width: 200px;
+}
+/* footer */
+footer {
+  height: 5rem;
+  color: #fff;
+  text-align: center;
+}
+footer small {
+
+}
