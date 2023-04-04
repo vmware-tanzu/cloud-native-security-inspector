@@ -17,13 +17,18 @@ import (
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/pkg/policy"
 
 	"github.com/pkg/errors"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-inspector/pkg/cspauth"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/api/v1alpha1"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/pkg/data"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/pkg/data/core"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/pkg/data/providers"
+	vac_provider "github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/pkg/data/vacprovider"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/pkg/runtime/grpool"
+	governor_client "github.com/vmware-tanzu/cloud-native-security-inspector/lib/governor/go-client"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/client-go/kubernetes"
+	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
@@ -71,6 +76,36 @@ func (c *controller) CTRL() Controller {
 	return c
 }
 
+func (c *controller) GetVacAdapter(setting *v1alpha1.Setting) (*vac_provider.Adapter, error) {
+
+	config := governor_client.NewConfiguration()
+	config.Servers = governor_client.ServerConfigurations{{
+		URL: setting.Spec.VacDataSource.Endpoint,
+	}}
+	apiClient := governor_client.NewAPIClient(config)
+
+	cspClient, err := cspauth.NewCspHTTPClient()
+	if err != nil {
+		log.Errorf("Initializing CSP : %v", err)
+		return nil, err
+	}
+	provider := &cspauth.CspAuth{CspClient: cspClient}
+
+	clientSet, err := kubernetes.NewForConfig(ctrl.GetConfigOrDie())
+	if err != nil {
+		log.Error(err, "Failed to get kubernetes clientSet, check if kube config is correctly configured!")
+		return nil, err
+	}
+	adapter := &vac_provider.Adapter{
+		ApiClient:          apiClient,
+		CspProvider:        provider,
+		KubeInterface:      clientSet,
+		CspSecretName:      setting.Spec.VacDataSource.CredentialRef.Name,
+		CspSecretNamespace: setting.Spec.VacDataSource.CredentialRef.Namespace,
+	}
+	return adapter, nil
+}
+
 func (c *controller) EnsureSettings(ctx context.Context, policy *v1alpha1.InspectionPolicy) (*v1alpha1.Setting, error) {
 	settingsName := policy.Spec.SettingsName
 	if settingsName == "" {
@@ -86,6 +121,22 @@ func (c *controller) EnsureSettings(ctx context.Context, policy *v1alpha1.Inspec
 		}
 		return nil, err
 	}
+
+	// if VacAssessment Enabled,
+	if policy.Spec.VacAssessmentEnabled {
+		if setting.Spec.VacDataSource.Endpoint == "" {
+			log.Error("Invalid VacDataSource endpoint in setting")
+			return nil, errors.New("Invalid VacDataSource in setting")
+		}
+
+		if setting.Spec.VacDataSource.CredentialRef == nil ||
+			setting.Spec.VacDataSource.CredentialRef.Name == "" ||
+			setting.Spec.VacDataSource.CredentialRef.Namespace == "" {
+			log.Error("Invalid VacDataSource CredentialRef in setting")
+			return nil, errors.New("Invalid VacDataSource in setting")
+		}
+	}
+
 	// if data source is disabled, return error.
 	if setting.Spec.DataSource.Disabled {
 		log.Info("The data source in settings is disabled")
@@ -94,6 +145,42 @@ func (c *controller) EnsureSettings(ctx context.Context, policy *v1alpha1.Inspec
 
 	return setting, nil
 
+}
+
+func (c *controller) convertProductToVacProductInfo(product *governor_client.Product) *wl.VacProductInfo {
+	vacProductInfo := &wl.VacProductInfo{}
+
+	if product == nil {
+		vacProductInfo := &wl.VacProductInfo{}
+		vacProductInfo.Trusted = false
+		return vacProductInfo
+	}
+
+	vacProductInfo.Trusted = true
+	vacProductInfo.Name = &product.Name
+	vacProductInfo.Branch = &product.Branch
+	vacProductInfo.Version = &product.Version
+	vacProductInfo.Revision = product.Revision
+	vacProductInfo.ReleasedAt = &product.ReleasedAt
+	vacProductInfo.LastVersionReleased = product.LastVersionReleased
+	vacProductInfo.Status = product.Status
+
+	if product.DeprecationPolicy != nil {
+		deprecationPolicy := &wl.DeprecationPolicy{}
+		deprecationPolicy.DeprecationDate = product.DeprecationPolicy.DeprecationDate
+		deprecationPolicy.GracePeriodDays = product.DeprecationPolicy.GracePeriodDays
+		deprecationPolicy.Reason = product.DeprecationPolicy.Reason
+		deprecationPolicy.Alternative = product.DeprecationPolicy.Alternative
+		vacProductInfo.DeprecationPolicy = deprecationPolicy
+	}
+
+	if product.NonsupportPolicy != nil {
+		nonSupportPolicy := &wl.NonSupportPolicy{}
+		nonSupportPolicy.Name = product.NonsupportPolicy.Name
+		nonSupportPolicy.Reason = product.NonsupportPolicy.Reason
+		vacProductInfo.NonsupportPolicy = nonSupportPolicy
+	}
+	return vacProductInfo
 }
 
 // Run implements Controller.
@@ -143,6 +230,12 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 		NamespaceAssessments: make([]*itypes.NamespaceAssessment, 0),
 	}
 
+	// GetVacAdapter
+	vacAdapter, err := c.GetVacAdapter(setting)
+	if err != nil {
+		return err
+	}
+
 	// Use closure to warp the related parameters.
 	inspectFac := func() func(workload wl.Workload) *itypes.WorkloadAssessment {
 		return func(workload wl.Workload) *itypes.WorkloadAssessment {
@@ -186,6 +279,18 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 
 			// Do assessment for each workload container and also calculate the overall result.
 			for _, ct := range containers {
+
+				// Get VacAssessment
+				if policy.Spec.VacAssessmentEnabled {
+					productInfo, err := vacAdapter.GetVacProductInfo(ct.ImageID)
+					if err != nil {
+						log.Error("VAC Product Assessment Failed")
+					} else {
+						ct.VacAssessment = c.convertProductToVacProductInfo(productInfo)
+					}
+				} else {
+					log.Info("Skipping VAC Assessment")
+				}
 				// Read data of the container image.
 				aid := core.ParseArtifactIDFrom(ct.Image, ct.ImageID)
 				stores, err := adapter.Read(ctx, aid, readOps...)

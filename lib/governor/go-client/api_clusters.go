@@ -1,7 +1,7 @@
 /*
 Catalog Governor Service REST API
 
-This is the service to track assets deployed in customer clusters
+This is the service to track assets deployed in customer clusters.  NOTE: Catalog Governor Service is an internal tool for the Content-Building Ecosystem team.
 
 API version: ${project.version}
 Contact: content-building-ecosystem@vmware.com
@@ -67,7 +67,7 @@ type ClustersApi interface {
 	GetClustersExecute(r ApiGetClustersRequest) ([]KubernetesClusterResponse, *http.Response, error)
 
 	/*
-		RegisterCluster Register a cluster
+		RegisterCluster Register a new kubernetes cluster
 
 		Registers a new cluster to start receiving telemetry. OrgId is fetched from CSP token.
 
@@ -80,7 +80,7 @@ type ClustersApi interface {
 	RegisterClusterExecute(r ApiRegisterClusterRequest) (*http.Response, error)
 
 	/*
-		UnregisterCluster Unregister a cluster
+		UnregisterCluster Unregister a saved kubernetes cluster
 
 		Unregisters a cluster. OrgId is fetched from CSP token.
 
@@ -94,7 +94,7 @@ type ClustersApi interface {
 	UnregisterClusterExecute(r ApiUnregisterClusterRequest) (*http.Response, error)
 
 	/*
-		UpdateTelemetry Save/update cluster workload telemetry
+		UpdateTelemetry Save or update cluster workload telemetry
 
 		Saves/updates information about the running workloads in a cluster for an organization. OrgId is fetched from CSP token.
 
@@ -525,7 +525,7 @@ func (r ApiRegisterClusterRequest) Execute() (*http.Response, error) {
 }
 
 /*
-RegisterCluster Register a cluster
+RegisterCluster Register a new kubernetes cluster
 
 Registers a new cluster to start receiving telemetry. OrgId is fetched from CSP token.
 
@@ -648,7 +648,7 @@ func (r ApiUnregisterClusterRequest) Execute() (*http.Response, error) {
 }
 
 /*
-UnregisterCluster Unregister a cluster
+UnregisterCluster Unregister a saved kubernetes cluster
 
 Unregisters a cluster. OrgId is fetched from CSP token.
 
@@ -766,7 +766,7 @@ func (r ApiUpdateTelemetryRequest) Execute() (*http.Response, error) {
 }
 
 /*
-UpdateTelemetry Save/update cluster workload telemetry
+UpdateTelemetry Save or update cluster workload telemetry
 
 Saves/updates information about the running workloads in a cluster for an organization. OrgId is fetched from CSP token.
 

@@ -1,7 +1,7 @@
 /*
 Catalog Governor Service REST API
 
-This is the service to track assets deployed in customer clusters
+This is the service to track assets deployed in customer clusters.  NOTE: Catalog Governor Service is an internal tool for the Content-Building Ecosystem team.
 
 API version: ${project.version}
 Contact: content-building-ecosystem@vmware.com
@@ -16,47 +16,46 @@ import (
 	"time"
 )
 
-// KubernetesClusterDetailedResponse A Kubernetes cluster with its metadata, workloads and audit information included
-type KubernetesClusterDetailedResponse struct {
+// KubernetesClusterResponse A Kubernetes cluster with its metadata and audit information
+type KubernetesClusterResponse struct {
 	// id of the cluster where the workloads are deployed
 	Id string `json:"id"`
 	// name of the cluster where the workloads are deployed
 	Name string `json:"name"`
-	// Creation date
+	// Date when the cluster was registered
 	CreatedAt *time.Time `json:"created_at,omitempty"`
-	// Last updated date
+	// Last date when the cluster was updated with new telemetry
 	UpdatedAt *time.Time `json:"updated_at,omitempty"`
 	// User who created the cluster
 	CreatedBy *string `json:"created_by,omitempty"`
 	// User who last updated the cluster
-	UpdatedBy            *string                      `json:"updated_by,omitempty"`
-	Telemetry            *KubernetesTelemetryResponse `json:"telemetry,omitempty"`
+	UpdatedBy            *string `json:"updated_by,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
-type _KubernetesClusterDetailedResponse KubernetesClusterDetailedResponse
+type _KubernetesClusterResponse KubernetesClusterResponse
 
-// NewKubernetesClusterDetailedResponse instantiates a new KubernetesClusterDetailedResponse object
+// NewKubernetesClusterResponse instantiates a new KubernetesClusterResponse object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewKubernetesClusterDetailedResponse(id string, name string) *KubernetesClusterDetailedResponse {
-	this := KubernetesClusterDetailedResponse{}
+func NewKubernetesClusterResponse(id string, name string) *KubernetesClusterResponse {
+	this := KubernetesClusterResponse{}
 	this.Id = id
 	this.Name = name
 	return &this
 }
 
-// NewKubernetesClusterDetailedResponseWithDefaults instantiates a new KubernetesClusterDetailedResponse object
+// NewKubernetesClusterResponseWithDefaults instantiates a new KubernetesClusterResponse object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewKubernetesClusterDetailedResponseWithDefaults() *KubernetesClusterDetailedResponse {
-	this := KubernetesClusterDetailedResponse{}
+func NewKubernetesClusterResponseWithDefaults() *KubernetesClusterResponse {
+	this := KubernetesClusterResponse{}
 	return &this
 }
 
 // GetId returns the Id field value
-func (o *KubernetesClusterDetailedResponse) GetId() string {
+func (o *KubernetesClusterResponse) GetId() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -67,7 +66,7 @@ func (o *KubernetesClusterDetailedResponse) GetId() string {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *KubernetesClusterDetailedResponse) GetIdOk() (*string, bool) {
+func (o *KubernetesClusterResponse) GetIdOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -75,12 +74,12 @@ func (o *KubernetesClusterDetailedResponse) GetIdOk() (*string, bool) {
 }
 
 // SetId sets field value
-func (o *KubernetesClusterDetailedResponse) SetId(v string) {
+func (o *KubernetesClusterResponse) SetId(v string) {
 	o.Id = v
 }
 
 // GetName returns the Name field value
-func (o *KubernetesClusterDetailedResponse) GetName() string {
+func (o *KubernetesClusterResponse) GetName() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -91,7 +90,7 @@ func (o *KubernetesClusterDetailedResponse) GetName() string {
 
 // GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
-func (o *KubernetesClusterDetailedResponse) GetNameOk() (*string, bool) {
+func (o *KubernetesClusterResponse) GetNameOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -99,12 +98,12 @@ func (o *KubernetesClusterDetailedResponse) GetNameOk() (*string, bool) {
 }
 
 // SetName sets field value
-func (o *KubernetesClusterDetailedResponse) SetName(v string) {
+func (o *KubernetesClusterResponse) SetName(v string) {
 	o.Name = v
 }
 
 // GetCreatedAt returns the CreatedAt field value if set, zero value otherwise.
-func (o *KubernetesClusterDetailedResponse) GetCreatedAt() time.Time {
+func (o *KubernetesClusterResponse) GetCreatedAt() time.Time {
 	if o == nil || o.CreatedAt == nil {
 		var ret time.Time
 		return ret
@@ -114,7 +113,7 @@ func (o *KubernetesClusterDetailedResponse) GetCreatedAt() time.Time {
 
 // GetCreatedAtOk returns a tuple with the CreatedAt field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *KubernetesClusterDetailedResponse) GetCreatedAtOk() (*time.Time, bool) {
+func (o *KubernetesClusterResponse) GetCreatedAtOk() (*time.Time, bool) {
 	if o == nil || o.CreatedAt == nil {
 		return nil, false
 	}
@@ -122,7 +121,7 @@ func (o *KubernetesClusterDetailedResponse) GetCreatedAtOk() (*time.Time, bool) 
 }
 
 // HasCreatedAt returns a boolean if a field has been set.
-func (o *KubernetesClusterDetailedResponse) HasCreatedAt() bool {
+func (o *KubernetesClusterResponse) HasCreatedAt() bool {
 	if o != nil && o.CreatedAt != nil {
 		return true
 	}
@@ -131,12 +130,12 @@ func (o *KubernetesClusterDetailedResponse) HasCreatedAt() bool {
 }
 
 // SetCreatedAt gets a reference to the given time.Time and assigns it to the CreatedAt field.
-func (o *KubernetesClusterDetailedResponse) SetCreatedAt(v time.Time) {
+func (o *KubernetesClusterResponse) SetCreatedAt(v time.Time) {
 	o.CreatedAt = &v
 }
 
 // GetUpdatedAt returns the UpdatedAt field value if set, zero value otherwise.
-func (o *KubernetesClusterDetailedResponse) GetUpdatedAt() time.Time {
+func (o *KubernetesClusterResponse) GetUpdatedAt() time.Time {
 	if o == nil || o.UpdatedAt == nil {
 		var ret time.Time
 		return ret
@@ -146,7 +145,7 @@ func (o *KubernetesClusterDetailedResponse) GetUpdatedAt() time.Time {
 
 // GetUpdatedAtOk returns a tuple with the UpdatedAt field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *KubernetesClusterDetailedResponse) GetUpdatedAtOk() (*time.Time, bool) {
+func (o *KubernetesClusterResponse) GetUpdatedAtOk() (*time.Time, bool) {
 	if o == nil || o.UpdatedAt == nil {
 		return nil, false
 	}
@@ -154,7 +153,7 @@ func (o *KubernetesClusterDetailedResponse) GetUpdatedAtOk() (*time.Time, bool) 
 }
 
 // HasUpdatedAt returns a boolean if a field has been set.
-func (o *KubernetesClusterDetailedResponse) HasUpdatedAt() bool {
+func (o *KubernetesClusterResponse) HasUpdatedAt() bool {
 	if o != nil && o.UpdatedAt != nil {
 		return true
 	}
@@ -163,12 +162,12 @@ func (o *KubernetesClusterDetailedResponse) HasUpdatedAt() bool {
 }
 
 // SetUpdatedAt gets a reference to the given time.Time and assigns it to the UpdatedAt field.
-func (o *KubernetesClusterDetailedResponse) SetUpdatedAt(v time.Time) {
+func (o *KubernetesClusterResponse) SetUpdatedAt(v time.Time) {
 	o.UpdatedAt = &v
 }
 
 // GetCreatedBy returns the CreatedBy field value if set, zero value otherwise.
-func (o *KubernetesClusterDetailedResponse) GetCreatedBy() string {
+func (o *KubernetesClusterResponse) GetCreatedBy() string {
 	if o == nil || o.CreatedBy == nil {
 		var ret string
 		return ret
@@ -178,7 +177,7 @@ func (o *KubernetesClusterDetailedResponse) GetCreatedBy() string {
 
 // GetCreatedByOk returns a tuple with the CreatedBy field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *KubernetesClusterDetailedResponse) GetCreatedByOk() (*string, bool) {
+func (o *KubernetesClusterResponse) GetCreatedByOk() (*string, bool) {
 	if o == nil || o.CreatedBy == nil {
 		return nil, false
 	}
@@ -186,7 +185,7 @@ func (o *KubernetesClusterDetailedResponse) GetCreatedByOk() (*string, bool) {
 }
 
 // HasCreatedBy returns a boolean if a field has been set.
-func (o *KubernetesClusterDetailedResponse) HasCreatedBy() bool {
+func (o *KubernetesClusterResponse) HasCreatedBy() bool {
 	if o != nil && o.CreatedBy != nil {
 		return true
 	}
@@ -195,12 +194,12 @@ func (o *KubernetesClusterDetailedResponse) HasCreatedBy() bool {
 }
 
 // SetCreatedBy gets a reference to the given string and assigns it to the CreatedBy field.
-func (o *KubernetesClusterDetailedResponse) SetCreatedBy(v string) {
+func (o *KubernetesClusterResponse) SetCreatedBy(v string) {
 	o.CreatedBy = &v
 }
 
 // GetUpdatedBy returns the UpdatedBy field value if set, zero value otherwise.
-func (o *KubernetesClusterDetailedResponse) GetUpdatedBy() string {
+func (o *KubernetesClusterResponse) GetUpdatedBy() string {
 	if o == nil || o.UpdatedBy == nil {
 		var ret string
 		return ret
@@ -210,7 +209,7 @@ func (o *KubernetesClusterDetailedResponse) GetUpdatedBy() string {
 
 // GetUpdatedByOk returns a tuple with the UpdatedBy field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *KubernetesClusterDetailedResponse) GetUpdatedByOk() (*string, bool) {
+func (o *KubernetesClusterResponse) GetUpdatedByOk() (*string, bool) {
 	if o == nil || o.UpdatedBy == nil {
 		return nil, false
 	}
@@ -218,7 +217,7 @@ func (o *KubernetesClusterDetailedResponse) GetUpdatedByOk() (*string, bool) {
 }
 
 // HasUpdatedBy returns a boolean if a field has been set.
-func (o *KubernetesClusterDetailedResponse) HasUpdatedBy() bool {
+func (o *KubernetesClusterResponse) HasUpdatedBy() bool {
 	if o != nil && o.UpdatedBy != nil {
 		return true
 	}
@@ -227,43 +226,11 @@ func (o *KubernetesClusterDetailedResponse) HasUpdatedBy() bool {
 }
 
 // SetUpdatedBy gets a reference to the given string and assigns it to the UpdatedBy field.
-func (o *KubernetesClusterDetailedResponse) SetUpdatedBy(v string) {
+func (o *KubernetesClusterResponse) SetUpdatedBy(v string) {
 	o.UpdatedBy = &v
 }
 
-// GetTelemetry returns the Telemetry field value if set, zero value otherwise.
-func (o *KubernetesClusterDetailedResponse) GetTelemetry() KubernetesTelemetryResponse {
-	if o == nil || o.Telemetry == nil {
-		var ret KubernetesTelemetryResponse
-		return ret
-	}
-	return *o.Telemetry
-}
-
-// GetTelemetryOk returns a tuple with the Telemetry field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *KubernetesClusterDetailedResponse) GetTelemetryOk() (*KubernetesTelemetryResponse, bool) {
-	if o == nil || o.Telemetry == nil {
-		return nil, false
-	}
-	return o.Telemetry, true
-}
-
-// HasTelemetry returns a boolean if a field has been set.
-func (o *KubernetesClusterDetailedResponse) HasTelemetry() bool {
-	if o != nil && o.Telemetry != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetTelemetry gets a reference to the given KubernetesTelemetryResponse and assigns it to the Telemetry field.
-func (o *KubernetesClusterDetailedResponse) SetTelemetry(v KubernetesTelemetryResponse) {
-	o.Telemetry = &v
-}
-
-func (o KubernetesClusterDetailedResponse) MarshalJSON() ([]byte, error) {
+func (o KubernetesClusterResponse) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if true {
 		toSerialize["id"] = o.Id
@@ -283,9 +250,6 @@ func (o KubernetesClusterDetailedResponse) MarshalJSON() ([]byte, error) {
 	if o.UpdatedBy != nil {
 		toSerialize["updated_by"] = o.UpdatedBy
 	}
-	if o.Telemetry != nil {
-		toSerialize["telemetry"] = o.Telemetry
-	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -294,11 +258,11 @@ func (o KubernetesClusterDetailedResponse) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o *KubernetesClusterDetailedResponse) UnmarshalJSON(bytes []byte) (err error) {
-	varKubernetesClusterDetailedResponse := _KubernetesClusterDetailedResponse{}
+func (o *KubernetesClusterResponse) UnmarshalJSON(bytes []byte) (err error) {
+	varKubernetesClusterResponse := _KubernetesClusterResponse{}
 
-	if err = json.Unmarshal(bytes, &varKubernetesClusterDetailedResponse); err == nil {
-		*o = KubernetesClusterDetailedResponse(varKubernetesClusterDetailedResponse)
+	if err = json.Unmarshal(bytes, &varKubernetesClusterResponse); err == nil {
+		*o = KubernetesClusterResponse(varKubernetesClusterResponse)
 	}
 
 	additionalProperties := make(map[string]interface{})
@@ -310,45 +274,44 @@ func (o *KubernetesClusterDetailedResponse) UnmarshalJSON(bytes []byte) (err err
 		delete(additionalProperties, "updated_at")
 		delete(additionalProperties, "created_by")
 		delete(additionalProperties, "updated_by")
-		delete(additionalProperties, "telemetry")
 		o.AdditionalProperties = additionalProperties
 	}
 
 	return err
 }
 
-type NullableKubernetesClusterDetailedResponse struct {
-	value *KubernetesClusterDetailedResponse
+type NullableKubernetesClusterResponse struct {
+	value *KubernetesClusterResponse
 	isSet bool
 }
 
-func (v NullableKubernetesClusterDetailedResponse) Get() *KubernetesClusterDetailedResponse {
+func (v NullableKubernetesClusterResponse) Get() *KubernetesClusterResponse {
 	return v.value
 }
 
-func (v *NullableKubernetesClusterDetailedResponse) Set(val *KubernetesClusterDetailedResponse) {
+func (v *NullableKubernetesClusterResponse) Set(val *KubernetesClusterResponse) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableKubernetesClusterDetailedResponse) IsSet() bool {
+func (v NullableKubernetesClusterResponse) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableKubernetesClusterDetailedResponse) Unset() {
+func (v *NullableKubernetesClusterResponse) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableKubernetesClusterDetailedResponse(val *KubernetesClusterDetailedResponse) *NullableKubernetesClusterDetailedResponse {
-	return &NullableKubernetesClusterDetailedResponse{value: val, isSet: true}
+func NewNullableKubernetesClusterResponse(val *KubernetesClusterResponse) *NullableKubernetesClusterResponse {
+	return &NullableKubernetesClusterResponse{value: val, isSet: true}
 }
 
-func (v NullableKubernetesClusterDetailedResponse) MarshalJSON() ([]byte, error) {
+func (v NullableKubernetesClusterResponse) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableKubernetesClusterDetailedResponse) UnmarshalJSON(src []byte) error {
+func (v *NullableKubernetesClusterResponse) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

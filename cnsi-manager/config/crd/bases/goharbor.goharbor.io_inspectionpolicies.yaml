@@ -349,6 +349,8 @@ spec:
                     description: Suspend the subsequent inspections temporarily.
                     type: boolean
                 type: object
+              vacAssessmentEnabled:
+                type: boolean
               workNamespace:
                 description: WorkNamespace specify the namespace for creating the
                   underlying inspection resources. If it is not specified, a new namespace

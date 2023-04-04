@@ -1,7 +1,7 @@
 /*
 Catalog Governor Service REST API
 
-This is the service to track assets deployed in customer clusters
+This is the service to track assets deployed in customer clusters.  NOTE: Catalog Governor Service is an internal tool for the Content-Building Ecosystem team.
 
 API version: ${project.version}
 Contact: content-building-ecosystem@vmware.com
@@ -15,9 +15,8 @@ import (
 	"encoding/json"
 )
 
-// ConstraintsViolationsError Error object extension for returning a constraints violation error
-type ConstraintsViolationsError struct {
-	Violations []ConstraintsViolation `json:"violations"`
+// Error Note: It follows [RFC-7807](https://tools.ietf.org/html/rfc7807#page-9) **proposed** standard  Error object returned on any failure. It can be extended to add more params
+type Error struct {
 	// A URI reference that identifies the problem type  When dereferenced, it provide human-readable documentation for the problem type using HTML
 	Type string `json:"type"`
 	// A short, human-readable summary of the problem type
@@ -31,53 +30,29 @@ type ConstraintsViolationsError struct {
 	AdditionalProperties map[string]interface{}
 }
 
-type _ConstraintsViolationsError ConstraintsViolationsError
+type _Error Error
 
-// NewConstraintsViolationsError instantiates a new ConstraintsViolationsError object
+// NewError instantiates a new Error object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewConstraintsViolationsError(violations []ConstraintsViolation, type_ string, title string) *ConstraintsViolationsError {
-	this := ConstraintsViolationsError{}
+func NewError(type_ string, title string) *Error {
+	this := Error{}
 	this.Type = type_
 	this.Title = title
 	return &this
 }
 
-// NewConstraintsViolationsErrorWithDefaults instantiates a new ConstraintsViolationsError object
+// NewErrorWithDefaults instantiates a new Error object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewConstraintsViolationsErrorWithDefaults() *ConstraintsViolationsError {
-	this := ConstraintsViolationsError{}
+func NewErrorWithDefaults() *Error {
+	this := Error{}
 	return &this
 }
 
-// GetViolations returns the Violations field value
-func (o *ConstraintsViolationsError) GetViolations() []ConstraintsViolation {
-	if o == nil {
-		var ret []ConstraintsViolation
-		return ret
-	}
-
-	return o.Violations
-}
-
-// GetViolationsOk returns a tuple with the Violations field value
-// and a boolean to check if the value has been set.
-func (o *ConstraintsViolationsError) GetViolationsOk() ([]ConstraintsViolation, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.Violations, true
-}
-
-// SetViolations sets field value
-func (o *ConstraintsViolationsError) SetViolations(v []ConstraintsViolation) {
-	o.Violations = v
-}
-
 // GetType returns the Type field value
-func (o *ConstraintsViolationsError) GetType() string {
+func (o *Error) GetType() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -88,7 +63,7 @@ func (o *ConstraintsViolationsError) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *ConstraintsViolationsError) GetTypeOk() (*string, bool) {
+func (o *Error) GetTypeOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -96,12 +71,12 @@ func (o *ConstraintsViolationsError) GetTypeOk() (*string, bool) {
 }
 
 // SetType sets field value
-func (o *ConstraintsViolationsError) SetType(v string) {
+func (o *Error) SetType(v string) {
 	o.Type = v
 }
 
 // GetTitle returns the Title field value
-func (o *ConstraintsViolationsError) GetTitle() string {
+func (o *Error) GetTitle() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -112,7 +87,7 @@ func (o *ConstraintsViolationsError) GetTitle() string {
 
 // GetTitleOk returns a tuple with the Title field value
 // and a boolean to check if the value has been set.
-func (o *ConstraintsViolationsError) GetTitleOk() (*string, bool) {
+func (o *Error) GetTitleOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -120,12 +95,12 @@ func (o *ConstraintsViolationsError) GetTitleOk() (*string, bool) {
 }
 
 // SetTitle sets field value
-func (o *ConstraintsViolationsError) SetTitle(v string) {
+func (o *Error) SetTitle(v string) {
 	o.Title = v
 }
 
 // GetStatus returns the Status field value if set, zero value otherwise.
-func (o *ConstraintsViolationsError) GetStatus() int32 {
+func (o *Error) GetStatus() int32 {
 	if o == nil || o.Status == nil {
 		var ret int32
 		return ret
@@ -135,7 +110,7 @@ func (o *ConstraintsViolationsError) GetStatus() int32 {
 
 // GetStatusOk returns a tuple with the Status field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConstraintsViolationsError) GetStatusOk() (*int32, bool) {
+func (o *Error) GetStatusOk() (*int32, bool) {
 	if o == nil || o.Status == nil {
 		return nil, false
 	}
@@ -143,7 +118,7 @@ func (o *ConstraintsViolationsError) GetStatusOk() (*int32, bool) {
 }
 
 // HasStatus returns a boolean if a field has been set.
-func (o *ConstraintsViolationsError) HasStatus() bool {
+func (o *Error) HasStatus() bool {
 	if o != nil && o.Status != nil {
 		return true
 	}
@@ -152,12 +127,12 @@ func (o *ConstraintsViolationsError) HasStatus() bool {
 }
 
 // SetStatus gets a reference to the given int32 and assigns it to the Status field.
-func (o *ConstraintsViolationsError) SetStatus(v int32) {
+func (o *Error) SetStatus(v int32) {
 	o.Status = &v
 }
 
 // GetDetail returns the Detail field value if set, zero value otherwise.
-func (o *ConstraintsViolationsError) GetDetail() string {
+func (o *Error) GetDetail() string {
 	if o == nil || o.Detail == nil {
 		var ret string
 		return ret
@@ -167,7 +142,7 @@ func (o *ConstraintsViolationsError) GetDetail() string {
 
 // GetDetailOk returns a tuple with the Detail field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConstraintsViolationsError) GetDetailOk() (*string, bool) {
+func (o *Error) GetDetailOk() (*string, bool) {
 	if o == nil || o.Detail == nil {
 		return nil, false
 	}
@@ -175,7 +150,7 @@ func (o *ConstraintsViolationsError) GetDetailOk() (*string, bool) {
 }
 
 // HasDetail returns a boolean if a field has been set.
-func (o *ConstraintsViolationsError) HasDetail() bool {
+func (o *Error) HasDetail() bool {
 	if o != nil && o.Detail != nil {
 		return true
 	}
@@ -184,12 +159,12 @@ func (o *ConstraintsViolationsError) HasDetail() bool {
 }
 
 // SetDetail gets a reference to the given string and assigns it to the Detail field.
-func (o *ConstraintsViolationsError) SetDetail(v string) {
+func (o *Error) SetDetail(v string) {
 	o.Detail = &v
 }
 
 // GetInstance returns the Instance field value if set, zero value otherwise.
-func (o *ConstraintsViolationsError) GetInstance() string {
+func (o *Error) GetInstance() string {
 	if o == nil || o.Instance == nil {
 		var ret string
 		return ret
@@ -199,7 +174,7 @@ func (o *ConstraintsViolationsError) GetInstance() string {
 
 // GetInstanceOk returns a tuple with the Instance field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConstraintsViolationsError) GetInstanceOk() (*string, bool) {
+func (o *Error) GetInstanceOk() (*string, bool) {
 	if o == nil || o.Instance == nil {
 		return nil, false
 	}
@@ -207,7 +182,7 @@ func (o *ConstraintsViolationsError) GetInstanceOk() (*string, bool) {
 }
 
 // HasInstance returns a boolean if a field has been set.
-func (o *ConstraintsViolationsError) HasInstance() bool {
+func (o *Error) HasInstance() bool {
 	if o != nil && o.Instance != nil {
 		return true
 	}
@@ -216,15 +191,12 @@ func (o *ConstraintsViolationsError) HasInstance() bool {
 }
 
 // SetInstance gets a reference to the given string and assigns it to the Instance field.
-func (o *ConstraintsViolationsError) SetInstance(v string) {
+func (o *Error) SetInstance(v string) {
 	o.Instance = &v
 }
 
-func (o ConstraintsViolationsError) MarshalJSON() ([]byte, error) {
+func (o Error) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if true {
-		toSerialize["violations"] = o.Violations
-	}
 	if true {
 		toSerialize["type"] = o.Type
 	}
@@ -248,17 +220,16 @@ func (o ConstraintsViolationsError) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o *ConstraintsViolationsError) UnmarshalJSON(bytes []byte) (err error) {
-	varConstraintsViolationsError := _ConstraintsViolationsError{}
+func (o *Error) UnmarshalJSON(bytes []byte) (err error) {
+	varError := _Error{}
 
-	if err = json.Unmarshal(bytes, &varConstraintsViolationsError); err == nil {
-		*o = ConstraintsViolationsError(varConstraintsViolationsError)
+	if err = json.Unmarshal(bytes, &varError); err == nil {
+		*o = Error(varError)
 	}
 
 	additionalProperties := make(map[string]interface{})
 
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
-		delete(additionalProperties, "violations")
 		delete(additionalProperties, "type")
 		delete(additionalProperties, "title")
 		delete(additionalProperties, "status")
@@ -270,38 +241,38 @@ func (o *ConstraintsViolationsError) UnmarshalJSON(bytes []byte) (err error) {
 	return err
 }
 
-type NullableConstraintsViolationsError struct {
-	value *ConstraintsViolationsError
+type NullableError struct {
+	value *Error
 	isSet bool
 }
 
-func (v NullableConstraintsViolationsError) Get() *ConstraintsViolationsError {
+func (v NullableError) Get() *Error {
 	return v.value
 }
 
-func (v *NullableConstraintsViolationsError) Set(val *ConstraintsViolationsError) {
+func (v *NullableError) Set(val *Error) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableConstraintsViolationsError) IsSet() bool {
+func (v NullableError) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableConstraintsViolationsError) Unset() {
+func (v *NullableError) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableConstraintsViolationsError(val *ConstraintsViolationsError) *NullableConstraintsViolationsError {
-	return &NullableConstraintsViolationsError{value: val, isSet: true}
+func NewNullableError(val *Error) *NullableError {
+	return &NullableError{value: val, isSet: true}
 }
 
-func (v NullableConstraintsViolationsError) MarshalJSON() ([]byte, error) {
+func (v NullableError) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableConstraintsViolationsError) UnmarshalJSON(src []byte) error {
+func (v *NullableError) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

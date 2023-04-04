@@ -52,7 +52,7 @@ help: ## Display this help.
 ##@ Development
 
 manifests: controller-gen ## Generate WebhookConfiguration, ClusterRole and CustomResourceDefinition objects.
-	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=manager-role webhook paths="./..." output:crd:artifacts:config=config/crd/bases
+	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=manager-role webhook paths="./..." output:crd:artifacts:config=cnsi-manager/config/crd/bases
 
 generate: controller-gen ## Generate code containing DeepCopy, DeepCopyInto, and DeepCopyObject method implementations.
 	$(CONTROLLER_GEN) object:headerFile="tools/boilerplate.go.txt" paths="./..."
@@ -136,8 +136,8 @@ namespace:
 
 
 gen-yaml-files: manifests kustomize ## Install CRDs into the K8s cluster specified in ~/.kube/config.
-	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG_MANAGER}
-	$(KUSTOMIZE) build config/default > deployments/yaml/manager.yaml
+	cd cnsi-manager/config/manager && $(KUSTOMIZE) edit set image controller=${IMG_MANAGER}
+	$(KUSTOMIZE) build cnsi-manager/config/default > deployments/yaml/manager.yaml
 
 remove_clusterrolebinding:
 	$(KUBECTLCMD) delete clusterrolebinding cnsi-inspector-rolebinding --ignore-not-found=true

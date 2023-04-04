@@ -1,7 +1,7 @@
 /*
 Catalog Governor Service REST API
 
-This is the service to track assets deployed in customer clusters
+This is the service to track assets deployed in customer clusters.  NOTE: Catalog Governor Service is an internal tool for the Content-Building Ecosystem team.
 
 API version: ${project.version}
 Contact: content-building-ecosystem@vmware.com
@@ -19,11 +19,11 @@ import (
 type Container struct {
 	// Name of the container in a workload deployed
 	Name string `json:"name"`
-	// Image URI
+	// Image URI for the container in a workload deployed
 	Image string `json:"image"`
-	// Image ID
+	// Image ID for the container in a workload deployed
 	ImageId string `json:"image_id"`
-	// Identifier of the container
+	// Identifier of the container in a workload deployed
 	Id                   *string  `json:"id,omitempty"`
 	Product              *Product `json:"product,omitempty"`
 	AdditionalProperties map[string]interface{}
