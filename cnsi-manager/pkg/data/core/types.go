@@ -5,6 +5,7 @@ package core
 import (
 	"errors"
 	"fmt"
+	"net/url"
 	"strings"
 )
 
@@ -91,7 +92,14 @@ func (a ArtifactID) Repository() string {
 	}
 
 	as := a.String()
-	return a.artifactID[strings.LastIndex(as, "/")+1 : strings.LastIndex(as, "@")]
+	root := as[:strings.Index(as, "/")]
+	if strings.Contains(root, "docker.io") {
+		return a.artifactID[strings.LastIndex(as, "/")+1 : strings.LastIndex(as, "@")]
+	}
+	namepsace_and_repo := as[strings.Index(as, "/")+1:]
+	repopath := namepsace_and_repo[strings.Index(namepsace_and_repo, "/")+1 : strings.LastIndex(namepsace_and_repo, "@")]
+	// return UrlEscaped repopath
+	return url.PathEscape(repopath)
 }
 
 // Namespace or project of the artifact.
@@ -108,11 +116,9 @@ func (a ArtifactID) Namespace() string {
 			// Not contain namespace, return default one.
 			return "library"
 		}
-
-		return strings.TrimPrefix(ns, fmt.Sprintf("%s/", segments[0]))
 	}
 
-	return ns
+	return segments[1]
 }
 
 // Registry of the artifact.
