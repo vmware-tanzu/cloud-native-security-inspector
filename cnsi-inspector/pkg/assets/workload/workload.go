@@ -66,7 +66,7 @@ type Container struct {
 	// IsInit indicate if the container is an init container.
 	IsInit bool `json:"isInit"`
 	// VacProductMeta
-	VacAssessment *VacProductInfo `json:"vacAccessment,omitempty"`
+	VacAssessment *VacProductInfo `json:"vacAssessment,omitempty"`
 }
 
 // NonSupportPolicy VMWare Application Catalog Product's non-support policy information.
