@@ -231,9 +231,12 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 	}
 
 	// GetVacAdapter
-	vacAdapter, err := c.GetVacAdapter(setting)
-	if err != nil {
-		return err
+	var vacAdapter *vac_provider.Adapter
+	if policy.Spec.VacAssessmentEnabled {
+		vacAdapter, err = c.GetVacAdapter(setting)
+		if err != nil {
+			return err
+		}
 	}
 
 	// Use closure to warp the related parameters.
