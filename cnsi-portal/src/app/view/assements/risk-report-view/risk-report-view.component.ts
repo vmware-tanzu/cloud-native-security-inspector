@@ -49,7 +49,7 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
             var endX = e.clientX;
             
             var moveLen = resize.left + (startX - endX);
-                          if (moveLen < 445) moveLen = 445;
+                          if (moveLen < 995) moveLen = 995;
             if (moveLen > box.clientWidth-55) moveLen = box.clientWidth-55;
 
 
@@ -401,7 +401,7 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
 
   hideDetai(event:any) {
     for (let index = 0; index < event.target.classList.length; index++) { 
-      if (event.target.classList[index] === 'report-detai-bg' || event.target.classList[index]  === 'report-detai-left') {
+      if (event.target.classList[index] === 'risk-report-detai-bg' || event.target.classList[index]  === 'risk-report-detai-left') {
         this.showDetailFlag = false
         continue;
       }      

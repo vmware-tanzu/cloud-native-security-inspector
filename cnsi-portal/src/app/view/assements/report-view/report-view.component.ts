@@ -66,7 +66,7 @@ export class ReportViewComponent implements OnInit, OnDestroy, AfterViewInit {
   ) { }
 
   ngAfterViewInit(): void {
-    let resizeLeft = 445
+    let resizeLeft = 995
     var resize: any = document.getElementById("resize");
     var left: any = document.getElementById("left");
     var right: any = document.getElementById("right");
@@ -79,7 +79,7 @@ export class ReportViewComponent implements OnInit, OnDestroy, AfterViewInit {
             var endX = e.clientX;
             
             var moveLen = resize.left + (startX - endX);
-                          if (moveLen < 445) moveLen = 445;
+                          if (moveLen < 995) moveLen = 995;
             if (moveLen > box.clientWidth-55) moveLen = box.clientWidth-55;
 
 
@@ -104,7 +104,9 @@ export class ReportViewComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+    this.shardService.currentReport = null
+  }
     
   toReport(report: any) {    
     this.showDetailFlag = true
