@@ -369,7 +369,10 @@ export class KubeBenchReportListComponent implements OnInit {
           callback(data, this)
           this.pageMaxCount = Math.ceil(data.hits.total.value / this.defaultSize)
         },
-        err => {}
+        err => {
+          this.echartsLoading = false
+          this.dgLoading = false
+        }
       )
     } else {
       this.dgLoading = false
