@@ -20,6 +20,13 @@ export interface HarborModel {
     },
     dataSource: DataSourceType,
     knownRegistries?: knownRegistrieType[],
+    vacDataSource?: {
+      endpoint: string,
+      credentialRef: {
+        name: string,
+        namespace: string
+      }
+    }
   },
   status: {
     status?: string

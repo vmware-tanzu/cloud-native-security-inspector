@@ -56,7 +56,7 @@
       "trivy": "Trivy Scanning Reports"
     },
     "Insight": {
-      "title": "Assets",
+      "title": "Insight",
       "cluster": "Cluster",
       "namespace": " Namespace",
       "workload": "Workload"
@@ -99,7 +99,8 @@
     "failures": "Failures",
     "cause": "Cause",
     "error_message": "Error Message",
-    "pod_list": "Pods List"
+    "pod_list": "Pods List",
+    "releaseTime": "Release Time"
 
   },
   "Risk_view": {
@@ -178,6 +179,7 @@
     "elasticSearchPasswd": "Password",
     "elasticSearchCert": "Certificate",
     "openSearchEnabled": "OpenSearch",
+    "vacAssessmentEnabled": "VMware Application Catalog",
     "workNamespace": "Work Namespace",
     "image": "Image URL"
 
@@ -215,7 +217,10 @@
     "InspectionResult": "Inspection Result Setting",
     "InspectionResultDesc": "Inspection Results and Action Configuration",
     "known_registriesDesc": "Register with other harbors (optional)",
-    "cacheDesc": "Cache related configuration (optional)"
+    "cacheDesc": "Cache related configuration (optional)",
+    "vacDataSource": "VMware Application Catalog Data Source",
+    "vacDataSourceDesc": "VMware Application Catalog Data Source related configuration (optional)",
+    "cspSecretName": "Secret Name"
   },
   "cornJob": {
     "Weekly": "Run once a week at midnight on Sunday morning",
@@ -236,12 +241,13 @@
     "reason": "Reason",
     "status": "Status",
     "remediation": "Remediation",
-    "current_node": "Current Node"
+    "current_node": "Current Node",
+    "trusted": "Trusted"
   },
   "VAC": {
     "branch": "Branch",
     "releasedTime": "Released Time",
-    "vacView": "VAC View",
+    "vacView": "VMware Application Catalog View",
     "deprecationPolicy": "Deprecation Policy",
     "nonsupportpolicy": "Nonsupport Policy"
   },

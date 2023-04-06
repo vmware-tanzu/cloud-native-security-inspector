@@ -42,6 +42,7 @@
           <clr-dg-column >Namespace</clr-dg-column>
           <clr-dg-column >Kind</clr-dg-column>
           <clr-dg-column >Passed</clr-dg-column>
+          <clr-dg-column >{{'Kube_bench_list.trusted'|translate}}</clr-dg-column>
 
           <clr-dg-row *clrDgItems="let wd of shardService.currentReport?.workloadAssessments" [clrDgItem]="wd">
             <clr-dg-cell>
@@ -55,6 +56,7 @@
             <clr-dg-cell>{{wd.workload.metadata.namespace}}</clr-dg-cell>
             <clr-dg-cell>{{wd.workload.metadata.kind}}</clr-dg-cell>
             <clr-dg-cell>{{wd.passed}}</clr-dg-cell>
+            <clr-dg-cell>{{wd.trusted}}</clr-dg-cell>
           </clr-dg-row>
           <clr-dg-footer>
             <clr-dg-pagination #pagination_wordloads [clrDgPageSize]="10">
@@ -83,15 +85,18 @@
               <clr-dg-column [clrDgField]="'container.name'">Name</clr-dg-column>
               <clr-dg-column >Image</clr-dg-column>
               <clr-dg-column >{{'Report_Detail.isInit'|translate}}</clr-dg-column>
+              <clr-dg-column >{{'Kube_bench_list.trusted'|translate}}</clr-dg-column>
     
               <clr-dg-row *clrDgItems="let cn of pod.containers" [clrDgItem]="cn">
                 <clr-dg-cell>
-                  <a href="javascript:;" (click)="showContainerVAC(cn)">{{cn.name}}</a>
+                  <a href="javascript:;" *ngIf="cn.vacAssessment && cn.vacAssessment.trusted" (click)="showContainerVAC(cn)">{{cn.name}}</a>
+                  <span *ngIf="!cn.vacAssessment || !cn.vacAssessment.trusted" (click)="showContainerVAC(cn)">{{cn.name}}</span>
                 </clr-dg-cell>
                 <clr-dg-cell>
                   {{cn.image}}
                 </clr-dg-cell>
                 <clr-dg-cell>{{cn.isInit}}</clr-dg-cell>
+                <clr-dg-cell>{{cn.vacAssessment?.trusted}}</clr-dg-cell>
               </clr-dg-row>
               <clr-dg-footer>
                 <clr-dg-pagination #pagination_containers [clrDgPageSize]="10">
@@ -101,57 +106,75 @@
                 </clr-dg-pagination>
             </clr-dg-footer>
             </clr-datagrid>
+            <div class="vac-container" *ngIf="currentContainer && currentContainer.vacAssessment.trusted">
+              <h4> VMware Application Catalog Summary</h4>
+              <div class="card">
+                <ul class="list">
+                  <li>
+                    <b>Name: </b> <span>{{currentContainer.vacAssessment.name}}</span>
+                  </li>
+                  <li>
+                    <b>Branch: </b> <span>{{currentContainer.vacAssessment.branch}}</span>
+                  </li>
+                  <li>
+                    <b>Version: </b> <span>{{currentContainer.vacAssessment.version}}</span>
+                  </li>
+                  <li>
+                    <b>Revision:</b> <span>{{currentContainer.vacAssessment.revision}}</span>
+                  </li>
+                  <li>
+                    <b>Release Time:</b> <span>{{currentContainer.vacAssessment.releasedAt  | date: 'medium'}}</span>
+                  </li>
+                  <li>
+                    <b>Last Version Released:</b> <span>{{currentContainer.vacAssessment.lastVersionReleased}}</span>
+                  </li>
+                  <li>
+                    <b>Status:</b>  <span [class]="{active: currentContainer.vacAssessment.status==='ACTIVE'}">{{currentContainer.vacAssessment.status}}</span>
+                  </li>
+                  <li>
+                    <b>Trusted:</b>  <span>{{currentContainer.vacAssessment.trusted}}</span>
+                  </li>
+                </ul>
 
-            <div class="vac-container" *ngIf="currentContainer && currentContainer.vac_product_meta">
-              <h4>{{currentContainer.name}} VAC Summary</h4>
-              <ul class="list">
-                <li>
-                  <b>Name: </b> <span>{{currentContainer.vac_product_meta.name}}</span>
-                </li>
-                <li>
-                  <b>Branch: </b> <span>{{currentContainer.vac_product_meta.branch}}</span>
-                </li>
-                <li>
-                  <b>Version: </b> <span>{{currentContainer.vac_product_meta.version}}</span>
-                </li>
-                <li>
-                  <b>Revision:</b> <span>{{currentContainer.vac_product_meta.revision}}</span>
-                </li>
-                <li>
-                  <b>Release Time:</b> <span>{{currentContainer.vac_product_meta.released_at  | date: 'medium'}}</span>
-                </li>
-                <li>
-                  <b>Last Version Released:</b> <span>{{currentContainer.vac_product_meta.last_version_released}}</span>
-                </li>
-                <li>
-                  <b>Status:</b>  <span>{{currentContainer.vac_product_meta.status}}</span>
-                </li>
-              </ul>
-              <div class="vac-policy">
-                <h5>Deprecation Policy</h5>
-                <ul class="list" *ngIf="currentContainer.vac_product_meta.deprecation_policy">
-                  <li>
-                    <b>Deprecation Date: </b><span>{{currentContainer.vac_product_meta.deprecation_policy.deprecation_date | date: 'medium' }}</span>
-                  </li>
-                  <li>
-                    <b>Grace Period Days: </b><span>{{currentContainer.vac_product_meta.deprecation_policy.grace_period_days}}</span>
-                  </li>
-                  <li>
-                    <b>Reason: </b><span>{{currentContainer.vac_product_meta.deprecation_policy.reason}}</span>
-                  </li>
-                  <li>
-                    <b>Alternative: </b><span>{{currentContainer.vac_product_meta.deprecation_policy.alternative}}</span>
-                  </li>
-                </ul>
-                <h5>Nonsupport Policy</h5>
-                <ul class="list" *ngIf="currentContainer.vac_product_meta.nonsupport_policy">
-                  <li>
-                    <b>Name: </b><span>{{currentContainer.vac_product_meta.nonsupport_policy.name }}</span>
-                  </li>
-                  <li>
-                    <b>Reason: </b><span>{{currentContainer.vac_product_meta.nonsupport_policy.reason}}</span>
-                  </li>
-                </ul>
+                <div class="vac-policy">
+
+                  <div class="card" *ngIf="currentContainer.vacAssessment.deprecationPolicy">
+                      <h3 class="card-header">Deprecation Policy</h3>
+                      <div class="card-block" >
+                          <div class="card-text">
+                            <ul class="list">
+                              <li>
+                                <b>Deprecation Date: </b><span>{{currentContainer.vacAssessment.deprecationPolicy.deprecationDate | date: 'medium' }}</span>
+                              </li>
+                              <li>
+                                <b>Grace Period Days: </b><span>{{currentContainer.vacAssessment.deprecationPolicy.gracePeriodDays}}</span>
+                              </li>
+                              <li>
+                                <b>Reason: </b><span>{{currentContainer.vacAssessment.deprecationPolicy.reason}}</span>
+                              </li>
+                              <li>
+                                <b>Alternative: </b><span>{{currentContainer.vacAssessment.deprecationPolicy.alternative}}</span>
+                              </li>
+                            </ul>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="card"  *ngIf="currentContainer.vacAssessment.nonSupportPolicy">
+                      <h3 class="card-header">Nonsupport Policy</h3>
+                      <div class="card-block">
+                          <div class="card-text">
+                            <ul class="list">
+                              <li>
+                                <b>Name: </b><span>{{currentContainer.vacAssessment.nonSupportPolicy.name }}</span>
+                              </li>
+                              <li>
+                                <b>Reason: </b><span>{{currentContainer.vacAssessment.nonSupportPolicy.reason}}</span>
+                              </li>
+                            </ul>
+                          </div>
+                      </div>
+                  </div>
+                </div>
               </div>
             </div>
           </li>

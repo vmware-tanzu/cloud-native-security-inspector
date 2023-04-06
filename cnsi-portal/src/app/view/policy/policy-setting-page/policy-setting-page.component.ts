@@ -16,8 +16,10 @@ export class PolicySettingPageComponent implements OnInit {
   private isDisabled = false
   public checkES = ''
   public schedule = '*/3 * * * *'
+  public importSchedule = '*/3 * * * *'
   public text = ''
   public isCornUpdateModal = false
+  public importScheduleFlag = false
   public baselines = [
     {
       "kind":"vulnerability",
@@ -29,7 +31,7 @@ export class PolicySettingPageComponent implements OnInit {
   imageList = [
     {
       name: 'inspector',
-      url: 'projects.registry.vmware.com/cnsi/inspector:0.3.1'
+      url: 'projects.registry.vmware.com/cnsi/dev/inspector:vac'
     },
     {
       name: 'kubebench',
@@ -142,6 +144,7 @@ export class PolicySettingPageComponent implements OnInit {
         openSearchAddr: ['opensearch-cluster-master.opensearch:9200'],
         openSearchUser: ['admin'],
         openSearchPasswd: ['admin'],
+        vacAssessmentEnabled: [false]
       }),
       inspectionStandard: this.formBuilder.group({
       }),
@@ -242,6 +245,7 @@ export class PolicySettingPageComponent implements OnInit {
           this.policyForm.get('inspectionSetting')?.get('historyLimit')?.setValue(policyList[0].spec.strategy.historyLimit)
           this.policyForm.get('inspectionSetting')?.get('suspend')?.setValue(policyList[0].spec.strategy.suspend)
           this.policyForm.get('inspectionSetting')?.get('concurrencyRule')?.setValue(policyList[0].spec.strategy.concurrencyRule)
+
           if (policyList[0].spec.inspector.image && policyList[0].spec.inspector.kubebenchImage) {
             if (policyList[0].spec.inspector.riskImage) {
               this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['inspector', 'kubebench', 'risk'])
@@ -276,6 +280,8 @@ export class PolicySettingPageComponent implements OnInit {
           this.policyForm.get('inspectionSetting')?.get('settingsName')?.setValue(policyList[0].spec.settingsName)
 
           this.policyForm.get('inspectionSetting')?.get('openSearchEnabled')?.setValue(true)
+          this.policyForm.get('inspectionSetting')?.get('vacAssessmentEnabled')?.setValue(policyList[0].spec.vacAssessmentEnabled ? true : false)
+
           if (policyList[0].spec.inspector.exportConfig.openSearch) {
             const addr = policyList[0].spec.inspector.exportConfig.openSearch.hostport.split('//')
 
@@ -288,6 +294,7 @@ export class PolicySettingPageComponent implements OnInit {
 
           this.baselines = policyList[0].spec.inspection.baselines
           this.schedule = policyList[0].spec.schedule
+          this.importSchedule = policyList[0].spec.schedule
           if(policyList[0].spec.inspection.actions && policyList[0].spec.inspection.actions.length > 0){
             this.policyForm.get('inspectionResult')?.get('actions')?.setValue(true)
             this.actions = []
@@ -357,6 +364,7 @@ export class PolicySettingPageComponent implements OnInit {
           this.namespacelabels = []
           this.workloadlabels = []
           this.schedule = '*/3 * * * *'
+          this.importSchedule = '*/3 * * * *'
           localStorage.removeItem('cnsi-open-search')
         }
 
@@ -418,8 +426,7 @@ export class PolicySettingPageComponent implements OnInit {
             matchLabels: {}
           }
         },
-
-
+        vacAssessmentEnabled: this.policyForm.get('inspectionSetting')?.get('vacAssessmentEnabled')?.value
       }
     }
     imagesList.forEach((image: any) => {
@@ -491,9 +498,11 @@ export class PolicySettingPageComponent implements OnInit {
     for (const key in scheduleInfo) {
       this.schedule+=scheduleInfo[key]
     }
+    this.importSchedule = this.schedule
   }
   saveSchedule(data:any) {
     this.schedule = data
+    this.importSchedule = this.schedule
     this.isCornUpdateModal = false
   }
   cancelSchedule() {

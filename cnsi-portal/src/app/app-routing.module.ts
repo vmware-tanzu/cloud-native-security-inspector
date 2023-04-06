@@ -140,7 +140,7 @@ const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'policy'
+        redirectTo: 'data-source/harbor'
       }
     ]
   },

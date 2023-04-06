@@ -108,6 +108,17 @@ export class ReportViewComponent implements OnInit, OnDestroy, AfterViewInit {
     
   toReport(report: any) {    
     this.showDetailFlag = true
+    report._source.namespaceAssessments[0].workloadAssessments.forEach((wd: any) => {
+      wd.workload.pods.forEach((po: any) => {
+        wd.trusted = po.containers.every((cn: any) => {
+          if (!cn.vacAssessment || !cn.vacAssessment.trusted) {
+            return false
+          } else {
+            return true
+          }
+        });
+      });
+    });
     this.shardService.currentReport = {
       _source: {
         reportUID: report._id,

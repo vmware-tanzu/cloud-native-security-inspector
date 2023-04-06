@@ -121,6 +121,29 @@
     </clr-step-content>
   </clr-stepper-panel>
 
+  <clr-stepper-panel formGroupName="vacDataSource">
+    <clr-step-title>{{'Setting.vacDataSource'|translate}}</clr-step-title>
+    <clr-step-description>{{'Setting.vacDataSourceDesc'| translate}}</clr-step-description>
+    <clr-step-content *clrIfExpanded>
+
+      <clr-input-container class="w-230" >
+        <label>{{'Setting.address' |translate}}: </label>
+        <input clrInput placeholder="" name="endpoint" formControlName="endpoint"/>
+      </clr-input-container>
+
+      <clr-select-container class="w-230" >
+        <label class="w-200">{{'Setting.cspSecretName'|translate}}</label>
+        <select clrSelect name="cspSecretName" formControlName="cspSecretName">
+          <option value=""></option>
+          <option *ngFor="let item of secretsList" [value]="item.metadata.name">{{item.metadata.name}}</option>
+        </select>
+      </clr-select-container>
+
+      <button clrStepButton="next"[disabled]="vacDataSourceValid" >next</button>
+    </clr-step-content>
+  </clr-stepper-panel>
+
+
   <clr-stepper-panel formGroupName="cache">
     <clr-step-title>{{'Setting.cache'|translate}}</clr-step-title>
     <clr-step-description>{{'Setting.cacheDesc'| translate}}</clr-step-description>
