@@ -1,7 +1,7 @@
 /*
 Catalog Governor Service REST API
 
-This is the service to track assets deployed in customer clusters
+This is the service to track assets deployed in customer clusters.  NOTE: Catalog Governor Service is an internal tool for the Content-Building Ecosystem team.
 
 API version: ${project.version}
 Contact: content-building-ecosystem@vmware.com
@@ -18,16 +18,22 @@ import (
 
 // Product VMWare Application Catalog Product's information.
 type Product struct {
-	// Product name
+	// Product name from VMWare Application Catalog
 	Name string `json:"name"`
-	// Product version
+	// Product branch from VMWare Application Catalog
+	Branch string `json:"branch"`
+	// Product version from VMWare Application Catalog
 	Version string `json:"version"`
-	// Product revision
+	// Product revision from VMWare Application Catalog
 	Revision *string `json:"revision,omitempty"`
 	// The date-time which the product was released at
 	ReleasedAt time.Time `json:"released_at"`
 	// Last release version of product
-	LastVersionReleased  *string `json:"last_version_released,omitempty"`
+	LastVersionReleased *string            `json:"last_version_released,omitempty"`
+	DeprecationPolicy   *DeprecationPolicy `json:"deprecation_policy,omitempty"`
+	NonsupportPolicy    *NonSupportPolicy  `json:"nonsupport_policy,omitempty"`
+	// The status of the product in the catalog. Available values are DRAFT, ACTIVE, SCHEDULED_DEPRECATION, DEPRECATION_GRACE_PERIOD, DEPRECATED, NON_SUPPORTED
+	Status               *string `json:"status,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -37,9 +43,10 @@ type _Product Product
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewProduct(name string, version string, releasedAt time.Time) *Product {
+func NewProduct(name string, branch string, version string, releasedAt time.Time) *Product {
 	this := Product{}
 	this.Name = name
+	this.Branch = branch
 	this.Version = version
 	this.ReleasedAt = releasedAt
 	return &this
@@ -75,6 +82,30 @@ func (o *Product) GetNameOk() (*string, bool) {
 // SetName sets field value
 func (o *Product) SetName(v string) {
 	o.Name = v
+}
+
+// GetBranch returns the Branch field value
+func (o *Product) GetBranch() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Branch
+}
+
+// GetBranchOk returns a tuple with the Branch field value
+// and a boolean to check if the value has been set.
+func (o *Product) GetBranchOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Branch, true
+}
+
+// SetBranch sets field value
+func (o *Product) SetBranch(v string) {
+	o.Branch = v
 }
 
 // GetVersion returns the Version field value
@@ -189,10 +220,109 @@ func (o *Product) SetLastVersionReleased(v string) {
 	o.LastVersionReleased = &v
 }
 
+// GetDeprecationPolicy returns the DeprecationPolicy field value if set, zero value otherwise.
+func (o *Product) GetDeprecationPolicy() DeprecationPolicy {
+	if o == nil || o.DeprecationPolicy == nil {
+		var ret DeprecationPolicy
+		return ret
+	}
+	return *o.DeprecationPolicy
+}
+
+// GetDeprecationPolicyOk returns a tuple with the DeprecationPolicy field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Product) GetDeprecationPolicyOk() (*DeprecationPolicy, bool) {
+	if o == nil || o.DeprecationPolicy == nil {
+		return nil, false
+	}
+	return o.DeprecationPolicy, true
+}
+
+// HasDeprecationPolicy returns a boolean if a field has been set.
+func (o *Product) HasDeprecationPolicy() bool {
+	if o != nil && o.DeprecationPolicy != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetDeprecationPolicy gets a reference to the given DeprecationPolicy and assigns it to the DeprecationPolicy field.
+func (o *Product) SetDeprecationPolicy(v DeprecationPolicy) {
+	o.DeprecationPolicy = &v
+}
+
+// GetNonsupportPolicy returns the NonsupportPolicy field value if set, zero value otherwise.
+func (o *Product) GetNonsupportPolicy() NonSupportPolicy {
+	if o == nil || o.NonsupportPolicy == nil {
+		var ret NonSupportPolicy
+		return ret
+	}
+	return *o.NonsupportPolicy
+}
+
+// GetNonsupportPolicyOk returns a tuple with the NonsupportPolicy field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Product) GetNonsupportPolicyOk() (*NonSupportPolicy, bool) {
+	if o == nil || o.NonsupportPolicy == nil {
+		return nil, false
+	}
+	return o.NonsupportPolicy, true
+}
+
+// HasNonsupportPolicy returns a boolean if a field has been set.
+func (o *Product) HasNonsupportPolicy() bool {
+	if o != nil && o.NonsupportPolicy != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetNonsupportPolicy gets a reference to the given NonSupportPolicy and assigns it to the NonsupportPolicy field.
+func (o *Product) SetNonsupportPolicy(v NonSupportPolicy) {
+	o.NonsupportPolicy = &v
+}
+
+// GetStatus returns the Status field value if set, zero value otherwise.
+func (o *Product) GetStatus() string {
+	if o == nil || o.Status == nil {
+		var ret string
+		return ret
+	}
+	return *o.Status
+}
+
+// GetStatusOk returns a tuple with the Status field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Product) GetStatusOk() (*string, bool) {
+	if o == nil || o.Status == nil {
+		return nil, false
+	}
+	return o.Status, true
+}
+
+// HasStatus returns a boolean if a field has been set.
+func (o *Product) HasStatus() bool {
+	if o != nil && o.Status != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetStatus gets a reference to the given string and assigns it to the Status field.
+func (o *Product) SetStatus(v string) {
+	o.Status = &v
+}
+
 func (o Product) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if true {
 		toSerialize["name"] = o.Name
+	}
+	if true {
+		toSerialize["branch"] = o.Branch
 	}
 	if true {
 		toSerialize["version"] = o.Version
@@ -205,6 +335,15 @@ func (o Product) MarshalJSON() ([]byte, error) {
 	}
 	if o.LastVersionReleased != nil {
 		toSerialize["last_version_released"] = o.LastVersionReleased
+	}
+	if o.DeprecationPolicy != nil {
+		toSerialize["deprecation_policy"] = o.DeprecationPolicy
+	}
+	if o.NonsupportPolicy != nil {
+		toSerialize["nonsupport_policy"] = o.NonsupportPolicy
+	}
+	if o.Status != nil {
+		toSerialize["status"] = o.Status
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -225,10 +364,14 @@ func (o *Product) UnmarshalJSON(bytes []byte) (err error) {
 
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
 		delete(additionalProperties, "name")
+		delete(additionalProperties, "branch")
 		delete(additionalProperties, "version")
 		delete(additionalProperties, "revision")
 		delete(additionalProperties, "released_at")
 		delete(additionalProperties, "last_version_released")
+		delete(additionalProperties, "deprecation_policy")
+		delete(additionalProperties, "nonsupport_policy")
+		delete(additionalProperties, "status")
 		o.AdditionalProperties = additionalProperties
 	}
 

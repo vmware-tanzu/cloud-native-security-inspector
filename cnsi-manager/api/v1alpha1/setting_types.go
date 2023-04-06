@@ -122,6 +122,17 @@ type DataSource struct {
 	ScanSchedule string `json:"scanSchedule"`
 }
 
+// VacDataSource define the properties of vac data source.
+type VacDataSource struct {
+	// Endpoint defines the endpoint of the registry.
+	// +kubebuilder:validation:Required
+	Endpoint string `json:"endpoint"`
+	// CredentialRef defines the authorization info for registry,
+	// the value is a reference to secret.
+	// +kubebuilder:validation:Required
+	CredentialRef *v1.ObjectReference `json:"credentialRef,omitempty"`
+}
+
 // SettingSpec defines the spec of setting.
 type SettingSpec struct {
 	// KnownRegistries is the registered private registry collections.
@@ -130,6 +141,9 @@ type SettingSpec struct {
 	// DataSource is the data source definitions.
 	// +kubebuilder:validation:Required
 	DataSource DataSource `json:"dataSource,omitempty"`
+	// VacDataSource is the vac data source definitions.
+	// +kubebuilder:validation:Optional
+	VacDataSource VacDataSource `json:"vacDataSource,omitempty"`
 	// Cache is the cache configurations.
 	// +kubebuilder:validation:Optional
 	Cache *Cache `json:"cache,omitempty"`

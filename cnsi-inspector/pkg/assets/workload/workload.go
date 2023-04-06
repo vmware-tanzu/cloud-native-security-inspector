@@ -4,6 +4,8 @@
 package workload
 
 import (
+	"time"
+
 	corev1 "k8s.io/api/core/v1"
 )
 
@@ -63,4 +65,47 @@ type Container struct {
 	ImageID string `json:"imageID"`
 	// IsInit indicate if the container is an init container.
 	IsInit bool `json:"isInit"`
+	// VacProductMeta
+	VacAssessment *VacProductInfo `json:"vacAssessment,omitempty"`
+}
+
+// NonSupportPolicy VMWare Application Catalog Product's non-support policy information.
+type NonSupportPolicy struct {
+	// Human-readable name for the non-support policy.
+	Name string `json:"name"`
+	// Sentence explaining why the non-support policy is set.
+	Reason string `json:"reason"`
+}
+
+// DeprecationPolicy VMWare Application Catalog Product's deprecation policy information.
+type DeprecationPolicy struct {
+	// Effective date since which the deprecation policy will take effect.
+	DeprecationDate string `json:"deprecation_date"`
+	// Period of time in days **after** the deprecation date in which the support for the catalog item, might be reduced instead of being completely removed.
+	GracePeriodDays *int32 `json:"gracePeriodDays,omitempty"`
+	// Sentence explaining why the deprecation policy is set.
+	Reason *string `json:"reason,omitempty"`
+	// Sentence pointing to alternatives to the deprecated resource.
+	Alternative *string `json:"alternative,omitempty"`
+}
+
+// VacProductInfo for representing VacProductInfo for an image
+type VacProductInfo struct {
+	Trusted bool `json:"trusted"`
+	// Product name from VMWare Application Catalog
+	Name *string `json:"name,omitempty"`
+	// Product branch from VMWare Application Catalog
+	Branch *string `json:"branch,omitempty"`
+	// Product version from VMWare Application Catalog
+	Version *string `json:"version,omitempty"`
+	// Product revision from VMWare Application Catalog
+	Revision *string `json:"revision,omitempty"`
+	// The date-time which the product was released at
+	ReleasedAt *time.Time `json:"releasedAt,omitempty"`
+	// Last release version of product
+	LastVersionReleased *string            `json:"lastVersionReleased,omitempty"`
+	DeprecationPolicy   *DeprecationPolicy `json:"deprecationPolicy,omitempty"`
+	NonsupportPolicy    *NonSupportPolicy  `json:"nonSupportPolicy,omitempty"`
+	// The status of the product in the catalog. Available values are DRAFT, ACTIVE, SCHEDULED_DEPRECATION, DEPRECATION_GRACE_PERIOD, DEPRECATED, NON_SUPPORTED
+	Status *string `json:"status,omitempty"`
 }

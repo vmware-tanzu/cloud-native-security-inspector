@@ -1,7 +1,7 @@
 /*
 Catalog Governor Service REST API
 
-This is the service to track assets deployed in customer clusters
+This is the service to track assets deployed in customer clusters.  NOTE: Catalog Governor Service is an internal tool for the Content-Building Ecosystem team.
 
 API version: ${project.version}
 Contact: content-building-ecosystem@vmware.com
@@ -51,6 +51,8 @@ type APIClient struct {
 	// API Services
 
 	ClustersApi ClustersApi
+
+	ProductsApi ProductsApi
 }
 
 type service struct {
@@ -70,6 +72,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 
 	// API Services
 	c.ClustersApi = (*ClustersApiService)(&c.common)
+	c.ProductsApi = (*ProductsApiService)(&c.common)
 
 	return c
 }
@@ -105,7 +108,7 @@ func selectHeaderAccept(accepts []string) string {
 // contains is a case insensitive match, finding needle in a haystack
 func contains(haystack []string, needle string) bool {
 	for _, a := range haystack {
-		if strings.EqualFold(a, needle) {
+		if strings.ToLower(a) == strings.ToLower(needle) {
 			return true
 		}
 	}
@@ -403,14 +406,11 @@ func (c *APIClient) decode(v interface{}, b []byte, contentType string) (err err
 
 // Add a file to the multipart request
 func addFile(w *multipart.Writer, fieldName, path string) error {
-	file, err := os.Open(filepath.Clean(path))
+	file, err := os.Open(path)
 	if err != nil {
 		return err
 	}
-	err = file.Close()
-	if err != nil {
-		return err
-	}
+	defer file.Close()
 
 	part, err := w.CreateFormFile(fieldName, filepath.Base(path))
 	if err != nil {

@@ -205,6 +205,9 @@ type InspectionPolicySpec struct {
 	// +kubebuilder:validation:Optional
 	SettingsName string `json:"settingsName"`
 
+	// +kubebuilder:validation:Optional
+	VacAssessmentEnabled bool `json:"vacAssessmentEnabled"`
+
 	// Enabled defines whether this inspection policy disable or enable, default is enabled.
 	// +kubebuilder:validation:Optional
 	Enabled bool `json:"enabled,omitempty"`

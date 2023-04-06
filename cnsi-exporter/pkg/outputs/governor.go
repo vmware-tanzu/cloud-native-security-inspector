@@ -3,10 +3,10 @@ package outputs
 import (
 	"encoding/json"
 	governor "github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-exporter/pkg/outputs/governor"
-	openapi "github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-exporter/pkg/outputs/governor/go-client"
 	reports "github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-inspector/pkg"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-inspector/pkg/cspauth"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/api/v1alpha1"
+	openapi "github.com/vmware-tanzu/cloud-native-security-inspector/lib/governor/go-client"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/lib/log"
 	"k8s.io/client-go/kubernetes"
 	ctrl "sigs.k8s.io/controller-runtime"
