@@ -58,9 +58,18 @@ func (a *Adapter) GetVacProductInfo(imageId string) (*governor_client.Product, e
 	if err != nil {
 		if response.StatusCode == http.StatusNotFound {
 			var errorJson governor_client.Error
-			b, _ := io.ReadAll(response.Body)
-			err := json.Unmarshal(b, &errorJson)
+			b, err := io.ReadAll(response.Body)
 			if err != nil {
+				log.Errorf("Error reading Governor api response body Err: %s, Response Status: %s",
+					err, response.Status)
+				return nil, errors.New(
+					fmt.Sprintf("Error reading Governor api response body Err: %s, Response Status: %s",
+						err, response.Status))
+			}
+			err = json.Unmarshal(b, &errorJson)
+			if err != nil {
+				log.Errorf("Error Unmarshalling Governor api response body Err: %s, Response Status: %s",
+					err, response.Status)
 				return nil, errors.New(fmt.Sprintf("Governor api response status: %s", response.Status))
 			}
 
