@@ -228,6 +228,9 @@ describe('KubeBenchReportListComponent', () => {
         "reset": true
       }
       component.switchNode('sc2-10-186-131-84.eng.vmware.com"');
+      component.getKubeBenchReportListFilter = {arg: {}}
+      component.oldKey = 'key'
+      component.oldValue = 'value'
       component.pageChange({
         "page": {
             "from": 0,
@@ -250,17 +253,21 @@ describe('KubeBenchReportListComponent', () => {
       }, component)
 
       component.getKubeBenchReportList({
-        "value": "Kubernetes Policies",
-        "key": "text",
-        "reset": true
+        arg: {
+          value: "Kubernetes Policies",
+          key: "text"
+        },
+        reset: false
       })
 
 
       component.createTimeSort()
       component.getKubeBenchReportList({
-        "value": "Worker Node Security Configuration",
-        "key": "text",
-        "reset": true
+        arg: {
+          value: "Worker Node Security Configuration",
+          key: "text"
+        },
+        reset: false
       })
       component.initKubeBenchReportListCallBack({
         "hits": {

@@ -109,15 +109,16 @@ describe('ReportViewComponent', () => {
           }
       });
 
-      component.getKubeBenchReportList({
+      component.getKubeBenchReportList({arg: {
         "value": "Kubernetes Policies",
-        "key": "text",
-        "reset": true
-      })
+        "key": "text"
+      }, "reset": true})
 
       component.getKubeBenchReportList({
-        "value": "Worker Node Security Configuration",
-        "key": "text",
+        arg: {
+          "value": "Worker Node Security Configuration",
+          "key": "text"
+        },
         "reset": true
       })
 
