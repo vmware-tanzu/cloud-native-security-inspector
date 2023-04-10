@@ -81,8 +81,9 @@ export class DgFilterComponent
       search() {
           if (this.label) {
             this.updateListHandler.emit({
-                value: this.labelFilter, 
-                key: this.labelKey
+                arg: {
+                  [this.labelKey]: this.labelFilter
+                }
             })            
           } else {
             return

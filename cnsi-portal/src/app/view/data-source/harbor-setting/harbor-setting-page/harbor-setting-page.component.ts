@@ -59,6 +59,10 @@ export class HarborSettingPageComponent implements OnInit {
       knownRegistries: this.formBuilder.group({
 
       }),
+      vacDataSource: this.formBuilder.group({
+        endpoint: [''],
+        cspSecretName: ['']
+      }),
       cache: this.formBuilder.group({
         address: [''],
         livingTime: [0],
@@ -85,6 +89,14 @@ export class HarborSettingPageComponent implements OnInit {
     return result
   }
 
+  get vacDataSourceValid() {
+    if (this.harborForm.controls['vacDataSource']?.get('cspSecretName')?.value && this.harborForm.controls['vacDataSource']?.get('endpoint')?.value) {
+      return false
+    } else {
+      return true
+    }
+  }
+
   get cacheValid() {
     return false
   }
@@ -96,7 +108,7 @@ export class HarborSettingPageComponent implements OnInit {
       data => {
         this.text = data.id
         if (!this.text) {
-          this.router.navigateByUrl('/setting')
+          this.router.navigateByUrl('/data-source')
         }
       }
     )
@@ -159,6 +171,13 @@ export class HarborSettingPageComponent implements OnInit {
             this.knownRegistries = this.harborResponse.spec.knownRegistries
           }
           this.schedule = this.harborResponse.spec.dataSource.scanSchedule.slice(1)
+          if (this.harborResponse.spec.vacDataSource && this.harborResponse.spec.vacDataSource.endpoint) {
+            this.harborForm.controls['vacDataSource']?.get('endpoint')?.setValue(this.harborResponse.spec.vacDataSource.endpoint)
+            console.log('this.harborResponse.spec.vacDataSource.credentialRef.name', this.harborResponse.spec.vacDataSource.credentialRef.name);
+            
+            this.harborForm.controls['vacDataSource']?.get('cspSecretName')?.setValue(this.harborResponse.spec.vacDataSource.credentialRef.name)
+          }
+
           if (this.harborResponse.status) {
             // this.settingStatus = this.harborResponse.status.status || ''
           }
@@ -226,6 +245,17 @@ export class HarborSettingPageComponent implements OnInit {
       data.spec.knownRegistries=this.knownRegistries
     }
 
+    // vac
+    if (this.harborForm.controls['vacDataSource']?.get('endpoint')?.value) {
+      data.spec.vacDataSource = {
+        endpoint: this.harborForm.controls['vacDataSource']?.get('endpoint')?.value,
+        credentialRef: {
+          name: this.harborForm.controls['vacDataSource']?.get('cspSecretName')?.value,
+          namespace: 'default'
+        }
+      }
+    }
+
     this.harborService.postHarborSetting(data).subscribe(
       data => {
         this.messageHarborFlag = 'success'
@@ -233,7 +263,7 @@ export class HarborSettingPageComponent implements OnInit {
         this.updateDisabled = true   
         this.createButtonFlag = false
         this.router.navigate(
-          ['/setting'],
+          ['/data-source'],
           { queryParams: { secret: false } }
         );
       },
@@ -267,12 +297,22 @@ export class HarborSettingPageComponent implements OnInit {
       this.harborResponse.spec.cache.settings.livingTime = +this.harborForm.get('cache')?.get('livingTime')?.value 
       this.harborResponse.spec.cache.settings.skipTLSVerify = this.harborForm.get('cache')?.get('setting_skipTLSVerify')?.value 
     }
+
+    // vac
+    if (this.harborForm.controls['vacDataSource']?.get('endpoint')?.value) {
+      this.harborResponse.spec.vacDataSource = {
+        endpoint: this.harborForm.controls['vacDataSource']?.get('endpoint')?.value,
+        credentialRef: {
+          name: this.harborForm.controls['vacDataSource']?.get('cspSecretName')?.value,
+          namespace: 'default'
+        }      }
+    }
     this.harborService.updateHarborSetting(this.harborResponse.metadata.name, this.harborResponse).subscribe(
       data => {
         this.messageHarborFlag = 'success'
         this.messageContent = 'Update and apply settings successfully!' 
         this.router.navigate(
-          ['/setting'],
+          ['/data-source'],
           { queryParams: { secret: false } }
         );
       },

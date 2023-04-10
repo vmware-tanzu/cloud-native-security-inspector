@@ -1,0 +1,118 @@
+.sddc-title .angle-top {
+  transform: rotate(-90deg);
+  width: 20px;
+  height: 20px;
+  color: #fff;
+  margin-left: 15px;
+}
+.create-sddc-form::ng-deep .btn.create {
+  margin: 20px 10px;
+}
+.create-sddc-form::ng-deep .status {
+  color: #fff;
+  font-weight: 600;
+  margin-top: 20px;
+}
+.create-sddc-form::ng-deep .status label {
+  display: inline-block;
+  width: 200px;
+}
+.create-sddc-form::ng-deep .status span.healthy {
+  color: green;
+}
+.create-sddc-form::ng-deep .status span.unhealthy {
+  color: red;
+}
+.create-sddc-form::ng-deep ul li button.active {
+  color: #fff;
+}
+.create-sddc-form::ng-deep .schedule {
+  display: flex;
+  align-items: center;
+  color: #fff;
+}
+.create-sddc-form::ng-deep .schedule h4 {
+  width: 200px;
+  font-size: 0.65rem;
+  font-weight: bold;
+  color: #fff;
+}
+.create-sddc-form::ng-deep .schedule div {
+  margin-top: 24px;
+}
+.create-sddc-form::ng-deep .schedule span {
+  display: inline-block;
+  border-bottom: 1px solid #fff;
+  margin-right: 20px;
+  width: 182px;
+}
+.create-sddc-form::ng-deep .schedule button {
+  border-color: #666;
+  width: 30px;
+  height: 30px;
+}
+.create-sddc-form::ng-deep .schedule button cds-icon {
+  position: relative;
+  top: -3px;
+  left: -5px;
+}
+.create-sddc-form::ng-deep .endpoint-container {
+  display: flex;
+  align-items: center;
+  margin-top: 24px;
+}
+.create-sddc-form::ng-deep .endpoint-container .clr-form-control {
+  margin-top: 0;
+}
+.create-sddc-form::ng-deep .endpoint-container label {
+  width: 200px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.65rem;
+}
+.create-sddc-form::ng-deep .endpoint-container clr-select-container {
+  margin-right: 10px;
+}
+.create-sddc-form::ng-deep .submit-btns {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 50px;
+}
+.create-sddc-form::ng-deep .actions {
+  margin-left: 0;
+}
+.create-sddc-form::ng-deep .actions h4 {
+  margin: none;
+}
+.create-sddc-form::ng-deep .clr-accordion-panel-inactive .clr-accordion-content .clr-form-control label {
+  color: #fff;
+}
+.create-sddc-form::ng-deep .clr-accordion-panel-inactive .clr-accordion-content .clr-form-control input {
+  color: #fff;
+}
+.create-sddc-form::ng-deep .clr-accordion-header .clr-accordion-title {
+  color: #fff;
+}
+.create-sddc-form::ng-deep .clr-accordion-header .clr-accordion-angle {
+  color: #fff;
+}
+.create-sddc-form::ng-deep .clr-form-control {
+  flex-direction: row;
+}
+.create-sddc-form::ng-deep .clr-form-control .clr-control-label {
+  width: 200px !important;
+}
+.create-sddc-form::ng-deep .icon-button cds-icon {
+  color: #fff;
+  margin-right: 15px;
+  cursor: pointer;
+}
+.create-sddc-form::ng-deep .icon-button cds-icon:hover {
+  color: hsl(198, 80%, 46%);
+}
+.create-sddc-form::ng-deep .w-230 .clr-control-container .clr-input-wrapper input,
+.create-sddc-form::ng-deep .w-230 .clr-control-container .clr-select-wrapper input,
+.create-sddc-form::ng-deep .w-230 .clr-control-container .clr-input-wrapper select,
+.create-sddc-form::ng-deep .w-230 .clr-control-container .clr-select-wrapper select {
+  width: 230px;
+}

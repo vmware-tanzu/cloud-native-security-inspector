@@ -113,6 +113,30 @@ clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content .po
   width: auto;
   padding: 10px;
 }
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content .vac-container .list {
+  padding-left: 5px;
+}
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content .vac-container .list li b {
+  display: inline-block;
+  width: 200px;
+  margin-right: 15px;
+  color: #fff;
+}
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content .vac-container .list li span.active {
+  color: hsl(93, 85%, 32%);
+}
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content .vac-container .vac-policy {
+  display: flex;
+}
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content .vac-container .vac-policy .card .list li {
+  display: flex;
+}
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content .vac-container .vac-policy .card .list li b {
+  width: 160px;
+}
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content .vac-container .vac-policy .card .list li span {
+  flex: 1;
+}
 clr-accordion ::ng-deep .clr-accordion-header .clr-accordion-title {
   color: #fff;
 }

@@ -75,11 +75,11 @@
   background-color: #21333B;
 }
 .report #box #right {
-  width: 445px;
+  width: 995px;
   float: right;
 }
 .report #box #left {
   float: left;
-  width: calc(100% - 450px);
+  width: calc(100% - 1000px);
   height: 100%;
 }

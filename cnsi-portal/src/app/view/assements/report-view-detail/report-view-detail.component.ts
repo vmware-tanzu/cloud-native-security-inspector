@@ -17,6 +17,7 @@ export class ReportViewDetailComponent implements OnInit {
   public workloadInfo!:any
   showDetailFlag = false
   currentWordloadInfo!: any
+  currentContainer!: any
   constructor(
     public shardService:ShardService,
     private assessmentService: AssessmentService
@@ -26,7 +27,12 @@ export class ReportViewDetailComponent implements OnInit {
   }
 
   showDetail(wd: any) {
+    this.currentContainer = null
     this.currentWordloadInfo = wd
     this.showDetailFlag = true
+  }
+
+  showContainerVAC(cn: any) {
+    this.currentContainer = cn
   }
 }

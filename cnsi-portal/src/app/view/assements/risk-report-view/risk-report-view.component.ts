@@ -29,6 +29,7 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
   echartsLoading = true
   riskList: any[] = []
   riskCallBackReset = true
+  isOder = true
   constructor(
     private assessmentService: AssessmentService,
     private policyService: PolicyService
@@ -48,7 +49,7 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
             var endX = e.clientX;
             
             var moveLen = resize.left + (startX - endX);
-                          if (moveLen < 445) moveLen = 445;
+                          if (moveLen < 995) moveLen = 995;
             if (moveLen > box.clientWidth-55) moveLen = box.clientWidth-55;
 
 
@@ -360,10 +361,47 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
       this.riskDetail.dataSourceHandle()
     },100);
   }
+    // time sort
+  createTimeSort() {
+    let query: any = {
+      size: this.defaultSize,
+      from: this.from
+    }
+    this.isOder = !this.isOder
+    if (this.isOder) {
+      query['sort'] =[
+        {
+          createTime: {
+            order: "desc"
+          }
+        }
+      ]
+    }
+    this.getRiskList(query, this.createTimeSortCallBack)
+  }
+  // time sort callback
+  createTimeSortCallBack(data: any, that: any) {    
+    that.riskList = []
+    that.pagination.page.current = 1
+    that.pagination.page.size = that.defaultSize
+    that.pagination.page.from = that.from
+    that.pagination.page.change
+    data.hits.hits.forEach((el: any) => {
+      let risk_number = 0
+      if (el._source && el._source.ReportDetail && el._source.ReportDetail.length > 0) {
+        el._source.ReportDetail.forEach((re: any) => {
+          risk_number+=re.Detail.length
+        });
+      }
+      el['risk_number'] = risk_number
+      that.riskList.push(el)
+    }); 
+    that.dgLoading = false
+  }
 
   hideDetai(event:any) {
     for (let index = 0; index < event.target.classList.length; index++) { 
-      if (event.target.classList[index] === 'report-detai-bg' || event.target.classList[index]  === 'report-detai-left') {
+      if (event.target.classList[index] === 'risk-report-detai-bg' || event.target.classList[index]  === 'risk-report-detai-left') {
         this.showDetailFlag = false
         continue;
       }      

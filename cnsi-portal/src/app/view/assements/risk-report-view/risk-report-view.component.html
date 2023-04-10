@@ -13,6 +13,7 @@
     <clr-dg-column >
       <div class="sort">
         {{'CommonlyUse.create_time'|translate}}
+        <cds-icon (click)="createTimeSort()" shape="arrow" [class]="{oder: isOder}"></cds-icon>  
       </div>
     </clr-dg-column>
     <clr-dg-column >{{'Risk_view.numberOfVulnerabilities'|translate}}</clr-dg-column>
@@ -40,8 +41,8 @@
   
   </clr-datagrid>
 <!-- detail -->
-  <div id="risk-box" class="report-detai-bg" (click)='hideDetai($event)' [hidden]="!showDetailFlag">
-    <div id="risk-left" class="report-detai-left"></div>
+  <div id="risk-box" class="risk-report-detai-bg" (click)='hideDetai($event)' [hidden]="!showDetailFlag">
+    <div id="risk-left" class="risk-report-detai-left"></div>
     <div id="risk-resize"></div>
     <div id="risk-right" class="report-detai" [ngClass]="{'show': showDetailFlag}" >
       <app-risk-report-detail #riskDetail [detailInfo]="currentDetail"></app-risk-report-detail>

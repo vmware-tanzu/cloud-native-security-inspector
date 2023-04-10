@@ -47,13 +47,15 @@
   "Nav": {
     "Assessments": {
       "title": "评估报告",
+      "nav": "报告",
       "report_view": "报告",
       "Kube_bench": "kubebench扫描报告",
       "image_nspector_reports": "镜像扫描报告",
-      "risk": "风险扫描报告"
+      "risk": "风险扫描报告",
+      "trivy": "Trivy扫描报告"
     },
     "Insight": {
-      "title": "安全状态",
+      "title": "Insight",
       "cluster": "集群",
       "namespace": "命名空间",
       "workload": "工作负载"
@@ -63,6 +65,9 @@
     },
     "Setting": {
       "title": "设置"
+    },
+    "dataSource": {
+      "title": "数据源"
     }
   },
   "Report_View": {
@@ -93,10 +98,19 @@
     "failures": "安全扫描未通过",
     "cause": "Cause",
     "error_message": "Error Message",
-    "pod_list": "Pods列表"
+    "pod_list": "Pods列表",
+    "releaseTime": "发布时间"
   },
   "Risk_view": {
     "numberOfVulnerabilities": "漏洞数量"
+  },
+  "Trivy_view": {
+    "target": "目标",
+    "class": "类",
+    "type": "类型",
+    "misconfiguration_successes": "错误配置项成功条数",
+    "misconfiguration_failures": "错误配置项失败条数",
+    "misconfiguration_exceptions": "错误配置项例外条数"
   },
   "Cluster": {
     "kubernetes_version": "Kubernetes版本",
@@ -157,6 +171,7 @@
     "elasticSearchPasswd": "密码",
     "elasticSearchCert": "证书",
     "openSearchEnabled": "OpenSearch",
+    "vacAssessmentEnabled": "VMware Application Catalog",
     "workNamespace": "定时任务所在的命名空间",
     "image": "镜像地址"
   },
@@ -194,7 +209,10 @@
     "InspectionResult": "检查结果设置",
     "InspectionResultDesc": "检查结果和动作配置",
     "known_registriesDesc": "注册其他harbor地址（可选）",
-    "cacheDesc": "缓存相关配置（可选）"
+    "cacheDesc": "缓存相关配置（可选）",
+    "vacDataSource": "VMware Application Catalog数据源",
+    "vacDataSourceDesc": "VMware Application Catalog Data Source相关配置（可选）",
+    "cspSecretName": "Secret名称"
   },
   "cornJob": {
     "Weekly": "每周在周日早上的0点运行一次",
@@ -215,7 +233,15 @@
     "reason": "原因",
     "status": "状态",
     "remediation": "修改建议",
-    "current_node": "当前节点"
+    "current_node": "当前节点",
+    "trusted": "信任的"
+  },
+  "VAC": {
+    "branch": "分支",
+    "releasedTime": "发布时间",
+    "vacView": "VMware Application Catalog详情",
+    "deprecationPolicy": "弃用策略",
+    "nonsupportpolicy": "不支持策略"
   },
   "en": "English",
   "zh_CN": "中文 (简体)"

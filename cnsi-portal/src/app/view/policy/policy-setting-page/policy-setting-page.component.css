@@ -198,7 +198,7 @@ form .schedule div {
   margin-top: 24px;
 }
 form .schedule span {
-  width: 180px;
+  width: 140px;
   display: inline-block;
   border-bottom: 1px solid #ddd;
   margin-right: 20px;
@@ -211,7 +211,7 @@ form .schedule button {
 form .schedule button cds-icon {
   position: relative;
   top: -3px;
-  left: -5px;
+  left: -6px;
 }
 form .submit-btns {
   display: flex;
@@ -240,4 +240,13 @@ form .passwd-test {
 }
 form .passwd-test::ng-deep .clr-form-control .clr-control-container {
   width: 200px;
+}
+.modal .modal-dialog .modal-content .modal-body clr-input-container {
+  flex-direction: row;
+  align-items: center;
+}
+.modal .modal-dialog .modal-content .modal-body clr-input-container label,
+.modal .modal-dialog .modal-content .modal-body clr-input-container input {
+  margin-right: 15px;
+  color: #fff;
 }

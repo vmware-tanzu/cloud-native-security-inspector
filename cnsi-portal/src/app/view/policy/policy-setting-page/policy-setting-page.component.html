@@ -26,10 +26,13 @@
           <h4>{{'Policy.schedule'|translate}}:</h4>
           <div>
             <span>{{schedule}}</span>
-            <button (click)="isCornUpdateModal=true" type="button" class="btn btn-icon btn-primary" aria-label="home">
-              <cds-icon class="pencil" shape="pencil"></cds-icon>
+            <button (click)="isCornUpdateModal=true;importScheduleFlag=false;" type="button" class="btn btn-icon btn-primary" aria-label="home">
+              <cds-icon shape="pencil"></cds-icon>
           </button>
-          </div>
+          <button (click)="isCornUpdateModal=true;importScheduleFlag=true;" type="button" class="btn btn-icon btn-primary" aria-label="home">
+            <cds-icon  shape="import"></cds-icon>
+        </button>
+        </div>
         </div>
         <!-- <clr-input-container class="w-230">
           <label>{{'Policy.historyLimit'|translate}}:  </label>
@@ -117,6 +120,13 @@
           </div>
 
         </div>
+
+        <clr-toggle-container class="clr-inline">
+          <label class="w-200">{{'Policy.vacAssessmentEnabled'|translate}}:</label>
+          <clr-toggle-wrapper>
+            <input type="checkbox" clrToggle name="vacAssessmentEnabled" formControlName="vacAssessmentEnabled" />
+          </clr-toggle-wrapper>
+        </clr-toggle-container>
 
         <button clrStepButton="next" data-cy="next-one" [disabled]="inspectionSettingValid">next</button>
       </clr-step-content>
@@ -291,7 +301,17 @@
                 </h3>
             </div>
             <div class="modal-body">
-                <app-corn-schedule  (saveSchedule)="saveSchedule($event)" (cancelSchedule)="cancelSchedule()"></app-corn-schedule>
+                <app-corn-schedule *ngIf="!importScheduleFlag" (saveSchedule)="saveSchedule($event)" (cancelSchedule)="cancelSchedule()"></app-corn-schedule>
+
+                <clr-input-container *ngIf="importScheduleFlag">
+                  <label>Import Schedule: </label>
+                  <input style="width: 500px;" clrInput placeholder="Please fill in the cron expression according to the Kubernetes standard." name="importSchedule" [(ngModel)]="importSchedule" />
+                </clr-input-container>
+
+                <div class="modal-footer" *ngIf="importScheduleFlag">
+                  <button class="btn btn-outline" (click)="isCornUpdateModal = false;" type="button">Cancel</button>
+                  <button class="btn btn-primary" (click)="schedule = importSchedule; isCornUpdateModal = false;" type="button">Save</button>
+              </div>
             </div>
         </div>
     </div>

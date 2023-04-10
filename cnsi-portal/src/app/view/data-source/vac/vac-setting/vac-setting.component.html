@@ -1,0 +1,92 @@
+<div class="sddc-header">
+  <h2 class="sddc-title">
+    <a href="javascript:;" [routerLink]='["/data-source/vac"]'>
+      <cds-icon shape="angle" class="angle-top"></cds-icon>
+    </a>
+    {{'VAC.vacView'|translate}}
+  </h2>
+</div>
+
+<form class="create-sddc-form" clrStepper [formGroup]="vacForm">
+  <clr-stepper-panel formGroupName="requiredFields">
+    <clr-step-title>{{'Setting.RequiredFields'|translate}}</clr-step-title>
+    <clr-step-description>{{'Setting.inspectionDesc'|translate}}</clr-step-description>
+    <clr-step-content *clrIfExpanded>
+      <clr-input-container class="w-230" style="padding-bottom: 10px;">
+        <label>{{'CommonlyUse.name'|translate}}: </label>
+        <input clrInput placeholder="" name="name" formControlName="name"/>
+      </clr-input-container>
+
+      <clr-input-container class="w-230" style="padding-bottom: 10px;">
+        <label>{{'VAC.branch'|translate}}: </label>
+        <input clrInput placeholder="" name="branch" formControlName="branch"/>
+      </clr-input-container>
+
+
+      <clr-select-container class="w-230">
+        <label class="w-200">{{'CommonlyUse.version'|translate}}</label>
+        <select clrSelect name="version" formControlName="version">
+          <option value=""></option>
+          <option *ngFor="let item of versionList" [value]="item">{{item}}</option>
+        </select>
+      </clr-select-container>
+   
+      <button clrStepButton="next"[disabled]="false" >next</button>
+    </clr-step-content>
+  </clr-stepper-panel>
+
+  <clr-stepper-panel formGroupName="deprecationPolicy">
+    <clr-step-title>{{'VAC.deprecationPolicy'|translate}}</clr-step-title>
+    <clr-step-description>{{'Setting.known_registriesDesc'|translate}}</clr-step-description>
+    <clr-step-content *clrIfExpanded>
+
+      
+      <button clrStepButton="next" [disabled]="false">Next</button>
+    </clr-step-content>
+  </clr-stepper-panel>
+
+  <clr-stepper-panel formGroupName="nonsupportPolicy">
+    <clr-step-title>{{'VAC.nonsupportPolicy'|translate}}</clr-step-title>
+    <clr-step-description>{{'Setting.cacheDesc'| translate}}</clr-step-description>
+    <clr-step-content *clrIfExpanded> 
+      <div class="submit-btns">
+        <button class="btn btn-primary" [disabled]="false" type="submit" (click)="harborHandler(text)">{{'CommonlyUse.' + text |translate}}</button>
+      </div>
+    </clr-step-content>
+  </clr-stepper-panel>
+
+  <div class="alert alert-danger" role="alert" *ngIf="messageHarborFlag ==='fail'">
+    <div class="alert-items">
+        <div class="alert-item static">
+          
+            <div class="alert-icon-wrapper">
+                <cds-icon class="alert-icon" shape="exclamation-circle"></cds-icon>
+            </div>
+            <span class="alert-text">
+                {{messageContent}}
+            </span>
+            <button (click)="messageHarborFlag=''" type="button" class="close" aria-label="Close">
+              <cds-icon aria-hidden="true" shape="close"></cds-icon>
+          </button>
+        </div>
+    </div>
+</div>
+<div class="alert alert-success" role="alert" *ngIf="messageHarborFlag ==='success'">
+  <div class="alert-items">
+      <div class="alert-item static">
+          <div class="alert-icon-wrapper">
+              <cds-icon class="alert-icon" shape="check-circle"></cds-icon>
+          </div>
+          <span class="alert-text">
+            {{messageContent}}
+          </span>
+          <button type="button" (click)="messageHarborFlag=''" class="close" aria-label="Close">
+            <cds-icon aria-hidden="true" shape="close"></cds-icon>
+        </button>
+      </div>
+  </div>
+</div>
+
+
+
+</form>

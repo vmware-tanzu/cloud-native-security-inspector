@@ -35,13 +35,14 @@
       <clr-accordion-title>{{'Workload.list'|translate}}</clr-accordion-title>
       <clr-accordion-content *clrIfExpanded>
         <clr-datagrid style="height:  200px; overflow:  auto;">
-          <clr-dg-column [clrDgField]="'container.name'">Uid</clr-dg-column>
+          <clr-dg-column >Uid</clr-dg-column>
           <clr-dg-column [clrDgField]="'container.name'">
             Name
           </clr-dg-column>
           <clr-dg-column >Namespace</clr-dg-column>
           <clr-dg-column >Kind</clr-dg-column>
           <clr-dg-column >Passed</clr-dg-column>
+          <clr-dg-column >{{'Kube_bench_list.trusted'|translate}}</clr-dg-column>
 
           <clr-dg-row *clrDgItems="let wd of shardService.currentReport?.workloadAssessments" [clrDgItem]="wd">
             <clr-dg-cell>
@@ -55,6 +56,7 @@
             <clr-dg-cell>{{wd.workload.metadata.namespace}}</clr-dg-cell>
             <clr-dg-cell>{{wd.workload.metadata.kind}}</clr-dg-cell>
             <clr-dg-cell>{{wd.passed}}</clr-dg-cell>
+            <clr-dg-cell>{{wd.trusted}}</clr-dg-cell>
           </clr-dg-row>
           <clr-dg-footer>
             <clr-dg-pagination #pagination_wordloads [clrDgPageSize]="10">
@@ -83,15 +85,18 @@
               <clr-dg-column [clrDgField]="'container.name'">Name</clr-dg-column>
               <clr-dg-column >Image</clr-dg-column>
               <clr-dg-column >{{'Report_Detail.isInit'|translate}}</clr-dg-column>
+              <clr-dg-column >{{'Kube_bench_list.trusted'|translate}}</clr-dg-column>
     
               <clr-dg-row *clrDgItems="let cn of pod.containers" [clrDgItem]="cn">
                 <clr-dg-cell>
-                  {{cn.name}}
+                  <a href="javascript:;" *ngIf="cn.vacAssessment && cn.vacAssessment.trusted" (click)="showContainerVAC(cn)">{{cn.name}}</a>
+                  <span *ngIf="!cn.vacAssessment || !cn.vacAssessment.trusted" (click)="showContainerVAC(cn)">{{cn.name}}</span>
                 </clr-dg-cell>
                 <clr-dg-cell>
                   {{cn.image}}
                 </clr-dg-cell>
                 <clr-dg-cell>{{cn.isInit}}</clr-dg-cell>
+                <clr-dg-cell>{{cn.vacAssessment?.trusted}}</clr-dg-cell>
               </clr-dg-row>
               <clr-dg-footer>
                 <clr-dg-pagination #pagination_containers [clrDgPageSize]="10">
@@ -101,6 +106,77 @@
                 </clr-dg-pagination>
             </clr-dg-footer>
             </clr-datagrid>
+            <div class="vac-container" *ngIf="currentContainer && currentContainer.vacAssessment.trusted">
+              <h4> VMware Application Catalog Summary</h4>
+              <div class="card">
+                <ul class="list">
+                  <li>
+                    <b>Name: </b> <span>{{currentContainer.vacAssessment.name}}</span>
+                  </li>
+                  <li>
+                    <b>Branch: </b> <span>{{currentContainer.vacAssessment.branch}}</span>
+                  </li>
+                  <li>
+                    <b>Version: </b> <span>{{currentContainer.vacAssessment.version}}</span>
+                  </li>
+                  <li>
+                    <b>Revision:</b> <span>{{currentContainer.vacAssessment.revision}}</span>
+                  </li>
+                  <li>
+                    <b>Release Time:</b> <span>{{currentContainer.vacAssessment.releasedAt  | date: 'medium'}}</span>
+                  </li>
+                  <li>
+                    <b>Last Version Released:</b> <span>{{currentContainer.vacAssessment.lastVersionReleased}}</span>
+                  </li>
+                  <li>
+                    <b>Status:</b>  <span [class]="{active: currentContainer.vacAssessment.status==='ACTIVE'}">{{currentContainer.vacAssessment.status}}</span>
+                  </li>
+                  <li>
+                    <b>Trusted:</b>  <span>{{currentContainer.vacAssessment.trusted}}</span>
+                  </li>
+                </ul>
+
+                <div class="vac-policy">
+
+                  <div class="card" *ngIf="currentContainer.vacAssessment.deprecationPolicy">
+                      <h3 class="card-header">Deprecation Policy</h3>
+                      <div class="card-block" >
+                          <div class="card-text">
+                            <ul class="list">
+                              <li>
+                                <b>Deprecation Date: </b><span>{{currentContainer.vacAssessment.deprecationPolicy.deprecationDate | date: 'medium' }}</span>
+                              </li>
+                              <li>
+                                <b>Grace Period Days: </b><span>{{currentContainer.vacAssessment.deprecationPolicy.gracePeriodDays}}</span>
+                              </li>
+                              <li>
+                                <b>Reason: </b><span>{{currentContainer.vacAssessment.deprecationPolicy.reason}}</span>
+                              </li>
+                              <li>
+                                <b>Alternative: </b><span>{{currentContainer.vacAssessment.deprecationPolicy.alternative}}</span>
+                              </li>
+                            </ul>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="card"  *ngIf="currentContainer.vacAssessment.nonSupportPolicy">
+                      <h3 class="card-header">Nonsupport Policy</h3>
+                      <div class="card-block">
+                          <div class="card-text">
+                            <ul class="list">
+                              <li>
+                                <b>Name: </b><span>{{currentContainer.vacAssessment.nonSupportPolicy.name }}</span>
+                              </li>
+                              <li>
+                                <b>Reason: </b><span>{{currentContainer.vacAssessment.nonSupportPolicy.reason}}</span>
+                              </li>
+                            </ul>
+                          </div>
+                      </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </li>
         </ul>
       </clr-accordion-content>

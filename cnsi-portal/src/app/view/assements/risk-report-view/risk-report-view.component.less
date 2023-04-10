@@ -4,7 +4,7 @@
   h2 {
     color: #fff;
   }
-  .report-detai-bg {
+  .risk-report-detai-bg {
     position: absolute;
     z-index: 1000;
     right: 0;
@@ -49,13 +49,28 @@
       background-color: #21333B;
     }
     #risk-right {
-      width: 445px;
+      width: 995px;
       float: right;
     }
     #risk-left {
       float: left;
-      width: calc(100% - 450px);
+      width: calc(100% - 1000px);
       height: 100%;
+    }
+  }
+}
+clr-datagrid {
+  &::ng-deep {
+
+    .sort {
+      display: flex;
+      flex: 1;
+      justify-content: space-between;
+      cds-icon {
+        &.oder {
+          transform: rotate(180deg);
+        }
+      }
     }
   }
 }

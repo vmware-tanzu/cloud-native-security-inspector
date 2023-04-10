@@ -39,7 +39,8 @@
     "description": "Description",
     "scanInspector": "Scanners",
     "typeId": "Type ID",
-    "information": "Information"
+    "information": "Information",
+    "title": "Title"
   },
   "Header": {
     "title": "Cloud Native Security Inspector"
@@ -47,10 +48,12 @@
   "Nav": {
     "Assessments": {
       "title": "Assessments",
+      "nav": "Reports",
       "report_view": "Reports",
-      "Kube_bench": "Kubebench Scanning Reports",
-      "image_nspector_reports": "Image Scanning Reports",
-      "risk": "Risk Scanning Reports"
+      "Kube_bench": "Cluster Vulnerability Reports",
+      "image_nspector_reports": "Images Risks Reports",
+      "risk": "ArkSec Risk Reports",
+      "trivy": "Trivy Scanning Reports"
     },
     "Insight": {
       "title": "Insight",
@@ -63,6 +66,9 @@
     },
     "Setting": {
       "title": "Setting"
+    },
+    "dataSource": {
+      "title": "Data Source"
     }
   },
   "Report_View": {
@@ -93,11 +99,26 @@
     "failures": "Failures",
     "cause": "Cause",
     "error_message": "Error Message",
-    "pod_list": "Pods List"
+    "pod_list": "Pods List",
+    "releaseTime": "Release Time"
 
   },
   "Risk_view": {
     "numberOfVulnerabilities": "number of vulnerabilities"
+  },
+  "Trivy_view": {
+    "target": "Target",
+    "class": "Class",
+    "type": "Type",
+    "misconfiguration_successes": "Misconfiguration Successes",
+    "misconfiguration_failures": "Misconfiguration Failures",
+    "misconfiguration_exceptions": "Misconfiguration Exceptions",
+    "results_list": "Results List",
+    "os": "OS",
+    "image": "Images",
+    "result": "Results",
+    "severity": "Severity",
+    "misconfigurations": "Misconfigurations"
   },
   "Cluster": {
     "kubernetes_version": "Kubernetes version",
@@ -158,6 +179,7 @@
     "elasticSearchPasswd": "Password",
     "elasticSearchCert": "Certificate",
     "openSearchEnabled": "OpenSearch",
+    "vacAssessmentEnabled": "VMware Application Catalog",
     "workNamespace": "Work Namespace",
     "image": "Image URL"
 
@@ -195,7 +217,10 @@
     "InspectionResult": "Inspection Result Setting",
     "InspectionResultDesc": "Inspection Results and Action Configuration",
     "known_registriesDesc": "Register with other harbors (optional)",
-    "cacheDesc": "Cache related configuration (optional)"
+    "cacheDesc": "Cache related configuration (optional)",
+    "vacDataSource": "VMware Application Catalog Data Source",
+    "vacDataSourceDesc": "VMware Application Catalog Data Source related configuration (optional)",
+    "cspSecretName": "Secret Name"
   },
   "cornJob": {
     "Weekly": "Run once a week at midnight on Sunday morning",
@@ -216,7 +241,15 @@
     "reason": "Reason",
     "status": "Status",
     "remediation": "Remediation",
-    "current_node": "Current Node"
+    "current_node": "Current Node",
+    "trusted": "Trusted"
+  },
+  "VAC": {
+    "branch": "Branch",
+    "releasedTime": "Released Time",
+    "vacView": "VMware Application Catalog View",
+    "deprecationPolicy": "Deprecation Policy",
+    "nonsupportpolicy": "Nonsupport Policy"
   },
   "en": "English",
   "zh_CN": "中文 (简体)"

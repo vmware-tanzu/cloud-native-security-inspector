@@ -1,0 +1,79 @@
+<div class="card detail-bg">
+  <clr-accordion clrAccordionMultiPanel="true" >
+    <clr-accordion-panel [clrAccordionPanelOpen]='true' [hidden]="!(detailInfo && detailInfo.Class === 'config')">
+      <clr-accordion-title>{{'Trivy_view.misconfigurations'|translate}}</clr-accordion-title>
+      <clr-accordion-content [clrIfExpanded]="accordionPanel">
+        <div class="echarts-loading" *ngIf="echartsLoading">
+          <span class="spinner spinner-lg">
+            Loading...
+          </span>
+        </div>
+        <div id="misconfigurations-bar" style="width: 1200px;height:400px; overflow: hidden;"> </div>
+
+        <clr-datagrid class="report-datagrid" *ngIf="detailInfo && detailInfo.Misconfigurations">
+          <clr-dg-column [clrDgField]="'uid'">{{'CommonlyUse.type'|translate}}</clr-dg-column>
+          <clr-dg-column [clrDgField]="'uid'">{{'CommonlyUse.title'|translate}}</clr-dg-column>
+          <clr-dg-column [clrDgSortBy]="'namespace'">{{'CommonlyUse.namespace'|translate}}</clr-dg-column>
+          <clr-dg-column [clrDgSortBy]="'createTime'">{{'Trivy_view.severity'|translate}}</clr-dg-column>
+          <clr-dg-column [clrDgSortBy]="'namespace'">{{'CommonlyUse.status'|translate}}</clr-dg-column>
+          <clr-dg-column [clrDgField]="'name'">{{'CommonlyUse.description'|translate}}</clr-dg-column>
+          <clr-dg-column [clrDgField]="'namespace'">Message</clr-dg-column>
+
+          <clr-dg-row *clrDgItems="let detail of detailInfo.Misconfigurations" [clrDgItem]="detail">
+            <clr-dg-cell>                {{detail.Type}}
+             </clr-dg-cell>
+            <clr-dg-cell>{{detail.Title}}</clr-dg-cell>
+            <clr-dg-cell>{{detail.Namespace}}</clr-dg-cell>
+            <clr-dg-cell>{{detail.Severity}}</clr-dg-cell>
+            <clr-dg-cell>{{detail.Status}}</clr-dg-cell>
+            <clr-dg-cell>{{detail.Description}}</clr-dg-cell>
+            <clr-dg-cell>{{detail.Message}}</clr-dg-cell>
+          </clr-dg-row>
+
+          <clr-dg-footer>
+            <clr-dg-pagination #pagination [clrDgPageSize]="10">
+                <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">item per page</clr-dg-page-size>
+                {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                of {{pagination.totalItems}} items
+            </clr-dg-pagination>
+        </clr-dg-footer>
+        </clr-datagrid>
+      </clr-accordion-content>
+    </clr-accordion-panel>
+<!-- 
+    <clr-accordion-panel [clrAccordionPanelOpen]='true' *ngIf="detailList.length > 0">
+      <clr-accordion-title>{{'CommonlyUse.details' | translate}}</clr-accordion-title>
+      <clr-accordion-content *clrIfExpanded>
+        <clr-datagrid class="datagrid">
+          <clr-dg-column [clrDgField]="'score'">score</clr-dg-column>
+          <clr-dg-column [clrDgField]="'scale'">scale</clr-dg-column>
+          <clr-dg-column [clrDgField]="'vuln.package'">package</clr-dg-column>
+          <clr-dg-column [clrDgField]="'vuln.version'">{{'CommonlyUse.version'|translate}}</clr-dg-column>
+          <clr-dg-column [clrDgField]="'vuln.fix_version'">{{'CommonlyUse.fix_version'|translate}}</clr-dg-column>
+          <clr-dg-column [clrDgField]="'reason'">{{'Kube_bench_list.reason'|translate}}</clr-dg-column>
+          <clr-dg-column >{{'CommonlyUse.description'|translate}}</clr-dg-column>
+
+          <clr-dg-row *clrDgItems="let detail of detailList" [clrDgItem]="detail">
+            <clr-dg-cell>{{detail.score}}</clr-dg-cell>
+            <clr-dg-cell>{{detail.scale}}</clr-dg-cell>
+            <clr-dg-cell>{{detail.vuln.package}}</clr-dg-cell>
+            <clr-dg-cell>{{detail.vuln.version}}</clr-dg-cell>
+            <clr-dg-cell>{{detail.vuln.fix_version}}</clr-dg-cell>
+            <clr-dg-cell>{{detail.reason}}</clr-dg-cell>
+
+            <clr-dg-cell>{{detail.vuln.description}}</clr-dg-cell>
+          </clr-dg-row>
+
+          <clr-dg-footer>
+            <clr-dg-pagination #pagination [clrDgPageSize]="10">
+                <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">item per page</clr-dg-page-size>
+                {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                of {{pagination.totalItems}} items
+            </clr-dg-pagination>
+        </clr-dg-footer>
+        </clr-datagrid>
+
+      </clr-accordion-content>
+      </clr-accordion-panel> -->
+  </clr-accordion>
+</div>

@@ -6,16 +6,22 @@
 .datagrid::ng-deep .datagrid-cell:first-of-type {
   flex: none;
   overflow: hidden;
+  min-width: 1rem;
+  width: 65px;
 }
 .datagrid::ng-deep .datagrid-column:nth-of-type(2),
 .datagrid::ng-deep .datagrid-cell:nth-of-type(2) {
   flex: none;
   overflow: hidden;
+  min-width: 1rem;
+  width: 65px;
 }
 .datagrid::ng-deep .datagrid-column:nth-of-type(3),
 .datagrid::ng-deep .datagrid-cell:nth-of-type(3) {
   flex: none;
   overflow: hidden;
+  min-width: 1rem;
+  width: 80px;
 }
 .datagrid::ng-deep .datagrid-column:nth-of-type(4),
 .datagrid::ng-deep .datagrid-cell:nth-of-type(4) {
