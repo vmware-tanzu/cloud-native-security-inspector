@@ -31,15 +31,15 @@ export class PolicySettingPageComponent implements OnInit {
   imageList = [
     {
       name: 'inspector',
-      url: 'projects.registry.vmware.com/cnsi/dev/inspector:vac'
+      url: 'projects.registry.vmware.com/cnsi/dev/inspector:0.3.2'
     },
     {
       name: 'kubebench',
-      url: 'projects.registry.vmware.com/cnsi/kubebench:0.3.1'
+      url: 'projects.registry.vmware.com/cnsi/kubebench:0.3.2'
     },
     {
       name: 'risk',
-      url: 'projects.registry.vmware.com/cnsi/risk:0.3.1'
+      url: 'projects.registry.vmware.com/cnsi/risk:0.3.2'
     }
     
   ]
@@ -344,7 +344,7 @@ export class PolicySettingPageComponent implements OnInit {
           this.policyForm.get('inspectionSetting')?.get('historyLimit')?.setValue(5)
           this.policyForm.get('inspectionSetting')?.get('suspend')?.setValue(false)
           this.policyForm.get('inspectionSetting')?.get('concurrencyRule')?.setValue('Forbid')
-          this.policyForm.get('inspectionSetting')?.get('image')?.setValue('projects.registry.vmware.com/cnsi/inspector:0.3.1')
+          this.policyForm.get('inspectionSetting')?.get('image')?.setValue('projects.registry.vmware.com/cnsi/inspector:0.3.2')
           this.policyForm.get('inspectionSetting')?.get('imagePullPolicy')?.setValue('IfNotPresent')
           this.policyForm.get('inspectionSetting')?.get('settingsName')?.setValue('')
           this.policyForm.get('inspectionResult')?.get('actions')?.setValue(true)
