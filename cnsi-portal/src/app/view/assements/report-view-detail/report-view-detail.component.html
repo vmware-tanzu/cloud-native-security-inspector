@@ -46,14 +46,18 @@
 
           <clr-dg-row *clrDgItems="let wd of shardService.currentReport?.workloadAssessments" [clrDgItem]="wd">
             <clr-dg-cell>
-              {{wd.workload.metadata.uid}}
+              <span *ngIf="wd.workload.metadata.kind === 'Pod'">{{wd.workload.pods[0].metadata.uid}}</span>
+              <span *ngIf="wd.workload.metadata.kind !== 'Pod'">{{wd.workload.metadata.uid}}</span>
             </clr-dg-cell>
             <clr-dg-cell>
               <a href="javascript:;" (click)="showDetail(wd)">
                 {{wd.workload.metadata.name}}
               </a>  
             </clr-dg-cell>
-            <clr-dg-cell>{{wd.workload.metadata.namespace}}</clr-dg-cell>
+            <clr-dg-cell>
+              <span *ngIf="wd.workload.metadata.kind === 'Pod'">{{wd.workload.pods[0].metadata.namespace}}</span>
+              <span *ngIf="wd.workload.metadata.kind !== 'Pod'">{{wd.workload.metadata.namespace}}</span>
+            </clr-dg-cell>
             <clr-dg-cell>{{wd.workload.metadata.kind}}</clr-dg-cell>
             <clr-dg-cell>{{wd.passed}}</clr-dg-cell>
             <clr-dg-cell>{{wd.trusted}}</clr-dg-cell>
@@ -96,7 +100,13 @@
                   {{cn.image}}
                 </clr-dg-cell>
                 <clr-dg-cell>{{cn.isInit}}</clr-dg-cell>
-                <clr-dg-cell>{{cn.vacAssessment?.trusted}}</clr-dg-cell>
+                <clr-dg-cell>
+                  <span>
+                    <cds-icon *ngIf="cn.vacAssessment?.trusted" style="color: hsl(93, 79%, 40%);" shape="check-circle" solid></cds-icon>
+                    <cds-icon *ngIf="!cn.vacAssessment?.trusted" style="color: hsl(9, 92%, 50%);"  shape="times"></cds-icon>
+                    {{cn.vacAssessment?.trusted}}  
+                  </span>
+                </clr-dg-cell>
               </clr-dg-row>
               <clr-dg-footer>
                 <clr-dg-pagination #pagination_containers [clrDgPageSize]="10">
@@ -106,10 +116,17 @@
                 </clr-dg-pagination>
             </clr-dg-footer>
             </clr-datagrid>
-            <div class="vac-container" *ngIf="currentContainer && currentContainer.vacAssessment.trusted">
+            <div class="vac-container"  *ngIf="currentContainer && currentContainer.vacAssessment.trusted">
               <h4> VMware Application Catalog Summary</h4>
               <div class="card">
                 <ul class="list">
+                  <li>
+                    <b>Trusted:</b>  <span>
+                      <cds-icon *ngIf="currentContainer.vacAssessment.trusted" style="color: hsl(93, 79%, 40%);" shape="check-circle" solid></cds-icon>
+                      <cds-icon *ngIf="!currentContainer.vacAssessment.trusted" style="color: hsl(9, 92%, 50%);"  shape="times"></cds-icon>
+                      {{currentContainer.vacAssessment.trusted}}
+                    </span>
+                  </li>
                   <li>
                     <b>Name: </b> <span>{{currentContainer.vacAssessment.name}}</span>
                   </li>
@@ -130,9 +147,6 @@
                   </li>
                   <li>
                     <b>Status:</b>  <span [class]="{active: currentContainer.vacAssessment.status==='ACTIVE'}">{{currentContainer.vacAssessment.status}}</span>
-                  </li>
-                  <li>
-                    <b>Trusted:</b>  <span>{{currentContainer.vacAssessment.trusted}}</span>
                   </li>
                 </ul>
 
