@@ -31,7 +31,7 @@ export class PolicySettingPageComponent implements OnInit {
   imageList = [
     {
       name: 'inspector',
-      url: 'projects.registry.vmware.com/cnsi/dev/inspector:0.3.2'
+      url: 'projects.registry.vmware.com/cnsi/inspector:0.3.2'
     },
     {
       name: 'kubebench',

@@ -218,9 +218,13 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
             callback(data, this, query)
             this.pageMaxCount = Math.ceil( data.hits.total.value / this.defaultSize)
           },
-          err => {}
+          err => {
+            this.echartsLoading = false
+            this.dgLoading = false
+          }
         )
       } else {
+        this.echartsLoading = false
         this.dgLoading = false
       }
     }
