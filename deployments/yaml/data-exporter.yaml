@@ -14,7 +14,7 @@ spec:
         control-plane: cnsi-exporter
     spec:
       containers:
-        - image: projects.registry.vmware.com/cnsi/exporter:0.3.1
+        - image: projects.registry.vmware.com/cnsi/exporter:0.3.2
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 6780

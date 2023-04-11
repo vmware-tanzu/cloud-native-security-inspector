@@ -5,7 +5,7 @@
 image:
   repository: "projects.registry.vmware.com/cnsi"
   # override image tag, which is .Chart.AppVersion by default
-  tag: "0.3.1"
+  tag: "0.3.2"
   pullPolicy: "IfNotPresent"
 
 opensearch:
