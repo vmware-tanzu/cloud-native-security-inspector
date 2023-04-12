@@ -125,6 +125,12 @@ clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content .va
 clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content .vac-container .list li span.active {
   color: hsl(93, 85%, 32%);
 }
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content .vac-container .list li span.deprecated {
+  color: hsl(9, 92%, 50%);
+}
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content .vac-container .list li span.scheduled {
+  color: #F28B02;
+}
 clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content .vac-container .vac-policy {
   display: flex;
 }
