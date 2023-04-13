@@ -60,7 +60,10 @@
             </clr-dg-cell>
             <clr-dg-cell>{{wd.workload.metadata.kind}}</clr-dg-cell>
             <clr-dg-cell>{{wd.passed}}</clr-dg-cell>
-            <clr-dg-cell>{{wd.trusted}}</clr-dg-cell>
+            <clr-dg-cell>
+              <cds-icon *ngIf="wd.trusted" style="color: hsl(93, 79%, 40%);" shape="check-circle" solid></cds-icon>
+              <cds-icon *ngIf="!wd.trusted" style="color: hsl(9, 92%, 50%);"  shape="times"></cds-icon>
+              {{wd.trusted}}</clr-dg-cell>
           </clr-dg-row>
           <clr-dg-footer>
             <clr-dg-pagination #pagination_wordloads [clrDgPageSize]="10">
