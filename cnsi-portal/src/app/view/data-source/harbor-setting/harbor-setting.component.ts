@@ -43,10 +43,12 @@ export class HarborSettingComponent implements OnInit, OnDestroy {
     private policyService: PolicyService
   ) {
     this.secretForm = this.formBuilder.group({
+      secret_type: ['harbor'],
       secret_accessKey: ['', Validators.required],
       secret_accessSecret: ['', Validators.required],
       secret_name: ['',Validators.required], 
-      secret_namespace: {value: 'default', disabled: true}
+      secret_namespace: {value: 'default', disabled: true},
+      secret_token: ['']
     })
   }
   ngOnDestroy(): void {
@@ -65,6 +67,10 @@ export class HarborSettingComponent implements OnInit, OnDestroy {
     this.createTimer = setInterval(() => {
       this.getHarbor()      
     }, 1000)
+  }
+
+  get isHarborSecret() {
+    return this.secretForm.get('secret_type')?.value === 'harbor'
   }
 
   get isSecret () {
@@ -147,23 +153,32 @@ export class HarborSettingComponent implements OnInit, OnDestroy {
   }
 
   createSecret(){
-    if (!this.secretForm.valid){
+    if (!this.secretForm.get('secret_name')?.valid){
       this.messageSecretFlag='fail'
       this.messageContent = 'Check failed!'
       return 
     }
     const secret: SecretModel = {
       data: {
-        accessKey: window.btoa(this.secretForm.get('secret_accessKey')?.value),
-        accessSecret: window.btoa(this.secretForm.get('secret_accessSecret')?.value)
       },
       kind: 'Secret',
       metadata: {
         name: this.secretForm.get('secret_name')?.value,
-        namespace: this.secretForm.get('secret_namespace')?.value
+        namespace: this.secretForm.get('secret_namespace')?.value,
+        annotations: {
+          type: this.secretForm.get('secret_type')?.value
+        }
       },
       type: 'Opaque'
     }
+
+    if (this.secretForm.get('secret_type')?.value === 'harbor') {
+      secret.data.accessKey = window.btoa(this.secretForm.get('secret_accessKey')?.value),
+      secret.data.accessSecret = window.btoa(this.secretForm.get('secret_accessSecret')?.value)
+    } else {
+      secret.data.API_TOKEN = this.secretForm.get('secret_token')?.value
+    }
+
     this.harborService.postHarborSecretsSetting(secret.metadata.namespace, secret).subscribe(
       data => {
         this.messageSecretFlag = 'success'
