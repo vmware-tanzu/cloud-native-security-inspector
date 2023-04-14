@@ -163,6 +163,7 @@ func (c *controller) convertProductToVacProductInfo(product *governor_client.Pro
 	vacProductInfo.Revision = product.Revision
 	vacProductInfo.ReleasedAt = &product.ReleasedAt
 	vacProductInfo.LastVersionReleased = product.LastVersionReleased
+	vacProductInfo.NewerBranchesAvailable = product.NewerBranchesAvailable
 	vacProductInfo.Status = product.Status
 
 	if product.DeprecationPolicy != nil {
