@@ -166,6 +166,10 @@
                     scheduled: currentContainer.vacAssessment.status==='SCHEDULED_DEPRECATION' || currentContainer.vacAssessment.status==='DEPRECATION_GRACE_PERIOD'
                     }">{{currentContainer.vacAssessment.status}}</span>
                   </li>
+                  <li *ngIf="currentContainer.vacAssessment.newerBranchesAvailable">
+                    <b>Newer available branches:</b>
+                    <label class="label" *ngFor="let item of currentContainer.vacAssessment.newerBranchesAvailable">{{item}}</label>
+                  </li>
                 </ul>
 
                 <div class="vac-policy">

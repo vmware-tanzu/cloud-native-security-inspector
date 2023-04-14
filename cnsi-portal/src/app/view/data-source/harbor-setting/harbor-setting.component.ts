@@ -176,7 +176,7 @@ export class HarborSettingComponent implements OnInit, OnDestroy {
       secret.data.accessKey = window.btoa(this.secretForm.get('secret_accessKey')?.value),
       secret.data.accessSecret = window.btoa(this.secretForm.get('secret_accessSecret')?.value)
     } else {
-      secret.data.API_TOKEN = this.secretForm.get('secret_token')?.value
+      secret.data.API_TOKEN = window.btoa(this.secretForm.get('secret_token')?.value)
     }
 
     this.harborService.postHarborSecretsSetting(secret.metadata.namespace, secret).subscribe(
