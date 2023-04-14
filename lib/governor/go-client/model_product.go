@@ -29,9 +29,11 @@ type Product struct {
 	// The date-time which the product was released at
 	ReleasedAt time.Time `json:"released_at"`
 	// Last release version of product
-	LastVersionReleased *string            `json:"last_version_released,omitempty"`
-	DeprecationPolicy   *DeprecationPolicy `json:"deprecation_policy,omitempty"`
-	NonsupportPolicy    *NonSupportPolicy  `json:"nonsupport_policy,omitempty"`
+	LastVersionReleased *string `json:"last_version_released,omitempty"`
+	// List of newer branches available for the product
+	NewerBranchesAvailable []string           `json:"newer_branches_available,omitempty"`
+	DeprecationPolicy      *DeprecationPolicy `json:"deprecation_policy,omitempty"`
+	NonsupportPolicy       *NonSupportPolicy  `json:"nonsupport_policy,omitempty"`
 	// The status of the product in the catalog. Available values are DRAFT, ACTIVE, SCHEDULED_DEPRECATION, DEPRECATION_GRACE_PERIOD, DEPRECATED, NON_SUPPORTED
 	Status               *string `json:"status,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -220,6 +222,38 @@ func (o *Product) SetLastVersionReleased(v string) {
 	o.LastVersionReleased = &v
 }
 
+// GetNewerBranchesAvailable returns the NewerBranchesAvailable field value if set, zero value otherwise.
+func (o *Product) GetNewerBranchesAvailable() []string {
+	if o == nil || o.NewerBranchesAvailable == nil {
+		var ret []string
+		return ret
+	}
+	return o.NewerBranchesAvailable
+}
+
+// GetNewerBranchesAvailableOk returns a tuple with the NewerBranchesAvailable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Product) GetNewerBranchesAvailableOk() ([]string, bool) {
+	if o == nil || o.NewerBranchesAvailable == nil {
+		return nil, false
+	}
+	return o.NewerBranchesAvailable, true
+}
+
+// HasNewerBranchesAvailable returns a boolean if a field has been set.
+func (o *Product) HasNewerBranchesAvailable() bool {
+	if o != nil && o.NewerBranchesAvailable != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetNewerBranchesAvailable gets a reference to the given []string and assigns it to the NewerBranchesAvailable field.
+func (o *Product) SetNewerBranchesAvailable(v []string) {
+	o.NewerBranchesAvailable = v
+}
+
 // GetDeprecationPolicy returns the DeprecationPolicy field value if set, zero value otherwise.
 func (o *Product) GetDeprecationPolicy() DeprecationPolicy {
 	if o == nil || o.DeprecationPolicy == nil {
@@ -336,6 +370,9 @@ func (o Product) MarshalJSON() ([]byte, error) {
 	if o.LastVersionReleased != nil {
 		toSerialize["last_version_released"] = o.LastVersionReleased
 	}
+	if o.NewerBranchesAvailable != nil {
+		toSerialize["newer_branches_available"] = o.NewerBranchesAvailable
+	}
 	if o.DeprecationPolicy != nil {
 		toSerialize["deprecation_policy"] = o.DeprecationPolicy
 	}
@@ -369,6 +406,7 @@ func (o *Product) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "revision")
 		delete(additionalProperties, "released_at")
 		delete(additionalProperties, "last_version_released")
+		delete(additionalProperties, "newer_branches_available")
 		delete(additionalProperties, "deprecation_policy")
 		delete(additionalProperties, "nonsupport_policy")
 		delete(additionalProperties, "status")

@@ -103,9 +103,11 @@ type VacProductInfo struct {
 	// The date-time which the product was released at
 	ReleasedAt *time.Time `json:"releasedAt,omitempty"`
 	// Last release version of product
-	LastVersionReleased *string            `json:"lastVersionReleased,omitempty"`
-	DeprecationPolicy   *DeprecationPolicy `json:"deprecationPolicy,omitempty"`
-	NonsupportPolicy    *NonSupportPolicy  `json:"nonSupportPolicy,omitempty"`
+	LastVersionReleased *string `json:"lastVersionReleased,omitempty"`
+	// Newer branches available for product
+	NewerBranchesAvailable []string           `json:"newerBranchesAvailable,omitempty"`
+	DeprecationPolicy      *DeprecationPolicy `json:"deprecationPolicy,omitempty"`
+	NonsupportPolicy       *NonSupportPolicy  `json:"nonSupportPolicy,omitempty"`
 	// The status of the product in the catalog. Available values are DRAFT, ACTIVE, SCHEDULED_DEPRECATION, DEPRECATION_GRACE_PERIOD, DEPRECATED, NON_SUPPORTED
 	Status *string `json:"status,omitempty"`
 }
