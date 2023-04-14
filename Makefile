@@ -127,7 +127,7 @@ docker-push-backend: ## Build all the images except portal.
 	$(DOCKERCMD) push ${RISK}
 	$(DOCKERCMD) push ${IMG_CMD_WORKLOAD_SCANNER}
 
-docker-push-all:## Push all the images to registry.
+docker-push-all: docker-build-all docker-push-backend ## Push all the images to registry.
 	$(DOCKERCMD) push ${PORTAl}
 
 ##@ Deployment
