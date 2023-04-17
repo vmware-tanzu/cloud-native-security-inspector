@@ -61,6 +61,7 @@ clr-accordion ::ng-deep {
                 .datagrid-column-flex {
                   button, span {
                     color: #fff !important;
+                    
                     cds-icon {
                       color: #fff !important;
                       position: relative;
@@ -68,6 +69,17 @@ clr-accordion ::ng-deep {
                     }
                   }
                 }
+              }
+            }
+            span {
+              &.active {
+                color: hsl(93, 85%, 32%);
+              }
+              &.deprecated {
+                color: hsl(9, 92%, 50%);
+              }
+              &.scheduled {
+                color: #F28B02;
               }
             }
           }
@@ -145,6 +157,13 @@ clr-accordion ::ng-deep {
               &.active {
                 color: hsl(93, 85%, 32%);
               }
+              &.deprecated {
+                color: hsl(9, 92%, 50%);
+              }
+              &.scheduled {
+                color: #F28B02;
+              }
+              
             }
           }
         }

@@ -19,23 +19,13 @@ export class HarborSettingPageComponent implements OnInit {
   public text = ''
   public updateDisabled = false
   public isCornUpdateModal = false
-  public secretsList: SecretModel[] = []
+  public harborSecretsList: SecretModel[] = []
+  public vacSecretsList: SecretModel[] = []
 
   createTimer!: any
   harborForm!: UntypedFormGroup;
   harborResponse!:HarborModel
-  knownRegistries:knownRegistrieType[] = [
-    // {
-    //   credentialRef : {
-    //     name: '',
-    //     namespace: 'default',
-    //   },
-    //   endpoint: '',
-    //   name: '',
-    //   provider: 'docker-registry',
-    //   skipTLSVerify: false
-    // }
-  ]
+  knownRegistries:knownRegistrieType[] = []
   knownRegistriesProviderList = ["li-acr","artifact-hub","aws-ecr","azure-acr","docker-hub","docker-registry","dtr","github-ghcr","gitlab","google-gcr","harbor","helm-hub","huawei-SWR","jfrog-artifactory","quay","tencent-tcr"]
 
   constructor(
@@ -144,7 +134,29 @@ export class HarborSettingPageComponent implements OnInit {
   getSecrets() {
     this.harborService.getHarborSecretsSetting().subscribe(
       data => {
-        this.secretsList = data.items
+        this.harborSecretsList = []
+        this.vacSecretsList = []
+
+        data.items.forEach(sc => {
+          if (sc.metadata.annotations) {
+            if (sc.metadata.annotations.type) {
+              if (sc.metadata.annotations.type === 'vac') {
+                this.vacSecretsList.push(sc)
+              } else if (sc.metadata.annotations.type === 'harbor') {
+                this.harborSecretsList.push(sc)
+              } else {
+                this.harborSecretsList.push(sc)
+                this.vacSecretsList.push(sc)
+                }
+            } else {
+              this.harborSecretsList.push(sc)
+              this.vacSecretsList.push(sc)
+              }
+          } else {
+            this.harborSecretsList.push(sc)
+            this.vacSecretsList.push(sc)
+          }
+        })
       }
     )
   }

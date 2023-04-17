@@ -26,11 +26,13 @@
               <clr-datagrid [clrDgLoading]="secretLoading">
                 <clr-dg-column>{{'CommonlyUse.name' | translate}}</clr-dg-column>
                 <clr-dg-column>{{'CommonlyUse.namespace' | translate}}</clr-dg-column>
+                <clr-dg-column>{{'CommonlyUse.type' | translate}}</clr-dg-column>
                 <clr-dg-column>{{'CommonlyUse.create_time'| translate}}</clr-dg-column>
             
                 <clr-dg-row *clrDgItems="let secret of secretsList">
                     <clr-dg-cell>{{secret.metadata.name}}</clr-dg-cell>
                     <clr-dg-cell>{{secret.metadata.namespace}}</clr-dg-cell>
+                    <clr-dg-cell>{{secret.metadata.annotations ? secret.metadata.annotations.type : ''}}</clr-dg-cell>
                     <clr-dg-cell>{{secret.metadata.creationTimestamp | date}}</clr-dg-cell>
                 </clr-dg-row>
             
@@ -105,7 +107,17 @@
               </div>
               <div class="modal-body">
                 <form clrForm [formGroup]="secretForm">
-  
+                  <clr-radio-container clrInline>
+                    <label>Secret Type: </label>
+                    <clr-radio-wrapper>
+                      <input type="radio" clrRadio name="secret_type" required value="harbor" formControlName="secret_type"/>
+                      <label>Harbor</label>
+                    </clr-radio-wrapper>
+                    <clr-radio-wrapper>
+                      <input type="radio" clrRadio name="secret_type" required value="vac" formControlName="secret_type"/>
+                      <label>VAC (VMware Application Catalog)</label>
+                    </clr-radio-wrapper>                  </clr-radio-container>
+
                   <clr-input-container style="padding-bottom: 10px;">
                     <label>{{'CommonlyUse.name'|translate}}: </label>
                     <input clrInput data-cy="secret_name" placeholder="" name="secret_name" formControlName="secret_name"/>
@@ -116,14 +128,18 @@
                     <option *ngFor="let namespace of shardService.namespaceList" [value]="namespace.name">{{namespace.name}}</option>
                   </select>
                   </clr-select-container>
-                  <clr-password-container style="padding-bottom: 10px;">
+                  <clr-password-container *ngIf="isHarborSecret" style="padding-bottom: 10px;">
                     <label>{{'Setting.accessKey'|translate}}: </label>
                     <input clrPassword data-cy="accessKey" placeholder="" name="accessKey" formControlName="secret_accessKey"/>
                   </clr-password-container>
-                  <clr-password-container style="padding-bottom: 10px;">
+                  <clr-password-container *ngIf="isHarborSecret" style="padding-bottom: 10px;">
                     <label>{{'Setting.accessSecret'|translate}}: </label>
                     <input clrPassword data-cy="accessSecret" placeholder="" name="accessSecret" formControlName="secret_accessSecret"/>
                   </clr-password-container>
+                  <clr-input-container *ngIf="!isHarborSecret" style="padding-bottom: 10px;">
+                    <label>CSP API Token: </label>
+                    <input clrInput data-cy="secret_token" placeholder="" name="secret_token" formControlName="secret_token"/>
+                  </clr-input-container>
                 </form>
   
               </div>

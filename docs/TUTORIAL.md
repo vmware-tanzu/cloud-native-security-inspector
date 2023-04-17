@@ -119,6 +119,8 @@ Now set the secrets of the harbor instance:
 
 <img src="./pictures/create-secret.png">
 
+A new Secret Type is added to the UI. Because we embed VAC (VMware Application Catalog View), we need to distinguish the secrets of harbor and VAC, so that we can use the secret later. Here we need to select harbor.
+
 You need to change the access key and secret to your **admin's** account.
 
 Then create a new Setting:

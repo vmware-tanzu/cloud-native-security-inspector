@@ -21,7 +21,7 @@
         <label class="w-200">{{'Setting.credential_name'|translate}}</label>
         <select clrSelect name="data_credential_name" formControlName="data_credential_name">
           <option value=""></option>
-          <option *ngFor="let item of secretsList" [value]="item.metadata.name">{{item.metadata.name}}</option>
+          <option *ngFor="let item of harborSecretsList" [value]="item.metadata.name">{{item.metadata.name}}</option>
         </select>
       </clr-select-container>
 
@@ -100,7 +100,7 @@
         <clr-select-container class="w-230">
           <label class="w-200">{{'Setting.credential_name'|translate}}</label>
           <select clrSelect name="know_credential_name" [(ngModel)]="known.credentialRef.name" [ngModelOptions]="{standalone: true}">
-            <option *ngFor="let item of secretsList" [value]="item.metadata.name">{{item.metadata.name}}</option>
+            <option *ngFor="let item of harborSecretsList" [value]="item.metadata.name">{{item.metadata.name}}</option>
           </select>
         </clr-select-container>
 
@@ -135,7 +135,7 @@
         <label class="w-200">{{'Setting.cspSecretName'|translate}}</label>
         <select clrSelect name="cspSecretName" formControlName="cspSecretName">
           <option value=""></option>
-          <option *ngFor="let item of secretsList" [value]="item.metadata.name">{{item.metadata.name}}</option>
+          <option *ngFor="let item of vacSecretsList" [value]="item.metadata.name">{{item.metadata.name}}</option>
         </select>
       </clr-select-container>
 

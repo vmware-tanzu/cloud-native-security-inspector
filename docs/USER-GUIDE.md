@@ -277,6 +277,8 @@ kind: Secret
 metadata:
   name: harbor
   namespace: default
+  annotations: 
+    type: harbor
 type: Opaque
 
 ---
@@ -308,6 +310,13 @@ spec:
 You should define an Opaque secret that has accessKey and accessSecret fields in the
 data property, the value of accessKey is the base64 encoded harbor username and the
 value of accessSecret is the base64 encoded harbor password.
+
+We added in Secret:
+```yaml
+  annotations: 
+    type: harbor
+```
+Because we embed VAC (VMware Application Catalog View), we need to distinguish the secret of harbor and VAC, so that we can use the secret later.
 
 knowRegistries field is optional when your cluster workloads images are managed
 in the data source harbor, otherwise, you need to configure your private

@@ -61,15 +61,17 @@ export interface knownRegistrieType {
 
 export interface SecretModel {
   data: {
-    accessKey: string,
-    accessSecret: string
+    accessKey?: string,
+    accessSecret?: string
+    API_TOKEN?:string
   },
   // immutable: true,
   readonly kind: 'Secret',
   metadata: {
     name: string,
     namespace: string,
-    creationTimestamp?: string
+    creationTimestamp?: string,
+    annotations: any
   },
   readonly type: 'Opaque'
 }
