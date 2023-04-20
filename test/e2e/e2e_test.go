@@ -6,6 +6,10 @@ package e2e
 import (
 	"context"
 	"errors"
+	"os"
+	"testing"
+	"time"
+
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/api/v1alpha1"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/lib/log"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/test/e2e/inspectionpolicy"
@@ -13,15 +17,15 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"os"
 	"sigs.k8s.io/e2e-framework/klient/decoder"
 	"sigs.k8s.io/e2e-framework/klient/k8s/resources"
-	"sigs.k8s.io/e2e-framework/pkg/features"
-	"testing"
-	"time"
 
 	"sigs.k8s.io/e2e-framework/pkg/env"
 	"sigs.k8s.io/e2e-framework/pkg/envconf"
+	"sigs.k8s.io/e2e-framework/pkg/features"
+
+	//"sigs.k8s.io/e2e-framework/pkg/env"
+	corev1 "k8s.io/api/core/v1"
 	"sigs.k8s.io/e2e-framework/pkg/envfuncs"
 )
 
@@ -274,4 +278,36 @@ func waitPodReady(
 		}
 	}
 	return errors.New("time out when checking the pods of the deployment")
+}
+func TestKubernetes(t *testing.T) {
+	f1 := features.New("count pod").
+		WithLabel("type", "pod-count").
+		Assess("pods from kube-system", func(ctx context.Context, t *testing.T, cfg *envconf.Config) context.Context {
+			var pods corev1.PodList
+			err := cfg.Client().Resources("kube-system").List(context.TODO(), &pods)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if len(pods.Items) == 0 {
+				t.Fatal("no pods in namespace kube-system")
+			}
+			return ctx
+		}).Feature()
+
+	f2 := features.New("count namespaces").
+		WithLabel("type", "ns-count").
+		Assess("namespace exist", func(ctx context.Context, t *testing.T, cfg *envconf.Config) context.Context {
+			var nspaces corev1.NamespaceList
+			err := cfg.Client().Resources().List(context.TODO(), &nspaces)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if len(nspaces.Items) == 1 {
+				t.Fatal("no other namespace")
+			}
+			return ctx
+		}).Feature()
+
+	// test feature
+	testEnv.Test(t, f1, f2)
 }
