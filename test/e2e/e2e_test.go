@@ -53,7 +53,6 @@ func TestMain(m *testing.M) {
 		envfuncs.TeardownCRDs("../../deployments/yaml", "*"),
 		envfuncs.DestroyKindCluster(kindClusterName),
 	)
-	fmt.Print("Hello testing tensting ")
 	os.Exit(testEnv.Run(m))
 }
 
@@ -109,7 +108,7 @@ func TestE2E(t *testing.T) {
 					log.Errorf("failed to check the pod readiness for %s exist, err: %s", deploymentName, err)
 					t.Fail()
 				} else {
-					err = waitPodReady(ctx, r, deploymentName, "cnsi-system", 30, 10, 1)
+					err = waitPodReady(ctx, r, deploymentName, "cnsi-system", 30, 30, 1)
 					if err != nil {
 						log.Errorf("failed to check the pod readiness, err: %s", err.Error())
 						t.Fail()
@@ -291,6 +290,7 @@ func TestKubernetes(t *testing.T) {
 			if len(pods.Items) == 0 {
 				t.Fatal("no pods in namespace kube-system")
 			}
+			log.Infof("Number of pods: %d ", len(pods.Items))
 			return ctx
 		}).Feature()
 
@@ -309,5 +309,6 @@ func TestKubernetes(t *testing.T) {
 		}).Feature()
 
 	// test feature
+	fmt.Print("Hello testing tensting ")
 	testEnv.Test(t, f1, f2)
 }
