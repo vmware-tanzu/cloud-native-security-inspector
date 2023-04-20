@@ -6,6 +6,7 @@ package e2e
 import (
 	"context"
 	"errors"
+	"fmt"
 	"os"
 	"testing"
 	"time"
@@ -24,7 +25,6 @@ import (
 	"sigs.k8s.io/e2e-framework/pkg/envconf"
 	"sigs.k8s.io/e2e-framework/pkg/features"
 
-	//"sigs.k8s.io/e2e-framework/pkg/env"
 	corev1 "k8s.io/api/core/v1"
 	"sigs.k8s.io/e2e-framework/pkg/envfuncs"
 )
@@ -53,7 +53,7 @@ func TestMain(m *testing.M) {
 		envfuncs.TeardownCRDs("../../deployments/yaml", "*"),
 		envfuncs.DestroyKindCluster(kindClusterName),
 	)
-
+	fmt.Print("Hello testing tensting ")
 	os.Exit(testEnv.Run(m))
 }
 
