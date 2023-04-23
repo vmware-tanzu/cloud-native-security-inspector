@@ -11,6 +11,7 @@ IMG_TAG = 0.3.2
 IMG_MANAGER ?= $(REGISTRY)/manager:$(IMG_TAG)
 IMG_EXPORTER ?= $(REGISTRY)/exporter:$(IMG_TAG)
 IMG_CMD_INSPECTOR ?= $(REGISTRY)/inspector:$(IMG_TAG)
+IMG_CMD_TRIVY ?= $(REGISTRY)/trivy:$(IMG_TAG)
 IMG_CMD_KUBEBENCH ?= $(REGISTRY)/kubebench:$(IMG_TAG)
 PORTAl ?= $(REGISTRY)/portal:$(IMG_TAG)
 RISK ?= $(REGISTRY)/risk:$(IMG_TAG)
@@ -83,6 +84,9 @@ build-exporter: fmt vet ## Build exporter binary.
 build-image-scanner: generate fmt vet ## Build inspector binary.
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/inspector cnsi-inspector/cmd/image-scanner/main.go
 
+build-scanner-trivy: generate fmt ## Build trivy binary.
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/trivy cnsi-scanner-trivy/cmd/scanner-trivy/main.go
+
 build-kube-bench: generate fmt vet ## Build kubebench binary.
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/kubebench cnsi-inspector/cmd/kube-bench/main.go
 
@@ -109,6 +113,9 @@ docker-build-portal: ## Build docker image of portal.
 
 docker-build-inspector: build-image-scanner ## Build docker image of image scanner.
 	$(DOCKERCMD) buildx build -t ${IMG_CMD_INSPECTOR} -f deployments/dockerfiles/Dockerfile.imagescanner .
+
+docker-build-scanner-trivy: build-scanner-trivy ## Build docker image of trivy scanner.
+	$(DOCKERCMD) buildx build -t ${IMG_CMD_TRIVY} -f deployments/dockerfiles/Dockerfile.trivy .
 
 docker-build-kubebench: build-kube-bench ## Build docker image of kube-bench scanner.
 	$(DOCKERCMD) buildx build -t ${IMG_CMD_KUBEBENCH} -f deployments/dockerfiles/Dockerfile.kubebench .
