@@ -3,11 +3,12 @@ package scan
 import (
 	"time"
 
-	"github.com/aquasecurity/harbor-scanner-trivy/pkg/etc"
-	"github.com/aquasecurity/harbor-scanner-trivy/pkg/harbor"
-	"github.com/aquasecurity/harbor-scanner-trivy/pkg/trivy"
 	trivyType "github.com/aquasecurity/trivy/pkg/types"
 	log "github.com/sirupsen/logrus"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/etc"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/trivy"
+	//"github.com/aquasecurity/harbor-scanner-trivy/pkg/harbor"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/harbor"
 )
 
 // Clock wraps the Now method. Introduced to allow replacing the global state with fixed clocks to facilitate testing.
@@ -57,10 +58,9 @@ func (t *transformer) Transform(artifact harbor.Artifact, source *trivyType.Repo
 	//		VendorAttributes: t.toVendorAttributes(v.CVSS),
 	//	}
 	//}
-
 	return harbor.ScanReport{
 		GeneratedAt: t.clock.Now(),
-		Scanner:     etc.GetScannerMetadata(),
+		Scanner:     harbor.Scanner{etc.GetScannerMetadata().Name, etc.GetScannerMetadata().Vendor, etc.GetScannerMetadata().Version},
 		Artifact:    artifact,
 		//Severity:    t.toHighestSeverity(vulnerabilities),
 		Report: source,

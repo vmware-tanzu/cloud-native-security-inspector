@@ -4,11 +4,14 @@ go 1.19
 
 require github.com/goharbor/harbor/src v0.0.0-20230320075937-2b3f178a5095
 
+require github.com/aquasecurity/trivy v0.40.0
+
+require github.com/spdx/tools-golang v0.5.0 // indirect
+
 require (
 	github.com/FZambia/sentinel v1.1.1
 	github.com/aquasecurity/harbor-scanner-trivy v0.30.11
 	github.com/aquasecurity/kube-bench v0.6.12
-	github.com/aquasecurity/trivy v0.40.0
 	github.com/caarlos0/env/v6 v6.10.1
 	github.com/docker/docker v23.0.3+incompatible
 	github.com/docker/go-connections v0.4.0
@@ -49,7 +52,6 @@ require (
 require (
 	github.com/Azure/go-ansiterm v0.0.0-20210617225240-d185dfc1b5a1 // indirect
 	github.com/Microsoft/go-winio v0.6.0 // indirect
-	github.com/anchore/go-struct-converter v0.0.0-20221118182256-c68fdcfa2092 // indirect
 	github.com/aquasecurity/trivy-db v0.0.0-20230411140759-3c2ee2168575 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.17.7 // indirect
@@ -134,7 +136,6 @@ require (
 	github.com/robfig/cron/v3 v3.0.0 // indirect
 	github.com/samber/lo v1.37.0 // indirect
 	github.com/shiena/ansicolor v0.0.0-20200904210342-c7312218db18 // indirect
-	github.com/spdx/tools-golang v0.5.0 // indirect
 	github.com/spf13/afero v1.9.3 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
@@ -184,3 +185,5 @@ require (
 	sigs.k8s.io/structured-merge-diff/v4 v4.2.3 // indirect
 	sigs.k8s.io/yaml v1.3.0 // indirect
 )
+
+replace github.com/spdx/tools-golang => github.com/spdx/tools-golang v0.3.0
