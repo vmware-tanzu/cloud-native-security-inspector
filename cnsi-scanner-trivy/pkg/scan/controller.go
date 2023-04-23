@@ -8,7 +8,7 @@ import (
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/job"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/persistence"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/trivy"
-	//"github.com/aquasecurity/harbor-scanner-trivy/pkg/trivy"
+	//"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/trivy"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/xerrors"
 )

@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/aquasecurity/harbor-scanner-trivy/pkg/etc"
-	"github.com/aquasecurity/harbor-scanner-trivy/pkg/harbor"
-	"github.com/aquasecurity/harbor-scanner-trivy/pkg/job"
-	"github.com/aquasecurity/harbor-scanner-trivy/pkg/persistence"
 	"github.com/gocraft/work"
 	"github.com/gomodule/redigo/redis"
 	log "github.com/sirupsen/logrus"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/etc"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/harbor"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/job"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/persistence"
 )
 
 const (

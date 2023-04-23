@@ -6,16 +6,16 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/aquasecurity/harbor-scanner-trivy/pkg/etc"
-	"github.com/aquasecurity/harbor-scanner-trivy/pkg/ext"
-	"github.com/aquasecurity/harbor-scanner-trivy/pkg/http/api"
-	v1 "github.com/aquasecurity/harbor-scanner-trivy/pkg/http/api/v1"
-	"github.com/aquasecurity/harbor-scanner-trivy/pkg/persistence/redis"
-	"github.com/aquasecurity/harbor-scanner-trivy/pkg/queue"
-	"github.com/aquasecurity/harbor-scanner-trivy/pkg/redisx"
-	"github.com/aquasecurity/harbor-scanner-trivy/pkg/scan"
-	"github.com/aquasecurity/harbor-scanner-trivy/pkg/trivy"
 	log "github.com/sirupsen/logrus"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/etc"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/ext"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/http/api"
+	v1 "github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/http/api/v1"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/persistence/redis"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/queue"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/redisx"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/scan"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/trivy"
 )
 
 var (

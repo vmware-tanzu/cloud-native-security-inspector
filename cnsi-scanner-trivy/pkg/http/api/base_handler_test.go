@@ -5,8 +5,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/aquasecurity/harbor-scanner-trivy/pkg/harbor"
 	"github.com/stretchr/testify/assert"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/harbor"
 )
 
 func TestMimeType_String(t *testing.T) {

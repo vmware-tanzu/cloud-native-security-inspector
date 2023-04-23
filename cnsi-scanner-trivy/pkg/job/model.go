@@ -1,7 +1,7 @@
 package job
 
 import (
-	"github.com/aquasecurity/harbor-scanner-trivy/pkg/harbor"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/harbor"
 )
 
 type ScanJobStatus int

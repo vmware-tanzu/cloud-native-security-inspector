@@ -10,7 +10,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/aquasecurity/harbor-scanner-trivy/pkg/harbor"
 	"github.com/aquasecurity/harbor-scanner-trivy/test/component/docker"
 	"github.com/aquasecurity/harbor-scanner-trivy/test/component/scanner"
 	"github.com/docker/go-connections/nat"
@@ -18,6 +17,7 @@ import (
 	"github.com/stretchr/testify/require"
 	tc "github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/wait"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/harbor"
 )
 
 var (

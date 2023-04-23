@@ -3,7 +3,7 @@ package mock
 import (
 	"testing"
 
-	"github.com/aquasecurity/harbor-scanner-trivy/pkg/trivy"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/trivy"
 )
 
 // Expectation represents an expectation of a method being called and its return values.

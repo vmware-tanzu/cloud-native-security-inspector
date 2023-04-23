@@ -10,7 +10,7 @@ import (
 
 	"github.com/FZambia/sentinel"
 
-	"github.com/aquasecurity/harbor-scanner-trivy/pkg/etc"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/etc"
 
 	"github.com/gomodule/redigo/redis"
 	log "github.com/sirupsen/logrus"

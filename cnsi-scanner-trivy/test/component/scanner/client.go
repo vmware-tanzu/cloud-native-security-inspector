@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/aquasecurity/harbor-scanner-trivy/pkg/harbor"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/harbor"
 )
 
 // Client is the API client that performs all operations against a Scanner Adapter.

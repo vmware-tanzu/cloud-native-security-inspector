@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/aquasecurity/harbor-scanner-trivy/pkg/harbor"
 	log "github.com/sirupsen/logrus"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/harbor"
 )
 
 const (

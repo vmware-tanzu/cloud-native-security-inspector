@@ -6,8 +6,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/aquasecurity/harbor-scanner-trivy/pkg/etc"
 	"github.com/stretchr/testify/assert"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/etc"
 )
 
 func TestGetPool(t *testing.T) {
