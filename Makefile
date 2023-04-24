@@ -165,6 +165,7 @@ install: portal ## Install all the CNSI components without golang and kustomize 
 uninstall: remove_clusterrolebinding  ## Uninstall CNSI components
 	$(KUBECTLCMD) delete -f deployments/yaml/manager.yaml --ignore-not-found=true
 	$(KUBECTLCMD) delete -f deployments/yaml/data-exporter.yaml --ignore-not-found=true
+	$(KUBECTLCMD) delete -f deployments/yaml/scanner-trivy.yaml --ignore-not-found=true
 
 CONTROLLER_GEN = $(shell pwd)/bin/controller-gen
 controller-gen: tidy ## Download controller-gen locally if necessary.
