@@ -24,10 +24,10 @@ type Config struct {
 }
 
 type Trivy struct {
-	//CacheDir      string        `env:"SCANNER_TRIVY_CACHE_DIR" envDefault:"/home/scanner/.cache/trivy"`
-	CacheDir string `env:"SCANNER_TRIVY_CACHE_DIR" envDefault:"~/.config/scanner/.cache/trivy"`
-	//ReportsDir    string        `env:"SCANNER_TRIVY_REPORTS_DIR" envDefault:"/home/scanner/.cache/reports"`
-	ReportsDir    string        `env:"SCANNER_TRIVY_REPORTS_DIR" envDefault:"~/.config/scanner/.cache/reports"`
+	CacheDir string `env:"SCANNER_TRIVY_CACHE_DIR" envDefault:"/home/scanner/.cache/trivy"`
+	//CacheDir string `env:"SCANNER_TRIVY_CACHE_DIR" envDefault:"~/.config/scanner/.cache/trivy"`
+	ReportsDir string `env:"SCANNER_TRIVY_REPORTS_DIR" envDefault:"/home/scanner/.cache/reports"`
+	//ReportsDir    string        `env:"SCANNER_TRIVY_REPORTS_DIR" envDefault:"~/.config/scanner/.cache/reports"`
 	DebugMode     bool          `env:"SCANNER_TRIVY_DEBUG_MODE" envDefault:"false"`
 	VulnType      string        `env:"SCANNER_TRIVY_VULN_TYPE" envDefault:"os,library"`
 	Severity      string        `env:"SCANNER_TRIVY_SEVERITY" envDefault:"UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL"`

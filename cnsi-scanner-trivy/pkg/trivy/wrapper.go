@@ -168,7 +168,7 @@ func (w *wrapper) prepareScanCmd(imageRef ImageRef, outputFile string) (*exec.Cm
 	}
 
 	if w.config.SkipUpdate {
-		args = append([]string{"--skip-update"}, args...)
+		args = append([]string{"--skip-db-update"}, args...)
 	}
 
 	if w.config.OfflineScan {

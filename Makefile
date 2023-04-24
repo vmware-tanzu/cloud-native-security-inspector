@@ -133,6 +133,7 @@ docker-push-backend: ## Build all the images except portal.
 	$(DOCKERCMD) push ${IMG_CMD_KUBEBENCH}
 	$(DOCKERCMD) push ${RISK}
 	$(DOCKERCMD) push ${IMG_CMD_WORKLOAD_SCANNER}
+	$(DOCKERCMD) push ${IMG_CMD_TRIVY}
 
 docker-push-all: docker-build-all docker-push-backend ## Push all the images to registry.
 	$(DOCKERCMD) push ${PORTAl}
