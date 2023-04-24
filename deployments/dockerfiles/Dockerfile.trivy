@@ -1,0 +1,47 @@
+# Copyright 2022 VMware, Inc.
+# SPDX-License-Identifier: Apache-2.0
+# Build the manager binary
+FROM projects.registry.vmware.com/cnsi/golang:1.19 as builder
+
+WORKDIR /workspace
+# Copy the Go Modules manifests
+COPY go.mod go.mod
+COPY go.sum go.sum
+
+RUN go mod download
+
+# Copy the go source
+COPY ./ .
+RUN mkdir -p /home/scanner/.cache
+
+# Build
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o trivy cnsi-scanner-trivy/cmd/scanner-trivy/main.go
+
+# FROM projects.registry.vmware.com/cnsi/distroless/static:nonroot
+# FROM ubuntu:20.04
+
+FROM aquasec/trivy:0.40.0 as trivy
+
+
+#FROM ubuntu:20.04
+FROM goharbor/trivy-adapter-photon:v2.5.1
+WORKDIR /
+# USER 65532:65532
+COPY --from=builder --chmod=777 /home/scanner  /home/scanner
+COPY --from=builder /workspace/trivy  /home/scanner/bin/scanner-trivy
+
+COPY --from=trivy /usr/local/bin/trivy /usr/local/bin/trivy
+
+ENV TRIVY_VERSION=${TRIVY_VERSION}
+ENV SCANNER_API_SERVER_ADDR=0.0.0.0:8081
+ENV SCANNER_REDIS_URL=redis://cnsi-scanner-redis-master.cnsi-system.svc.cluster.local:6379
+# ENV SCANNER_TRIVY_SKIP_UPDATE=True
+ENV SCANNER_TRIVY_OFFLINE_SCAN=True
+RUN trivy server --download-db-only
+
+ENTRYPOINT ["/home/scanner/bin/scanner-trivy"]
+
+
+
+
+

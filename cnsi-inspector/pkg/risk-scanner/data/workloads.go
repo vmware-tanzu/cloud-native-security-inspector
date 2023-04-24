@@ -1,7 +1,7 @@
 package data
 
 import (
-	"github.com/goharbor/harbor/src/lib/log"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/lib/log"
 	"k8s.io/apimachinery/pkg/labels"
 )
 
