@@ -65,7 +65,7 @@
       "title": "Policy"
     },
     "Setting": {
-      "title": "Setting"
+      "title": "Settings"
     },
     "dataSource": {
       "title": "Data Source"
@@ -135,7 +135,7 @@
   },
   "Policy": {
     "policy": "Policy",
-    "title": "Policy Setting",
+    "title": "Policy Settings",
     "name": "Policy Name",
     "type": "Policy Type",
     "network": "network",
@@ -186,7 +186,7 @@
   },
   "Setting": {
     "Settings": "Settings",
-    "settingView": "Setting View",
+    "settingView": "Settings",
     "policy": "Policy Config",
     "harbor": "Harbor Config",
     "cache": "Cache",
@@ -204,17 +204,17 @@
     "secretNamespace": "Secret Namespace",
     "secretName": "Secret Name",
     "RequiredFields": "Required Fields",
-    "setting_name": "Setting Name",
+    "setting_name": "Settings Name",
     "provider": "provider",
     "createSecret": "Create Secret",
-    "createSetting": "Create Setting",
+    "createSetting": "Create Settings",
     "addKnown": "Add Known Registry",
     "removeKnown": "Remove Known Registry",
-    "inspectionSetting": "Inspection Setting",
+    "inspectionSetting": "Inspection Settings",
     "inspectionDesc": "Basic configuration items (mandatory)",
-    "InspectionStandard": "Inspection standard Setting",
+    "InspectionStandard": "Inspection standard Settings",
     "InspectionStandardDesc": "Inspections baseline criteria and filters conform to selector settings",
-    "InspectionResult": "Inspection Result Setting",
+    "InspectionResult": "Inspection Result Settings",
     "InspectionResultDesc": "Inspection Results and Action Configuration",
     "known_registriesDesc": "Register with other harbors (optional)",
     "cacheDesc": "Cache related configuration (optional)",

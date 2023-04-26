@@ -14,86 +14,44 @@
     <h2 class="sddc-title">{{'Nav.Setting.title'|translate}}</h2>
   </div>
   <div class="setting-page">
-    <clr-tabs>
-      <clr-tab>
-        <button clrTabLink  (click)="getSecrets()">Secret</button>
-          <ng-template [clrIfActive]="isSecret">
-            <clr-tab-content>
-              <button class="btn btn-primary btn-sm create" (click)="secretModalFlag=true">
-                <cds-icon shape="plus"></cds-icon>
-                {{'CommonlyUse.new'|translate}}</button>
+    <button *ngIf="harborSetingList.length === 0"  class="btn btn-primary btn-sm create" routerLink="/modify-data-source/create">
+      <cds-icon shape="plus"></cds-icon>
+      {{'CommonlyUse.new'|translate}} </button>
+    <clr-datagrid [clrDgLoading]="settingLoading">
+      <clr-dg-column>{{'CommonlyUse.name' | translate}}</clr-dg-column>
+      <clr-dg-column>Secret</clr-dg-column>
+      <clr-dg-column>{{'Report_Detail.endpoint' | translate}}</clr-dg-column>
+      <clr-dg-column>{{'Policy.schedule' | translate}}</clr-dg-column>
+      <clr-dg-column>{{'CommonlyUse.create_time'| translate}}</clr-dg-column>
+      <clr-dg-column>{{'CommonlyUse.status'| translate}}</clr-dg-column>
+      <clr-dg-column>{{'Report_Detail.actions'| translate}}</clr-dg-column>
+      
+      <clr-dg-row *clrDgItems="let harbor of harborSetingList">
+          <clr-dg-cell>
+            {{harbor.metadata?.name}}                    </clr-dg-cell>
+          <clr-dg-cell>{{harbor.spec.dataSource?.credentialRef?.name}}</clr-dg-cell>
+          <clr-dg-cell>{{harbor.spec.dataSource?.endpoint}}</clr-dg-cell>
+          <clr-dg-cell>{{harbor.spec.dataSource?.scanSchedule.slice(2)}}</clr-dg-cell>
+          <clr-dg-cell>{{harbor.metadata?.creationTimestamp | date}}</clr-dg-cell>
+          <clr-dg-cell>
+            <span *ngIf="harbor.status?.status ==='Healthy'" style="color: green;">{{harbor.status?.status}}</span>
+            <span *ngIf="harbor.status?.status !=='Healthy'" style="color: red;">{{harbor.status?.status}}</span>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div class="icon-button">
+              <cds-icon shape="note" *ngIf="noteIconFlag" (click)="modifyPolicy()"></cds-icon>
+              <cds-icon shape="trash" (click)="deleteModalHandler(harbor.metadata?.name)"></cds-icon>
+
+            </div>
+          </clr-dg-cell>
+      </clr-dg-row>
   
-              <clr-datagrid [clrDgLoading]="secretLoading">
-                <clr-dg-column>{{'CommonlyUse.name' | translate}}</clr-dg-column>
-                <clr-dg-column>{{'CommonlyUse.namespace' | translate}}</clr-dg-column>
-                <clr-dg-column>{{'CommonlyUse.type' | translate}}</clr-dg-column>
-                <clr-dg-column>{{'CommonlyUse.create_time'| translate}}</clr-dg-column>
-            
-                <clr-dg-row *clrDgItems="let secret of secretsList">
-                    <clr-dg-cell>{{secret.metadata.name}}</clr-dg-cell>
-                    <clr-dg-cell>{{secret.metadata.namespace}}</clr-dg-cell>
-                    <clr-dg-cell>{{secret.metadata.annotations ? secret.metadata.annotations.type : ''}}</clr-dg-cell>
-                    <clr-dg-cell>{{secret.metadata.creationTimestamp | date}}</clr-dg-cell>
-                </clr-dg-row>
-            
-                <clr-dg-footer>
-                  <clr-dg-pagination #pagination [clrDgPageSize]="10">
-                      <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Secrets per page</clr-dg-page-size>
-                  </clr-dg-pagination>
-              </clr-dg-footer>
-            </clr-datagrid>
-            </clr-tab-content>
-          </ng-template>
-      </clr-tab>
-      <clr-tab>
-        <button clrTabLink id="link1">{{'Nav.Setting.title'|translate}}</button>
-        <ng-template [clrIfActive]="!isSecret">
-          <clr-tab-content>
-            <clr-tab-content> 
-              <button *ngIf="harborSetingList.length === 0"  class="btn btn-primary btn-sm create" routerLink="/modify-data-source/create">
-                <cds-icon shape="plus"></cds-icon>
-                {{'CommonlyUse.new'|translate}} </button>
-              <clr-datagrid [clrDgLoading]="settingLoading">
-                <clr-dg-column>{{'CommonlyUse.name' | translate}}</clr-dg-column>
-                <clr-dg-column>Secret</clr-dg-column>
-                <clr-dg-column>{{'Report_Detail.endpoint' | translate}}</clr-dg-column>
-                <clr-dg-column>{{'Policy.schedule' | translate}}</clr-dg-column>
-                <clr-dg-column>{{'CommonlyUse.create_time'| translate}}</clr-dg-column>
-                <clr-dg-column>{{'CommonlyUse.status'| translate}}</clr-dg-column>
-                <clr-dg-column>{{'Report_Detail.actions'| translate}}</clr-dg-column>
-                
-                <clr-dg-row *clrDgItems="let harbor of harborSetingList">
-                    <clr-dg-cell>
-                      {{harbor.metadata?.name}}                    </clr-dg-cell>
-                    <clr-dg-cell>{{harbor.spec.dataSource?.credentialRef?.name}}</clr-dg-cell>
-                    <clr-dg-cell>{{harbor.spec.dataSource?.endpoint}}</clr-dg-cell>
-                    <clr-dg-cell>{{harbor.spec.dataSource?.scanSchedule.slice(2)}}</clr-dg-cell>
-                    <clr-dg-cell>{{harbor.metadata?.creationTimestamp | date}}</clr-dg-cell>
-                    <clr-dg-cell>
-                      <span *ngIf="harbor.status?.status ==='Healthy'" style="color: green;">{{harbor.status?.status}}</span>
-                      <span *ngIf="harbor.status?.status !=='Healthy'" style="color: red;">{{harbor.status?.status}}</span>
-                    </clr-dg-cell>
-                    <clr-dg-cell>
-                      <div class="icon-button">
-                        <cds-icon shape="note" *ngIf="noteIconFlag" (click)="modifyPolicy()"></cds-icon>
-                        <cds-icon shape="trash" (click)="deleteModalHandler(harbor.metadata?.name)"></cds-icon>
-  
-                      </div>
-                    </clr-dg-cell>
-                </clr-dg-row>
-            
-                <clr-dg-footer>
-                  <clr-dg-pagination #pagination [clrDgPageSize]="10">
-                      <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Settings per page</clr-dg-page-size>
-                  </clr-dg-pagination>
-              </clr-dg-footer>
-            </clr-datagrid>
-            </clr-tab-content>
-          </clr-tab-content>
-        </ng-template>
-      </clr-tab>
-  
-    </clr-tabs>
+      <clr-dg-footer>
+        <clr-dg-pagination #pagination [clrDgPageSize]="10">
+            <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Settings per page</clr-dg-page-size>
+        </clr-dg-pagination>
+    </clr-dg-footer>
+  </clr-datagrid>
   
     <div [hidden]="!secretModalFlag" class="modal" style="width: 1000px; margin: 0 auto;">
       <div class="modal-dialog" role="dialog" aria-hidden="true" style="width: 1000px;">
