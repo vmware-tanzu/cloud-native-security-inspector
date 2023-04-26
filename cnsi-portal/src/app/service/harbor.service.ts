@@ -37,7 +37,7 @@ export class HarborService {
   }
 
   postHarborSecretsSetting(namespace: string = 'default', data:SecretModel) :Observable<SecretModelResponse>{
-    return this.http.post<SecretModelResponse>(this.environment.api.k8s + '/namespaces/'+namespace+'/secrets', data)
+    return this.http.post<SecretModelResponse>(this.environment.api.k8sPost + '?path=' + '/api/v1/namespaces/'+namespace+'/secrets', data)
   }
 
   updateHarborSecretsSetting(namespace: string = 'default', name: string, data:SecretModel) :Observable<SecretModelResponse>{

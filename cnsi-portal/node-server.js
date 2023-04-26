@@ -23,6 +23,7 @@ let app = express()
 app.use('/proxy', createProxyMiddleware({ 
 	// Forward to kubernetes api-service
 	target: APISERVER,
+  selfHandleResponse: true, 
 	// Rewrite path when forwarding
 	pathRewrite: {'^/proxy' : ''},
   headers: {
@@ -37,6 +38,7 @@ app.use('/proxy', createProxyMiddleware({
   secure: false,
   onProxyReq: fixRequestBody
 }));
+
 // parse application/json
 app.use(bodyParser.json())
 app.use(history())
@@ -49,7 +51,6 @@ app.set("views", __dirname);
 app.engine('html',ejs.__express)
 // Configure Template Engine
 app.set("view engine", "html")
-
 
 // Set the folder where the front-end project is located as a static resource
 app.get('/', (req, res) => {
@@ -94,6 +95,38 @@ app.get('/', (req, res) => {
 //   })
 // })
 
+app.use('/k8s-body', (req, res) => {
+  const body = req.body
+  const path = req.query.path
+  config = {}
+  config['headers'] = {
+    'Accept':  'application/json'
+  }
+  const options = {
+    url: 'http://localhost:3800/proxy' + path,
+    // rejectUnauthorized : false,
+    headers: {
+      'Accept':  'application/json'
+    }
+  };
+  console.log('body', body)
+  console.log('options', options)
+  const response = request.post(options)
+  response.on('error', err => {
+    console.log(1, err)
+    res.status(501).send('test failed')
+  })
+  response.on('data', data => {
+    console.log(2, data)
+    res.status(501).send('test failed')
+  })
+  response.on('response', response => {
+    console.log(3, response.statusCode)
+    res.status(response.statusCode).send('test result')
+  })
+})
+
+
 app.post('/open-search', (req, res) => {
   const body = req.body
   console.log('body', body)
@@ -132,7 +165,7 @@ app.post('/open-search', (req, res) => {
     risk_open_serach(client, body).then(v => {
       res.status(200).send(v) 
     }).catch(err => {
-      res.status(500).send(err.message) 
+      res.status(err.statusCode).send(err.message) 
     })
   } else {
     const client = new elasticClient({
@@ -198,17 +231,22 @@ elastic_search = async (client, body) => {
   } catch (error) {
     console.log(error)
     throw error
-  }}
+}}
 
 risk_open_serach = async (client, body) => {
-  let response = await client.get(
-    {
-      id: body.query,
-      index: body.index, 
-    }
-  )
-  console.log("Searching:"); 
-  return  response.body
+  try {
+    let response = await client.get(
+      {
+        id: body.query,
+        index: body.index, 
+      }
+    )
+    console.log("sussess:"); 
+    return  response.body
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
 }
 
 app.listen(port)
