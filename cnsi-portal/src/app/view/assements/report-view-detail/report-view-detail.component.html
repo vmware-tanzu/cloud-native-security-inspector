@@ -42,7 +42,7 @@
           <clr-dg-column >Namespace</clr-dg-column>
           <clr-dg-column >Kind</clr-dg-column>
           <clr-dg-column >Passed</clr-dg-column>
-          <clr-dg-column >{{'Kube_bench_list.trusted'|translate}}</clr-dg-column>
+          <clr-dg-column  *ngIf="showTrustedColumn">{{'Kube_bench_list.trusted'|translate}}</clr-dg-column>
 
           <clr-dg-row *clrDgItems="let wd of shardService.currentReport?.workloadAssessments" [clrDgItem]="wd">
             <clr-dg-cell>
@@ -60,7 +60,7 @@
             </clr-dg-cell>
             <clr-dg-cell>{{wd.workload.metadata.kind}}</clr-dg-cell>
             <clr-dg-cell>{{wd.passed}}</clr-dg-cell>
-            <clr-dg-cell>
+            <clr-dg-cell *ngIf="showTrustedColumn">
               <cds-icon *ngIf="wd.trusted" style="color: hsl(93, 79%, 40%);" shape="check-circle" solid></cds-icon>
               <cds-icon *ngIf="!wd.trusted" style="color: hsl(9, 92%, 50%);"  shape="times"></cds-icon>
               {{wd.trusted}}</clr-dg-cell>
@@ -92,8 +92,8 @@
               <clr-dg-column [clrDgField]="'container.name'">Name</clr-dg-column>
               <clr-dg-column >Image</clr-dg-column>
               <clr-dg-column >{{'Report_Detail.isInit'|translate}}</clr-dg-column>
-              <clr-dg-column >{{'Kube_bench_list.trusted'|translate}}</clr-dg-column>
-              <clr-dg-column >{{'CommonlyUse.status'|translate}}</clr-dg-column>
+              <clr-dg-column *ngIf="showTrustedColumn">{{'Kube_bench_list.trusted'|translate}}</clr-dg-column>
+              <clr-dg-column *ngIf="showTrustedColumn">{{'CommonlyUse.status'|translate}}</clr-dg-column>
     
               <clr-dg-row *clrDgItems="let cn of pod.containers" [clrDgItem]="cn">
                 <clr-dg-cell>
@@ -104,7 +104,7 @@
                   {{cn.image}}
                 </clr-dg-cell>
                 <clr-dg-cell>{{cn.isInit}}</clr-dg-cell>
-                <clr-dg-cell>
+                <clr-dg-cell *ngIf="showTrustedColumn">
                   <span>
                     <cds-icon *ngIf="cn.vacAssessment?.trusted" style="color: hsl(93, 79%, 40%);" shape="check-circle" solid></cds-icon>
                     <cds-icon *ngIf="!cn.vacAssessment?.trusted" style="color: hsl(9, 92%, 50%);"  shape="times"></cds-icon>
@@ -112,7 +112,7 @@
                   </span>
                 </clr-dg-cell>
 
-                <clr-dg-cell>
+                <clr-dg-cell *ngIf="showTrustedColumn">
                   <cds-icon *ngIf="cn.vacAssessment.status==='ACTIVE'" style="color: hsl(93, 79%, 40%);" shape="check-circle" solid></cds-icon>
                   <cds-icon *ngIf="cn.vacAssessment.status==='DEPRECATED' || cn.vacAssessment.status==='NON_SUPPORTED'" style="color: hsl(9, 92%, 50%);"  shape="times"></cds-icon>
                   <cds-icon *ngIf="cn.vacAssessment.status==='SCHEDULED_DEPRECATION' || cn.vacAssessment.status==='DEPRECATION_GRACE_PERIOD'" style="color: #F28B02;"  shape="exclamation-triangle" solid></cds-icon>
