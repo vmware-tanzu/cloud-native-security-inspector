@@ -48,6 +48,7 @@ import { RiskReportViewComponent } from './view/assements/risk-report-view/risk-
 import { RiskReportDetailComponent } from './view/assements/risk-report-detail/risk-report-detail.component'
 import { VacComponent } from './view/data-source/vac/vac.component';
 import { VacSettingComponent } from './view/data-source/vac/vac-setting/vac-setting.component';
+import { SettingComponent } from './view/setting/setting.component';
 
 import '@cds/core/icon/register.js';
 import { 
@@ -174,7 +175,8 @@ ClarityIcons.addIcons(
     TrivyViewComponent,
     TrivyViewDetailComponent,
     SecretComponent,
-    CacheComponent
+    CacheComponent,
+    SettingComponent
   ],
   imports: [
     BrowserModule,
