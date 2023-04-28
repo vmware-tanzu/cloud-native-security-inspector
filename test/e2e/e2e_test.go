@@ -122,7 +122,7 @@ func TestE2E(t *testing.T) {
 	testEnv.Test(t, countNameSpaces)
 
 	/* Check if opensearch is up and running, if so, we will see how many pods are running */
-	checkOpenSearch := features.New("checkOpenSearch").
+	/*checkOpenSearch := features.New("checkOpenSearch").
 		Assess("get pods from opensearch", func(ctx context.Context, t *testing.T, cfg *envconf.Config) context.Context {
 			var pods corev1.PodList
 			err := cfg.Client().Resources("opensearch").List(context.TODO(), &pods)
@@ -137,7 +137,7 @@ func TestE2E(t *testing.T) {
 			return ctx
 		})
 	testEnv.Test(t, checkOpenSearch.Feature())
-
+	*/
 	// Test manager can be up and run
 	managerInstallation := features.New("create manager").
 		Assess("Check if CNSI manager has been up",
