@@ -6,7 +6,6 @@ package e2e
 import (
 	"context"
 	"errors"
-	"fmt"
 	"os"
 	"testing"
 	"time"
@@ -16,17 +15,15 @@ import (
 	"github.com/vmware-tanzu/cloud-native-security-inspector/test/e2e/inspectionpolicy"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/test/e2e/setting"
 	appsv1 "k8s.io/api/apps/v1"
+	corev1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/e2e-framework/klient/decoder"
 	"sigs.k8s.io/e2e-framework/klient/k8s/resources"
-
 	"sigs.k8s.io/e2e-framework/pkg/env"
 	"sigs.k8s.io/e2e-framework/pkg/envconf"
-	"sigs.k8s.io/e2e-framework/pkg/features"
-
-	corev1 "k8s.io/api/core/v1"
 	"sigs.k8s.io/e2e-framework/pkg/envfuncs"
+	"sigs.k8s.io/e2e-framework/pkg/features"
 )
 
 var (
@@ -91,6 +88,55 @@ var createInspectionPolicy = func(ctx context.Context, t *testing.T, c *envconf.
 }
 
 func TestE2E(t *testing.T) {
+	/* kubeSystem  ensures that kube-system and its pods are up and running before e2e testing can begin */
+	kubeSystem := features.New("check kube-system is up").
+		WithLabel("type", "pod counting in kube-system").
+		Assess("pods from kube-system", func(ctx context.Context, t *testing.T, cfg *envconf.Config) context.Context {
+			var pods corev1.PodList
+			err := cfg.Client().Resources("kube-system").List(context.TODO(), &pods)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if len(pods.Items) == 0 {
+				t.Fatal("zero in namespace kube-system")
+			}
+			return ctx
+		}).Feature()
+	testEnv.Test(t, kubeSystem)
+
+	/* countNameSpaces ensures that kube-system and cnsi-system pods are up and running before e2e testing can begin */
+	countNameSpaces := features.New("count namespaces and cnsi-system").
+		WithLabel("type", "ns-count").
+		Assess("namespace exist", func(ctx context.Context, t *testing.T, cfg *envconf.Config) context.Context {
+			var nspaces corev1.NamespaceList
+			err := cfg.Client().Resources().List(context.TODO(), &nspaces)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if len(nspaces.Items) >= 1 {
+				t.Logf("Multipe namespaces found")
+			}
+
+			return ctx
+		}).Feature()
+	testEnv.Test(t, countNameSpaces)
+
+	/* Check if opensearch is up and running, if so, we will see how many pods are running */
+	checkOpenSearch := features.New("checkOpenSearch").
+		Assess("get pods from opensearch", func(ctx context.Context, t *testing.T, cfg *envconf.Config) context.Context {
+			var pods corev1.PodList
+			err := cfg.Client().Resources("opensearch").List(context.TODO(), &pods)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if len(pods.Items) == 0 {
+				t.Fatal("no pods in namespace Opensearch")
+			} else {
+				t.Logf("found %d pods", len(pods.Items))
+			}
+			return ctx
+		})
+	testEnv.Test(t, checkOpenSearch.Feature())
 
 	// Test manager can be up and run
 	managerInstallation := features.New("create manager").
@@ -277,38 +323,4 @@ func waitPodReady(
 		}
 	}
 	return errors.New("time out when checking the pods of the deployment")
-}
-func TestKubernetes(t *testing.T) {
-	f1 := features.New("count pod").
-		WithLabel("type", "pod-count").
-		Assess("pods from kube-system", func(ctx context.Context, t *testing.T, cfg *envconf.Config) context.Context {
-			var pods corev1.PodList
-			err := cfg.Client().Resources("kube-system").List(context.TODO(), &pods)
-			if err != nil {
-				t.Fatal(err)
-			}
-			if len(pods.Items) == 0 {
-				t.Fatal("no pods in namespace kube-system")
-			}
-			log.Infof("Number of pods: %d ", len(pods.Items))
-			return ctx
-		}).Feature()
-
-	f2 := features.New("count namespaces").
-		WithLabel("type", "ns-count").
-		Assess("namespace exist", func(ctx context.Context, t *testing.T, cfg *envconf.Config) context.Context {
-			var nspaces corev1.NamespaceList
-			err := cfg.Client().Resources().List(context.TODO(), &nspaces)
-			if err != nil {
-				t.Fatal(err)
-			}
-			if len(nspaces.Items) == 1 {
-				t.Fatal("no other namespace")
-			}
-			return ctx
-		}).Feature()
-
-	// test feature
-	fmt.Print("Hello testing tensting ")
-	testEnv.Test(t, f1, f2)
 }
