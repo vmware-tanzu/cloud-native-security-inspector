@@ -1,9 +1,7 @@
 // Copyright 2022 VMware, Inc.
 // SPDX-License-Identifier: Apache-2.0
 const express = require('express')
-const https = require('https')
 const request = require('request');
-const { createProxyMiddleware, fixRequestBody  } = require('http-proxy-middleware')
 const bodyParser = require('body-parser')
 const ejs = require('ejs')
 const path = require('path')
@@ -15,30 +13,10 @@ const SERVICEACCOUNT='/var/run/secrets/kubernetes.io/serviceaccount'
 const { Client } = require('@opensearch-project/opensearch')
 const elastic = require('@elastic/elasticsearch')
 const elasticClient = elastic.Client
+
 // Please comment this line for development environment
 let token = fs.readFileSync(`${SERVICEACCOUNT}/token`, 'utf8')
-
 let app = express()
-// Forward processing of requests starting with /api
-app.use('/proxy', createProxyMiddleware({ 
-	// Forward to kubernetes api-service
-	target: APISERVER,
-  selfHandleResponse: true, 
-	// Rewrite path when forwarding
-	pathRewrite: {'^/proxy' : ''},
-  headers: {
-    // Please comment this line for development environment
-    'Authorization': `Bearer ${token}`
-  },
-  ssl: {
-    // Please comment this line for development environment
-    ca: fs.readFileSync(`${SERVICEACCOUNT}/ca.crt`, 'utf8')
-  },
-	changeOrigin: true,
-  secure: false,
-  onProxyReq: fixRequestBody
-}));
-
 // parse application/json
 app.use(bodyParser.json())
 app.use(history())
@@ -52,80 +30,177 @@ app.engine('html',ejs.__express)
 // Configure Template Engine
 app.set("view engine", "html")
 
+
+app.use('/k8s-body/:type', (req, res) => {
+  const query = req.query
+
+  const method = req.method
+  let url = APISERVER + query.path
+  const options = {
+    url,
+    method: method,
+    headers: {
+      'Accept':  'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    ca: fs.readFileSync(`${SERVICEACCOUNT}/ca.crt`, 'utf8')
+  }
+  if (method === 'POST') {
+    const type = req.params.type
+    let body = JSON.parse(req.body.data)
+    if (!validation(body)) {
+      res.status(501).send('wrong data entered');
+      return false
+    }
+    if (type === 'secret') {
+      const secret = {
+        data: {
+        },
+        kind: 'Secret',
+        metadata: {
+          name: body.name,
+          namespace: body.namespace,
+          annotations: {
+            type: body.type
+          }
+        },
+        type: 'Opaque'
+      }
+      if (body.key) {
+        secret.data.accessKey = body.key
+        secret.data.accessSecret = body.value
+      } else if (body.token){
+        secret.data.API_TOKEN = body.token
+      }
+      body = secret
+    } else if (type === 'harbor') {
+      const harbor = {
+        apiVersion: 'goharbor.goharbor.io/v1alpha1',
+        kind: 'Setting',
+        metadata: {
+          name: body.name
+        },
+        spec: {
+          dataSource: {
+            credentialRef: {
+              name: body.data_source_credential_name,
+              namespace: body.data_source_credential_namespace,
+            },
+            endpoint: body.data_source_endpoint,
+            name: body.data_source_name,
+            provider: 'Harbor',
+            scanSchedule: body.data_source_scanSchedule,
+            skipTLSVerify: body.data_source_skipTLSVerify
+          },
+        },
+        status: {}
+      }
+      if (body.cache_address) {
+        harbor.spec.cache ={
+          address: body.cache_address,
+          kind: 'Redis',
+          settings: {
+            livingTime: body.cache_livingTime,
+            skipTLSVerify: body.cache_skipTLSVerify
+          }
+        }
+      }
+      if (body.knownRegistries) {
+        harbor.spec.knownRegistries=body.knownRegistries
+      }
+      if (body.vac_endpoint) {
+        harbor.spec.vacDataSource = {
+          endpoint: body.vac_endpoint,
+          credentialRef: {
+            name: body.vac_name,
+            namespace: body.namespace,
+          }
+        }
+      }
+      body = harbor
+    } else if (type === 'policy') {
+      const policy = {
+        apiVersion: "goharbor.goharbor.io/v1alpha1",
+        kind: "InspectionPolicy",
+        metadata: {
+          name: body.name,
+        },
+        spec: {
+          enabled: body.enabled,
+          settingsName: body.settingsName,
+          workNamespace: body.workNamespace,
+          schedule: body.schedule,
+          strategy: {
+            concurrencyRule: body.strategy_concurrencyRule,
+            historyLimit: body.strategy_historyLimit,
+            suspend: body.strategy_suspend
+          },
+          inspector: {
+            imagePullPolicy: body.inspector_imagePullPolicy,
+            imagePullSecrets: [],
+            exportConfig: {
+              openSearch: {
+                hostport: body.inspector_openSearch_hostport,
+                username: body.inspector_openSearch_username,
+                password: body.inspector_openSearch_password,
+                checkCert: false,
+                mutualTLS: false
+              }
+            }
+          },
+          inspection: {
+            baselines: body.inspection_baselines,
+            namespaceSelector: {
+              matchExpressions: [],
+              matchLabels: body.inspection_namespaceSelector.matchLabels
+            },
+            workloadSelector: {
+              matchExpressions: [],
+              matchLabels: body.inspection_workloadSelector.matchLabels
+            }
+          },
+          vacAssessmentEnabled: body.vacAssessmentEnabled
+        }
+      }
+
+      if (body.inspector_image) {
+        policy.spec.inspector.image = body.inspector_image
+      }
+      if (body.inspector_kubebenchImage) {
+        policy.spec.inspector.kubebenchImage = body.inspector_kubebenchImage
+      }
+      if (body.inspector_riskImage) {
+        policy.spec.inspector.riskImage= body.inspector_riskImage
+      }
+
+      if (body.inspection_actions) {
+        policy.spec.inspection.actions = body.inspection_actions
+      }
+
+      body = policy
+    }
+    options.body = JSON.stringify(body)
+  } else if (method === 'PUT') {
+    const body = JSON.parse(req.body.data)
+    options.body = JSON.stringify(body)
+  }
+
+  request(options, function (error, response, body) {
+    if (!error && response.statusCode >= 200 && response.statusCode < 300) {
+      let headers = response.headers;
+      res.setHeader('content-type',headers['content-type']);
+      res.send(body);
+    } else {
+      console.log('error', error)
+      res.status(501).send(options)
+    }
+  });
+})
+
 // Set the folder where the front-end project is located as a static resource
 app.get('/', (req, res) => {
   res.render(data, {})
 })
-
-// app.post('/es-test', (req, res) => {
-//   const body = req.body
-//   const httpsAgent = new https.Agent({
-//     ca: body.cert,
-//   })
-//   config = {}
-//   config['headers'] = {
-//     'Accept':  'application/json',
-//     'Authorization':'Basic '+ body.basic
-//   }
-//   config['httpsAgent'] = httpsAgent
-//   const options = {
-//     url: body.url,
-//     ca: body.cert,
-//     // rejectUnauthorized : false,
-//     strictSSL: false,
-//     headers: {
-//       'Accept':  'application/json',
-//       'Authorization':'Basic '+ body.basic
-//     }
-//   };
-//   console.log('body', body)
-//   console.log('options', options)
-//   const response = request.get(options)
-//   response.on('error', err => {
-//     console.log(1, err)
-//     res.status(501).send('test failed')
-//   })
-//   response.on('data', data => {
-//     console.log(2, data)
-//     res.status(501).send('test failed')
-//   })
-//   response.on('response', response => {
-//     console.log(3, response.statusCode)
-//     res.status(response.statusCode).send('test result')
-//   })
-// })
-
-app.use('/k8s-body', (req, res) => {
-  const body = req.body
-  const path = req.query.path
-  config = {}
-  config['headers'] = {
-    'Accept':  'application/json'
-  }
-  const options = {
-    url: 'http://localhost:3800/proxy' + path,
-    // rejectUnauthorized : false,
-    headers: {
-      'Accept':  'application/json'
-    }
-  };
-  console.log('body', body)
-  console.log('options', options)
-  const response = request.post(options)
-  response.on('error', err => {
-    console.log(1, err)
-    res.status(501).send('test failed')
-  })
-  response.on('data', data => {
-    console.log(2, data)
-    res.status(501).send('test failed')
-  })
-  response.on('response', response => {
-    console.log(3, response.statusCode)
-    res.status(response.statusCode).send('test result')
-  })
-})
-
 
 app.post('/open-search', (req, res) => {
   const body = req.body
@@ -165,7 +240,7 @@ app.post('/open-search', (req, res) => {
     risk_open_serach(client, body).then(v => {
       res.status(200).send(v) 
     }).catch(err => {
-      res.status(err.statusCode).send(err.message) 
+      res.status(500).send(err.message) 
     })
   } else {
     const client = new elasticClient({
@@ -231,22 +306,29 @@ elastic_search = async (client, body) => {
   } catch (error) {
     console.log(error)
     throw error
-}}
+  }}
 
 risk_open_serach = async (client, body) => {
-  try {
-    let response = await client.get(
-      {
-        id: body.query,
-        index: body.index, 
-      }
-    )
-    console.log("sussess:"); 
-    return  response.body
-  } catch (error) {
-    console.log(error)
-    throw error
-  }
+  let response = await client.get(
+    {
+      id: body.query,
+      index: body.index, 
+    }
+  )
+  console.log("Searching:"); 
+  return  response.body
 }
 
-app.listen(port)
+app.listen(port, console.log(3800))
+
+
+function validation (object) {
+  let result = true
+  for (const key in object) {
+    if (typeof object[key] === 'string' && !object[key].trim()) {
+      result = false
+      break
+    }
+  }
+  return result
+}

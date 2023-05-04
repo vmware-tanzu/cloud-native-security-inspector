@@ -17,35 +17,35 @@ export class HarborService {
   constructor(private http: HttpClient) { }
 
   getHarborSetting() :Observable<HarborModelResponse>{
-    return this.http.get<HarborModelResponse>(this.environment.api.goharbor + '/settings')
+    return this.http.get<HarborModelResponse>(this.environment.api.k8sPost  + '/harbor?path=' + '/apis/goharbor.goharbor.io/v1alpha1/settings')
   }
 
   postHarborSetting(data:HarborModel) :Observable<AssessmentReportType>{
-    return this.http.post<AssessmentReportType>(this.environment.api.goharbor + '/settings', data)
+    return this.http.post<AssessmentReportType>(this.environment.api.k8sPost  + '/harbor?path=' + '/apis/goharbor.goharbor.io/v1alpha1/settings', {data: JSON.stringify(data)})
   }
 
   updateHarborSetting(name: string, data:HarborModel) :Observable<AssessmentReportType>{
-    return this.http.put<AssessmentReportType>(this.environment.api.goharbor + '/settings/' + name, data)
+    return this.http.put<AssessmentReportType>(this.environment.api.k8sPost + '/harbor?path=' + '/apis/goharbor.goharbor.io/v1alpha1/settings/' + name, {data: JSON.stringify(data)})
   }
 
   deleteHarborSetting(name: string) :Observable<AssessmentReportType>{
-    return this.http.delete<AssessmentReportType>(this.environment.api.goharbor + '/settings/' + name)
+    return this.http.delete<AssessmentReportType>(this.environment.api.k8sPost + '/harbor?path=' + '/apis/goharbor.goharbor.io/v1alpha1/settings/' + name)
   }
 
   getHarborSecretsSetting(namespace: string = 'default') :Observable<SecretModelResponse>{
-    return this.http.get<SecretModelResponse>(this.environment.api.k8s + '/namespaces/'+namespace+'/secrets')
+    return this.http.get<SecretModelResponse>(this.environment.api.k8sPost + '/secret?path=' + '/api/v1/namespaces/'+namespace+'/secrets')
   }
 
   postHarborSecretsSetting(namespace: string = 'default', data:SecretModel) :Observable<SecretModelResponse>{
-    return this.http.post<SecretModelResponse>(this.environment.api.k8sPost + '?path=' + '/api/v1/namespaces/'+namespace+'/secrets', data)
+    return this.http.post<SecretModelResponse>(this.environment.api.k8sPost+ '/secret?path=' + '/api/v1/namespaces/'+namespace+'/secrets', {data: JSON.stringify(data)})
   }
 
   updateHarborSecretsSetting(namespace: string = 'default', name: string, data:SecretModel) :Observable<SecretModelResponse>{
-    return this.http.put<SecretModelResponse>(this.environment.api.k8s + '/namespaces/'+namespace+'/secrets/'+name, data)
+    return this.http.put<SecretModelResponse>(this.environment.api.k8sPost + '/secret?path=' + '/api/v1/namespaces/'+namespace+'/secrets/'+name, data)
   }
 
   deleteHarborSecretsSetting(namespace: string = 'default', name: string) :Observable<SecretModelResponse>{
-    return this.http.get<SecretModelResponse>(this.environment.api.k8s + '/namespaces/'+namespace+'/secrets/'+name)
+    return this.http.get<SecretModelResponse>(this.environment.api.k8sPost + '/secret?path=' + '/api/v1/namespaces/'+namespace+'/secrets/'+name)
   }
 
 }

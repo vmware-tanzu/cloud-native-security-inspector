@@ -137,7 +137,7 @@ export class HarborSettingComponent implements OnInit, OnDestroy {
       }
     )
   }
-  modifyPolicy() {
+  modifyHarbor() {
     this.router.navigateByUrl('/modify-data-source/update')
   }
 

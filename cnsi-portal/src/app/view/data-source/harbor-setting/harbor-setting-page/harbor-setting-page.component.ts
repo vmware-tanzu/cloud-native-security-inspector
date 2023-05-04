@@ -221,51 +221,30 @@ export class HarborSettingPageComponent implements OnInit {
   }
 
   createHarbor(){
-    const data: HarborModel = {
-      apiVersion: 'goharbor.goharbor.io/v1alpha1',
-      kind: 'Setting',
-      metadata: {
-        name: this.harborForm.get('requiredFields')?.get('name')?.value
-      },
-      spec: {
-        dataSource: {
-          credentialRef: {
-            name: this.harborForm.get('requiredFields')?.get('data_credential_name')?.value,
-            namespace: this.harborForm.get('requiredFields')?.get('data_credential_namespace')?.value,
-          },
-          endpoint: this.harborForm.get('requiredFields')?.get('protocol')?.value + this.harborForm.get('requiredFields')?.get('data_endpoint')?.value,
-          name: this.dataSourceName,
-          provider: 'Harbor',
-          scanSchedule: `0 ${this.schedule.trim()}`,
-          skipTLSVerify: this.harborForm.get('requiredFields')?.get('data_skipTLSVerify')?.value,
-        },
-      },
-      status: {}
+    const data: any = {
+      name: this.harborForm.get('requiredFields')?.get('name')?.value,
+      data_source_credential_name: this.harborForm.get('requiredFields')?.get('data_credential_name')?.value || 'abd',
+      data_source_credential_namespace: this.harborForm.get('requiredFields')?.get('data_credential_namespace')?.value,
+      data_source_endpoint: this.harborForm.get('requiredFields')?.get('protocol')?.value + this.harborForm.get('requiredFields')?.get('data_endpoint')?.value,
+      data_source_name: this.dataSourceName,
+      data_source_scanSchedule: `0 ${this.schedule.trim()}`,
+      data_source_skipTLSVerify: this.harborForm.get('requiredFields')?.get('data_skipTLSVerify')?.value
     }
     if (this.harborForm.get('cache')?.get('address')?.value && this.harborForm.get('cache')?.get('livingTime')?.value) {
-      data.spec.cache ={
-        address: this.harborForm.get('cache')?.get('address')?.value,
-        kind: 'Redis',
-        settings: {
-          livingTime: this.harborForm.get('cache')?.get('livingTime')?.value,
-          skipTLSVerify: this.harborForm.get('cache')?.get('setting_skipTLSVerify')?.value
-        }
-      }
+      data.cache_address = this.harborForm.get('cache')?.get('address')?.value
+      data.cache_livingTime = this.harborForm.get('cache')?.get('address')?.value
+      data.cache_skipTLSVerify = this.harborForm.get('cache')?.get('address')?.value
     }
 
     if (this.knownRegistries[0]) {
-      data.spec.knownRegistries=this.knownRegistries
+      data.knownRegistries = this.knownRegistries
     }
 
     // vac
     if (this.harborForm.controls['vacDataSource']?.get('endpoint')?.value) {
-      data.spec.vacDataSource = {
-        endpoint: this.harborForm.controls['vacDataSource']?.get('endpoint')?.value,
-        credentialRef: {
-          name: this.harborForm.controls['vacDataSource']?.get('cspSecretName')?.value,
-          namespace: 'default'
-        }
-      }
+      data.vac_endpoint = this.harborForm.controls['vacDataSource']?.get('endpoint')?.value
+      data.vac_name = this.harborForm.controls['vacDataSource']?.get('cspSecretName')?.value
+      data.vac_namespace = 'default'
     }
 
     this.harborService.postHarborSetting(data).subscribe(

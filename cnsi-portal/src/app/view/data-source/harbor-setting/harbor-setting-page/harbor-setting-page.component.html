@@ -63,7 +63,7 @@
           <input  type="checkbox" clrToggle name="skipTLSVerify" formControlName="data_skipTLSVerify" />
         </clr-toggle-wrapper>
       </clr-toggle-container>      
-      <button clrStepButton="next"[disabled]="requiredFieldsValid" >next</button>
+      <button data-cy="first_next" clrStepButton="next"[disabled]="requiredFieldsValid" >next</button>
     </clr-step-content>
   </clr-stepper-panel>
 
@@ -117,7 +117,7 @@
         </clr-toggle-container> 
       </div>
       
-      <button clrStepButton="next" [disabled]="knownRegistriesValid">Next</button>
+      <button data-cy="second_next" clrStepButton="next" [disabled]="knownRegistriesValid">Next</button>
     </clr-step-content>
   </clr-stepper-panel>
 
@@ -128,18 +128,18 @@
 
       <clr-input-container class="w-230" >
         <label>{{'Setting.address' |translate}}: </label>
-        <input clrInput placeholder="" name="endpoint" formControlName="endpoint"/>
+        <input data-cy="address" clrInput placeholder="" name="endpoint" formControlName="endpoint"/>
       </clr-input-container>
 
       <clr-select-container class="w-230" >
         <label class="w-200">{{'Setting.cspSecretName'|translate}}</label>
-        <select clrSelect name="cspSecretName" formControlName="cspSecretName">
+        <select data-cy="secret" clrSelect name="cspSecretName" formControlName="cspSecretName">
           <option value=""></option>
           <option *ngFor="let item of vacSecretsList" [value]="item.metadata.name">{{item.metadata.name}}</option>
         </select>
       </clr-select-container>
 
-      <button clrStepButton="next"[disabled]="vacDataSourceValid" >next</button>
+      <button data-cy="third_next" clrStepButton="next"[disabled]="vacDataSourceValid" >next</button>
     </clr-step-content>
   </clr-stepper-panel>
 
@@ -165,7 +165,7 @@
         </clr-toggle-wrapper>
       </clr-toggle-container> 
       <div class="submit-btns">
-        <button class="btn btn-primary" [disabled]="cacheValid" type="submit" (click)="harborHandler(text)">{{'CommonlyUse.' + text |translate}}</button>
+        <button data-cy="submit_setting" class="btn btn-primary" [disabled]="cacheValid" type="submit" (click)="harborHandler(text)">{{'CommonlyUse.' + text |translate}}</button>
       </div>
     </clr-step-content>
   </clr-stepper-panel>

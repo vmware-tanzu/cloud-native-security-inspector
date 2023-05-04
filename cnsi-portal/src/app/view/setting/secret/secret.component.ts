@@ -58,28 +58,21 @@ export class SecretComponent implements OnInit {
       this.messageContent = 'Check failed!'
       return 
     }
-    const secret: SecretModel = {
-      data: {
-      },
-      kind: 'Secret',
-      metadata: {
-        name: this.secretForm.get('secret_name')?.value,
-        namespace: this.secretForm.get('secret_namespace')?.value,
-        annotations: {
-          type: this.secretForm.get('secret_type')?.value
-        }
-      },
-      type: 'Opaque'
+
+    const secret: any = {
+      name: this.secretForm.get('secret_name')?.value,
+      namespace: this.secretForm.get('secret_namespace')?.value,
+      type: this.secretForm.get('secret_type')?.value
     }
 
     if (this.secretForm.get('secret_type')?.value === 'harbor') {
-      secret.data.accessKey = window.btoa(this.secretForm.get('secret_accessKey')?.value),
-      secret.data.accessSecret = window.btoa(this.secretForm.get('secret_accessSecret')?.value)
+      secret.key = window.btoa(this.secretForm.get('secret_accessKey')?.value)
+      secret.value = window.btoa(this.secretForm.get('secret_accessSecret')?.value)
     } else {
-      secret.data.API_TOKEN = window.btoa(this.secretForm.get('secret_token')?.value)
+      secret.token = window.btoa(this.secretForm.get('secret_token')?.value)
     }
     
-    this.harborService.postHarborSecretsSetting(secret.metadata.namespace, secret).subscribe(
+    this.harborService.postHarborSecretsSetting(secret.namespace, secret).subscribe(
       data => {
         this.messageSecretFlag = 'success'
         this.secretModalFlag=false
