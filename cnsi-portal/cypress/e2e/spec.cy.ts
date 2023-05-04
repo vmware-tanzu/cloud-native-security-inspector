@@ -25,19 +25,32 @@ describe('Setting Test', () => {
       return false
     })
     cy.intercept('GET', environment.api.goharbor + '/assessmentreports', { fixture: 'tags.json' })
+    cy.intercept('GET', '/status', {
+      statusCode: 200,
+      body: {
+        msg: 'sussessful!',
+      },
+    })
     cy.intercept('GET', environment.api.goharbor + '/assessmentreports?limit=10&continue=', { fixture: 'tags.json' })
-    cy.intercept('GET', '/proxy/api/v1/namespaces', { fixture: 'namespace.json' })
-    cy.intercept('GET', '/proxy/apis/apiregistration.k8s.io/v1/apiservices', { fixture: 'apiservices.json' })
-    cy.intercept('GET', '/proxy/api/v1/nodes', { fixture: 'nodes.json' })
-    cy.intercept('GET', '/proxy/api/v1/namespaces/default/secrets', { fixture: 'secrets.json' })
-    cy.intercept('GET', '/proxy/apis/goharbor.goharbor.io/v1alpha1/settings', { fixture: 'settings.json' })
-    cy.intercept('POST', environment.api.k8s + '/namespaces/default/secrets', {
+    cy.intercept('GET', environment.api.k8sPost + '/namespace?path=' +'/api/v1/namespaces', { fixture: 'namespace.json' })
+    cy.intercept('GET', environment.api.k8sPost + '/apiservice?path=' + '/apis/apiregistration.k8s.io/v1/apiservices', { fixture: 'apiservices.json' })
+    cy.intercept('GET', environment.api.k8sPost + '/node?path=' +'/api/v1/nodes', { fixture: 'nodes.json' })
+    cy.intercept('GET', environment.api.k8sPost + '/secret?path=' + '/api/v1/namespaces/default/secrets', { fixture: 'secrets.json' })
+    cy.intercept('GET', environment.api.k8sPost  + '/harbor?path=' + '/apis/goharbor.goharbor.io/v1alpha1/settings', { fixture: 'settings.json' })
+    cy.intercept('POST', environment.api.k8sPost  + '/harbor?path=' + '/apis/goharbor.goharbor.io/v1alpha1/settings', {
       statusCode: 201,
       body: {
         msg: 'created sussessful!',
       },
     })
-    cy.visit('http://127.0.0.1:4004/data-source/harbor')
+
+    cy.intercept('POST', environment.api.k8sPost+ '/secret?path=' + '/api/v1/namespaces/default/secrets', {
+      statusCode: 201,
+      body: {
+        msg: 'created sussessful!',
+      },
+    })
+    cy.visit('http://127.0.0.1:4004/setting/secret')
     // cy.visit('https://angular.realworld.io/')
   })
 
@@ -55,12 +68,10 @@ describe('Setting Test', () => {
     cy.get('[data-cy=accessKey]').type('admin', {force: true})
     cy.get('[data-cy=accessSecret]').type('Harbor12345', {force: true})
     cy.get('[data-cy=createSecret]').click()
-    // create setting
-    cy.get('[data-cy=cut_setting]').click()
-    
   })
 
   it('setting', () => {
+    cy.visit('http://127.0.0.1:4004/data-source/harbor')
     Cypress.on('uncaught:exception', (err, runnable) => {
       // returning false here prevents Cypress from
       // failing the test
@@ -70,6 +81,23 @@ describe('Setting Test', () => {
     // create setting
     cy.get('[data-cy=cut_setting]').click()
     cy.visit('http://127.0.0.1:4004/modify-data-source/create')
+  })
+
+
+  it('setting create', () => {
+    cy.visit('http://127.0.0.1:4004/modify-data-source/create')
+    Cypress.on('uncaught:exception', (err, runnable) => {
+      // returning false here prevents Cypress from
+      // failing the test
+      return false
+    })
+    cy.get('[data-cy=first_next]').click()
+    cy.get('[data-cy=second_next]').click()
+    cy.get('[data-cy=address]').type('https://api.int.app-catalog.vmware.com/catalog-governor/v1/products', {force: true})
+    cy.get('[data-cy=secret]').select('harbor')
+    cy.get('[data-cy=third_next]').click()
+    cy.get('[data-cy=submit_setting]').click()
+
   })
 
 
