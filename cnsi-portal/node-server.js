@@ -13,9 +13,9 @@ const SERVICEACCOUNT='/var/run/secrets/kubernetes.io/serviceaccount'
 const { Client } = require('@opensearch-project/opensearch')
 const elastic = require('@elastic/elasticsearch')
 const elasticClient = elastic.Client
+// set up rate limiter: maximum of five requests per minute
+const RateLimit = require('express-rate-limit');
 
-// Please comment this line for development environment
-let token = fs.readFileSync(`${SERVICEACCOUNT}/token`, 'utf8')
 let app = express()
 // parse application/json
 app.use(bodyParser.json())
@@ -29,16 +29,24 @@ app.set("views", __dirname);
 app.engine('html',ejs.__express)
 // Configure Template Engine
 app.set("view engine", "html")
+const limiter = RateLimit({
+  windowMs: 1*60*1000, // 1 minute
+  max: 5
+})
+// apply rate limiter to all requests
+app.use(limiter);
 
-
+// Please comment this line for development environment
+let token = fs.readFileSync(`${SERVICEACCOUNT}/token`, 'utf8')
 app.use('/k8s-body/:type', (req, res) => {
   const query = req.query
 
   const method = req.method
-  const  target = new URL(query.path, APISERVER)
-  console.log('target', target)
+  const  path = new URL(query.path, APISERVER).pathname;
+  console.log('target', path)
+
   const options = {
-    url: target,
+    url: APISERVER + path,
     method: method,
     headers: {
       'Accept':  'application/json',
