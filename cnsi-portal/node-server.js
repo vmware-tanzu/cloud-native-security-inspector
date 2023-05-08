@@ -13,6 +13,15 @@ const SERVICEACCOUNT='/var/run/secrets/kubernetes.io/serviceaccount'
 const { Client } = require('@opensearch-project/opensearch')
 const elastic = require('@elastic/elasticsearch')
 const elasticClient = elastic.Client
+const pathObj = {
+  harbor: {
+    path: '/apis/goharbor.goharbor.io/v1alpha1/settings',
+    update: (name) => {
+      return '/apis/goharbor.goharbor.io/v1alpha1/settings/' + name
+    }
+  }
+}
+
 // set up rate limiter: maximum of five requests per minute
 const RateLimit = require('express-rate-limit');
 
@@ -40,13 +49,14 @@ app.use(limiter);
 let token = fs.readFileSync(`${SERVICEACCOUNT}/token`, 'utf8')
 app.use('/k8s-body/:type', (req, res) => {
   const query = req.query
+  const type = req.params.type
+
 
   const method = req.method
-  const  path = new URL(query.path, APISERVER).pathname;
-  console.log('target', path)
+  // const  path = new URL(query.name, APISERVER).pathname;
 
   const options = {
-    url: APISERVER + path,
+    url: APISERVER,
     method: method,
     headers: {
       'Accept':  'application/json',
@@ -54,8 +64,12 @@ app.use('/k8s-body/:type', (req, res) => {
     },
     ca: fs.readFileSync(`${SERVICEACCOUNT}/ca.crt`, 'utf8')
   }
+  if (query.name) {
+    options.url += pathObj[type].update(query.name)
+  } else {
+    options.url += pathObj[type].path
+  }
   if (method === 'POST') {
-    const type = req.params.type
     let body = JSON.parse(req.body.data)
     if (!validation(body)) {
       res.status(501).send('wrong data entered');
