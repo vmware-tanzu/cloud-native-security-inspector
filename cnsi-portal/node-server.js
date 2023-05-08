@@ -35,9 +35,10 @@ app.use('/k8s-body/:type', (req, res) => {
   const query = req.query
 
   const method = req.method
-  let url = APISERVER + query.path
+  const  target = new URL(query.path, APISERVER)
+  console.log('target', target)
   const options = {
-    url,
+    url: target,
     method: method,
     headers: {
       'Accept':  'application/json',
