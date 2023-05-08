@@ -30,20 +30,20 @@ describe('Setting Test', () => {
         msg: 'sussessful!',
       },
     })
-    cy.intercept('GET', environment.api.k8sPost + '/policy?path=' + '/apis/goharbor.goharbor.io/v1alpha1/inspectionpolicies', { fixture: 'policy.json' })
-    cy.intercept('GET', environment.api.k8sPost  + '/harbor?path=' + '/apis/goharbor.goharbor.io/v1alpha1/settings', { fixture: 'settings.json' })
-    cy.intercept('GET', environment.api.k8sPost + '/namespace?path=' +'/api/v1/namespaces', { fixture: 'namespace.json' })
-    cy.intercept('GET', environment.api.k8sPost + '/apiservice?path=' + '/apis/apiregistration.k8s.io/v1/apiservices', { fixture: 'apiservices.json' })
-    cy.intercept('GET', environment.api.k8sPost + '/node?path=' +'/api/v1/nodes', { fixture: 'nodes.json' })
-    cy.intercept('GET', environment.api.k8sPost + '/secret?path=' + '/api/v1/namespaces/default/secrets', { fixture: 'secrets.json' })
-    cy.intercept('GET', environment.api.k8sPost  + '/harbor?path=' + '/apis/goharbor.goharbor.io/v1alpha1/settings', { fixture: 'settings.json' })
-    cy.intercept('POST', environment.api.k8sPost+ '/secret?path=' + '/api/v1/namespaces/default/secrets', {
+    cy.intercept('GET', environment.api.k8sPost + '/policy', { fixture: 'policy.json' })
+    cy.intercept('GET', environment.api.k8sPost  + '/harbor', { fixture: 'settings.json' })
+    cy.intercept('GET', environment.api.k8sPost + '/namespace', { fixture: 'namespace.json' })
+    cy.intercept('GET', environment.api.k8sPost + '/apiservice', { fixture: 'apiservices.json' })
+    cy.intercept('GET', environment.api.k8sPost + '/node', { fixture: 'nodes.json' })
+    cy.intercept('GET', environment.api.k8sPost + '/secret?namespace=' + 'default', { fixture: 'secrets.json' })
+    cy.intercept('GET', environment.api.k8sPost  + '/harbor', { fixture: 'settings.json' })
+    cy.intercept('POST', environment.api.k8sPost+ '/secret?namespace=' + 'default', {
       statusCode: 201,
       body: {
         msg: 'created sussessful!',
       },
     })
-    cy.intercept('POST', environment.api.k8sPost + '/policy?path=' + '/apis/goharbor.goharbor.io/v1alpha1/inspectionpolicies', {
+    cy.intercept('POST', environment.api.k8sPost + '/policy', {
       statusCode: 201,
       body: {
         msg: 'created sussessful!',
