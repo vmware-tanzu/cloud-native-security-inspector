@@ -16,9 +16,38 @@ const elasticClient = elastic.Client
 const pathObj = {
   harbor: {
     path: '/apis/goharbor.goharbor.io/v1alpha1/settings',
-    update: (name) => {
+    namespace: (namespace) => {},
+    name: (name) => {
       return '/apis/goharbor.goharbor.io/v1alpha1/settings/' + name
     }
+  },
+  secret: {
+    path: '',
+    namespace: (namespace) => {
+      return '/api/v1/namespaces/'+namespace+'/secrets'
+    },
+    name: (name, namespace) => {
+      return '/api/v1/namespaces/'+namespace+'/secrets/' + name
+    }
+  },
+  policy: {
+    path: '/apis/goharbor.goharbor.io/v1alpha1/inspectionpolicies',
+    namespace: (namespace) => {},
+    name: (name) => {
+      return '/apis/goharbor.goharbor.io/v1alpha1/inspectionpolicies/'+name
+    }
+  },
+  node: {
+    path: '/api/v1/nodes'
+  },
+  apiservice: {
+    path: '/apis/apiregistration.k8s.io/v1/apiservices'
+  },
+  pod: {
+    path: '/api/v1/pods'
+  },
+  namespace: {
+    path: '/api/v1/namespaces'
   }
 }
 
@@ -40,7 +69,7 @@ app.engine('html',ejs.__express)
 app.set("view engine", "html")
 const limiter = RateLimit({
   windowMs: 1*60*1000, // 1 minute
-  max: 5
+  max: 50
 })
 // apply rate limiter to all requests
 app.use(limiter);
@@ -53,8 +82,6 @@ app.use('/k8s-body/:type', (req, res) => {
 
 
   const method = req.method
-  // const  path = new URL(query.name, APISERVER).pathname;
-
   const options = {
     url: APISERVER,
     method: method,
@@ -64,10 +91,18 @@ app.use('/k8s-body/:type', (req, res) => {
     },
     ca: fs.readFileSync(`${SERVICEACCOUNT}/ca.crt`, 'utf8')
   }
-  if (query.name) {
-    options.url += pathObj[type].update(query.name)
+  if (query.namespace) {
+    if (query.name) {
+      options.url += pathObj[type].name(query.name, query.namespace)
+    } else {
+      options.url += pathObj[type].namespace(query.namespace)
+    }
   } else {
-    options.url += pathObj[type].path
+    if (query.name) {
+      options.url += pathObj[type].name(query.name)
+    } else {
+      options.url += pathObj[type].path
+    }
   }
   if (method === 'POST') {
     let body = JSON.parse(req.body.data)

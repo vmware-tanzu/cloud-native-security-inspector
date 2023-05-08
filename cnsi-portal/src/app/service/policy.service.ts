@@ -25,21 +25,21 @@ export class PolicyService {
 
   getInspectionpolicies (name?:string):Observable<InspectionPolicyType|PolicyItemType|any> {    
     if (name) {      
-      return this.http.get<PolicyItemType>(this.environment.api.k8sPost + '/policy?path=' + '/apis/goharbor.goharbor.io/v1alpha1/inspectionpolicies/'+name)
+      return this.http.get<PolicyItemType>(this.environment.api.k8sPost + '/policy?name=' + name)
     }
-    return this.http.get<InspectionPolicyType>(this.environment.api.k8sPost + '/policy?path=' + '/apis/goharbor.goharbor.io/v1alpha1/inspectionpolicies')
+    return this.http.get<InspectionPolicyType>(this.environment.api.k8sPost + '/policy')
   }
 
   createPolicy(data:any) {
-    return this.http.post(this.environment.api.k8sPost + '/policy?path=' + '/apis/goharbor.goharbor.io/v1alpha1/inspectionpolicies', {data: JSON.stringify(data)})
+    return this.http.post(this.environment.api.k8sPost + '/policy', {data: JSON.stringify(data)})
   }
 
   modifyPolicy(name:string, data:any) {
-    return this.http.put(this.environment.api.k8sPost + '/policy?path=' + '/apis/goharbor.goharbor.io/v1alpha1/inspectionpolicies/'+name, data)
+    return this.http.put(this.environment.api.k8sPost + '/policy?name='+name, data)
   }
 
   deletePolicy(name:string) {
-    return this.http.delete(this.environment.api.k8sPost + '/policy?path=' + '/apis/goharbor.goharbor.io/v1alpha1/inspectionpolicies/'+ name)
+    return this.http.delete(this.environment.api.k8sPost + '/policy?name='+ name)
   }
 
   elasticSearchTest(data: any) {   
