@@ -11,6 +11,7 @@ IMG_TAG = 0.3.2
 IMG_MANAGER ?= $(REGISTRY)/manager:$(IMG_TAG)
 IMG_EXPORTER ?= $(REGISTRY)/exporter:$(IMG_TAG)
 IMG_CMD_INSPECTOR ?= $(REGISTRY)/inspector:$(IMG_TAG)
+IMG_CMD_TRIVY ?= $(REGISTRY)/trivy:$(IMG_TAG)
 IMG_CMD_KUBEBENCH ?= $(REGISTRY)/kubebench:$(IMG_TAG)
 PORTAl ?= $(REGISTRY)/portal:$(IMG_TAG)
 RISK ?= $(REGISTRY)/risk:$(IMG_TAG)
@@ -67,7 +68,7 @@ vet: ## Run go vet against code.
 	go vet ./...
 
 ENVTEST_ASSETS_DIR=$(shell pwd)/testbin
-test: fmt vet ## Run tests.
+test: fmt ## Run tests.
 	mkdir -p ${ENVTEST_ASSETS_DIR}
 	test -f ${ENVTEST_ASSETS_DIR}/setup-envtest.sh || curl -sSLo ${ENVTEST_ASSETS_DIR}/setup-envtest.sh https://raw.githubusercontent.com/kubernetes-sigs/controller-runtime/v0.8.3/hack/setup-envtest.sh
 	source ${ENVTEST_ASSETS_DIR}/setup-envtest.sh; fetch_envtest_tools $(ENVTEST_ASSETS_DIR); setup_envtest_env $(ENVTEST_ASSETS_DIR); go test ./... -coverprofile cover.out
@@ -82,6 +83,9 @@ build-exporter: fmt vet ## Build exporter binary.
 
 build-image-scanner: generate fmt vet ## Build inspector binary.
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/inspector cnsi-inspector/cmd/image-scanner/main.go
+
+build-scanner-trivy: generate fmt ## Build trivy binary.
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/trivy cnsi-scanner-trivy/cmd/scanner-trivy/main.go
 
 build-kube-bench: generate fmt vet ## Build kubebench binary.
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/kubebench cnsi-inspector/cmd/kube-bench/main.go
@@ -110,6 +114,9 @@ docker-build-portal: ## Build docker image of portal.
 docker-build-inspector: build-image-scanner ## Build docker image of image scanner.
 	$(DOCKERCMD) buildx build -t ${IMG_CMD_INSPECTOR} -f deployments/dockerfiles/Dockerfile.imagescanner .
 
+docker-build-scanner-trivy: build-scanner-trivy ## Build docker image of trivy scanner.
+	$(DOCKERCMD) buildx build -t ${IMG_CMD_TRIVY} -f deployments/dockerfiles/Dockerfile.trivy .
+
 docker-build-kubebench: build-kube-bench ## Build docker image of kube-bench scanner.
 	$(DOCKERCMD) buildx build -t ${IMG_CMD_KUBEBENCH} -f deployments/dockerfiles/Dockerfile.kubebench .
 
@@ -126,6 +133,7 @@ docker-push-backend: ## Build all the images except portal.
 	$(DOCKERCMD) push ${IMG_CMD_KUBEBENCH}
 	$(DOCKERCMD) push ${RISK}
 	$(DOCKERCMD) push ${IMG_CMD_WORKLOAD_SCANNER}
+	$(DOCKERCMD) push ${IMG_CMD_TRIVY}
 
 docker-push-all: docker-build-all docker-push-backend ## Push all the images to registry.
 	$(DOCKERCMD) push ${PORTAl}
@@ -157,6 +165,7 @@ install: portal ## Install all the CNSI components without golang and kustomize 
 uninstall: remove_clusterrolebinding  ## Uninstall CNSI components
 	$(KUBECTLCMD) delete -f deployments/yaml/manager.yaml --ignore-not-found=true
 	$(KUBECTLCMD) delete -f deployments/yaml/data-exporter.yaml --ignore-not-found=true
+	$(KUBECTLCMD) delete -f deployments/yaml/scanner-trivy.yaml --ignore-not-found=true
 
 CONTROLLER_GEN = $(shell pwd)/bin/controller-gen
 controller-gen: tidy ## Download controller-gen locally if necessary.

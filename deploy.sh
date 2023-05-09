@@ -19,6 +19,21 @@ DIR="$(cd "$(dirname "$0")" && pwd)"
 source $DIR/deployments/common.sh
 
 
+function install_redis() {
+    note "Installing redis"
+    check_helm
+    helm install cnsi-scanner --set auth.enabled=false --set tls.authClients=false oci://registry-1.docker.io/bitnamicharts/redis  -n cnsi-system --create-namespace
+    success "Redis installed"
+}
+
+function uninstall_redis() {
+    note "Uninstalling redis"
+    check_helm
+    helm uninstall cnsi-scanner -n cnsi-system || :
+    success "Redis uninstalled"
+}
+
+
 function install_opensearch() {
     note "Installing opensearch"
     check_helm
@@ -60,6 +75,7 @@ if [ $install ] && [ $with_portal ]
 then
     check_kubectl
     install_opensearch
+    install_redis
     note "Installing Project Narrows"
     make install
     success "Project Narrows installed"
@@ -69,6 +85,7 @@ if [ $install ] && [ $with_portal != "true" ]
 then
     check_kubectl
     install_opensearch
+    install_redis
     note "Installing Project Narrows"
     make install
     success "Project Narrows installed"
@@ -90,6 +107,7 @@ if [ $uninstall ]
 then
     check_kubectl
     uninstall_opensearch
+    uninstall_redis
     note "Uninstalling Project Narrows..."
     make uninstall
     success "Project Narrows uninstalled"

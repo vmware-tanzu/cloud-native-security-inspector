@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cnsi-scanner-trivy
+  namespace: cnsi-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      control-plane: cnsi-scanner-trivy
+  template:
+    metadata:
+      labels:
+        control-plane: cnsi-scanner-trivy
+    spec:
+      containers:
+        - image: projects.registry.vmware.com/cnsi/trivy:0.3.2
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8081
+              name: http
+          name: cnsi-scanner-trivy
+          securityContext:
+            allowPrivilegeEscalation: false
+          env:
+            - name: SCANNER_API_SERVER_ADDR
+              value: "0.0.0.0:8081"
+            - name: SCANNER_REDIS_URL
+              value: "redis://cnsi-scanner-redis-master.cnsi-system.svc.cluster.local:6379"
+      securityContext:
+        runAsNonRoot: false
+      terminationGracePeriodSeconds: 10
+---
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: cnsi-scanner-trivy-service
+#  namespace: cnsi-system
+#spec:
+#  type: ClusterIP
+#  ports:
+#    - name: cnsi-scanner-trivy-svc
+#      port: 8081
+#      targetPort: http
+#  selector:
+#    control-plane: cnsi-scanner-trivy
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cnsi-scanner-trivy-service
+  namespace: cnsi-system
+spec:
+  type: NodePort
+  ports:
+    - name: cnsi-scanner-trivy-svc
+      port: 8081
+      targetPort: 8081
+      nodePort: 30003
+  selector:
+    control-plane: cnsi-scanner-trivy

@@ -28,7 +28,6 @@ import (
 	"sigs.k8s.io/e2e-framework/pkg/envconf"
 	"sigs.k8s.io/e2e-framework/pkg/envfuncs"
 	"sigs.k8s.io/e2e-framework/pkg/features"
-
 	v1 "k8s.io/api/core/v1"
 )
 
@@ -59,7 +58,6 @@ func TestMain(m *testing.M) {
 		envfuncs.TeardownCRDs("../../deployments/yaml", "*"),
 		envfuncs.DestroyKindCluster(kindClusterName),
 	)
-
 	os.Exit(testEnv.Run(m))
 }
 
