@@ -58,27 +58,10 @@ export class HarborSettingComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    const secret = this.route.snapshot.queryParamMap.get('secret')
-    if (secret === 'false') {
-      this.isSecret = false
-    } else {
-      this.getSecrets()
-    }
+    this.getHarbor()
     this.createTimer = setInterval(() => {
       this.getHarbor()      
     }, 1000)
-  }
-
-  get isHarborSecret() {
-    return this.secretForm.get('secret_type')?.value === 'harbor'
-  }
-
-  get isSecret () {
-    return this.secret
-  }
-
-  set isSecret (value) {
-    this.secret = value
   }
   // setting func
   getHarbor(){
@@ -112,7 +95,6 @@ export class HarborSettingComponent implements OnInit, OnDestroy {
         }
       },
       err => {
-        console.log('err', err);
         this.deleteHarborDisabled = true
       }
     )
@@ -133,63 +115,11 @@ export class HarborSettingComponent implements OnInit, OnDestroy {
       },
       err => {
         this.messageHarborFlag = true;
-        this.messageContent = err.error.message || 'Failed to delete app settings!'
+        this.messageContent = err.error?.message || 'Failed to delete app settings!'
       }
     )
   }
   modifyHarbor() {
     this.router.navigateByUrl('/modify-data-source/update')
   }
-
-  // secret func
-  getSecrets() {
-    this.secretLoading = true
-    this.harborService.getHarborSecretsSetting().subscribe(
-      data => {
-        this.secretsList = data.items
-        this.secretLoading = false
-      }
-    )
-  }
-
-  createSecret(){
-    if (!this.secretForm.get('secret_name')?.valid){
-      this.messageSecretFlag='fail'
-      this.messageContent = 'Check failed!'
-      return 
-    }
-    const secret: SecretModel = {
-      data: {
-      },
-      kind: 'Secret',
-      metadata: {
-        name: this.secretForm.get('secret_name')?.value,
-        namespace: this.secretForm.get('secret_namespace')?.value,
-        annotations: {
-          type: this.secretForm.get('secret_type')?.value
-        }
-      },
-      type: 'Opaque'
-    }
-
-    if (this.secretForm.get('secret_type')?.value === 'harbor') {
-      secret.data.accessKey = window.btoa(this.secretForm.get('secret_accessKey')?.value),
-      secret.data.accessSecret = window.btoa(this.secretForm.get('secret_accessSecret')?.value)
-    } else {
-      secret.data.API_TOKEN = window.btoa(this.secretForm.get('secret_token')?.value)
-    }
-
-    this.harborService.postHarborSecretsSetting(secret.metadata.namespace, secret).subscribe(
-      data => {
-        this.messageSecretFlag = 'success'
-        this.secretModalFlag=false
-        this.getSecrets()
-      },
-      err => {
-        this.messageSecretFlag = 'fail'
-        this.messageContent = err.error.message || 'Secret created fail!'
-      }
-    )
-  }
-
 }

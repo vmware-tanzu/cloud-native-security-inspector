@@ -137,7 +137,7 @@ export class HarborSettingPageComponent implements OnInit {
         this.harborSecretsList = []
         this.vacSecretsList = []
 
-        data.items.forEach(sc => {
+        data.items.forEach((sc: any) => {
           if (sc.metadata.annotations) {
             if (sc.metadata.annotations.type) {
               if (sc.metadata.annotations.type === 'vac') {
@@ -260,7 +260,7 @@ export class HarborSettingPageComponent implements OnInit {
       },
       err => {
         this.messageHarborFlag = 'fail'
-        this.messageContent = err.error.message || 'Failed to create and apply settings!'
+        this.messageContent = err.error?.message || 'Failed to create and apply settings!'
       }
     )
   }
@@ -309,7 +309,7 @@ export class HarborSettingPageComponent implements OnInit {
       },
       err => {
         this.messageHarborFlag = 'fail'
-        this.messageContent = err.error.message || 'Failed to update and apply settings!'
+        this.messageContent = err.error?.message || 'Failed to update and apply settings!'
       }
     )
   }

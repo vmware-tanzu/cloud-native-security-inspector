@@ -3,7 +3,7 @@
  * SSPDX-License-Identifier: Apache-2.0
  */
 
-import { TestBed, inject } from '@angular/core/testing';
+import { TestBed, inject, fakeAsync } from '@angular/core/testing';
 import { ShardTestModule } from 'src/app/shard/shard/shard.module';
 import { PolicyService } from './policy.service';
 
@@ -18,6 +18,19 @@ describe('PolicyService', () => {
     service = TestBed.inject(PolicyService);
   });
 
+
+  it('Functions', fakeAsync(() => {
+    service.getAssessmentreports()
+
+    service.getAllAssessmentreports()
+    
+    service.getInspectionpolicies('test')
+
+    service.modifyPolicy('test', {});
+
+    service.elasticSearchTest({})
+  }));
+  
   it('should be created', inject(
     [PolicyService],
     (service: PolicyService) => {

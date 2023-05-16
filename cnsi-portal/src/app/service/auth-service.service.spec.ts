@@ -17,4 +17,11 @@ describe('AuthServiceService', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
+
+
+  it('functions  ', () => {
+    service.login('test', 'test')
+    service.logout()
+    service.getLCMServiceStatus()
+  })
 });

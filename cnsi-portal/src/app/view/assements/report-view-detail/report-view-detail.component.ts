@@ -26,6 +26,9 @@ export class ReportViewDetailComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
+    this.init()
+  }
+  init() {
     this.policyService.getInspectionpolicies().subscribe(
       data => {
         if (data.items[0]) {          

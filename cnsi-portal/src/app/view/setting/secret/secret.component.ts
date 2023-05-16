@@ -80,7 +80,7 @@ export class SecretComponent implements OnInit {
       },
       err => {
         this.messageSecretFlag = 'fail'
-        this.messageContent = err.error.message || 'Secret created fail!'
+        this.messageContent = err.error?.message || 'Secret created fail!'
       }
     )
   }

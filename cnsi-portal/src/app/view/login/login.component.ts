@@ -24,9 +24,9 @@ export class LoginComponent implements OnInit {
   constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
-    const redirect = sessionStorage.getItem('lifecycleManager-redirect')
-    if (redirect) {
-    }
+    // const redirect = sessionStorage.getItem('lifecycleManager-redirect')
+    // if (redirect) {
+    // }
   }
 
   username: string = "";
@@ -42,40 +42,40 @@ export class LoginComponent implements OnInit {
     this.submitted = true;
     this.loading = true;
     const { username, password } = this.form;
-    this.authService.login(username, password)
-      .subscribe(
-        data => {
-          this.isLoginFailed = false;
-          this.isLoggedIn = true;
-          //decode JWT token
-          var token = data.data;
-          // this.decode = jwt_decode(token);
-          // store username, id in seesion storage
-          // const encryptName: string = compile(this.decode["name"]);
-          sessionStorage.setItem('username', 'encryptName');
-          sessionStorage.setItem('userId', this.decode["id"]);
-          // redirect pre page
-          const redirect = sessionStorage.getItem('lifecycleManager-redirect')
-          if (redirect) {
-            this.router.navigate([redirect])
-            sessionStorage.removeItem('lifecycleManager-redirect')
-            try {
-            } catch (error) {
+    // this.authService.login(username, password)
+    //   .subscribe(
+    //     data => {
+    //       this.isLoginFailed = false;
+    //       this.isLoggedIn = true;
+    //       //decode JWT token
+    //       var token = data.data;
+    //       // this.decode = jwt_decode(token);
+    //       // store username, id in seesion storage
+    //       // const encryptName: string = compile(this.decode["name"]);
+    //       sessionStorage.setItem('username', 'encryptName');
+    //       sessionStorage.setItem('userId', this.decode["id"]);
+    //       // redirect pre page
+    //       const redirect = sessionStorage.getItem('lifecycleManager-redirect')
+    //       if (redirect) {
+    //         this.router.navigate([redirect])
+    //         sessionStorage.removeItem('lifecycleManager-redirect')
+    //         try {
+    //         } catch (error) {
 
-            }
-          } else {
-            this.router.navigate(['']);
-            try {
-            } catch (error) {
+    //         }
+    //       } else {
+    //         this.router.navigate(['']);
+    //         try {
+    //         } catch (error) {
 
-            }
-          }
-        },
-        err => {
-          if (err.error.message) this.errorMessage = err.error.message
-          this.isLoginFailed = true;
-        }
-      );
+    //         }
+    //       }
+    //     },
+    //     err => {
+    //       if (err.error.message) this.errorMessage = err.error.message
+    //       this.isLoginFailed = true;
+    //     }
+    //   );
   }
 }
 

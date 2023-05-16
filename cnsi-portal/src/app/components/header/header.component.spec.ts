@@ -33,10 +33,14 @@ describe('HeaderComponent', () => {
     fixture.detectChanges();
   });
 
+  describe('functions ', () => {
+    it('Get the current language of the browser', () => {
+      const lang = localStorage.getItem('tsi-language')
+      component.languageDropdown()
+    });
+  })
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-  it('Get the current language of the browser', () => {
-    const lang = localStorage.getItem('tsi-language')
-  });
+
 });

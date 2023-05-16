@@ -199,14 +199,11 @@ export class PolicySettingPageComponent implements OnInit {
           value: ''
         })
         break
-      case 'workloadlabels':
+      default:
         this.workloadlabels.push({
           key: '',
           value: ''
         })
-        break
-  
-      default:
         break;
     }
 
@@ -223,11 +220,8 @@ export class PolicySettingPageComponent implements OnInit {
       case 'namespacelabels':
         this.namespacelabels.splice(index, 1)
         break
-      case 'workloadlabels':
-        this.workloadlabels.splice(index, 1)
-        break
-          
       default:
+        this.workloadlabels.splice(index, 1)
         break;
     }
   }

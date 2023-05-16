@@ -53,7 +53,7 @@ export class PolicyComponent implements OnInit {
       },
       err => {
         this.messageFlag = true
-        this.messageContent = err.error.message || 'Policy deleted fail!'
+        this.messageContent = err.error?.message || 'Policy deleted fail!'
       }
     )
 
@@ -74,9 +74,7 @@ export class PolicyComponent implements OnInit {
         }
         this.policyLoading = false
       },
-      err => {
-        console.log('err', err);
-      }
+      err => {}
     )
   }
 }

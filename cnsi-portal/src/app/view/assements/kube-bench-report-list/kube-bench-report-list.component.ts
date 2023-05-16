@@ -130,17 +130,19 @@ export class KubeBenchReportListComponent implements OnInit {
     const opensearchInfoJson = window.atob(opensearchbase)
     const elasticsearchInfoJson = window.atob(elasticsearchbase)
     let opensearchInfo: any = {}
-    let elasticsearchInfo: any  = {}
+    // let elasticsearchInfo: any  = {}
     if (opensearchInfoJson.slice(24)) opensearchInfo = JSON.parse(opensearchInfoJson.slice(24)) 
-    if (elasticsearchInfoJson.slice(24)) elasticsearchInfo = JSON.parse(elasticsearchInfoJson.slice(24))       
+    // if (elasticsearchInfoJson.slice(24)) elasticsearchInfo = JSON.parse(elasticsearchInfoJson.slice(24))       
     if (opensearchInfo.url) {
       this.client = 'opensearch'
       this.opensearchInfo = opensearchInfo
-    } else if (elasticsearchInfo.url) {
-      this.opensearchInfo = elasticsearchInfo
-      this.client = 'elasticsearch'
-      this.ca = elasticsearchInfo.ca
-    } else {
+    } 
+    // else if (elasticsearchInfo.url) {
+    //   this.opensearchInfo = elasticsearchInfo
+    //   this.client = 'elasticsearch'
+    //   this.ca = elasticsearchInfo.ca
+    // } 
+    else {
       this.dgLoading = false
       this.echartsLoading = true
     }
@@ -165,7 +167,7 @@ export class KubeBenchReportListComponent implements OnInit {
             name: node.metadata.name
           })
         });
-        this.currentNode = data.items[0]?.metadata.name || '';
+        this.currentNode = data.items[0]?.metadata.name;
         this.getPodList()
       }
     )

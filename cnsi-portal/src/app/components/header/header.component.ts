@@ -17,9 +17,9 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit(): void {
     const lang = localStorage.getItem('tsi-language')
-    if (lang) {
-      // this.i18.lang = lang;      
-    }
+    // if (lang) {
+    //   // this.i18.lang = lang;      
+    // }
   }
  //Trigger language dropdown menu
   languageDropdown() {

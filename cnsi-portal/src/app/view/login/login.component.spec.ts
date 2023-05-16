@@ -29,6 +29,13 @@ describe('LoginComponent', () => {
     fixture.detectChanges();
   });
 
+  describe('functions ', () => {
+    it('onSubmit', () => {
+      component.onSubmit()
+  
+    });
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
