@@ -220,7 +220,9 @@
     "cacheDesc": "Cache related configuration (optional)",
     "vacDataSource": "VMware Application Catalog Data Source",
     "vacDataSourceDesc": "VMware Application Catalog Data Source related configuration (optional)",
-    "cspSecretName": "Secret Name"
+    "cspSecretName": "Secret Name",
+    "isDeleteConfiguration": "Are you sure you want to delete this configuration？ ",
+    "isDeleteHarbor": "Are you sure you want to delete this Harbor data source? When deleting it, VAC and Cache will also be deleted."
   },
   "cornJob": {
     "Weekly": "Run once a week at midnight on Sunday morning",
@@ -247,9 +249,10 @@
   "VAC": {
     "branch": "Branch",
     "releasedTime": "Released Time",
-    "vacView": "VMware Application Catalog View",
+    "vacView": "VMware Application Catalog",
     "deprecationPolicy": "Deprecation Policy",
-    "nonsupportpolicy": "Nonsupport Policy"
+    "nonsupportpolicy": "Nonsupport Policy",
+    "mustHarbor": "There must first be a harbor data source available."
   },
   "en": "English",
   "zh_CN": "中文 (简体)"

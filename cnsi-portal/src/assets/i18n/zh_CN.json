@@ -212,7 +212,9 @@
     "cacheDesc": "缓存相关配置（可选）",
     "vacDataSource": "VMware Application Catalog数据源",
     "vacDataSourceDesc": "VMware Application Catalog Data Source相关配置（可选）",
-    "cspSecretName": "Secret名称"
+    "cspSecretName": "Secret名称",
+    "isDeleteConfiguration": "确定要删除此配置吗？",
+    "isDeleteHarbor": "确定要删除这个Harbor数据源吗？删除它的同时VAC与Cache也会被删除!"
   },
   "cornJob": {
     "Weekly": "每周在周日早上的0点运行一次",
@@ -241,7 +243,8 @@
     "releasedTime": "发布时间",
     "vacView": "VMware Application Catalog详情",
     "deprecationPolicy": "弃用策略",
-    "nonsupportpolicy": "不支持策略"
+    "nonsupportpolicy": "不支持策略",
+    "mustHarbor": "必须先有一个可用的harbor数据源"
   },
   "en": "English",
   "zh_CN": "中文 (简体)"

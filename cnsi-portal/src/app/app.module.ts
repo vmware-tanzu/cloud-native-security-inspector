@@ -94,6 +94,7 @@ import { TrivyViewComponent } from './view/assements/trivy-view/trivy-view.compo
 import { TrivyViewDetailComponent } from './view/assements/trivy-view-detail/trivy-view-detail.component';
 import { SecretComponent } from './view/setting/secret/secret.component';
 import { CacheComponent } from './view/setting/cache/cache.component';
+import { CacheSettingComponent } from './view/setting/cache/cache-setting/cache-setting.component';
 
 ClarityIcons.addIcons(
   userIcon,
@@ -176,7 +177,8 @@ ClarityIcons.addIcons(
     TrivyViewDetailComponent,
     SecretComponent,
     CacheComponent,
-    SettingComponent
+    SettingComponent,
+    CacheSettingComponent
   ],
   imports: [
     BrowserModule,

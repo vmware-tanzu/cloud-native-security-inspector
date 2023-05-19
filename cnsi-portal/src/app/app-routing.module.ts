@@ -30,6 +30,7 @@ import { SecretComponent } from 'src/app/view/setting/secret/secret.component'
 import { CacheComponent } from 'src/app/view/setting/cache/cache.component'
 
 import { RouterGuard } from './router-guard';
+import { CacheSettingComponent } from './view/setting/cache/cache-setting/cache-setting.component';
 
 const routes: Routes = [
   {
@@ -174,6 +175,11 @@ const routes: Routes = [
             redirectTo: 'secret'    
           }
         ]
+      },
+      {
+        path: 'modify-cache/:id',
+        component: CacheSettingComponent,
+        canActivate: [RouterGuard]
       },
       {
         path: '',

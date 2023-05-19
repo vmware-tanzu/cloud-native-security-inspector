@@ -116,12 +116,14 @@
           </clr-toggle-wrapper>
         </clr-toggle-container> 
       </div>
-      
-      <button data-cy="second_next" clrStepButton="next" [disabled]="knownRegistriesValid">Next</button>
+      <div class="submit-btns">
+        <button data-cy="submit_setting" class="btn btn-primary" [disabled]="knownRegistriesValid" type="submit" (click)="harborHandler(text)">{{'CommonlyUse.' + text |translate}}</button>
+      </div>
+      <!-- <button data-cy="second_next" clrStepButton="next" [disabled]="knownRegistriesValid">Next</button> -->
     </clr-step-content>
   </clr-stepper-panel>
 
-  <clr-stepper-panel formGroupName="vacDataSource">
+  <!-- <clr-stepper-panel formGroupName="vacDataSource">
     <clr-step-title>{{'Setting.vacDataSource'|translate}}</clr-step-title>
     <clr-step-description>{{'Setting.vacDataSourceDesc'| translate}}</clr-step-description>
     <clr-step-content *clrIfExpanded>
@@ -141,10 +143,10 @@
 
       <button data-cy="third_next" clrStepButton="next"[disabled]="vacDataSourceValid" >next</button>
     </clr-step-content>
-  </clr-stepper-panel>
+  </clr-stepper-panel> -->
 
 
-  <clr-stepper-panel formGroupName="cache">
+  <!-- <clr-stepper-panel formGroupName="cache">
     <clr-step-title>{{'Setting.cache'|translate}}</clr-step-title>
     <clr-step-description>{{'Setting.cacheDesc'| translate}}</clr-step-description>
     <clr-step-content *clrIfExpanded>
@@ -168,7 +170,7 @@
         <button data-cy="submit_setting" class="btn btn-primary" [disabled]="cacheValid" type="submit" (click)="harborHandler(text)">{{'CommonlyUse.' + text |translate}}</button>
       </div>
     </clr-step-content>
-  </clr-stepper-panel>
+  </clr-stepper-panel> -->
 
   <div class="alert alert-danger" role="alert" *ngIf="messageHarborFlag ==='fail'">
     <div class="alert-items">
