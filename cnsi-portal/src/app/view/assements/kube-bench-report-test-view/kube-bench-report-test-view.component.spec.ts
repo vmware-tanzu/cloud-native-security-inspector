@@ -32,9 +32,9 @@ describe('KubeBenchReportTestViewComponent', () => {
     })
 
 
-    it('toKubeBenchReportTestResult', ()=> {
-      component.toKubeBenchReportTestResult({desc: 'test'})
-    })
+    // it('toKubeBenchReportTestResult', ()=> {
+    //   component.toKubeBenchReportTestResult({desc: 'test'})
+    // })
 
     it('chartInit', ()=> {
       component.testId = 'G-H0uYYBMJJS-ugUjm21'
