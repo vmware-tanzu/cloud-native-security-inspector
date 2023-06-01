@@ -4,6 +4,7 @@
 package workload
 
 import (
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/trivy"
 	"time"
 
 	corev1 "k8s.io/api/core/v1"
@@ -67,6 +68,8 @@ type Container struct {
 	IsInit bool `json:"isInit"`
 	// VacProductMeta
 	VacAssessment *VacProductInfo `json:"vacAssessment,omitempty"`
+	// Info from Trivy Scanner
+	TrivyReport *trivy.CNSIReport `json:"trivyReport,omitempty"`
 }
 
 // NonSupportPolicy VMWare Application Catalog Product's non-support policy information.

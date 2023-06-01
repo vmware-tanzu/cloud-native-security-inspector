@@ -1,6 +1,7 @@
 package trivy
 
 import (
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/harbor"
 	"time"
 
 	trivy "github.com/aquasecurity/trivy/pkg/types"
@@ -8,20 +9,38 @@ import (
 
 var report trivy.Report
 
+type Report struct {
+	SchemaVersion int            `json:"SchemaVersion"`
+	ArtifactName  string         `json:"ArtifactName"`
+	ArtifactType  string         `json:"ArtifactType"`
+	Metadata      trivy.Metadata `json:"Metadata,omitempty"`
+	Results       []ScanResult   `json:"Results,omitempty"`
+}
+
+// CNSIReport represents a scan result
+type CNSIReport struct {
+	GeneratedAt     string          `json:"generated_at,omitempty"`
+	Artifact        harbor.Artifact `json:"artifact,omitempty"`
+	Scanner         harbor.Scanner  `json:"scanner,omitempty"`
+	Severity        string          `json:"severity,omitempty"`
+	Vulnerabilities string          `json:"vulnerabilities,omitempty"`
+	Report          Report          `json:"Report,omitempty"`
+}
+
 const SchemaVersion = 2
 
-type LicenseScanReport struct {
-	SchemaVersion            int    `json:"SchemaVersion"`
-	ArtifactName             string `json:"ArtifactName"`
-	ArtifactType             string `json:"ArtifactType"`
-	MetadataMisconfiguration `json:"Metadata"`
-	Result                   []Results `json:"Results"`
-}
+//type LicenseScanReport struct {
+//	SchemaVersion            int    `json:"SchemaVersion"`
+//	ArtifactName             string `json:"ArtifactName"`
+//	ArtifactType             string `json:"ArtifactType"`
+//	MetadataMisconfiguration `json:"Metadata"`
+//	Result                   []Results `json:"Results"`
+//}
 
-type MetadataMisconfiguration struct {
-	OS       `json:"OS"`
-	RepoTags []RepoTags `json:"RepoTags"`
-}
+//type MetadataMisconfiguration struct {
+//	OS       `json:"OS"`
+//	RepoTags []RepoTags `json:"RepoTags"`
+//}
 
 type OS struct {
 	Family string `json:"Family"`
@@ -29,48 +48,48 @@ type OS struct {
 }
 type RepoTags string
 
-type Results struct {
-	Target       string              `json:"Target"`
-	Class        string              `json:"Class"`
-	Type         string              `json:"Type"`
-	MisconfigSum MisconfSummary      `json:"MisconfSummary"`
-	Misconf      []Misconfigurations `json:"Misconfigurations"`
-	License      []License           `json:"Licenses"`
-}
+//type Results struct {
+//	Target       string              `json:"Target"`
+//	Class        string              `json:"Class"`
+//	Type         string              `json:"Type"`
+//	MisconfigSum MisconfSummary      `json:"MisconfSummary"`
+//	Misconf      []Misconfigurations `json:"Misconfigurations"`
+//	License      []License           `json:"Licenses"`
+//}
 
-type License struct {
-	Severity   string `json:"Severity"`
-	Category   string `json:"Category"`
-	PkgName    string `json:"PkgName"`
-	FilePath   string `json:"FilePath"`
-	Name       string `json:"Name"`
-	Confidence int    `json:"Confidence"`
-	Link       string `json:"Link"`
-}
+//type License struct {
+//	Severity   string `json:"Severity"`
+//	Category   string `json:"Category"`
+//	PkgName    string `json:"PkgName"`
+//	FilePath   string `json:"FilePath"`
+//	Name       string `json:"Name"`
+//	Confidence int    `json:"Confidence"`
+//	Link       string `json:"Link"`
+//}
 
-type MisconfSummary struct {
-	Successes  int `json:"Successes"`
-	Failures   int `json:"Failures"`
-	Exceptions int `json:"Exceptions"`
-}
+//type MisconfSummary struct {
+//	Successes  int `json:"Successes"`
+//	Failures   int `json:"Failures"`
+//	Exceptions int `json:"Exceptions"`
+//}
 
-type Misconfigurations struct {
-	Type        string        `json:"Link"`
-	ID          string        `json:"Link"`
-	AVDID       string        `json:"Link"`
-	Title       string        `json:"Link"`
-	Description string        `json:"Link"`
-	Message     string        `json:"Link"`
-	Namespace   string        `json:"Link"`
-	Query       string        `json:"Link"`
-	Resolution  string        `json:"Link"`
-	Severity    string        `json:"Link"`
-	PrimaryURL  string        `json:"Link"`
-	Reference   []Reference   `json:"Link"`
-	Status      string        `json:"Link"`
-	Layer       ImageLayer    `json:"Layer"`
-	Cause       CauseMetadata `json:"CauseMetadata"`
-}
+//type Misconfigurations struct {
+//	Type        string        `json:"Link"`
+//	ID          string        `json:"Link"`
+//	AVDID       string        `json:"Link"`
+//	Title       string        `json:"Link"`
+//	Description string        `json:"Link"`
+//	Message     string        `json:"Link"`
+//	Namespace   string        `json:"Link"`
+//	Query       string        `json:"Link"`
+//	Resolution  string        `json:"Link"`
+//	Severity    string        `json:"Link"`
+//	PrimaryURL  string        `json:"Link"`
+//	Reference   []Reference   `json:"Link"`
+//	Status      string        `json:"Link"`
+//	Layer       ImageLayer    `json:"Layer"`
+//	Cause       CauseMetadata `json:"CauseMetadata"`
+//}
 
 type Reference string
 
@@ -99,13 +118,10 @@ type Lines struct {
 	LastCause  bool   `json:"LastCause"`
 }
 
-type ScanReport struct {
-	SchemaVersion int
-	Results       []ScanResult `json:"Results"`
-}
-
 type ScanResult struct {
 	Target          string          `json:"Target"`
+	Class           string          `json:"Class"`
+	Type            string          `json:"Type"`
 	Vulnerabilities []Vulnerability `json:"Vulnerabilities"`
 }
 
@@ -132,16 +148,16 @@ type CVSSInfo struct {
 }
 
 type Vulnerability struct {
-	VulnerabilityID  string              `json:"VulnerabilityID"`
-	PkgName          string              `json:"PkgName"`
-	InstalledVersion string              `json:"InstalledVersion"`
-	FixedVersion     string              `json:"FixedVersion"`
-	Title            string              `json:"Title"`
-	Description      string              `json:"Description"`
-	Severity         string              `json:"Severity"`
-	References       []string            `json:"References"`
-	PrimaryURL       string              `json:"PrimaryURL"`
-	Layer            *Layer              `json:"Layer"`
-	CVSS             map[string]CVSSInfo `json:"CVSS"`
-	CweIDs           []string            `json:"CweIDs"`
+	VulnerabilityID  string   `json:"VulnerabilityID"`
+	PkgName          string   `json:"PkgName"`
+	InstalledVersion string   `json:"InstalledVersion"`
+	FixedVersion     string   `json:"FixedVersion"`
+	Title            string   `json:"Title"`
+	Description      string   `json:"Description"`
+	Severity         string   `json:"Severity"`
+	References       []string `json:"References"`
+	PrimaryURL       string   `json:"PrimaryURL"`
+	Layer            *Layer   `json:"Layer"`
+	//CVSS             map[string]CVSSInfo `json:"CVSS"`
+	CweIDs []string `json:"CweIDs"`
 }

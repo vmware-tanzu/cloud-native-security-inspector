@@ -63,8 +63,8 @@ func (s *Severity) UnmarshalJSON(b []byte) error {
 }
 
 type Registry struct {
-	URL           string `json:"url"`
-	Authorization string `json:"authorization"`
+	URL string `json:"url"`
+	//Authorization string `json:"authorization,omitempty"`
 }
 
 type Artifact struct {

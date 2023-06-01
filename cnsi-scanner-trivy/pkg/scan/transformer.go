@@ -60,7 +60,7 @@ func (t *transformer) Transform(artifact harbor.Artifact, source *trivyType.Repo
 	//}
 	return harbor.ScanReport{
 		GeneratedAt: t.clock.Now(),
-		Scanner:     harbor.Scanner{etc.GetScannerMetadata().Name, etc.GetScannerMetadata().Vendor, etc.GetScannerMetadata().Version},
+		Scanner:     harbor.Scanner{Name: etc.GetScannerMetadata().Name, Vendor: etc.GetScannerMetadata().Vendor, Version: etc.GetScannerMetadata().Version},
 		Artifact:    artifact,
 		//Severity:    t.toHighestSeverity(vulnerabilities),
 		Report: source,
