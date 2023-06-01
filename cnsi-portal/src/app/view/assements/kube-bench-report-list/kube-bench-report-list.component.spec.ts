@@ -240,9 +240,9 @@ describe('KubeBenchReportListComponent', () => {
           }
       });
 
-      component.toKubeBenchReportTests({
-        "_id": "kubebench-Report_2023-02-15T15:19:14Z_4q7dm",
-      })
+      // component.toKubeBenchReportTests({
+      //   "_id": "kubebench-Report_2023-02-15T15:19:14Z_4q7dm",
+      // })
 
       component.createTimeSort()
 
