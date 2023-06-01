@@ -5,13 +5,18 @@ package image_scanner
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	exporter_inputs "github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-exporter/pkg/inputs"
 	itypes "github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-inspector/pkg"
 	wl "github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-inspector/pkg/assets/workload"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/pkg/policy/enforcement"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/harbor"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/trivy"
+	ScannerClient "github.com/vmware-tanzu/cloud-native-security-inspector/lib/http"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/lib/log"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
+	"strings"
 	"time"
 
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/pkg/policy"
@@ -31,6 +36,8 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
+
+const firstCheckInterval = 20 * time.Second
 
 // Controller controls the inspection flow.
 type Controller interface {
@@ -295,8 +302,51 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 				} else {
 					log.Info("Skipping VAC Assessment")
 				}
+
 				// Read data of the container image.
 				aid := core.ParseArtifactIDFrom(ct.Image, ct.ImageID)
+
+				// add [s]
+				imageId := strings.Split(ct.ImageID, "@")
+				url := strings.Split(ct.ImageID, "/")
+				before, after, _ := strings.Cut(imageId[0], url[0]+"/")
+				fmt.Println(before)
+				//repository, _ := strings.CutPrefix(imageId[0], url[0]+"/")
+				repository := after
+				fmt.Println(repository)
+				imageDigest := imageId[1]
+				r := harbor.ScanRequest{
+					Registry: harbor.Registry{URL: "http://" + url[0]},
+					Artifact: harbor.Artifact{Repository: repository, Digest: imageDigest},
+				}
+
+				ns := "cnsi-system"
+				scanUrl := fmt.Sprintf("http://cnsi-scanner-trivy-service.%s.svc.cluster.local:8081/api/v1/scan", ns)
+				//scanUrl := "http://127.0.0.1:30033/api/v1/scan"
+				id, err := ScannerClient.Scan(scanUrl, r)
+
+				if err != nil {
+					log.Error(err, "Request data to scanner", "artifactID", aid)
+				}
+				log.Info("Success:", id)
+				//reportUrl := "http://127.0.0.1:30033/api/v1/scan/" + id + "/report"
+				reportUrl := fmt.Sprintf("http://cnsi-scanner-trivy-service.%s.svc.cluster.local:8081/api/v1/scan/%s/report", ns, id)
+				report, err := getReport(id, reportUrl)
+				if err != nil {
+					log.Error(err, "Cannot get report successfully!")
+				} else {
+					log.Info(report)
+					b := []byte(report)
+					var re trivy.CNSIReport
+					err = json.Unmarshal(b, &re)
+					if err != nil {
+						log.Error(err, "Unmarshal error")
+						return nil
+					}
+					ct.TrivyReport = &re
+				}
+				// add [e]
+
 				stores, err := adapter.Read(ctx, aid, readOps...)
 				if err != nil {
 					if core.IsArtifactNotFoundError(err) {
@@ -482,6 +532,44 @@ func ExportImageReports(report itypes.AssessmentReport, pl *v1alpha1.InspectionP
 		if err != nil {
 			// Post failure is error because network issues could happen
 			log.Error(err, "failed to post the insight report", "Policy", pl.Name)
+		}
+	}
+}
+
+//func ExportTrivyReports(report itypes.AssessmentReport, pl *v1alpha1.InspectionPolicy) {
+//	if bytes, err := json.Marshal(report); err != nil {
+//		// Marshal failure should be fatal because it is unforgivable
+//		log.Fatal(err, "failed to marshal the insight struct")
+//	} else {
+//		exportStruct := &v1alpha1.ReportData{
+//			Source:       "insight_report",
+//			ExportConfig: pl.Spec.Inspector.ExportConfig,
+//			Payload:      string(bytes),
+//		}
+//		err = exporter_inputs.PostReport(exportStruct)
+//		if err != nil {
+//			// Post failure is error because network issues could happen
+//			log.Error(err, "failed to post the insight report", "Policy", pl.Name)
+//		}
+//	}
+//}
+
+func getReport(id string, url string) (string, error) {
+	// Loop check if the report is ready
+	tm := time.NewTimer(firstCheckInterval)
+	defer tm.Stop()
+	for {
+		select {
+		case t := <-tm.C:
+			log.Infof("check scan report at %s", t.Format("2006/01/02 15:04:05"))
+			rawReport, err := ScannerClient.GetReport(id, url)
+			if err != nil {
+				return "", err
+			}
+			if len(rawReport) == 0 {
+				continue
+			}
+			return rawReport, nil
 		}
 	}
 }

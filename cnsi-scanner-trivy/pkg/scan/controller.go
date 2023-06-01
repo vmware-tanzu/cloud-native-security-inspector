@@ -60,11 +60,11 @@ func (c *controller) scan(scanJobID string, req harbor.ScanRequest) (err error) 
 		return err
 	}
 
-	auth, err := c.ToRegistryAuth(req.Registry.Authorization)
-	if err != nil {
-		return err
-	}
-
+	//auth, err := c.ToRegistryAuth(req.Registry.Authorization)
+	//if err != nil {
+	//	return err
+	//}
+	auth := trivy.NoAuth{}
 	scanReport, err := c.wrapper.Scan(trivy.ImageRef{Name: imageRef, Auth: auth, Insecure: insecureRegistry})
 	if err != nil {
 		return xerrors.Errorf("running trivy wrapper: %v", err)

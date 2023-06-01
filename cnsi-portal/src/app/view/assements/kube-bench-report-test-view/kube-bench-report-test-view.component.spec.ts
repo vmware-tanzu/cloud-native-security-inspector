@@ -3,7 +3,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AssessmentService } from 'src/app/service/assessment.service';
 import { ShardTestModule } from 'src/app/shard/shard/shard.module';
-
 import { KubeBenchReportTestViewComponent } from './kube-bench-report-test-view.component';
 
 describe('KubeBenchReportTestViewComponent', () => {
@@ -13,7 +12,12 @@ describe('KubeBenchReportTestViewComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ KubeBenchReportTestViewComponent ],
-      imports: [ShardTestModule, RouterTestingModule],
+      imports: [ShardTestModule, RouterTestingModule.withRoutes(
+        [{
+          path: 'assessments/kube-bench/test-detail/test',
+          component: KubeBenchReportTestViewComponent
+        }]
+      )],
       providers: [AssessmentService,],
       schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
     })

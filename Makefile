@@ -161,6 +161,7 @@ portal: namespace  ## Install CNSI portal
 install: portal ## Install all the CNSI components without golang and kustomize required.
 	$(KUBECTLCMD) apply -f deployments/yaml/manager.yaml
 	$(KUBECTLCMD) apply -f deployments/yaml/data-exporter.yaml
+	$(KUBECTLCMD) apply -f deployments/yaml/scanner-trivy.yaml
 
 uninstall: remove_clusterrolebinding  ## Uninstall CNSI components
 	$(KUBECTLCMD) delete -f deployments/yaml/manager.yaml --ignore-not-found=true
