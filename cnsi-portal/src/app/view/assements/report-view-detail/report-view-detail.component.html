@@ -92,6 +92,7 @@
               <clr-dg-column [clrDgField]="'container.name'">Name</clr-dg-column>
               <clr-dg-column >Image</clr-dg-column>
               <clr-dg-column >{{'Report_Detail.isInit'|translate}}</clr-dg-column>
+              <clr-dg-column >{{'Report_Detail.trivy'|translate}}</clr-dg-column>
               <clr-dg-column *ngIf="showTrustedColumn">{{'Kube_bench_list.trusted'|translate}}</clr-dg-column>
               <clr-dg-column *ngIf="showTrustedColumn">{{'CommonlyUse.status'|translate}}</clr-dg-column>
     
@@ -104,6 +105,12 @@
                   {{cn.image}}
                 </clr-dg-cell>
                 <clr-dg-cell>{{cn.isInit}}</clr-dg-cell>
+                <clr-dg-cell>
+                  <a *ngIf="cn.trivyReport" (click)="toTrivyReport(cn.trivyReport)">
+                    <cds-icon  shape="view-list" style="color: skyblue"></cds-icon>
+                  </a>
+                  <cds-icon *ngIf="!cn.trivyReport" shape="no-access"></cds-icon>
+                </clr-dg-cell>
                 <clr-dg-cell *ngIf="showTrustedColumn">
                   <span>
                     <cds-icon *ngIf="cn.vacAssessment?.trusted" style="color: hsl(93, 79%, 40%);" shape="check-circle" solid></cds-icon>

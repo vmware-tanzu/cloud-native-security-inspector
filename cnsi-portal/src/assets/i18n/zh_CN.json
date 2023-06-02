@@ -99,7 +99,9 @@
     "cause": "Cause",
     "error_message": "Error Message",
     "pod_list": "Pods列表",
-    "releaseTime": "发布时间"
+    "releaseTime": "发布时间",
+    "trivy": "Trivy报告",
+    "vulnerabilities": "漏洞"
   },
   "Risk_view": {
     "numberOfVulnerabilities": "漏洞数量"
@@ -110,7 +112,8 @@
     "type": "类型",
     "misconfiguration_successes": "错误配置项成功条数",
     "misconfiguration_failures": "错误配置项失败条数",
-    "misconfiguration_exceptions": "错误配置项例外条数"
+    "misconfiguration_exceptions": "错误配置项例外条数",
+    "VulnerabilityID": "漏洞ID"
   },
   "Cluster": {
     "kubernetes_version": "Kubernetes版本",
@@ -156,6 +159,7 @@
     "assessment": "评估",
     "format": "格式",
     "generate": "生成报告",
+    "generate_time": "生成报告时间",
     "live_time": "保留时间(秒)",
     "managedBy": "托管",
     "baselines": "基线 (配置harbor镜像检查器)",

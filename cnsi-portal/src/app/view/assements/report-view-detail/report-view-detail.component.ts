@@ -7,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
 import { AssessmentService } from 'src/app/service/assessment.service';
 import { ShardService } from 'src/app/service/shard.service'
 import { PolicyService } from 'src/app/service/policy.service'
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-report-view-detail',
@@ -22,7 +23,8 @@ export class ReportViewDetailComponent implements OnInit {
   currentContainer!: any
   constructor(
     public shardService:ShardService,
-    private policyService: PolicyService
+    private policyService: PolicyService,
+    private router: Router
     ) { }
 
   ngOnInit(): void {
@@ -52,5 +54,10 @@ export class ReportViewDetailComponent implements OnInit {
 
   showContainerVAC(cn: any) {
     this.currentContainer = cn
+  }
+
+  toTrivyReport(trivyReport: any) {
+    sessionStorage.setItem('cnsi-trivy-report', JSON.stringify(trivyReport))
+    this.router.navigateByUrl('/assessments/trivy')
   }
 }
