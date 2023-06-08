@@ -2,6 +2,7 @@ import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { TrivyViewDetailComponent } from 'src/app/view/assements/trivy-view-detail/trivy-view-detail.component'
 import * as moment from 'moment';
 import { Router } from '@angular/router';
+import { Location } from '@angular/common'
 @Component({
   selector: 'app-trivy-view',
   templateUrl: './trivy-view.component.html',
@@ -24,6 +25,7 @@ export class TrivyViewComponent implements OnInit, AfterViewInit {
   currentDetail!: any
   constructor(
     private router:Router,
+    public location: Location
   ) { }
 
   ngOnInit(): void {

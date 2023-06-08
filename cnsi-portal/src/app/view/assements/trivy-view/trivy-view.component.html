@@ -1,5 +1,9 @@
 <div class="trivy">
-  <h2>{{'Nav.Assessments.trivy'|translate}}</h2>
+  <h2>
+    <a class="back" (click)="location.back()">
+      <cds-icon shape="angle"></cds-icon>
+    </a>
+    {{'Nav.Assessments.trivy'|translate}}</h2>
   <!-- <div class="echarts-loading" *ngIf="echartsLoading">
     <span class="spinner spinner-lg">
       Loading...

@@ -7,6 +7,14 @@
 .trivy h2 {
   color: #fff;
 }
+.trivy h2 .back {
+  cursor: pointer;
+}
+.trivy h2 .back cds-icon {
+  width: 20px;
+  height: 20px;
+  transform: rotate(-90deg);
+}
 .trivy .report-detai-bg {
   position: absolute;
   z-index: 1000;

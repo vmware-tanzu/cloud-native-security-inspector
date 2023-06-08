@@ -61,7 +61,7 @@ export class HarborSettingComponent implements OnInit, OnDestroy {
     this.getHarbor()
     this.createTimer = setInterval(() => {
       this.getHarbor()      
-    }, 1000)
+    }, 3000)
   }
   // setting func
   getHarbor(){

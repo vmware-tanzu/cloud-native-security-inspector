@@ -4,7 +4,7 @@
  */
 
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { RouteReuseStrategy, RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './view/home/home.component'
 import { LoginComponent } from './view/login/login.component';
 import { HarborSettingComponent } from './view/data-source/harbor-setting/harbor-setting.component';
@@ -29,8 +29,9 @@ import { TrivyViewComponent } from 'src/app/view/assements/trivy-view/trivy-view
 import { SecretComponent } from 'src/app/view/setting/secret/secret.component'
 import { CacheComponent } from 'src/app/view/setting/cache/cache.component'
 
-import { RouterGuard } from './router-guard';
+// import { RouterGuard } from './router-guard';
 import { CacheSettingComponent } from './view/setting/cache/cache-setting/cache-setting.component';
+import { RouteStrategyService } from './route-strategy.service';
 
 const routes: Routes = [
   {
@@ -40,7 +41,7 @@ const routes: Routes = [
       {
         path: 'doshboard',
         component: DoshboardComponent,
-        canActivate: [RouterGuard]
+        // canActivate: [RouterGuard]
       },
       {
         path: 'assessments',
@@ -48,7 +49,7 @@ const routes: Routes = [
           {
             path: 'report',
             component: ReportViewComponent,
-            canActivate: [RouterGuard]
+            // canActivate: [RouterGuard]
           },
           {
             path: 'kube-bench',
@@ -57,17 +58,17 @@ const routes: Routes = [
               {
                 path: 'list',
                 component: KubeBenchReportListComponent,
-                canActivate: [RouterGuard]
+                // canActivate: [RouterGuard]
               },
               {
                 path: 'test-view/:id',
                 component: KubeBenchReportTestViewComponent,
-                canActivate: [RouterGuard]
+                // canActivate: [RouterGuard]
               },
               {
                 path: 'test-detail/:id',
                 component: KubeBenchReportTestDetailComponent,
-                canActivate: [RouterGuard]
+                // canActivate: [RouterGuard]
               },
               {
                 path: '',
@@ -79,12 +80,12 @@ const routes: Routes = [
           {
             path: 'risk',
             component: RiskReportViewComponent,
-            canActivate: [RouterGuard]
+            // canActivate: [RouterGuard]
           },
           {
             path: 'trivy',
             component: TrivyViewComponent,
-            canActivate: [RouterGuard]
+            // canActivate: [RouterGuard]
           },
           {
             path: '',
@@ -100,29 +101,29 @@ const routes: Routes = [
           {
             path: 'cluster',
             component: ClusterPageComponent,
-            canActivate: [RouterGuard]
+            // canActivate: [RouterGuard]
           },
           {
             path: 'namespace',
             component: NamespacePageComponent,
-            canActivate: [RouterGuard]
+            // canActivate: [RouterGuard]
           },
           {
             path: 'workload',
             component: WorkloadPageComponent,
-            canActivate: [RouterGuard]
+            // canActivate: [RouterGuard]
           },
         ]
       },
       {
         path: 'policy',
         component: PolicyComponent,
-        canActivate: [RouterGuard]
+        // canActivate: [RouterGuard]
       },
       {
         path: 'modify-policy/:id',
         component: PolicySettingPageComponent,
-        canActivate: [RouterGuard]
+        // canActivate: [RouterGuard]
       },
       {
         path: 'data-source',
@@ -130,12 +131,12 @@ const routes: Routes = [
           {
             path: 'harbor',
             component: HarborSettingComponent,
-            canActivate: [RouterGuard]
+            // canActivate: [RouterGuard]
           },
           {
             path: 'vac',
             component: VacComponent,
-            canActivate: [RouterGuard]
+            // canActivate: [RouterGuard]
           },
           {
             path: '',
@@ -147,27 +148,27 @@ const routes: Routes = [
       {
         path: 'modify-data-source/:id',
         component: HarborSettingPageComponent,
-        canActivate: [RouterGuard]
+        // canActivate: [RouterGuard]
       },
       {
         path: 'modify-vac/:id',
         component: VacSettingComponent,
-        canActivate: [RouterGuard]
+        // canActivate: [RouterGuard]
       },
       {
         path: 'setting',
         component: SettingComponent,
-        canActivate: [RouterGuard],
+        // canActivate: [RouterGuard],
         children: [
           {
             path: 'secret',
             component: SecretComponent,
-            canActivate: [RouterGuard]
+            // canActivate: [RouterGuard]
           },
           {
             path: 'cache',
             component: CacheComponent,
-            canActivate: [RouterGuard]
+            // canActivate: [RouterGuard]
           },
           {
             path: '',
@@ -179,12 +180,12 @@ const routes: Routes = [
       {
         path: 'modify-cache/:id',
         component: CacheSettingComponent,
-        canActivate: [RouterGuard]
+        // canActivate: [RouterGuard]
       },
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'data-source/harbor'
+        redirectTo: 'setting/secret'
       }
     ]
   },
@@ -197,6 +198,9 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
-  providers:[RouterGuard]
+  providers:[
+    // RouterGuard
+    { provide: RouteReuseStrategy, useClass: RouteStrategyService }
+  ]
 })
 export class AppRoutingModule { }

@@ -87,7 +87,8 @@ import {
   cpuIcon,
   memoryIcon,
   viewListIcon,
-  importIcon
+  importIcon,
+  noAccessIcon
 } from '@cds/core/icon';
 import { DoshboardComponent } from './view/doshboard/doshboard.component';
 import { TrivyViewComponent } from './view/assements/trivy-view/trivy-view.component';
@@ -131,6 +132,7 @@ ClarityIcons.addIcons(
   cpuIcon,
   memoryIcon,
   viewListIcon,
+  noAccessIcon,
   importIcon
 );
 

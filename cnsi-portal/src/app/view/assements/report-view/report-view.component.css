@@ -62,6 +62,15 @@
 .report::ng-deep clr-datagrid clr-dg-row clr-dg-cell {
   color: #fff;
 }
+.report .echarts-loading {
+  position: relative;
+  width: 1400px;
+}
+.report .echarts-loading .spinner {
+  position: absolute;
+  left: 50%;
+  top: 150px;
+}
 .report #box {
   flex: 1;
 }

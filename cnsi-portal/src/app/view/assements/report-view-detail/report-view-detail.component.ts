@@ -57,6 +57,8 @@ export class ReportViewDetailComponent implements OnInit {
   }
 
   toTrivyReport(trivyReport: any) {
+    console.log('trivyReport', trivyReport);
+    
     sessionStorage.setItem('cnsi-trivy-report', JSON.stringify(trivyReport))
     this.router.navigateByUrl('/assessments/trivy')
   }

@@ -37,6 +37,7 @@ export class ReportViewComponent implements OnInit, OnDestroy, AfterViewInit {
   // charts
   echartsOption!: ECOption
   myChart!: any
+  echartsLoading = true
 
   // opensearch
   opensearchInfo: any = {}
@@ -308,9 +309,12 @@ export class ReportViewComponent implements OnInit, OnDestroy, AfterViewInit {
     if (opensearchInfo.url) {
       this.client = 'opensearch'
       this.opensearchInfo = opensearchInfo
+      this.dgLoading = true
+      this.echartsLoading = true
     } else {
       this.echartsRender([], [])
       this.dgLoading = false
+      this.echartsLoading = false
     }
     const query: any = { 
       size: 10,
@@ -346,8 +350,13 @@ export class ReportViewComponent implements OnInit, OnDestroy, AfterViewInit {
           dataValue.push(abCount)
         })
         this.echartsRender(lineDate, dataValue)
+        this.pageMaxCount = Math.ceil(data.hits.total.value / this.defaultSize)
         this.imagesReportList = data.hits.hits
-
+        this.dgLoading = false
+      },
+      err => {
+        this.echartsLoading = false
+        this.dgLoading = false
       }
     )
   }
@@ -446,5 +455,6 @@ export class ReportViewComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.myChart.clear()
     this.echartsOption && this.myChart.setOption(this.echartsOption);
+    this.echartsLoading = false
   }
 }

@@ -75,13 +75,23 @@ export class SecretComponent implements OnInit {
     this.harborService.postHarborSecretsSetting(secret.namespace, secret).subscribe(
       data => {
         this.messageSecretFlag = 'success'
-        this.secretModalFlag=false
         this.getSecrets()
+        this.resetSecretForm()
       },
       err => {
         this.messageSecretFlag = 'fail'
         this.messageContent = err.error?.message || 'Secret created fail!'
       }
     )
+  }
+
+  resetSecretForm() {
+    this.secretModalFlag=false
+    this.secretForm.controls['secret_type'].setValue('harbor')
+    this.secretForm.controls['secret_accessKey'].setValue('')
+    this.secretForm.controls['secret_accessSecret'].setValue('')
+    this.secretForm.controls['secret_name'].setValue('')
+    this.secretForm.controls['secret_namespace'].setValue('default')
+    this.secretForm.controls['secret_token'].setValue('')
   }
 }

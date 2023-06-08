@@ -12,14 +12,14 @@
         <!-- <div id="misconfigurations-bar" style="width: 1200px;height:400px; overflow: hidden;"> </div> -->
 
         <clr-datagrid class="report-datagrid" *ngIf="detailInfo && detailInfo.Vulnerabilities">
-          <clr-dg-column [clrDgField]="'VulnerabilityID'">Vulnerability ID</clr-dg-column>
+          <clr-dg-column [clrDgField]="'VulnerabilityID'">{{'Trivy_view.VulnerabilityID' | translate}}</clr-dg-column>
           <clr-dg-column [clrDgField]="'Title'">{{'CommonlyUse.title'|translate}}</clr-dg-column>
-          <clr-dg-column [clrDgSortBy]="'FixedVersion'">Fixed Version</clr-dg-column>
-          <clr-dg-column [clrDgSortBy]="'InstalledVersion'">Installed Version</clr-dg-column>
+          <clr-dg-column [clrDgSortBy]="'FixedVersion'">{{'Trivy_view.fixedVersion' | translate}}</clr-dg-column>
+          <clr-dg-column [clrDgSortBy]="'InstalledVersion'">{{'Trivy_view.installedVersion' | translate}}</clr-dg-column>
           <clr-dg-column [clrDgSortBy]="'Severity'">{{'Trivy_view.severity'|translate}}</clr-dg-column>
           <clr-dg-column [clrDgField]="'name'">{{'CommonlyUse.description'|translate}}</clr-dg-column>
-          <clr-dg-column [clrDgField]="'PrimaryURL'">Primary URL</clr-dg-column>
-          <clr-dg-column >References</clr-dg-column>
+          <clr-dg-column [clrDgField]="'PrimaryURL'">{{'Trivy_view.primaryURL' | translate}}</clr-dg-column>
+          <clr-dg-column >{{'Trivy_view.references' | translate}}</clr-dg-column>
 
           <clr-dg-row *clrDgItems="let detail of detailInfo.Vulnerabilities" [clrDgItem]="detail">
             <clr-dg-cell>{{detail.VulnerabilityID}}
