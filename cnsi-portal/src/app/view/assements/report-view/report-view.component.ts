@@ -134,7 +134,10 @@ export class ReportViewComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   // change handler
   
-  pageChange(event: any) {  
+  pageChange(event: any) {
+    this.showDetailFlag = false 
+    this.shardService.currentReport = null 
+    this.reportDetail.currentWordloadInfo = null
     if (event.page.current <= 1) {// size change
       if (event.page.size !== this.defaultSize) {
         this.getKubeBenchReportList(
