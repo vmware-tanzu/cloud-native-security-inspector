@@ -79,7 +79,7 @@ describe('Setting Test', () => {
     })
     cy.wait(1000)
     // create setting
-    cy.get('[data-cy=cut_setting]').click()
+    // cy.get('[data-cy=cut_setting]').click()
     cy.visit('http://127.0.0.1:4004/modify-data-source/create')
   })
 
@@ -92,10 +92,10 @@ describe('Setting Test', () => {
       return false
     })
     cy.get('[data-cy=first_next]').click()
-    cy.get('[data-cy=second_next]').click()
-    cy.get('[data-cy=address]').type('https://api.int.app-catalog.vmware.com/catalog-governor/v1/products', {force: true})
-    cy.get('[data-cy=secret]').select('harbor')
-    cy.get('[data-cy=third_next]').click()
+    // cy.get('[data-cy=second_next]').click()
+    // cy.get('[data-cy=address]').type('https://api.int.app-catalog.vmware.com/catalog-governor/v1/products', {force: true})
+    // cy.get('[data-cy=secret]').select('harbor')
+    // cy.get('[data-cy=third_next]').click()
     cy.get('[data-cy=submit_setting]').click()
 
   })

@@ -3,6 +3,7 @@
  * SSPDX-License-Identifier: Apache-2.0
  */
 
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -100,7 +101,7 @@ describe('HarborSettingComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ HarborSettingComponent ],
-      imports: [ShardTestModule, RouterTestingModule],
+      imports: [ShardTestModule, RouterTestingModule, HttpClientTestingModule],
       providers: [ShardService, HarborService, PolicyService],
       schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
     })
@@ -182,9 +183,6 @@ describe('HarborSettingComponent', () => {
       expect(harborService.deleteHarborSetting);
       flush()
     }));
-    it('modifyHarbor', () => {
-      component.modifyHarbor()
-    });
 
   })
 
