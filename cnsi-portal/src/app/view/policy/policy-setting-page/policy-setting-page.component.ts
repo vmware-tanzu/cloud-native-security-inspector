@@ -31,17 +31,16 @@ export class PolicySettingPageComponent implements OnInit {
   imageList = [
     {
       name: 'inspector',
-      url: 'projects.registry.vmware.com/cnsi/inspector:dev'
+      url: 'projects.registry.vmware.com/cnsi/inspector:0.4.0'
     },
     {
       name: 'kubebench',
-      url: 'projects.registry.vmware.com/cnsi/kubebench:dev'
+      url: 'projects.registry.vmware.com/cnsi/kubebench:0.4.0'
     },
     {
       name: 'risk',
-      url: 'projects.registry.vmware.com/cnsi/risk:dev'
+      url: 'projects.registry.vmware.com/cnsi/risk:0.4.0'
     }
-    
   ]
   public actions = [
     {
@@ -240,35 +239,17 @@ export class PolicySettingPageComponent implements OnInit {
           this.policyForm.get('inspectionSetting')?.get('suspend')?.setValue(policyList[0].spec.strategy.suspend)
           this.policyForm.get('inspectionSetting')?.get('concurrencyRule')?.setValue(policyList[0].spec.strategy.concurrencyRule)
 
-          if (policyList[0].spec.inspector.image && policyList[0].spec.inspector.kubebenchImage) {
-            if (policyList[0].spec.inspector.riskImage) {
-              this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['inspector', 'kubebench', 'risk'])
-            } else {
-              this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['inspector', 'kubebench'])
-            }
-          } else {
-            if (policyList[0].spec.inspector.image) {
-              if (policyList[0].spec.inspector.riskImage) {
-                this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['inspector', 'risk'])
-              } else {
-                this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['inspector'])
-              }
-            } else if (policyList[0].spec.inspector.kubebenchImage) {
-              if (policyList[0].spec.inspector.riskImage) {
-                this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['kubebench', 'risk'])
-              } else {
-                this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['kubebench'])
-              }
-            } else if (policyList[0].spec.inspector.riskImage) {
-              if (policyList[0].spec.inspector.image) {
-                this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['inspector', 'risk'])
-              } else if (policyList[0].spec.inspector.kubebenchImage){
-                this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['kubebench', 'risk'])
-              } else {
-                this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['risk'])
-              }
-            }
+          const imagesList = []
+          if (policyList[0].spec.inspector.image) {
+            imagesList.push('inspector')
           }
+          if (policyList[0].spec.inspector.kubebenchImage) {
+            imagesList.push('kubebench')
+          }
+          if (policyList[0].spec.inspector.riskImage) {
+            imagesList.push('risk')
+          }
+          this.policyForm.get('inspectionSetting')?.get('image')?.setValue(imagesList)
 
           this.policyForm.get('inspectionSetting')?.get('imagePullPolicy')?.setValue(policyList[0].spec.inspector.imagePullPolicy)
           this.policyForm.get('inspectionSetting')?.get('settingsName')?.setValue(policyList[0].spec.settingsName)
@@ -338,7 +319,7 @@ export class PolicySettingPageComponent implements OnInit {
           this.policyForm.get('inspectionSetting')?.get('historyLimit')?.setValue(5)
           this.policyForm.get('inspectionSetting')?.get('suspend')?.setValue(false)
           this.policyForm.get('inspectionSetting')?.get('concurrencyRule')?.setValue('Forbid')
-          this.policyForm.get('inspectionSetting')?.get('image')?.setValue('projects.registry.vmware.com/cnsi/inspector:dev')
+          this.policyForm.get('inspectionSetting')?.get('image')?.setValue('projects.registry.vmware.com/cnsi/inspector:0.4.0')
           this.policyForm.get('inspectionSetting')?.get('imagePullPolicy')?.setValue('IfNotPresent')
           this.policyForm.get('inspectionSetting')?.get('settingsName')?.setValue('')
           this.policyForm.get('inspectionResult')?.get('actions')?.setValue(true)
