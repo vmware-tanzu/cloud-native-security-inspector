@@ -30,6 +30,15 @@ describe('PackedbubbleComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
+  describe('functions ', () => {
+    it('getSeries', () => {
+      component.myChart = {
+        clear: () => {},
+        setOption: () => {}
+      }
+      component.getSeries()
+    });
+  })
 
   it('should create', () => {
     expect(component).toBeTruthy();

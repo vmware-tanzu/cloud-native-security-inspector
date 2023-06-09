@@ -12,7 +12,8 @@ export const environment:any = {
   api: {
     goharbor: '/proxy/apis/goharbor.goharbor.io/v1alpha1',
     k8s: '/proxy/api/v1',
-    apiregistration: '/proxy/apis/apiregistration.k8s.io/v1'
+    apiregistration: '/proxy/apis/apiregistration.k8s.io/v1',
+    k8sPost: '/k8s-body'
   }
 };
 

@@ -5,31 +5,88 @@
 </div>
 
 <div class="vac-setting">
-  <button class="btn btn-primary btn-sm create" routerLink="/modify-vac/create">
+  <div class="alert alert-info" role="alert" *ngIf="settingList.length < 1">
+    <div class="alert-items">
+        <div class="alert-item static">
+            <div class="alert-icon-wrapper">
+                <cds-icon class="alert-icon" shape="info-circle"></cds-icon>
+            </div>
+            <span class="alert-text">{{'VAC.mustHarbor' | translate}}</span>
+        </div>
+    </div>
+  </div>
+  <button *ngIf="settingList.length > 0 && vacList.length < 1" class="btn btn-primary btn-sm create" routerLink="/modify-vac/create">
     <cds-icon shape="plus"></cds-icon>
     {{'CommonlyUse.new'|translate}}</button>
 
   <clr-datagrid [clrDgLoading]="vacLoading">
     <clr-dg-column>{{'CommonlyUse.name' | translate}}</clr-dg-column>
-    <clr-dg-column>{{'VAC.branch' | translate}}</clr-dg-column>
-    <clr-dg-column>{{'CommonlyUse.version'| translate}}</clr-dg-column>
-    <clr-dg-column>{{'VAC.releasedTime'| translate}}</clr-dg-column>
+    <clr-dg-column>{{'CommonlyUse.namespace' | translate}}</clr-dg-column>
+    <clr-dg-column>{{'Report_Detail.endpoint'| translate}}</clr-dg-column>
     <clr-dg-column>{{'CommonlyUse.status'| translate}}</clr-dg-column>
+    <clr-dg-column>{{'Report_Detail.actions'| translate}}</clr-dg-column>
 
-    <clr-dg-row *clrDgItems="let vac of vacList">
+    <clr-dg-row *clrDgItems="let vac of vacList; let i =index">
         <clr-dg-cell>{{vac.name}}</clr-dg-cell>
-        <clr-dg-cell>{{vac.branch}}</clr-dg-cell>
-        <clr-dg-cell>{{vac.version}}</clr-dg-cell>
-        <clr-dg-cell>{{vac.released_at | date}}</clr-dg-cell>
-        <clr-dg-cell class="status-warp">
-          <span [ngClass]="{'status': vac.status === 'DEPRECATED'}">{{vac.status}}</span>
+        <clr-dg-cell>{{vac.namespace}}</clr-dg-cell>
+        <clr-dg-cell>{{vac.endpoint}}</clr-dg-cell>
+        <clr-dg-cell>
+          <span *ngIf="vac.status ==='Healthy'" style="color: green;">{{vac.status}}</span>
+          <span *ngIf="vac.status !=='Healthy'" style="color: red;">{{vac.status}}</span>
+        </clr-dg-cell>
+        <clr-dg-cell>
+          <div class="icon-button">
+            <cds-icon shape="note" (click)="modifyVAC()"></cds-icon>
+            <cds-icon shape="trash" (click)="deleteModalHandler(i)"></cds-icon>
+          </div>
         </clr-dg-cell>
     </clr-dg-row>
 
     <clr-dg-footer>
       <clr-dg-pagination #pagination [clrDgPageSize]="10">
-          <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Secrets per page</clr-dg-page-size>
+          <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">VAC per page</clr-dg-page-size>
       </clr-dg-pagination>
   </clr-dg-footer>
 </clr-datagrid>
+
+<div class="modal" *ngIf="deleteModal">
+  <div class="modal-dialog" role="dialog" aria-hidden="true">
+      <div class="modal-content">
+          <div class="modal-header">
+              <button aria-label="Close" (click)="deleteModal = false" class="close" type="button">
+                  <cds-icon aria-hidden="true" shape="close"></cds-icon>
+              </button>
+              <h3 class="modal-title">{{'CommonlyUse.delete' | translate}}</h3>
+          </div>
+          <div class="modal-body">
+            {{'Setting.isDeleteConfiguration' | translate}}
+          
+          
+
+              <div class="alert alert-danger" role="alert" *ngIf="messageFlag">
+                <div class="alert-items">
+                    <div class="alert-item static">
+                        <div class="alert-icon-wrapper">
+                            <cds-icon class="alert-icon" shape="info-circle"></cds-icon>
+                        </div>
+                        <span class="alert-text">
+                          {{messageContent}}
+                        </span>
+                    </div>
+                </div>
+                <button type="button" class="close" aria-label="Close">
+                    <cds-icon aria-hidden="true" (click)="messageFlag = false" shape="close"></cds-icon>
+                </button>
+            </div>
+          </div>
+          <div class="modal-footer">
+              <button class="btn btn-outline" (click)="deleteModal = false" type="button">Cancel</button>
+              <button class="btn btn-primary" (click)="deleteVAC()" type="button">Submit</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+<div *ngIf="deleteModal" class="modal-backdrop" aria-hidden="true"></div>
+
 </div>

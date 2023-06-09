@@ -8,49 +8,26 @@
 </div>
 
 <form class="create-sddc-form" clrStepper [formGroup]="vacForm">
-  <clr-stepper-panel formGroupName="requiredFields">
-    <clr-step-title>{{'Setting.RequiredFields'|translate}}</clr-step-title>
-    <clr-step-description>{{'Setting.inspectionDesc'|translate}}</clr-step-description>
+
+  <clr-stepper-panel formGroupName="vacDataSource">
+    <clr-step-title>{{'Setting.vacDataSource'|translate}}</clr-step-title>
+    <clr-step-description>{{'Setting.vacDataSourceDesc'| translate}}</clr-step-description>
     <clr-step-content *clrIfExpanded>
-      <clr-input-container class="w-230" style="padding-bottom: 10px;">
-        <label>{{'CommonlyUse.name'|translate}}: </label>
-        <input clrInput placeholder="" name="name" formControlName="name"/>
+
+      <clr-input-container class="w-230" >
+        <label>{{'Setting.address' |translate}}: </label>
+        <input data-cy="address" clrInput placeholder="" name="endpoint" formControlName="endpoint"/>
       </clr-input-container>
 
-      <clr-input-container class="w-230" style="padding-bottom: 10px;">
-        <label>{{'VAC.branch'|translate}}: </label>
-        <input clrInput placeholder="" name="branch" formControlName="branch"/>
-      </clr-input-container>
-
-
-      <clr-select-container class="w-230">
-        <label class="w-200">{{'CommonlyUse.version'|translate}}</label>
-        <select clrSelect name="version" formControlName="version">
+      <clr-select-container class="w-230" >
+        <label class="w-200">{{'Setting.cspSecretName'|translate}}</label>
+        <select data-cy="secret" clrSelect name="cspSecretName" formControlName="cspSecretName">
           <option value=""></option>
-          <option *ngFor="let item of versionList" [value]="item">{{item}}</option>
+          <option *ngFor="let item of vacSecretsList" [value]="item.metadata.name">{{item.metadata.name}}</option>
         </select>
       </clr-select-container>
-   
-      <button clrStepButton="next"[disabled]="false" >next</button>
-    </clr-step-content>
-  </clr-stepper-panel>
-
-  <clr-stepper-panel formGroupName="deprecationPolicy">
-    <clr-step-title>{{'VAC.deprecationPolicy'|translate}}</clr-step-title>
-    <clr-step-description>{{'Setting.known_registriesDesc'|translate}}</clr-step-description>
-    <clr-step-content *clrIfExpanded>
-
-      
-      <button clrStepButton="next" [disabled]="false">Next</button>
-    </clr-step-content>
-  </clr-stepper-panel>
-
-  <clr-stepper-panel formGroupName="nonsupportPolicy">
-    <clr-step-title>{{'VAC.nonsupportPolicy'|translate}}</clr-step-title>
-    <clr-step-description>{{'Setting.cacheDesc'| translate}}</clr-step-description>
-    <clr-step-content *clrIfExpanded> 
       <div class="submit-btns">
-        <button class="btn btn-primary" [disabled]="false" type="submit" (click)="harborHandler(text)">{{'CommonlyUse.' + text |translate}}</button>
+        <button data-cy="submit_setting" class="btn btn-primary" [disabled]="vacDataSourceValid" type="submit" (click)="sumbitVac()">{{'CommonlyUse.' + text |translate}}</button>
       </div>
     </clr-step-content>
   </clr-stepper-panel>

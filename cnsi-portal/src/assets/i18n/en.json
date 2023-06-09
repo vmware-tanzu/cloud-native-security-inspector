@@ -51,7 +51,7 @@
       "nav": "Reports",
       "report_view": "Reports",
       "Kube_bench": "Cluster Vulnerability Reports",
-      "image_nspector_reports": "Images Risks Reports",
+      "image_nspector_reports": "Image Risk Reports",
       "risk": "ArkSec Risk Reports",
       "trivy": "Trivy Scanning Reports"
     },
@@ -65,7 +65,7 @@
       "title": "Policy"
     },
     "Setting": {
-      "title": "Setting"
+      "title": "Settings"
     },
     "dataSource": {
       "title": "Data Source"
@@ -84,6 +84,7 @@
     "assessment": "Assessment",
     "format": "Format",
     "generate": "Generate",
+    "generate_time": "Generate At",
     "live_time": "Live Time",
     "managedBy": "ManagedBy",
     "baselines": "Baselines",
@@ -100,8 +101,9 @@
     "cause": "Cause",
     "error_message": "Error Message",
     "pod_list": "Pods List",
-    "releaseTime": "Release Time"
-
+    "releaseTime": "Release Time",
+    "trivy": "Trivy Reports",
+    "vulnerabilities": "vulnerabilities"
   },
   "Risk_view": {
     "numberOfVulnerabilities": "number of vulnerabilities"
@@ -113,16 +115,21 @@
     "misconfiguration_successes": "Misconfiguration Successes",
     "misconfiguration_failures": "Misconfiguration Failures",
     "misconfiguration_exceptions": "Misconfiguration Exceptions",
-    "results_list": "Results List",
+    "results_list": "Result List",
     "os": "OS",
     "image": "Images",
     "result": "Results",
     "severity": "Severity",
-    "misconfigurations": "Misconfigurations"
+    "misconfigurations": "Misconfigurations",
+    "VulnerabilityID": "Vulnerability ID",
+    "fixedVersion": "Fixed Version",
+    "installedVersion": "Installed Version",
+    "primaryURL": "Primary URL",
+    "references": "References"
   },
   "Cluster": {
     "kubernetes_version": "Kubernetes version",
-    "nodes_resource": "Nodes Resource ",
+    "nodes_resource": "Node Resource ",
     "capacity": "Capacity",
     "allocatable": "Allocatable",
     "memory": "Memory",
@@ -135,7 +142,7 @@
   },
   "Policy": {
     "policy": "Policy",
-    "title": "Policy Setting",
+    "title": "Policy Settings",
     "name": "Policy Name",
     "type": "Policy Type",
     "network": "network",
@@ -165,13 +172,13 @@
     "username": "Username",
     "password": "Password",
     "insecure": "Insecure",
-    "namespace": "Namespace Labels Selectors",
+    "namespace": "Namespace Label Selectors",
     "setting": "Assessment Settings",
-    "workload": "Workload Labels Selectors",
+    "workload": "Workload Label Selectors",
     "schedule_settings": "Schedule Settings",
     "key": "key",
     "value": "value",
-    "settingsName": "Settings Name",
+    "settingsName": "Setting Name",
     "enabled": "Enabled Settings",
     "elasticSearchEnabled": "ElasticSearch",
     "elasticSearchAddr": "Address",
@@ -186,7 +193,7 @@
   },
   "Setting": {
     "Settings": "Settings",
-    "settingView": "Setting View",
+    "settingView": "Settings",
     "policy": "Policy Config",
     "harbor": "Harbor Config",
     "cache": "Cache",
@@ -207,20 +214,22 @@
     "setting_name": "Setting Name",
     "provider": "provider",
     "createSecret": "Create Secret",
-    "createSetting": "Create Setting",
+    "createSetting": "Create Settings",
     "addKnown": "Add Known Registry",
     "removeKnown": "Remove Known Registry",
-    "inspectionSetting": "Inspection Setting",
+    "inspectionSetting": "Inspection Settings",
     "inspectionDesc": "Basic configuration items (mandatory)",
-    "InspectionStandard": "Inspection standard Setting",
-    "InspectionStandardDesc": "Inspections baseline criteria and filters conform to selector settings",
-    "InspectionResult": "Inspection Result Setting",
-    "InspectionResultDesc": "Inspection Results and Action Configuration",
+    "InspectionStandard": "Inspection standard Settings",
+    "InspectionStandardDesc": "Inspection baseline criteria and filters conform to selector settings",
+    "InspectionResult": "Inspection Result Settings",
+    "InspectionResultDesc": "Inspection Result and Action Configuration",
     "known_registriesDesc": "Register with other harbors (optional)",
     "cacheDesc": "Cache related configuration (optional)",
     "vacDataSource": "VMware Application Catalog Data Source",
     "vacDataSourceDesc": "VMware Application Catalog Data Source related configuration (optional)",
-    "cspSecretName": "Secret Name"
+    "cspSecretName": "Secret Name",
+    "isDeleteConfiguration": "Are you sure you want to delete this configuration？ ",
+    "isDeleteHarbor": "Are you sure you want to delete this Harbor data source? When deleting it, VAC and Cache will also be deleted."
   },
   "cornJob": {
     "Weekly": "Run once a week at midnight on Sunday morning",
@@ -247,9 +256,10 @@
   "VAC": {
     "branch": "Branch",
     "releasedTime": "Released Time",
-    "vacView": "VMware Application Catalog View",
+    "vacView": "VMware Application Catalog",
     "deprecationPolicy": "Deprecation Policy",
-    "nonsupportpolicy": "Nonsupport Policy"
+    "nonsupportpolicy": "Nonsupport Policy",
+    "mustHarbor": "There must first be a harbor data source available."
   },
   "en": "English",
   "zh_CN": "中文 (简体)"

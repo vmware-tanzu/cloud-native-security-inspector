@@ -4,10 +4,9 @@
  */
 
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
-import { InspectionPolicyType } from 'src/app/service/policy-model-type';
+import { throwError, of } from 'rxjs';
 import { PolicyService } from 'src/app/service/policy.service'
 import { ShardTestModule } from 'src/app/shard/shard/shard.module'
 
@@ -20,7 +19,21 @@ describe('PolicyComponent', () => {
   const vmcServiceStub = {
     getInspectionpolicies() {
       return of({apiVersion: '',
-        items: [],
+        items: [
+          {
+            spec: {
+              inspector: {
+                exportConfig: {
+                  openSearch: {
+                    hostport: '127.0.0.1',
+                    username: 'admin',
+                    password: 'admin'
+                  }
+                }
+              }
+            }
+          }
+        ],
         kind: '',
         metadata: {
           continue: '',
@@ -29,6 +42,16 @@ describe('PolicyComponent', () => {
           selfLink: ''
         }});
     },
+    getInspectionpoliciesError() {
+      return throwError('test')
+    },
+    deletePolicy(deleteName: string) {
+      return of({})
+    },
+    deletePolicyError(deleteName: string) {
+      return throwError(deleteName)
+    }
+
   }
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -50,21 +73,50 @@ describe('PolicyComponent', () => {
 
   describe('functions ', () => {
     it('get inspectionpolicies', () => {
-      // component.modifyPolicy()
-      component.deleteModalHandler('test')
-      component.deletePolicy()
-  
+      component.modifyPolicy()
+      component.deleteModalHandler('test')  
     });
 
     it('get all Inspection Policies', fakeAsync(() => {
-      component.getInspectionpolicies();
       spyOn(policyService, 'getInspectionpolicies').and.returnValue(
         vmcServiceStub.getInspectionpolicies()
       );
       fixture.detectChanges();
       // expect(policyService.getInspectionpolicies).toHaveBeenCalled();
       tick(1500);
+      component.getInspectionpolicies();
+
       expect(policyService.getInspectionpolicies);
+      flush()
+    }));
+
+    it('delete Inspection Policy', fakeAsync(() => {
+      component.deleteName = 'test'
+      spyOn(policyService, 'deletePolicy').and.returnValue(
+        vmcServiceStub.deletePolicy(component.deleteName)
+      );
+      fixture.detectChanges();
+      tick(1500);
+      component.deletePolicy();
+
+      expect(policyService.deletePolicy);
+      flush()
+    }));
+
+    it('return throw policy', fakeAsync(() => {
+      component.deleteName = 'test'
+      spyOn(policyService, 'deletePolicy').and.returnValue(
+        vmcServiceStub.deletePolicyError(component.deleteName)
+      );
+      spyOn(policyService, 'getInspectionpolicies').and.returnValue(
+        vmcServiceStub.getInspectionpoliciesError()
+      );
+      fixture.detectChanges();
+      tick(1500);
+      component.getInspectionpolicies();
+      component.deletePolicy()
+      expect(policyService.getInspectionpolicies)
+      flush()
     }));
   });
 

@@ -31,6 +31,10 @@
 .datagrid::ng-deep .datagrid-cell:nth-of-type(6) {
   margin-left: 0;
 }
+.report-datagrid {
+  height: 600px;
+  overflow: auto;
+}
 .report-datagrid::ng-deep .datagrid-column:nth-of-type(3),
 .report-datagrid::ng-deep .datagrid-cell:nth-of-type(3) {
   flex: none;

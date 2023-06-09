@@ -39,7 +39,8 @@
     "description": "描述",
     "scanInspector": "扫描检查器",
     "typeId": "类型ID",
-    "information": "信息"
+    "information": "信息",
+    "title": "标题"
   },
   "Header": {
     "title": "Cloud Native Security Inspector"
@@ -55,7 +56,7 @@
       "trivy": "Trivy扫描报告"
     },
     "Insight": {
-      "title": "Insight",
+      "title": "数据洞察",
       "cluster": "集群",
       "namespace": "命名空间",
       "workload": "工作负载"
@@ -97,9 +98,12 @@
     "isInit": "是否初始化",
     "failures": "安全扫描未通过",
     "cause": "Cause",
+    "generate_time": "生成时间",
     "error_message": "Error Message",
     "pod_list": "Pods列表",
-    "releaseTime": "发布时间"
+    "releaseTime": "发布时间",
+    "trivy": "Trivy报告",
+    "vulnerabilities": "漏洞"
   },
   "Risk_view": {
     "numberOfVulnerabilities": "漏洞数量"
@@ -110,7 +114,18 @@
     "type": "类型",
     "misconfiguration_successes": "错误配置项成功条数",
     "misconfiguration_failures": "错误配置项失败条数",
-    "misconfiguration_exceptions": "错误配置项例外条数"
+    "misconfiguration_exceptions": "错误配置项例外条数", 
+    "results_list": "结果列表",
+    "os": "OS",
+    "image": "镜像",
+    "result": "结果",
+    "severity": "严重性",
+    "misconfigurations": "错误配置",
+    "VulnerabilityID": "漏洞ID",
+    "fixedVersion": "修复版本",
+    "installedVersion": "安装版本",
+    "primaryURL": "主要网址",
+    "references": "参考"
   },
   "Cluster": {
     "kubernetes_version": "Kubernetes版本",
@@ -156,6 +171,7 @@
     "assessment": "评估",
     "format": "格式",
     "generate": "生成报告",
+    "generate_time": "生成报告时间",
     "live_time": "保留时间(秒)",
     "managedBy": "托管",
     "baselines": "基线 (配置harbor镜像检查器)",
@@ -212,7 +228,9 @@
     "cacheDesc": "缓存相关配置（可选）",
     "vacDataSource": "VMware Application Catalog数据源",
     "vacDataSourceDesc": "VMware Application Catalog Data Source相关配置（可选）",
-    "cspSecretName": "Secret名称"
+    "cspSecretName": "Secret名称",
+    "isDeleteConfiguration": "确定要删除此配置吗？",
+    "isDeleteHarbor": "确定要删除这个Harbor数据源吗？删除它的同时VAC与Cache也会被删除!"
   },
   "cornJob": {
     "Weekly": "每周在周日早上的0点运行一次",
@@ -241,7 +259,8 @@
     "releasedTime": "发布时间",
     "vacView": "VMware Application Catalog详情",
     "deprecationPolicy": "弃用策略",
-    "nonsupportpolicy": "不支持策略"
+    "nonsupportpolicy": "不支持策略",
+    "mustHarbor": "必须先有一个可用的harbor数据源"
   },
   "en": "English",
   "zh_CN": "中文 (简体)"

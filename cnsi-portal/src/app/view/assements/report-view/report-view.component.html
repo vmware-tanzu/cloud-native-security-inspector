@@ -7,9 +7,14 @@
   <h2>
     
     {{'Report_View.title'|translate}}</h2>
+    <div class="echarts-loading" *ngIf="echartsLoading">
+      <span class="spinner spinner-lg">
+        Loading...
+      </span>
+    </div>
     <div id="report-line" style="flex: 1;height:450px; overflow: hidden;"> </div>
 
-  <clr-datagrid style="height: 450px; overflow: auto;" (clrDgRefresh)="pageChange($event)">
+  <clr-datagrid [clrDgLoading]="dgLoading" style="height: 450px; overflow: auto;" (clrDgRefresh)="pageChange($event)">
     <clr-dg-column class="namespace-filter">{{'CommonlyUse.name'|translate}}
       <!-- <cds-icon shape="filter-grid" class="is-solid" (click)="nameFilterFlag = !nameFilterFlag"></cds-icon>
       <div class="filter-warp" *ngIf="nameFilterFlag">
@@ -35,11 +40,11 @@
       <clr-dg-cell>
         <a href="javascript:;" (click)="toReport(report)" >
           <cds-icon style="color: skyblue; cursor: pointer;" shape="pop-out"></cds-icon>
-          {{report._source.docID}}
+          {{report?._source.docID}}
         </a>
       </clr-dg-cell>
-      <clr-dg-cell>{{report._source.namespaceAssessments[0].namespace.name}}</clr-dg-cell>
-      <clr-dg-cell>{{report._source.timeStamp}}</clr-dg-cell>
+      <clr-dg-cell>{{report?._source.namespaceAssessments[0].namespace.name}}</clr-dg-cell>
+      <clr-dg-cell>{{report?._source.timeStamp}}</clr-dg-cell>
     </clr-dg-row>
     <clr-dg-footer>
       <clr-dg-pagination #pagination [clrDgPageInputDisabled]="true" [clrDgPageSize]="defaultSize" [clrDgLastPage]="pageMaxCount">

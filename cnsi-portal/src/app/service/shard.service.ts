@@ -190,23 +190,19 @@ export class ShardService {
   constructor(private http:HttpClient) {
   }
   getNodeList(): Observable<{items: any[]}>{    
-    return this.http.get<{items: any[]}>(this.environment.api.k8s + '/nodes')
-  }
-
-  getNodeStatus(name:string) {
-    return this.http.get(this.environment.api.k8s + `/nodes/${name}/status`)
+    return this.http.get<{items: any[]}>(this.environment.api.k8sPost + '/node')
   }
 
   getNamespaceList() {
-    return this.http.get<{items:NameSpaceSourceModel[]}>(this.environment.api.k8s + '/namespaces')
+    return this.http.get<{items:NameSpaceSourceModel[]}>(this.environment.api.k8sPost + '/namespace')
   }
 
   getApiservice() {
-    return this.http.get(this.environment.api.apiregistration + '/apiservices')
+    return this.http.get(this.environment.api.k8sPost + '/apiservice')
   }
 
   getPodList(): Observable<{items: any[]}>{    
-    return this.http.get<{items: any[]}>(this.environment.api.k8s + '/pods')
+    return this.http.get<{items: any[]}>(this.environment.api.k8sPost + '/pod')
   }
 
 

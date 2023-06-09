@@ -1,0 +1,87 @@
+<div class="policy-page">
+  <div class="sddc-header">
+    <h2 class="sddc-title">Cache</h2>
+  </div>
+</div>
+
+<div class="vac-setting">
+  <div class="alert alert-info" role="alert" *ngIf="settingList.length < 1">
+    <div class="alert-items">
+        <div class="alert-item static">
+            <div class="alert-icon-wrapper">
+                <cds-icon class="alert-icon" shape="info-circle"></cds-icon>
+            </div>
+            <span class="alert-text">{{'VAC.mustHarbor' | translate}}</span>
+        </div>
+    </div>
+  </div>
+  <button *ngIf="settingList.length > 0 && cacheList.length < 1" class="btn btn-primary btn-sm create" routerLink="/modify-cache/create">
+    <cds-icon shape="plus"></cds-icon>
+    {{'CommonlyUse.new'|translate}}</button>
+
+  <clr-datagrid [clrDgLoading]="cacheLoading">
+    <clr-dg-column>{{'Setting.address' |translate}}</clr-dg-column>
+    <clr-dg-column>{{'Setting.livingTime' |translate}}</clr-dg-column>
+    <clr-dg-column>{{'Setting.skipTLSVerify'|translate}}</clr-dg-column>
+    <clr-dg-column>{{'Report_Detail.actions'| translate}}</clr-dg-column>
+
+    <clr-dg-row *clrDgItems="let cache of cacheList; let i =index">
+      <clr-dg-cell>{{cache.address}}</clr-dg-cell>
+      <clr-dg-cell>{{cache.livingTime}}</clr-dg-cell>
+      <clr-dg-cell>{{cache.skipTLSVerify}}</clr-dg-cell>
+      <clr-dg-cell>
+          <div class="icon-button">
+            <cds-icon shape="note" (click)="modifyCache()"></cds-icon>
+            <cds-icon shape="trash" (click)="deleteModalHandler(i)"></cds-icon>
+          </div>
+        </clr-dg-cell>
+    </clr-dg-row>
+
+    <clr-dg-footer>
+      <clr-dg-pagination #pagination [clrDgPageSize]="10">
+          <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Cache per page</clr-dg-page-size>
+      </clr-dg-pagination>
+  </clr-dg-footer>
+</clr-datagrid>
+
+<div class="modal" *ngIf="deleteModal">
+  <div class="modal-dialog" role="dialog" aria-hidden="true">
+      <div class="modal-content">
+          <div class="modal-header">
+              <button aria-label="Close" (click)="deleteModal = false" class="close" type="button">
+                  <cds-icon aria-hidden="true" shape="close"></cds-icon>
+              </button>
+              <h3 class="modal-title">{{'CommonlyUse.delete' | translate}}</h3>
+          </div>
+          <div class="modal-body">
+            {{'Setting.isDeleteConfiguration' | translate}}
+          
+          
+
+              <div class="alert alert-danger" role="alert" *ngIf="messageFlag">
+                <div class="alert-items">
+                    <div class="alert-item static">
+                        <div class="alert-icon-wrapper">
+                            <cds-icon class="alert-icon" shape="info-circle"></cds-icon>
+                        </div>
+                        <span class="alert-text">
+                          {{messageContent}}
+                        </span>
+                    </div>
+                </div>
+                <button type="button" class="close" aria-label="Close">
+                    <cds-icon aria-hidden="true" (click)="messageFlag = false" shape="close"></cds-icon>
+                </button>
+            </div>
+          </div>
+          <div class="modal-footer">
+              <button class="btn btn-outline" (click)="deleteModal = false" type="button">Cancel</button>
+              <button class="btn btn-primary" (click)="deleteCache()" type="button">Submit</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+<div *ngIf="deleteModal" class="modal-backdrop" aria-hidden="true"></div>
+
+</div>

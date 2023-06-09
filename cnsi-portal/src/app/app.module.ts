@@ -48,6 +48,7 @@ import { RiskReportViewComponent } from './view/assements/risk-report-view/risk-
 import { RiskReportDetailComponent } from './view/assements/risk-report-detail/risk-report-detail.component'
 import { VacComponent } from './view/data-source/vac/vac.component';
 import { VacSettingComponent } from './view/data-source/vac/vac-setting/vac-setting.component';
+import { SettingComponent } from './view/setting/setting.component';
 
 import '@cds/core/icon/register.js';
 import { 
@@ -86,11 +87,15 @@ import {
   cpuIcon,
   memoryIcon,
   viewListIcon,
-  importIcon
+  importIcon,
+  noAccessIcon
 } from '@cds/core/icon';
 import { DoshboardComponent } from './view/doshboard/doshboard.component';
 import { TrivyViewComponent } from './view/assements/trivy-view/trivy-view.component';
 import { TrivyViewDetailComponent } from './view/assements/trivy-view-detail/trivy-view-detail.component';
+import { SecretComponent } from './view/setting/secret/secret.component';
+import { CacheComponent } from './view/setting/cache/cache.component';
+import { CacheSettingComponent } from './view/setting/cache/cache-setting/cache-setting.component';
 
 ClarityIcons.addIcons(
   userIcon,
@@ -127,6 +132,7 @@ ClarityIcons.addIcons(
   cpuIcon,
   memoryIcon,
   viewListIcon,
+  noAccessIcon,
   importIcon
 );
 
@@ -170,7 +176,11 @@ ClarityIcons.addIcons(
     VacSettingComponent,
     DoshboardComponent,
     TrivyViewComponent,
-    TrivyViewDetailComponent
+    TrivyViewDetailComponent,
+    SecretComponent,
+    CacheComponent,
+    SettingComponent,
+    CacheSettingComponent
   ],
   imports: [
     BrowserModule,

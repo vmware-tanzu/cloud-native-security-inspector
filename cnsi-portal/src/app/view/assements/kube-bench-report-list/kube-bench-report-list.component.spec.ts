@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { Observable, of } from 'rxjs';
+import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
+import { Observable, of, throwError } from 'rxjs';
 import { AssessmentService } from 'src/app/service/assessment.service';
 import { PolicyService } from 'src/app/service/policy.service';
 import { ShardService } from 'src/app/service/shard.service';
@@ -20,7 +20,7 @@ describe('KubeBenchReportListComponent', () => {
         "items": [
           {
             "metadata": {
-              "name": "sc2-10-186-131-84.eng.vmware.com",
+              "name": 'sc2-10-186-131-84.eng.vmware.com',
             },
           },
           {
@@ -32,7 +32,13 @@ describe('KubeBenchReportListComponent', () => {
             "metadata": {
               "name": "sc2-10-186-142-227.eng.vmware.com",
             },
-          }
+          },
+          {
+            "metadata": {
+              "name": false,
+            },
+          },
+          
         ]
       });
     },
@@ -41,6 +47,13 @@ describe('KubeBenchReportListComponent', () => {
         {"items":[{"spec":{"inspector":{"imagePullPolicy":"IfNotPresent","kubebenchImage":"projects.registry.vmware.com/cnsi/kubebench:0.3"}}}],}
       )
     },
+    getInspectionpoliciesNull: () => {
+      return of ({items: []})
+    },
+    getInspectionpoliciesError: () => {
+      return throwError({error: {}})
+    },
+    
     getPodList() {
       return of({
         "items": [
@@ -112,6 +125,9 @@ describe('KubeBenchReportListComponent', () => {
             ]
         }
     })
+    },
+    getKubeBenchReportError() {
+      throwError({error: {}})
     }
     
   }
@@ -142,6 +158,20 @@ describe('KubeBenchReportListComponent', () => {
 
   describe('functions ', () => {
 
+    it('get null data', fakeAsync(() => {
+      cnsiServiceStub.getInspectionpolicies = () => of({items:[]})
+
+      spyOn(policyService, 'getInspectionpolicies').and.returnValue(
+        cnsiServiceStub.getInspectionpoliciesNull()
+      );
+      fixture.detectChanges();
+      component.getInspectionpolicies()
+      tick(1500);
+      expect(policyService.getInspectionpolicies);
+      flush();
+    }));
+
+
     it('get all data', fakeAsync(() => {
       spyOn(policyService, 'getInspectionpolicies').and.returnValue(
         cnsiServiceStub.getInspectionpolicies()
@@ -160,24 +190,23 @@ describe('KubeBenchReportListComponent', () => {
       );
       
       fixture.detectChanges();
-      // expect(policyService.getInspectionpolicies).toHaveBeenCalled();
 
       component.getNodeList();
       component.getPodList();
       component.getInspectionpolicies()
-      tick(1500);
+      tick(100);
       expect(policyService.getInspectionpolicies);
       expect(shardService.getNodeList)
       expect(shardService.getPodList)
-
+      flush();
     }));
 
-    it('get null data', fakeAsync(() => {
-      cnsiServiceStub.getInspectionpolicies = () => of({items:[]})
+    it('getInspectionpolicies error', fakeAsync(() => {
 
       spyOn(policyService, 'getInspectionpolicies').and.returnValue(
-        cnsiServiceStub.getInspectionpolicies()
+        cnsiServiceStub.getInspectionpoliciesError()
       );
+      
       fixture.detectChanges();
       component.getInspectionpolicies()
       tick(1500);
@@ -185,15 +214,29 @@ describe('KubeBenchReportListComponent', () => {
 
     }));
 
+    it('getKubeBenchReport error', fakeAsync(() => {
+      spyOn(assessmentService, 'getKubeBenchReport').and.returnValue(
+        cnsiServiceStub.getKubeBenchReportError()
+      );
+      
+      fixture.detectChanges();
+      component.opensearchInfo = {url: '', user: '', pswd: ''}
+      component.extractKubeBenchApi({}, () => {})
+      tick(1500);
+      expect(assessmentService.getKubeBenchReport);
+
+    }));
+
     it('init', () => {
       component.init()
     });
 
-    it('init', () => {
+    it('init', fakeAsync(() => {
       localStorage.removeItem('cnsi-open-search')
+      localStorage.removeItem('cnsi-elastic-search')
+      tick(500)
       component.init()
-    });
-
+    }))
 
     it('other', () => {
       component.opensearchInfo = {
@@ -269,6 +312,26 @@ describe('KubeBenchReportListComponent', () => {
         },
         reset: false
       })
+      component.currentNode = ''
+      component.getKubeBenchReportList({
+        arg: {
+          value: "Worker Node Security Configuration",
+          key: "text"
+        },
+        reset: false
+      })
+      component.currentNode = 'tets'
+      component.nodesPodsCorrespondence = [{node: 'tets',pod: 'test'}]
+      component.getKubeBenchReportList({
+        arg: {
+          value: "Worker Node Security Configuration",
+          key: "text"
+        },
+        from: 10,
+        reset: false
+      })
+
+
       component.initKubeBenchReportListCallBack({
         "hits": {
             "total": {
@@ -277,16 +340,42 @@ describe('KubeBenchReportListComponent', () => {
             "hits": []
         }
       }, component)
-
       component.getKubeBenchReportListCallBack({
         "hits": {
             "total": {
                 "value": 2,
             },
-            "hits": []
+            "hits": [
+              {}, {}
+            ]
         }
       }, component)
-    });
+
+      component.getKubeBenchReportListFilter.reset = false
+      component.getKubeBenchReportListQuery = {from: 2, size: 10}
+      component.getKubeBenchReportListCallBack({
+        "hits": {
+            "total": {
+                "value": 2,
+            },
+            "hits": [
+              {}, {}
+            ]
+        }
+      }, component)
+      component.getKubeBenchReportListCallBack({
+        "hits": {
+            "total": {
+                "value": 0,
+            },
+            "hits": [
+              {}, {}
+            ]
+        }
+      }, component)
+      component.drawCharts({hits: {hits:[]}})
+
+      });
   });
 
   it('should create', () => {

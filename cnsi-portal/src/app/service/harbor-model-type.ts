@@ -73,7 +73,8 @@ export interface SecretModel {
     creationTimestamp?: string,
     annotations: any
   },
-  readonly type: 'Opaque'
+  readonly type: 'Opaque',
+  path?: string
 }
 
 export interface SecretModelResponse {

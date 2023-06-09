@@ -5,8 +5,14 @@
     "secure": false,
     "changeOrigin": true,
     "pathRewrite": {
-        "^/proxy": ""
+      "^/proxy": ""
     }
+  },
+  "/k8s-body": {
+    "target": "http://localhost:3800",
+    "logLevel": "debug", 
+    "secure": false,
+    "changeOrigin": true
   },
   "/open": {
     "target": "http://localhost:3800",

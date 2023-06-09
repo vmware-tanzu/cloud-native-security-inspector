@@ -1,33 +1,42 @@
 <div class="card detail-bg">
   <clr-accordion clrAccordionMultiPanel="true" >
-    <clr-accordion-panel [clrAccordionPanelOpen]='true' [hidden]="!(detailInfo && detailInfo.Class === 'config')">
+    <!-- && detailInfo.Class === 'config' -->
+    <clr-accordion-panel [clrAccordionPanelOpen]='true' [hidden]="!(detailInfo)">
       <clr-accordion-title>{{'Trivy_view.misconfigurations'|translate}}</clr-accordion-title>
       <clr-accordion-content [clrIfExpanded]="accordionPanel">
-        <div class="echarts-loading" *ngIf="echartsLoading">
+        <!-- <div class="echarts-loading" *ngIf="echartsLoading">
           <span class="spinner spinner-lg">
             Loading...
           </span>
-        </div>
-        <div id="misconfigurations-bar" style="width: 1200px;height:400px; overflow: hidden;"> </div>
+        </div> -->
+        <!-- <div id="misconfigurations-bar" style="width: 1200px;height:400px; overflow: hidden;"> </div> -->
 
-        <clr-datagrid class="report-datagrid" *ngIf="detailInfo && detailInfo.Misconfigurations">
-          <clr-dg-column [clrDgField]="'uid'">{{'CommonlyUse.type'|translate}}</clr-dg-column>
-          <clr-dg-column [clrDgField]="'uid'">{{'CommonlyUse.title'|translate}}</clr-dg-column>
-          <clr-dg-column [clrDgSortBy]="'namespace'">{{'CommonlyUse.namespace'|translate}}</clr-dg-column>
-          <clr-dg-column [clrDgSortBy]="'createTime'">{{'Trivy_view.severity'|translate}}</clr-dg-column>
-          <clr-dg-column [clrDgSortBy]="'namespace'">{{'CommonlyUse.status'|translate}}</clr-dg-column>
+        <clr-datagrid class="report-datagrid" *ngIf="detailInfo && detailInfo.Vulnerabilities">
+          <clr-dg-column [clrDgField]="'VulnerabilityID'">{{'Trivy_view.VulnerabilityID' | translate}}</clr-dg-column>
+          <clr-dg-column [clrDgField]="'Title'">{{'CommonlyUse.title'|translate}}</clr-dg-column>
+          <clr-dg-column [clrDgSortBy]="'FixedVersion'">{{'Trivy_view.fixedVersion' | translate}}</clr-dg-column>
+          <clr-dg-column [clrDgSortBy]="'InstalledVersion'">{{'Trivy_view.installedVersion' | translate}}</clr-dg-column>
+          <clr-dg-column [clrDgSortBy]="'Severity'">{{'Trivy_view.severity'|translate}}</clr-dg-column>
           <clr-dg-column [clrDgField]="'name'">{{'CommonlyUse.description'|translate}}</clr-dg-column>
-          <clr-dg-column [clrDgField]="'namespace'">Message</clr-dg-column>
+          <clr-dg-column [clrDgField]="'PrimaryURL'">{{'Trivy_view.primaryURL' | translate}}</clr-dg-column>
+          <clr-dg-column >{{'Trivy_view.references' | translate}}</clr-dg-column>
 
-          <clr-dg-row *clrDgItems="let detail of detailInfo.Misconfigurations" [clrDgItem]="detail">
-            <clr-dg-cell>                {{detail.Type}}
+          <clr-dg-row *clrDgItems="let detail of detailInfo.Vulnerabilities" [clrDgItem]="detail">
+            <clr-dg-cell>{{detail.VulnerabilityID}}
              </clr-dg-cell>
             <clr-dg-cell>{{detail.Title}}</clr-dg-cell>
-            <clr-dg-cell>{{detail.Namespace}}</clr-dg-cell>
+            <clr-dg-cell>{{detail.FixedVersion}}</clr-dg-cell>
+            <clr-dg-cell>{{detail.InstalledVersion}}</clr-dg-cell>
             <clr-dg-cell>{{detail.Severity}}</clr-dg-cell>
-            <clr-dg-cell>{{detail.Status}}</clr-dg-cell>
             <clr-dg-cell>{{detail.Description}}</clr-dg-cell>
-            <clr-dg-cell>{{detail.Message}}</clr-dg-cell>
+            <clr-dg-cell>{{detail.PrimaryURL}}</clr-dg-cell>
+            <clr-dg-cell>
+              <ol>
+                <li *ngFor="let item of detail.References">
+                  {{item}}
+                </li>
+              </ol>
+            </clr-dg-cell>
           </clr-dg-row>
 
           <clr-dg-footer>

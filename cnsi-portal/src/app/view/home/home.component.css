@@ -6,3 +6,9 @@
   height: auto;
   min-height: 100vh;
 }
+.main-container app-nav {
+  margin-right: 15px;
+}
+.main-container .router-outlet {
+  width: calc(100% - 275px);
+}

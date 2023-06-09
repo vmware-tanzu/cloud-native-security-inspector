@@ -1,5 +1,9 @@
-<div class="report">
-  <h2>{{'Nav.Assessments.trivy'|translate}}</h2>
+<div class="trivy">
+  <h2>
+    <a class="back" (click)="location.back()">
+      <cds-icon shape="angle"></cds-icon>
+    </a>
+    {{'Nav.Assessments.trivy'|translate}}</h2>
   <!-- <div class="echarts-loading" *ngIf="echartsLoading">
     <span class="spinner spinner-lg">
       Loading...
@@ -8,36 +12,31 @@
   <div id="trivy" style="flex:1;height:450px; overflow: hidden;"> </div> -->
 
   <clr-datagrid style="max-height: 400px; overflow: auto;"  [clrDgLoading]="dgLoading" (clrDgRefresh)="pageChange($event)">
-    <clr-dg-column >{{'Trivy_view.name'|translate}}</clr-dg-column>
+    <clr-dg-column >{{'CommonlyUse.name'|translate}}</clr-dg-column>
     <clr-dg-column >{{'Trivy_view.type'|translate}}</clr-dg-column>
     <clr-dg-column >{{'Trivy_view.os'|translate}}</clr-dg-column>
     <clr-dg-column >{{'Trivy_view.image'|translate}}</clr-dg-column>
-    <clr-dg-column >{{'Trivy_view.result'|translate}}</clr-dg-column>
+    <clr-dg-column >{{'Report_Detail.generate_time'|translate}}</clr-dg-column>
   
     <clr-dg-row *clrDgItems="let trivy of trivyList">
+      
       <clr-dg-cell *ngIf="trivy" >
-        {{trivy.ArtifactName}}
+        {{trivy.Report.ArtifactName}}
 
       </clr-dg-cell>
-      <clr-dg-cell *ngIf="trivy" >{{trivy.ArtifactType}}</clr-dg-cell>
-      <clr-dg-cell *ngIf="trivy" >{{trivy.Metadata.OS.Family}} {{trivy.Metadata.OS.Name}}</clr-dg-cell>
-      <clr-dg-cell *ngIf="trivy" >{{trivy.Metadata.ImageID}}</clr-dg-cell>
-      <clr-dg-cell *ngIf="trivy.Results" >
-        <a style="cursor: pointer;" (click)="showResults(trivy)" href="javascript:;">
-          <cds-icon shape="view-list" style="color: skyblue"></cds-icon>
-          {{trivy.Results.length}}
-        </a>
+      <clr-dg-cell *ngIf="trivy.Report" >{{trivy.Report.ArtifactType}}</clr-dg-cell>
+      <clr-dg-cell *ngIf="trivy.Report" >
+        {{trivy.Report.Metadata.OS.Family}} {{trivy.Report.Metadata.OS.Name}}
       </clr-dg-cell>
-      <clr-dg-cell *ngIf="!trivy.Results" >
-        0
-      </clr-dg-cell>
+      <clr-dg-cell *ngIf="trivy.Report" >{{trivy.Report.Metadata.ImageID}}</clr-dg-cell>
+      <clr-dg-cell *ngIf="trivy" >{{trivy.generated_at}}</clr-dg-cell>
     </clr-dg-row>
   
     <clr-dg-footer>
       <clr-dg-pagination #pagination [clrDgPageSize]="10" [clrDgLastPage]="pageMaxCount">
           <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Reports per page</clr-dg-page-size>
           {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
-          of {{pagination.totalItems}} reports
+          of {{pagination.totalItems}} Reports
       </clr-dg-pagination>
   </clr-dg-footer>
   
@@ -46,12 +45,10 @@
   <div class="results" *ngIf="resultData.length>0">
     <h3>{{resultName}} {{'Trivy_view.results_list' | translate}}</h3>
     <clr-datagrid>
-      <clr-dg-column >{{'Trivy_view.target'|translate}}</clr-dg-column>
-      <clr-dg-column >{{'Trivy_view.class'|translate}}</clr-dg-column>
-      <clr-dg-column >{{'Trivy_view.type'|translate}}</clr-dg-column>
-      <clr-dg-column >{{'Trivy_view.misconfiguration_successes'|translate}}</clr-dg-column>
-      <clr-dg-column >{{'Trivy_view.misconfiguration_failures'|translate}}</clr-dg-column>
-      <clr-dg-column >{{'Trivy_view.misconfiguration_exceptions'|translate}}</clr-dg-column>
+      <clr-dg-column [clrDgSortBy]="'Target'">{{'Trivy_view.target'|translate}}</clr-dg-column>
+      <clr-dg-column [clrDgSortBy]="'Class'">{{'Trivy_view.class'|translate}}</clr-dg-column>
+      <clr-dg-column [clrDgSortBy]="'Type'">{{'Trivy_view.type'|translate}}</clr-dg-column>
+      <clr-dg-column >{{'Report_Detail.vulnerabilities'|translate}}</clr-dg-column>
     
       <clr-dg-row *clrDgItems="let result of resultData">
         <clr-dg-cell >
@@ -59,21 +56,12 @@
         </clr-dg-cell>
         <clr-dg-cell >{{result.Class}}</clr-dg-cell>
         <clr-dg-cell >{{result.Type}}</clr-dg-cell>
-        <clr-dg-cell >
-          <span style="color: hsl(93, 77%, 44%)">
-            {{result.MisconfSummary?.Successes || 0}}
-          </span>
+        <clr-dg-cell *ngIf="result.Vulnerabilities" (click)="showDetail(result)">
+          <cds-icon shape="view-list" style="color: skyblue"></cds-icon>
+          {{result.Vulnerabilities.length}}
         </clr-dg-cell>
-        <clr-dg-cell >
-          <span style="color: hsl(9, 92%, 50%); cursor: pointer;" (click)="showDetail(result)">
-            <cds-icon shape="details"></cds-icon>
-            {{result.MisconfSummary?.Failures || 0}}
-          </span>
-        </clr-dg-cell>
-        <clr-dg-cell >
-          <span style="color: hsl(198, 80%, 46%)">
-            {{result.MisconfSummary?.Exceptions || 0}}
-          </span>
+        <clr-dg-cell *ngIf="!result.Vulnerabilities" >
+          0
         </clr-dg-cell>
       </clr-dg-row>
     
@@ -81,7 +69,7 @@
         <clr-dg-pagination #resultsPagination [clrDgPageSize]="10" [clrDgLastPage]="pageMaxCount">
             <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Results per page</clr-dg-page-size>
             {{resultsPagination.firstItem + 1}} - {{resultsPagination.lastItem + 1}}
-            of {{resultsPagination.totalItems}} reports
+            of {{resultsPagination.totalItems}} Results
         </clr-dg-pagination>
     </clr-dg-footer>
     

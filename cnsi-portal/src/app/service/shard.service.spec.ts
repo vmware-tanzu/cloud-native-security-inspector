@@ -87,7 +87,7 @@ describe('ShardService', () => {
         ]
       }
 
-      const mockUrl = environment.api.k8s + '/namespaces';
+      const mockUrl = environment.api.k8sPost + '/namespace';
       service.getNamespaceList().subscribe(data => {
         expect(data.items.length).toBe(1);
       });
@@ -96,5 +96,9 @@ describe('ShardService', () => {
       expect(req.request.method).toEqual('GET');
       req.flush(mockResponse);
     });
+
+    it('get pods ', () => {
+      service.getPodList()
+    })
   });
 });

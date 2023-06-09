@@ -1,0 +1,12 @@
+.policy-page {
+  padding: 20px;
+}
+.vac-setting {
+  padding: 0 20px;
+}
+.vac-setting clr-datagrid::ng-deep .status-warp span {
+  color: green;
+}
+.vac-setting clr-datagrid::ng-deep .status-warp .status {
+  color: red;
+}

@@ -3,4 +3,27 @@
     SPDX-License-Identifier: Apache-2.0
 -->
 
-<p>login works!</p>
+<div class="login-wrapper">
+    <form class="login" *ngIf="!isLoggedIn" name="form" (ngSubmit)="onSubmit()" novalidate>
+      <section class="title">
+        <h3 class="welcome">Welcome to</h3>
+        Cloud Native Security Inspector
+      </section>
+      <div class="login-group">
+        <clr-input-container>
+          <label class="clr-sr-only">Login</label>
+          <input type="text" class="form-control" name="username" clrInput value=username placeholder="username"
+            [(ngModel)]="form.username" required />
+        </clr-input-container>
+        <clr-password-container>
+          <label class="clr-sr-only">Password</label>
+          <input type="password" class="form-control" name="password" clrPassword value=password placeholder="password"
+            [(ngModel)]="form.password" required />
+        </clr-password-container>
+        <clr-control-error *ngIf="submitted && isLoginFailed" style="color: brown;">{{errorMessage}}</clr-control-error>
+        <div class="login-group">
+          <button type="submit" class="btn btn-primary">Log in</button>
+        </div>
+      </div>
+    </form>
+  </div>

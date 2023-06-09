@@ -17,9 +17,9 @@ export class TrivyViewDetailComponent implements OnInit {
   constructor() { }
   detailList: any[] = []
   ngOnInit(): void { 
-    setTimeout(() => {
-      this.echartsInit()
-    }, 100);
+    // setTimeout(() => {
+    //   this.echartsInit()
+    // }, 100);    
   }
 
   // charts init

@@ -12,6 +12,7 @@
     "connect-history-api-fallback": "^1.6.0",
     "ejs": "^3.1.6",
     "express": "^4.17.2",
+    "express-rate-limit": "^6.7.0",
     "http-proxy-middleware": "^2.0.6",
     "https": "^1.0.0",
     "request": "^2.88.2",

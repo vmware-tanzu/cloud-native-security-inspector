@@ -1,8 +1,18 @@
-.report {
+.trivy {
   position: relative;
-  padding: 15px;
+  box-sizing: border-box;
+  overflow: hidden;
+  height: calc(100vh - 60px);
   h2 {
     color: #fff;
+    .back {
+      cursor: pointer;
+      cds-icon {
+        width: 20px;
+        height: 20px;
+        transform: rotate(-90deg);
+      }
+    }
   }
   .report-detai-bg {
     position: absolute;
@@ -97,5 +107,27 @@ clr-datagrid {
       opacity: 1;
       transition: right 5s, opacity 2s;
     }
+  }
+}
+
+#trivy-box {
+  flex: 1;
+  #trivy-resize {
+    width: 5px;
+    height: 100%;
+    cursor: w-resize;
+    float: left;
+    position: relative;
+    left: 0;
+    background-color: #21333B;
+  }
+  #trivy-right {
+    width: 995px;
+    float: right;
+  }
+  #trivy-left {
+    float: left;
+    width: calc(100% - 1000px);
+    height: 100%;
   }
 }

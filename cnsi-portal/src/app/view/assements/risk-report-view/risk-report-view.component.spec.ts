@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { AssessmentService } from 'src/app/service/assessment.service';
 import { PolicyService } from 'src/app/service/policy.service';
 import { ShardTestModule } from 'src/app/shard/shard/shard.module';
@@ -38,6 +38,9 @@ describe('RiskReportViewComponent', () => {
           }
         }]
       })
+    },
+    getInspectionpoliciesError: () => {
+      return throwError('tets')
     },
     getKubeBenchReport: () => {
       return of({
@@ -109,17 +112,30 @@ describe('RiskReportViewComponent', () => {
 
     }));
 
+    it('getInspectionpoliciesError', fakeAsync(() => {
+      spyOn(policyService, 'getInspectionpolicies').and.returnValue(
+        cnsiServiceStub.getInspectionpoliciesError()
+      );
+      
+      fixture.detectChanges();
+
+      component.getInspectionpolicies();
+      tick(1500);
+      
+      expect(assessmentService.getKubeBenchReport);
+      flush()
+    }));
+
     it('getKubeBenchReport', fakeAsync(() => {
       spyOn(assessmentService, 'getKubeBenchReport').and.returnValue(
         cnsiServiceStub.getKubeBenchReport()
       );
       
       fixture.detectChanges();
-      // expect(policyService.getInspectionpolicies).toHaveBeenCalled();
 
       tick(1500);
-      // expect(assessmentService.getKubeBenchReport);
-
+      expect(assessmentService.getKubeBenchReport);
+      flush()
     }));
 
 
@@ -181,8 +197,8 @@ describe('RiskReportViewComponent', () => {
         dataSourceHandle: () => {}
       } as any
       component.showDetail({})
-      component.hideDetai({target: {classList: ['report-detai-bg']}})
-
+      component.hideDetai({target: {classList: ['risk-report-detai-bg', 'risk-report-detai-left']}})
+      component.createTimeSort()
       component.pagination = {
         page: {
           change: 1
@@ -202,7 +218,20 @@ describe('RiskReportViewComponent', () => {
           }]
         }
       }, component, {size: 10})
-
+      component.createTimeSort()
+      component.createTimeSortCallBack({hits: {hits: [
+        {
+          _source: {
+            ReportDetail: [{
+              Detail: ['test']
+            }]
+          }
+        }
+      ]}}, component)
+      component.testMousedown({clientX: 777})
+      component.testMousemove({clientX: 777})
+      component.testMouseup({clientX: 777})
+  
     });
   })
 

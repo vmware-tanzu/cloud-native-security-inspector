@@ -8,15 +8,11 @@
     <cds-icon clrVerticalNavIcon shape="file-settings" ></cds-icon>
     <b>Doshboard</b>
   </a> -->
-  <a clrVerticalNavLink [routerLink]="['/data-source/harbor']" routerLinkActive='active'>
+  <!-- <a clrVerticalNavLink [routerLink]="['/data-source/harbor']" routerLinkActive='active'>
     <cds-icon clrVerticalNavIcon shape="cog" ></cds-icon>
     <b>{{'Nav.Setting.title'| translate}}</b>
-  </a>
-  <a clrVerticalNavLink [routerLink]="['/policy']" routerLinkActive='active'>
-    <cds-icon clrVerticalNavIcon shape="file-settings" ></cds-icon>
-    <b>{{'Nav.Policy.title'| translate}}</b>
-  </a>
-  <!-- <clr-vertical-nav-group
+  </a> -->
+  <clr-vertical-nav-group
   routerLinkActive="active">
 <cds-icon shape="cog" clrVerticalNavIcon></cds-icon>
 <b>{{'Nav.dataSource.title'| translate}}</b>
@@ -32,7 +28,12 @@
     VAC
   </a>
 </clr-vertical-nav-group-children>
-</clr-vertical-nav-group> -->
+
+</clr-vertical-nav-group>
+  <a clrVerticalNavLink [routerLink]="['/policy']" routerLinkActive='active'>
+    <cds-icon clrVerticalNavIcon shape="file-settings" ></cds-icon>
+    <b>{{'Nav.Policy.title'| translate}}</b>
+  </a>
   <clr-vertical-nav-group
           routerLinkActive="active">
       <cds-icon shape="line-chart" clrVerticalNavIcon></cds-icon>
@@ -93,7 +94,23 @@
           </a>
       </clr-vertical-nav-group-children>
   </clr-vertical-nav-group>
-
+  <clr-vertical-nav-group
+  routerLinkActive="active">
+<cds-icon shape="cog" clrVerticalNavIcon></cds-icon>
+<b>{{'Nav.Setting.title'| translate}}</b>
+<clr-vertical-nav-group-children>
+  <a clrVerticalNavLink
+     routerLink="/setting/secret"
+     routerLinkActive="active">
+     Secret
+  </a>
+  <a clrVerticalNavLink
+     routerLink="/setting/cache"
+     routerLinkActive="active">
+    Cache
+  </a>
+</clr-vertical-nav-group-children>
+</clr-vertical-nav-group>
 
 
 </clr-vertical-nav>

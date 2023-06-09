@@ -61,9 +61,9 @@ export class NamesapcePolarComponent implements OnInit {
   }
 
   getSeries (normal=0, abnormal=0):any {
-  this.normal = normal
-  this.abnormal = abnormal
-  this.newReport()    
+    this.normal = normal
+    this.abnormal = abnormal
+    this.newReport()    
   }
 
   chartInit() {

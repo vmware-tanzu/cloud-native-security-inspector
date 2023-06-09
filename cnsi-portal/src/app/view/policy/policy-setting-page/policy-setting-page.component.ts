@@ -31,17 +31,16 @@ export class PolicySettingPageComponent implements OnInit {
   imageList = [
     {
       name: 'inspector',
-      url: 'projects.registry.vmware.com/cnsi/inspector:0.3.2'
+      url: 'projects.registry.vmware.com/cnsi/inspector:0.4.0'
     },
     {
       name: 'kubebench',
-      url: 'projects.registry.vmware.com/cnsi/kubebench:0.3.2'
+      url: 'projects.registry.vmware.com/cnsi/kubebench:0.4.0'
     },
     {
       name: 'risk',
-      url: 'projects.registry.vmware.com/cnsi/risk:0.3.2'
+      url: 'projects.registry.vmware.com/cnsi/risk:0.4.0'
     }
-    
   ]
   public actions = [
     {
@@ -199,14 +198,11 @@ export class PolicySettingPageComponent implements OnInit {
           value: ''
         })
         break
-      case 'workloadlabels':
+      default:
         this.workloadlabels.push({
           key: '',
           value: ''
         })
-        break
-  
-      default:
         break;
     }
 
@@ -223,11 +219,8 @@ export class PolicySettingPageComponent implements OnInit {
       case 'namespacelabels':
         this.namespacelabels.splice(index, 1)
         break
-      case 'workloadlabels':
-        this.workloadlabels.splice(index, 1)
-        break
-          
       default:
+        this.workloadlabels.splice(index, 1)
         break;
     }
   }
@@ -246,35 +239,17 @@ export class PolicySettingPageComponent implements OnInit {
           this.policyForm.get('inspectionSetting')?.get('suspend')?.setValue(policyList[0].spec.strategy.suspend)
           this.policyForm.get('inspectionSetting')?.get('concurrencyRule')?.setValue(policyList[0].spec.strategy.concurrencyRule)
 
-          if (policyList[0].spec.inspector.image && policyList[0].spec.inspector.kubebenchImage) {
-            if (policyList[0].spec.inspector.riskImage) {
-              this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['inspector', 'kubebench', 'risk'])
-            } else {
-              this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['inspector', 'kubebench'])
-            }
-          } else {
-            if (policyList[0].spec.inspector.image) {
-              if (policyList[0].spec.inspector.riskImage) {
-                this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['inspector', 'risk'])
-              } else {
-                this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['inspector'])
-              }
-            } else if (policyList[0].spec.inspector.kubebenchImage) {
-              if (policyList[0].spec.inspector.riskImage) {
-                this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['kubebench', 'risk'])
-              } else {
-                this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['kubebench'])
-              }
-            } else if (policyList[0].spec.inspector.riskImage) {
-              if (policyList[0].spec.inspector.image) {
-                this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['inspector', 'risk'])
-              } else if (policyList[0].spec.inspector.kubebenchImage){
-                this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['kubebench', 'risk'])
-              } else {
-                this.policyForm.get('inspectionSetting')?.get('image')?.setValue(['risk'])
-              }
-            }
+          const imagesList = []
+          if (policyList[0].spec.inspector.image) {
+            imagesList.push('inspector')
           }
+          if (policyList[0].spec.inspector.kubebenchImage) {
+            imagesList.push('kubebench')
+          }
+          if (policyList[0].spec.inspector.riskImage) {
+            imagesList.push('risk')
+          }
+          this.policyForm.get('inspectionSetting')?.get('image')?.setValue(imagesList)
 
           this.policyForm.get('inspectionSetting')?.get('imagePullPolicy')?.setValue(policyList[0].spec.inspector.imagePullPolicy)
           this.policyForm.get('inspectionSetting')?.get('settingsName')?.setValue(policyList[0].spec.settingsName)
@@ -344,7 +319,7 @@ export class PolicySettingPageComponent implements OnInit {
           this.policyForm.get('inspectionSetting')?.get('historyLimit')?.setValue(5)
           this.policyForm.get('inspectionSetting')?.get('suspend')?.setValue(false)
           this.policyForm.get('inspectionSetting')?.get('concurrencyRule')?.setValue('Forbid')
-          this.policyForm.get('inspectionSetting')?.get('image')?.setValue('projects.registry.vmware.com/cnsi/inspector:0.3.2')
+          this.policyForm.get('inspectionSetting')?.get('image')?.setValue('projects.registry.vmware.com/cnsi/inspector:0.4.0')
           this.policyForm.get('inspectionSetting')?.get('imagePullPolicy')?.setValue('IfNotPresent')
           this.policyForm.get('inspectionSetting')?.get('settingsName')?.setValue('')
           this.policyForm.get('inspectionResult')?.get('actions')?.setValue(true)
@@ -384,62 +359,42 @@ export class PolicySettingPageComponent implements OnInit {
   }
   createPolicy () {   
     this.checkES = ''
-    let data:any = {}
     const imagesList = this.policyForm.get('inspectionSetting')?.get('image')?.value
-    data = {
-      apiVersion: "goharbor.goharbor.io/v1alpha1",
-      kind: "InspectionPolicy",
-      metadata: {
-        name: this.policyForm.get('inspectionSetting')?.get('name')?.value,
+
+    const data :any = {
+      name: this.policyForm.get('inspectionSetting')?.get('name')?.value,
+      enabled: this.enabledSettings,
+      settingsName: this.policyForm.get('inspectionSetting')?.get('settingsName')?.value,
+      workNamespace: this.policyForm.get('inspectionSetting')?.get('namespace')?.value,
+      schedule: this.schedule,
+      strategy_concurrencyRule: this.policyForm.get('inspectionSetting')?.get('concurrencyRule')?.value,
+      strategy_historyLimit: +this.policyForm.get('inspectionSetting')?.get('historyLimit')?.value,
+      strategy_suspend: this.policyForm.get('inspectionSetting')?.get('suspend')?.value,
+      inspector_imagePullPolicy: this.policyForm.get('inspectionSetting')?.get('imagePullPolicy')?.value,
+      inspector_openSearch_hostport: this.policyForm.get('inspectionSetting')?.get('openSearchAddrHeader')?.value + this.policyForm.get('inspectionSetting')?.get('openSearchAddr')?.value,
+      inspector_openSearch_username: this.policyForm.get('inspectionSetting')?.get('openSearchUser')?.value,
+      inspector_openSearch_password: this.policyForm.get('inspectionSetting')?.get('openSearchPasswd')?.value,
+      inspection_baselines: this.baselines,
+      inspection_namespaceSelector: {
+        matchLabels: {}
       },
-      spec: {
-        enabled: this.enabledSettings,
-        settingsName: this.policyForm.get('inspectionSetting')?.get('settingsName')?.value,
-        workNamespace: this.policyForm.get('inspectionSetting')?.get('namespace')?.value,
-        schedule: this.schedule,
-        strategy: {
-          concurrencyRule: this.policyForm.get('inspectionSetting')?.get('concurrencyRule')?.value,
-          historyLimit: +this.policyForm.get('inspectionSetting')?.get('historyLimit')?.value,
-          suspend: this.policyForm.get('inspectionSetting')?.get('suspend')?.value
-        },
-        inspector: {
-          imagePullPolicy: this.policyForm.get('inspectionSetting')?.get('imagePullPolicy')?.value,
-          imagePullSecrets: [],
-          exportConfig: {
-            openSearch: {
-              hostport: this.policyForm.get('inspectionSetting')?.get('openSearchAddrHeader')?.value + this.policyForm.get('inspectionSetting')?.get('openSearchAddr')?.value,
-              username: this.policyForm.get('inspectionSetting')?.get('openSearchUser')?.value,
-              password: this.policyForm.get('inspectionSetting')?.get('openSearchPasswd')?.value,
-              checkCert: false,
-              mutualTLS: false
-            }
-          }
-        },
-        inspection: {
-          baselines: this.baselines,
-          namespaceSelector: {
-            matchExpressions: [],
-            matchLabels: {}
-          },
-          workloadSelector: {
-            matchExpressions: [],
-            matchLabels: {}
-          }
-        },
-        vacAssessmentEnabled: this.policyForm.get('inspectionSetting')?.get('vacAssessmentEnabled')?.value
-      }
+      inspection_workloadSelector: {
+        matchLabels: {}
+      },
+      vacAssessmentEnabled: this.policyForm.get('inspectionSetting')?.get('vacAssessmentEnabled')?.value
     }
+
     imagesList.forEach((image: any) => {
       if (image === 'inspector') {
-        data.spec.inspector.image = this.imageList[0].url
+        data.inspector_image = this.imageList[0].url
       } else if (image === 'kubebench') {
-        data.spec.inspector.kubebenchImage = this.imageList[1].url
+        data.inspector_kubebenchImage = this.imageList[1].url
       } else if (image === 'risk') {
-        data.spec.inspector.riskImage= this.imageList[2].url
+        data.inspector_riskImage= this.imageList[2].url
       }
     });
     if(this.policyForm.get('inspectionResult')?.get('actions')?.value){
-      data.spec.inspection.actions = [
+      data.inspection_actions = [
         {
           ignore: {
             matchExpressions: [],
@@ -453,12 +408,12 @@ export class PolicySettingPageComponent implements OnInit {
 
     if (this.namespacelabels.length > 0) {
       this.namespacelabels.forEach(el => {
-        data.spec.inspection.namespaceSelector.matchLabels[el.key] = el.value
+        data.inspection_namespaceSelector.matchLabels[el.key] = el.value
       })
     }
     if (this.workloadlabels.length > 0) {
       this.workloadlabels.forEach(el => {
-        data.spec.inspection.workloadSelector.matchLabels[el.key] = el.value
+        data.inspection_workloadSelector.matchLabels[el.key] = el.value
       })
     }    
 

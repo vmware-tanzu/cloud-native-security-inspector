@@ -42,7 +42,7 @@
           <clr-dg-column >Namespace</clr-dg-column>
           <clr-dg-column >Kind</clr-dg-column>
           <clr-dg-column >Passed</clr-dg-column>
-          <clr-dg-column >{{'Kube_bench_list.trusted'|translate}}</clr-dg-column>
+          <clr-dg-column  *ngIf="showTrustedColumn">{{'Kube_bench_list.trusted'|translate}}</clr-dg-column>
 
           <clr-dg-row *clrDgItems="let wd of shardService.currentReport?.workloadAssessments" [clrDgItem]="wd">
             <clr-dg-cell>
@@ -60,7 +60,7 @@
             </clr-dg-cell>
             <clr-dg-cell>{{wd.workload.metadata.kind}}</clr-dg-cell>
             <clr-dg-cell>{{wd.passed}}</clr-dg-cell>
-            <clr-dg-cell>
+            <clr-dg-cell *ngIf="showTrustedColumn">
               <cds-icon *ngIf="wd.trusted" style="color: hsl(93, 79%, 40%);" shape="check-circle" solid></cds-icon>
               <cds-icon *ngIf="!wd.trusted" style="color: hsl(9, 92%, 50%);"  shape="times"></cds-icon>
               {{wd.trusted}}</clr-dg-cell>
@@ -92,8 +92,9 @@
               <clr-dg-column [clrDgField]="'container.name'">Name</clr-dg-column>
               <clr-dg-column >Image</clr-dg-column>
               <clr-dg-column >{{'Report_Detail.isInit'|translate}}</clr-dg-column>
-              <clr-dg-column >{{'Kube_bench_list.trusted'|translate}}</clr-dg-column>
-              <clr-dg-column >{{'CommonlyUse.status'|translate}}</clr-dg-column>
+              <clr-dg-column >{{'Report_Detail.trivy'|translate}}</clr-dg-column>
+              <clr-dg-column *ngIf="showTrustedColumn">{{'Kube_bench_list.trusted'|translate}}</clr-dg-column>
+              <clr-dg-column *ngIf="showTrustedColumn">{{'CommonlyUse.status'|translate}}</clr-dg-column>
     
               <clr-dg-row *clrDgItems="let cn of pod.containers" [clrDgItem]="cn">
                 <clr-dg-cell>
@@ -105,6 +106,12 @@
                 </clr-dg-cell>
                 <clr-dg-cell>{{cn.isInit}}</clr-dg-cell>
                 <clr-dg-cell>
+                  <a *ngIf="cn.trivyReport" (click)="toTrivyReport(cn.trivyReport)">
+                    <cds-icon  shape="view-list" style="color: skyblue"></cds-icon>
+                  </a>
+                  <cds-icon *ngIf="!cn.trivyReport" shape="no-access"></cds-icon>
+                </clr-dg-cell>
+                <clr-dg-cell *ngIf="showTrustedColumn">
                   <span>
                     <cds-icon *ngIf="cn.vacAssessment?.trusted" style="color: hsl(93, 79%, 40%);" shape="check-circle" solid></cds-icon>
                     <cds-icon *ngIf="!cn.vacAssessment?.trusted" style="color: hsl(9, 92%, 50%);"  shape="times"></cds-icon>
@@ -112,14 +119,14 @@
                   </span>
                 </clr-dg-cell>
 
-                <clr-dg-cell>
-                  <cds-icon *ngIf="cn.vacAssessment.status==='ACTIVE'" style="color: hsl(93, 79%, 40%);" shape="check-circle" solid></cds-icon>
-                  <cds-icon *ngIf="cn.vacAssessment.status==='DEPRECATED' || cn.vacAssessment.status==='NON_SUPPORTED'" style="color: hsl(9, 92%, 50%);"  shape="times"></cds-icon>
-                  <cds-icon *ngIf="cn.vacAssessment.status==='SCHEDULED_DEPRECATION' || cn.vacAssessment.status==='DEPRECATION_GRACE_PERIOD'" style="color: #F28B02;"  shape="exclamation-triangle" solid></cds-icon>
-                  <span [class]="{active: cn.vacAssessment.status==='ACTIVE', 
-                    deprecated: cn.vacAssessment.status==='DEPRECATED' || cn.vacAssessment.status==='NON_SUPPORTED',
-                    scheduled: cn.vacAssessment.status==='SCHEDULED_DEPRECATION' || cn.vacAssessment.status==='DEPRECATION_GRACE_PERIOD'
-                    }">{{cn.vacAssessment.status}}</span>
+                <clr-dg-cell *ngIf="showTrustedColumn">
+                  <cds-icon *ngIf="cn.vacAssessment?.status==='ACTIVE'" style="color: hsl(93, 79%, 40%);" shape="check-circle" solid></cds-icon>
+                  <cds-icon *ngIf="cn.vacAssessment?.status==='DEPRECATED' || cn.vacAssessment?.status==='NON_SUPPORTED'" style="color: hsl(9, 92%, 50%);"  shape="times"></cds-icon>
+                  <cds-icon *ngIf="cn.vacAssessment?.status==='SCHEDULED_DEPRECATION' || cn.vacAssessment?.status==='DEPRECATION_GRACE_PERIOD'" style="color: #F28B02;"  shape="exclamation-triangle" solid></cds-icon>
+                  <span [class]="{active: cn.vacAssessment?.status==='ACTIVE', 
+                    deprecated: cn.vacAssessment?.status==='DEPRECATED' || cn.vacAssessment?.status==='NON_SUPPORTED',
+                    scheduled: cn.vacAssessment?.status==='SCHEDULED_DEPRECATION' || cn.vacAssessment?.status==='DEPRECATION_GRACE_PERIOD'
+                    }">{{cn.vacAssessment?.status}}</span>
                 </clr-dg-cell>
 
               </clr-dg-row>
@@ -131,80 +138,80 @@
                 </clr-dg-pagination>
             </clr-dg-footer>
             </clr-datagrid>
-            <div class="vac-container"  *ngIf="currentContainer && currentContainer.vacAssessment.trusted">
+            <div class="vac-container"  *ngIf="currentContainer && currentContainer.vacAssessment?.trusted">
               <h4> VMware Application Catalog Summary</h4>
               <div class="card">
                 <ul class="list">
                   <li>
                     <b>Trusted:</b>  <span>
-                      <cds-icon *ngIf="currentContainer.vacAssessment.trusted" style="color: hsl(93, 79%, 40%);" shape="check-circle" solid></cds-icon>
-                      <cds-icon *ngIf="!currentContainer.vacAssessment.trusted" style="color: hsl(9, 92%, 50%);"  shape="times"></cds-icon>
-                      {{currentContainer.vacAssessment.trusted}}
+                      <cds-icon *ngIf="currentContainer.vacAssessment?.trusted" style="color: hsl(93, 79%, 40%);" shape="check-circle" solid></cds-icon>
+                      <cds-icon *ngIf="!currentContainer.vacAssessment?.trusted" style="color: hsl(9, 92%, 50%);"  shape="times"></cds-icon>
+                      {{currentContainer.vacAssessment?.trusted}}
                     </span>
                   </li>
                   <li>
-                    <b>Name: </b> <span>{{currentContainer.vacAssessment.name}}</span>
+                    <b>Name: </b> <span>{{currentContainer.vacAssessment?.name}}</span>
                   </li>
                   <li>
-                    <b>Branch: </b> <span>{{currentContainer.vacAssessment.branch}}</span>
+                    <b>Branch: </b> <span>{{currentContainer.vacAssessment?.branch}}</span>
                   </li>
                   <li>
-                    <b>Version: </b> <span>{{currentContainer.vacAssessment.version}}</span>
+                    <b>Version: </b> <span>{{currentContainer.vacAssessment?.version}}</span>
                   </li>
                   <li>
-                    <b>Revision:</b> <span>{{currentContainer.vacAssessment.revision}}</span>
+                    <b>Revision:</b> <span>{{currentContainer.vacAssessment?.revision}}</span>
                   </li>
                   <li>
-                    <b>Release Time:</b> <span>{{currentContainer.vacAssessment.releasedAt  | date: 'medium'}}</span>
+                    <b>Release Time:</b> <span>{{currentContainer.vacAssessment?.releasedAt  | date: 'medium'}}</span>
                   </li>
                   <li>
-                    <b>Last Version Released:</b> <span>{{currentContainer.vacAssessment.lastVersionReleased}}</span>
+                    <b>Last Version Released:</b> <span>{{currentContainer.vacAssessment?.lastVersionReleased}}</span>
                   </li>
                   <li>
-                    <b>Status:</b>  <span [class]="{active: currentContainer.vacAssessment.status==='ACTIVE', 
-                    deprecated: currentContainer.vacAssessment.status==='DEPRECATED' || currentContainer.vacAssessment.status==='NON_SUPPORTED',
-                    scheduled: currentContainer.vacAssessment.status==='SCHEDULED_DEPRECATION' || currentContainer.vacAssessment.status==='DEPRECATION_GRACE_PERIOD'
-                    }">{{currentContainer.vacAssessment.status}}</span>
+                    <b>Status:</b>  <span [class]="{active: currentContainer.vacAssessment?.status==='ACTIVE', 
+                    deprecated: currentContainer.vacAssessment?.status==='DEPRECATED' || currentContainer.vacAssessment?.status==='NON_SUPPORTED',
+                    scheduled: currentContainer.vacAssessment?.status==='SCHEDULED_DEPRECATION' || currentContainer.vacAssessment?.status==='DEPRECATION_GRACE_PERIOD'
+                    }">{{currentContainer.vacAssessment?.status}}</span>
                   </li>
-                  <li *ngIf="currentContainer.vacAssessment.newerBranchesAvailable">
+                  <li *ngIf="currentContainer.vacAssessment?.newerBranchesAvailable">
                     <b>Newer available branches:</b>
-                    <label class="label" *ngFor="let item of currentContainer.vacAssessment.newerBranchesAvailable">{{item}}</label>
+                    <label class="label" *ngFor="let item of currentContainer.vacAssessment?.newerBranchesAvailable">{{item}}</label>
                   </li>
                 </ul>
 
                 <div class="vac-policy">
 
-                  <div class="card" *ngIf="currentContainer.vacAssessment.deprecationPolicy">
+                  <div class="card" *ngIf="currentContainer.vacAssessment?.deprecationPolicy">
                       <h3 class="card-header">Deprecation Policy</h3>
                       <div class="card-block" >
                           <div class="card-text">
                             <ul class="list">
                               <li>
-                                <b>Deprecation Date: </b><span>{{currentContainer.vacAssessment.deprecationPolicy.deprecation_date | date}}</span>
+                                <b>Deprecation Date: </b><span>{{currentContainer.vacAssessment?.deprecationPolicy.deprecation_date | date}}</span>
                               </li>
                               <li>
-                                <b>Grace Period Days: </b><span>{{currentContainer.vacAssessment.deprecationPolicy.gracePeriodDays}}</span>
+                                <b>Grace Period Days: </b><span>{{currentContainer.vacAssessment?.deprecationPolicy.gracePeriodDays}}</span>
                               </li>
                               <li>
-                                <b>Reason: </b><span>{{currentContainer.vacAssessment.deprecationPolicy.reason}}</span>
+                                <b>Reason: </b><span>{{currentContainer.vacAssessment?.deprecationPolicy.reason}}</span>
                               </li>
                               <li>
-                                <b>Alternative: </b><span>{{currentContainer.vacAssessment.deprecationPolicy.alternative}}</span>
+                                <b>Alternative: </b><span>{{currentContainer.vacAssessment?.deprecationPolicy.alternative}}</span>
                               </li>
                             </ul>
                           </div>
                       </div>
                   </div>
-                  <div class="card"  *ngIf="currentContainer.vacAssessment.nonSupportPolicy">
+                  <div class="card"  *ngIf="currentContainer.vacAssessment?.nonSupportPolicy">
                       <h3 class="card-header">Nonsupport Policy</h3>
                       <div class="card-block">
                           <div class="card-text">
                             <ul class="list">
                               <li>
-                                <b>Name: </b><span>{{currentContainer.vacAssessment.nonSupportPolicy.name }}</span>
+                                <b>Name: </b><span>{{currentContainer.vacAssessment?.nonSupportPolicy.name }}</span>
                               </li>
                               <li>
-                                <b>Reason: </b><span>{{currentContainer.vacAssessment.nonSupportPolicy.reason}}</span>
+                                <b>Reason: </b><span>{{currentContainer.vacAssessment?.nonSupportPolicy.reason}}</span>
                               </li>
                             </ul>
                           </div>

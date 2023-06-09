@@ -30,6 +30,12 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
   riskList: any[] = []
   riskCallBackReset = true
   isOder = true
+
+  // unit test arg
+  testMousedown:any = (e: any) => {}
+  testMousemove:any = (e: any) => {}
+  testMouseup:any = (e: any) => {}
+  
   constructor(
     private assessmentService: AssessmentService,
     private policyService: PolicyService
@@ -42,10 +48,10 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
     var right: any = document.getElementById("risk-right");
     var box: any = document.getElementById("risk-box");
     console.log('init');
-    resize.onmousedown = function (e: any) {
+    this.testMousedown = resize.onmousedown = function (e: any) {
         var startX = e.clientX;          
         resize.left = resizeLeft;          
-          document.onmousemove = function (e) {
+        this.testMousemove = document.onmousemove = function (e) {
             var endX = e.clientX;
             
             var moveLen = resize.left + (startX - endX);
@@ -58,7 +64,7 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
             right.style.width = moveLen + "px";
             left.style.width = (box.clientWidth - moveLen - 5) + "px";
         }
-        document.onmouseup = function (evt) {
+        this.testMouseup= document.onmouseup = function (evt) {
             document.onmousemove = null;
             document.onmouseup = null;
             resize.releaseCapture && resize.releaseCapture();

@@ -1,0 +1,149 @@
+.sddc-title {
+  .angle-top {
+    transform: rotate(-90deg);
+    width: 20px;
+    height: 20px;
+    color: #fff;
+    margin-left: 15px;
+  }
+}
+.create-sddc-form {
+  &::ng-deep {
+    .btn{
+      &.create {
+        margin: 20px 10px;
+      }
+    }
+    .status {
+      color: #fff;
+      font-weight: 600;
+      margin-top: 20px;
+      label {
+        display: inline-block;
+        width: 200px;
+      }
+      span {
+        &.healthy {
+          color: green;
+        }
+        &.unhealthy {
+          color: red;
+        }
+      }
+    }
+    ul {
+      li {
+          button {
+          &.active {
+            color: #fff;
+          }
+        }
+      }
+    }
+    .schedule {
+      display: flex;
+      align-items: center;
+      color: #fff;
+      h4 {
+        width: 200px;
+        font-size: .65rem;
+        font-weight: bold;
+        color: #fff;
+      }
+      div {
+        margin-top: 24px;
+      }
+      span {
+        display: inline-block;
+        border-bottom: 1px solid #fff;
+        margin-right: 20px;
+        width: 182px;
+      }
+      button {
+        border-color: #666;
+        width: 30px;
+        height: 30px;
+        cds-icon {
+          position: relative;
+          top: -3px;
+          left: -5px;
+        }
+      }
+    }
+    .endpoint-container {
+      display: flex;
+      align-items: center;
+      margin-top: 24px;
+      .clr-form-control {
+        margin-top: 0;
+      }
+      label {
+        width: 200px;
+        color: #fff;
+        font-weight: 600;
+        font-size: .65rem;
+      }
+      clr-select-container {
+        margin-right: 10px;
+      }
+    }
+    .submit-btns {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 50px;
+    }
+    .actions {
+      margin-left: 0;
+      h4 {
+        margin: none;
+      }
+    }
+    .clr-accordion-panel-inactive {
+      .clr-accordion-content {
+       
+        .clr-form-control {
+          label {
+            color: #fff;
+          }
+          input {
+            color: #fff;
+          }
+        }
+      }
+    }
+    .clr-accordion-header {
+     
+      .clr-accordion-title {
+        color: #fff;
+      }
+      .clr-accordion-angle {
+        color: #fff;
+      }
+    }
+    .clr-form-control {
+      flex-direction: row;
+      .clr-control-label {
+        width: 200px !important;
+      }
+    }
+    .icon-button {
+      cds-icon {
+        color: #fff;
+        margin-right: 15px;
+        cursor: pointer;
+        &:hover {
+          color: hsl(198, 80%, 46%);
+        }
+      }
+    }
+    .w-230 {
+      .clr-control-container {
+        .clr-input-wrapper,.clr-select-wrapper {
+          input,select {
+            width: 230px;
+          }
+        }
+      }
+    }
+  }
+}
