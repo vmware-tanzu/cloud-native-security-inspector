@@ -6,7 +6,7 @@ KUBECTLCMD=$(shell which kubectl)
 SWAGGER := $(DOCKERCMD) run --rm -it -v $(HOME):$(HOME) -w $(shell pwd) quay.io/goswagger/swagger
 
 REGISTRY ?= projects.registry.vmware.com/cnsi
-IMG_TAG = 0.3.2
+IMG_TAG = 0.4.0
 # Image URL to use all building/pushing image targets
 IMG_MANAGER ?= $(REGISTRY)/manager:$(IMG_TAG)
 IMG_EXPORTER ?= $(REGISTRY)/exporter:$(IMG_TAG)
@@ -96,9 +96,12 @@ build-risk: generate fmt vet ## Build risk binary.
 build-workloadscanner: generate fmt vet ## Build workloadscanner binary.
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/workloadscanner cnsi-inspector/cmd/workload-scanner/main.go
 
+build-trivy: generate fmt vet ## Build trivy binary.
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/trivy cnsi-scanner-trivy/cmd/scanner-trivy/main.go
+
 ##@ Build OCI images
 
-docker-build-backend: docker-build-manager docker-build-exporter docker-build-inspector docker-build-kubebench docker-build-risk docker-build-workloadscanner
+docker-build-backend: docker-build-manager docker-build-exporter docker-build-inspector docker-build-kubebench docker-build-risk docker-build-workloadscanner docker-build-scanner-trivy
 
 docker-build-all: docker-build-backend docker-build-portal
 
@@ -198,3 +201,4 @@ gen-harbor-api:
 
 run: manifests generate fmt vet ## Run a controller from your host.
 	go run cnsi-manager/cmd/main.go
+

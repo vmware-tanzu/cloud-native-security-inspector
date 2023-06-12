@@ -14,7 +14,7 @@ spec:
         control-plane: cnsi-scanner-trivy
     spec:
       containers:
-        - image: projects.registry.vmware.com/cnsi/trivy:0.3.2
+        - image: projects.registry.vmware.com/cnsi/trivy:0.4.0
           imagePullPolicy: Always
           ports:
             - containerPort: 8081
