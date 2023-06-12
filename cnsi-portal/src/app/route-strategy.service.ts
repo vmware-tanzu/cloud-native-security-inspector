@@ -23,7 +23,6 @@ export class RouteStrategyService implements RouteReuseStrategy {
    * @memberof CacheRouteReuseStrategy
    */
   public shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot): boolean {
-    console.log(future.routeConfig, curr.routeConfig);
     if (future.routeConfig?.path === 'trivy' && curr.routeConfig?.path === 'report') {
       this.storeFlag = true
     } else {
@@ -75,9 +74,7 @@ export class RouteStrategyService implements RouteReuseStrategy {
   public retrieve(route: ActivatedRouteSnapshot): DetachedRouteHandle | null {
     return RouteStrategyService.handlers[this.getPath(route)] || null;
   }
-  private getPath(route: any): string {
-    console.log('dadw', route['_routerState'].url);
-    
+  private getPath(route: any): string {    
     const path = route['_routerState'].url.replace(/\//g, '_');
     return path;
   }
