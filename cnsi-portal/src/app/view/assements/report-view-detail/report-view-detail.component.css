@@ -70,6 +70,9 @@ clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content clr
 clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content clr-datagrid .datagrid-outer-wrapper .datagrid span.scheduled {
   color: #F28B02;
 }
+clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content clr-datagrid clr-dg-placeholder {
+  background-color: #1C2A32 !important;
+}
 clr-accordion ::ng-deep .clr-accordion-panel-inactive .clr-accordion-content clr-datagrid clr-dg-footer {
   background-color: #1C2A32 !important;
 }
