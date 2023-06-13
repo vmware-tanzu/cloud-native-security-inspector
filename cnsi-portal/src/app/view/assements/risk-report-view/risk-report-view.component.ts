@@ -282,6 +282,7 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
       if (event.page.size !== this.defaultSize) {
         this.getRiskReportList(true, event.page.size, 0)
       } else {
+        this.getRiskReportList(false, event.page.size, 0)
       }
     } else {// page change
 
@@ -318,8 +319,8 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
           createTime: {order: "desc"}
         }
       ]
-    };
-    this.riskCallBackReset = reset
+    };    
+    this.riskCallBackReset = reset;
     this.getRiskList(query, this.getRiskReportListCallBack)
   }
   getRiskReportListCallBack(data: any, that: any, query: any) {

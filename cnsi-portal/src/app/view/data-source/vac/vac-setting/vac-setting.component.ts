@@ -60,9 +60,7 @@ export class VacSettingComponent implements OnInit {
             if (sc.metadata.annotations.type) {
               if (sc.metadata.annotations.type === 'vac') {
                 this.vacSecretsList.push(sc)
-              } else {
-                this.vacSecretsList.push(sc)
-                }
+              }
             } else {
               this.vacSecretsList.push(sc)
               }
