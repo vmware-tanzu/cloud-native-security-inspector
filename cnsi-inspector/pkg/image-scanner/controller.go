@@ -16,7 +16,6 @@ import (
 	"github.com/vmware-tanzu/cloud-native-security-inspector/lib/log"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
-	"strings"
 	"time"
 
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/pkg/policy"
@@ -305,19 +304,10 @@ func (c *controller) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy)
 
 				// Read data of the container image.
 				aid := core.ParseArtifactIDFrom(ct.Image, ct.ImageID)
-
 				// add [s]
-				imageId := strings.Split(ct.ImageID, "@")
-				url := strings.Split(ct.ImageID, "/")
-				before, after, _ := strings.Cut(imageId[0], url[0]+"/")
-				fmt.Println(before)
-				//repository, _ := strings.CutPrefix(imageId[0], url[0]+"/")
-				repository := after
-				fmt.Println(repository)
-				imageDigest := imageId[1]
 				r := harbor.ScanRequest{
-					Registry: harbor.Registry{URL: "http://" + url[0]},
-					Artifact: harbor.Artifact{Repository: repository, Digest: imageDigest},
+					Registry: harbor.Registry{URL: "http://" + aid.Registry()},
+					Artifact: harbor.Artifact{Repository: fmt.Sprintf("%s/%s", aid.Namespace(), aid.Repository()), Digest: aid.Digest()},
 				}
 
 				ns := "cnsi-system"
