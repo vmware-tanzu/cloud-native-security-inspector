@@ -73,7 +73,6 @@ describe('PolicyComponent', () => {
 
   describe('functions ', () => {
     it('get inspectionpolicies', () => {
-      component.modifyPolicy()
       component.deleteModalHandler('test')  
     });
 

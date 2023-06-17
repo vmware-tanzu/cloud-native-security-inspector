@@ -42,7 +42,7 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngAfterViewInit(): void {
-    let resizeLeft = 445
+    let resizeLeft = 995
     var resize: any = document.getElementById("risk-resize");
     var left: any = document.getElementById("risk-left");
     var right: any = document.getElementById("risk-right");
@@ -52,10 +52,10 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
         var startX = e.clientX;          
         resize.left = resizeLeft;          
         this.testMousemove = document.onmousemove = function (e) {
-            var endX = e.clientX;
-            
+            var endX = e.clientX;         
             var moveLen = resize.left + (startX - endX);
-                          if (moveLen < 995) moveLen = 995;
+            
+            if (moveLen < 995) moveLen = 995;
             if (moveLen > box.clientWidth-55) moveLen = box.clientWidth-55;
 
 
@@ -282,6 +282,7 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
       if (event.page.size !== this.defaultSize) {
         this.getRiskReportList(true, event.page.size, 0)
       } else {
+        this.getRiskReportList(false, event.page.size, 0)
       }
     } else {// page change
 
@@ -318,8 +319,8 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
           createTime: {order: "desc"}
         }
       ]
-    };
-    this.riskCallBackReset = reset
+    };    
+    this.riskCallBackReset = reset;
     this.getRiskList(query, this.getRiskReportListCallBack)
   }
   getRiskReportListCallBack(data: any, that: any, query: any) {
@@ -346,10 +347,8 @@ export class RiskReportViewComponent implements OnInit, AfterViewInit {
         const valueList: any = []
 
         that.riskList.forEach((el: any) => {
-          if (el.risk_number) {
-            dateList.push(moment(el._source.createTime).format('LLL'))
-            valueList.push(el.risk_number)
-          }
+          dateList.push(moment(el._source.createTime).format('LLL'))
+          valueList.push(el.risk_number)
         })
         if (that.riskImage) {
           that.echartsRender(dateList, valueList)

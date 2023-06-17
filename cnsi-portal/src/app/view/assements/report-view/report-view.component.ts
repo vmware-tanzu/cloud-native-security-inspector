@@ -73,7 +73,7 @@ export class ReportViewComponent implements OnInit, OnDestroy, AfterViewInit {
     var right: any = document.getElementById("right");
     var box: any = document.getElementById("box");
     console.log('init');
-    this.testMousedown = resize.onmousedown = function (e: any) {
+    this.testMousedown = resize.onmousedown = function (e: any) {      
         var startX = e.clientX;          
         resize.left = resizeLeft;          
         this.testMousemove = document.onmousemove = function (e) {
@@ -109,7 +109,8 @@ export class ReportViewComponent implements OnInit, OnDestroy, AfterViewInit {
     this.shardService.currentReport = null
   }
     
-  toReport(report: any) {    
+  toReport(report: any) {   
+    this.reportDetail.currentWordloadInfo = null
     this.showDetailFlag = true
     report._source.namespaceAssessments[0].workloadAssessments.forEach((wd: any) => {
       wd.workload.pods.forEach((po: any) => {
@@ -334,8 +335,6 @@ export class ReportViewComponent implements OnInit, OnDestroy, AfterViewInit {
       data => {
         let lineDate: string[] = []
         let dataValue: any[] = []
-
-
         const result = data.hits.hits
         result.forEach((rp: {_source: {namespaceAssessments: {workloadAssessments: {failures: [], passed: boolean}[]}[], timeStamp: string}}) => {
           rp._source.timeStamp = moment(rp._source.timeStamp).format('LLL')
