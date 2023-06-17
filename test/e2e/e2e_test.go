@@ -4,9 +4,13 @@
 package e2e
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"os"
+	"sigs.k8s.io/e2e-framework/klient/wait"
+	"sigs.k8s.io/e2e-framework/klient/wait/conditions"
+	"strings"
 	"testing"
 	"time"
 
@@ -24,6 +28,7 @@ import (
 	"sigs.k8s.io/e2e-framework/pkg/envconf"
 	"sigs.k8s.io/e2e-framework/pkg/envfuncs"
 	"sigs.k8s.io/e2e-framework/pkg/features"
+	v1 "k8s.io/api/core/v1"
 )
 
 var (
@@ -32,6 +37,7 @@ var (
 	namespace       string
 )
 
+// Added a namespace named opensearch in order to deploy opensearch on it
 func TestMain(m *testing.M) {
 	cfg, _ := envconf.NewFromFlags()
 	testEnv = env.NewWithConfig(cfg)
@@ -41,12 +47,14 @@ func TestMain(m *testing.M) {
 	testEnv.Setup(
 		envfuncs.CreateKindCluster(kindClusterName),
 		envfuncs.CreateNamespace(namespace),
+		envfuncs.CreateNamespace("opensearch"),
 		envfuncs.SetupCRDs("../../deployments/yaml", "manager.yaml"),
 		envfuncs.SetupCRDs("../../deployments/yaml", "data-exporter.yaml"),
 	)
 
 	testEnv.Finish(
 		envfuncs.DeleteNamespace(namespace),
+		envfuncs.DeleteNamespace("opensearch"),
 		envfuncs.TeardownCRDs("../../deployments/yaml", "*"),
 		envfuncs.DestroyKindCluster(kindClusterName),
 	)
@@ -121,8 +129,87 @@ func TestE2E(t *testing.T) {
 		}).Feature()
 	testEnv.Test(t, countNameSpaces)
 
+	/* Connectivity feature checks external connectivity in order to see if we can pull opensearch image if needed */
+	connectivity := features.New("external connectivity check").
+		Setup(func(ctx context.Context, t *testing.T, c *envconf.Config) context.Context {
+			deployment := newDeployment("cnsi-system", "check-harbor", 1, "curl")
+			client, err := c.NewClient()
+			if err != nil {
+				t.Fatal(err)
+			}
+			if err := client.Resources().Create(ctx, deployment); err != nil {
+				t.Fatal(err)
+			}
+			err = wait.For(conditions.New(client.Resources()).DeploymentConditionMatch(deployment, appsv1.DeploymentAvailable, v1.ConditionTrue), wait.WithTimeout(time.Minute*5))
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			return ctx
+		}).
+		Assess("check external connectivity", func(ctx context.Context, t *testing.T, c *envconf.Config) context.Context {
+			client, err := c.NewClient()
+			if err != nil {
+				t.Fatal(err)
+			}
+			pods := &corev1.PodList{}
+			err = client.Resources("cnsi-system").List(context.TODO(), pods)
+			if err != nil || pods.Items == nil {
+				t.Error("error while getting pods", err)
+			}
+			var stdout, stderr bytes.Buffer
+			podName := pods.Items[0].Name
+			command := []string{"curl", "-I", "https://www.google.com"}
+
+			if err := client.Resources().ExecInPod(context.TODO(), "cnsi-system", podName, "curl", command, &stdout, &stderr); err != nil {
+				t.Log(stderr.String())
+				t.Fatal(err)
+			}
+			httpStatus := strings.Split(stdout.String(), "\n")[0]
+			if !strings.Contains(httpStatus, "200") {
+				t.Fatal("Couldn't connect externally")
+			} else {
+				t.Log("external connection established")
+			}
+			return ctx
+		}).Feature()
+	testEnv.Test(t, connectivity)
+
+	/* Deploying opensearch, if opensearch is installed the feature will move out */
+	deployOpensearch := features.New("deploy opensearch").
+		Setup(func(ctx context.Context, t *testing.T, c *envconf.Config) context.Context {
+			deployment := deployOpenSearch("opensearch", "opensearch", 1, "opensearch")
+			client, err := c.NewClient()
+			if err != nil {
+				t.Fatal(err)
+			}
+			if err := client.Resources().Create(ctx, deployment); err != nil {
+				t.Fatal(err)
+			}
+			err = wait.For(conditions.New(client.Resources()).DeploymentConditionMatch(deployment, appsv1.DeploymentAvailable, v1.ConditionTrue), wait.WithTimeout(time.Minute*5))
+			if err != nil {
+				t.Fatal(err)
+			}
+			return ctx
+		}).
+		Assess("deploying opensearch", func(ctx context.Context, t *testing.T, c *envconf.Config) context.Context {
+			client, err := c.NewClient()
+			if err != nil {
+				t.Fatal(err)
+			}
+			pods := &corev1.PodList{}
+			err = client.Resources(c.Namespace()).List(context.TODO(), pods)
+			if err != nil || pods.Items == nil {
+				t.Error("error while getting pods", err)
+			} else {
+				t.Log("opensearch installed successfully")
+			}
+			return ctx
+		}).Feature()
+	testEnv.Test(t, deployOpensearch)
+
 	/* Check if opensearch is up and running, if so, we will see how many pods are running */
-	/*checkOpenSearch := features.New("checkOpenSearch").
+	checkOpenSearch := features.New("checkOpenSearch").
 		Assess("get pods from opensearch", func(ctx context.Context, t *testing.T, cfg *envconf.Config) context.Context {
 			var pods corev1.PodList
 			err := cfg.Client().Resources("opensearch").List(context.TODO(), &pods)
@@ -137,7 +224,7 @@ func TestE2E(t *testing.T) {
 			return ctx
 		})
 	testEnv.Test(t, checkOpenSearch.Feature())
-	*/
+
 	// Test manager can be up and run
 	managerInstallation := features.New("create manager").
 		Assess("Check if CNSI manager has been up",
@@ -323,4 +410,37 @@ func waitPodReady(
 		}
 	}
 	return errors.New("time out when checking the pods of the deployment")
+}
+
+func newDeployment(namespace string, name string, replicas int32, containerName string) *appsv1.Deployment {
+	labels := map[string]string{"app": "pod-exec"}
+	return &appsv1.Deployment{
+		ObjectMeta: metav1.ObjectMeta{Name: name, Namespace: namespace},
+		Spec: appsv1.DeploymentSpec{
+			Replicas: &replicas,
+			Selector: &metav1.LabelSelector{
+				MatchLabels: labels,
+			},
+			Template: v1.PodTemplateSpec{
+				ObjectMeta: metav1.ObjectMeta{Labels: labels},
+				Spec:       v1.PodSpec{Containers: []v1.Container{{Name: containerName, Image: "nginx"}}},
+			},
+		},
+	}
+}
+func deployOpenSearch(namespace string, name string, replicas int32, containerName string) *appsv1.Deployment {
+	labels := map[string]string{"app": "pod-exec"}
+	return &appsv1.Deployment{
+		ObjectMeta: metav1.ObjectMeta{Name: name, Namespace: namespace},
+		Spec: appsv1.DeploymentSpec{
+			Replicas: &replicas,
+			Selector: &metav1.LabelSelector{
+				MatchLabels: labels,
+			},
+			Template: v1.PodTemplateSpec{
+				ObjectMeta: metav1.ObjectMeta{Labels: labels},
+				Spec:       v1.PodSpec{Containers: []v1.Container{{Name: containerName, Image: "opensearchproject/opensearch"}}},
+			},
+		},
+	}
 }
