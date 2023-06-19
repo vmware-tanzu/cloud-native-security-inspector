@@ -27,9 +27,22 @@ spec:
               value: "0.0.0.0:8081"
             - name: SCANNER_REDIS_URL
               value: "redis://cnsi-scanner-redis-master.cnsi-system.svc.cluster.local:6379"
-      securityContext:
-        runAsNonRoot: false
+          volumeMounts:
+            - mountPath: /var/run/docker.sock
+              name: docker-sock
+            - name: docker-images
+              mountPath: /var/lib/docker
+              readOnly: true
       terminationGracePeriodSeconds: 10
+      securityContext:
+        runAsUser: 0
+      volumes:
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock
+        - name: docker-images
+          hostPath:
+            path: /var/lib/docker
 ---
 #apiVersion: v1
 #kind: Service
