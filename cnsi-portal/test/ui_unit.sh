@@ -4,7 +4,7 @@ set -e
 
 npm install -g -q --no-progress @angular/cli
 npm install -g -q --no-progress karma
-npm install -q --no-progress
+npm install -q --no-progress stylelint
 # check code lint first then run ut test
 npm run lint
 npm run lint:style
