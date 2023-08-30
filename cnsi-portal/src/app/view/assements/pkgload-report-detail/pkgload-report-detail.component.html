@@ -1,0 +1,65 @@
+<!--
+    Copyright 2022 VMware, Inc.
+    SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="card detail-bg">
+  <div id="resize"></div>
+
+  <clr-accordion clrAccordionMultiPanel="true" >
+    <clr-accordion-panel [clrAccordionPanelOpen]='true'>
+      <clr-accordion-title>{{'Report_Detail.title'|translate}}</clr-accordion-title>
+      <clr-accordion-content *clrIfExpanded>
+        <ul class="list warp-1">
+          <li>
+            <b>Doc ID: </b>
+            <span>{{currentReportInfo?.docID}}</span>
+          </li>
+          <li>
+            <b>NodeName: </b>
+            <span>{{currentReportInfo?.nodeName}}</span>
+          </li>
+          <li>
+            <b>Created Time: </b>
+            <span>{{currentReportInfo?.createTimestamp}}</span>
+          </li>
+        </ul>
+        <clr-datagrid *ngIf="currentReportInfo">
+          <clr-dg-column [clrDgField]="'cve'">Cve</clr-dg-column>
+          <clr-dg-column [clrDgField]="'severity'">
+            Severity
+          </clr-dg-column>
+          <clr-dg-column [clrDgField]="'pkgName'">Pkg Name</clr-dg-column>
+          <clr-dg-column [clrDgField]="'version'">Version</clr-dg-column>
+          <clr-dg-column >PID</clr-dg-column>
+          <clr-dg-column [clrDgField]="'user'">User</clr-dg-column>
+          <clr-dg-column>Container ID</clr-dg-column>
+          <clr-dg-column [clrDgField]="'podName'">Pod Name</clr-dg-column>
+          <clr-dg-column [clrDgField]="'namespace'">Namespace</clr-dg-column>
+          <clr-dg-column [clrDgField]="'nodeName'">Node Name</clr-dg-column>
+          <clr-dg-column >Image Name</clr-dg-column>
+          <clr-dg-row *clrDgItems="let pkg of currentReportInfo.vulnLoaded" [clrDgItem]="pkg">
+            <clr-dg-cell>{{pkg.cve}}</clr-dg-cell>
+            <clr-dg-cell>{{pkg.severity}}</clr-dg-cell>
+            <clr-dg-cell>{{pkg.pkgName}}</clr-dg-cell>
+            <clr-dg-cell>{{pkg.version}}</clr-dg-cell>
+            <clr-dg-cell>{{pkg.pid}}</clr-dg-cell>
+            <clr-dg-cell>{{pkg.user}}</clr-dg-cell>
+            <clr-dg-cell>{{pkg.containerID}}</clr-dg-cell>
+            <clr-dg-cell>{{pkg.podName}}</clr-dg-cell>
+            <clr-dg-cell>{{pkg.namespace}}</clr-dg-cell>
+            <clr-dg-cell>{{pkg.nodeName}}</clr-dg-cell>
+            <clr-dg-cell>{{pkg.imageName}}</clr-dg-cell>
+          </clr-dg-row>
+          <clr-dg-footer>
+            <clr-dg-pagination #pagination_wordloads [clrDgPageSize]="10">
+                <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">wordloads per page</clr-dg-page-size>
+                {{pagination_wordloads.firstItem + 1}} - {{pagination_wordloads.lastItem + 1}}
+                of {{pagination_wordloads.totalItems}} wordloads
+            </clr-dg-pagination>
+        </clr-dg-footer>
+        </clr-datagrid>
+      </clr-accordion-content>
+    </clr-accordion-panel>
+  </clr-accordion>
+</div>

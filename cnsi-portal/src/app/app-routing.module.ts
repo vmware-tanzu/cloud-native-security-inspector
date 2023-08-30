@@ -32,6 +32,7 @@ import { CacheComponent } from 'src/app/view/setting/cache/cache.component'
 // import { RouterGuard } from './router-guard';
 import { CacheSettingComponent } from './view/setting/cache/cache-setting/cache-setting.component';
 import { RouteStrategyService } from './route-strategy.service';
+import { PkgloadReportComponent } from './view/assements/pkgload-report/pkgload-report.component';
 
 const routes: Routes = [
   {
@@ -85,6 +86,11 @@ const routes: Routes = [
           {
             path: 'trivy',
             component: TrivyViewComponent,
+            // canActivate: [RouterGuard]
+          },
+          {
+            path: 'pkgload',
+            component: PkgloadReportComponent,
             // canActivate: [RouterGuard]
           },
           {

@@ -31,16 +31,21 @@ export class PolicySettingPageComponent implements OnInit {
   imageList = [
     {
       name: 'inspector',
-      url: 'projects.registry.vmware.com/cnsi/inspector:0.4.0'
+      url: 'projects.registry.vmware.com/cnsi/inspector:0.5.0'
     },
     {
       name: 'kubebench',
-      url: 'projects.registry.vmware.com/cnsi/kubebench:0.4.0'
+      url: 'projects.registry.vmware.com/cnsi/kubebench:0.5.0'
     },
     {
       name: 'risk',
-      url: 'projects.registry.vmware.com/cnsi/risk:0.4.0'
-    }
+      url: 'projects.registry.vmware.com/cnsi/risk:0.5.0'
+    },
+    {
+      name: 'pkgload',
+      url: 'projects.registry.vmware.com/cnsi/pkgload:0.5.0'
+    },
+    
   ]
   public actions = [
     {
@@ -249,6 +254,9 @@ export class PolicySettingPageComponent implements OnInit {
           if (policyList[0].spec.inspector.riskImage) {
             imagesList.push('risk')
           }
+          if (policyList[0].spec.inspector.pkgloadImage) {
+            imagesList.push('pkgload')
+          }
           this.policyForm.get('inspectionSetting')?.get('image')?.setValue(imagesList)
 
           this.policyForm.get('inspectionSetting')?.get('imagePullPolicy')?.setValue(policyList[0].spec.inspector.imagePullPolicy)
@@ -319,7 +327,7 @@ export class PolicySettingPageComponent implements OnInit {
           this.policyForm.get('inspectionSetting')?.get('historyLimit')?.setValue(5)
           this.policyForm.get('inspectionSetting')?.get('suspend')?.setValue(false)
           this.policyForm.get('inspectionSetting')?.get('concurrencyRule')?.setValue('Forbid')
-          this.policyForm.get('inspectionSetting')?.get('image')?.setValue('projects.registry.vmware.com/cnsi/inspector:0.4.0')
+          this.policyForm.get('inspectionSetting')?.get('image')?.setValue('projects.registry.vmware.com/cnsi/inspector:0.5.0')
           this.policyForm.get('inspectionSetting')?.get('imagePullPolicy')?.setValue('IfNotPresent')
           this.policyForm.get('inspectionSetting')?.get('settingsName')?.setValue('')
           this.policyForm.get('inspectionResult')?.get('actions')?.setValue(true)
@@ -391,6 +399,8 @@ export class PolicySettingPageComponent implements OnInit {
         data.inspector_kubebenchImage = this.imageList[1].url
       } else if (image === 'risk') {
         data.inspector_riskImage= this.imageList[2].url
+      } else if (image === 'pkgload') {
+        data.inspector_pkgloadImage= this.imageList[3].url
       }
     });
     if(this.policyForm.get('inspectionResult')?.get('actions')?.value){

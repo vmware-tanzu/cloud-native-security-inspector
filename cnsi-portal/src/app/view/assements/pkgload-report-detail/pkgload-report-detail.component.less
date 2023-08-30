@@ -1,0 +1,223 @@
+/*
+ * Copyright 2022 VMware, Inc.
+ * SSPDX-License-Identifier: Apache-2.0
+ */
+
+ .detail-bg {
+  height: 100vh;
+  overflow: auto;
+}
+.list {
+  &.warp-1 {
+    padding: 20px 10px;
+    li {
+      margin: 10px;
+      color: #fff;
+      b {
+        font-size: 14px;
+        margin-right: 10px;
+      }
+      span {
+        font-size: 12px;
+      }
+
+    }
+  }
+  .warp-2 {
+    padding: 0;
+    padding-left: 15px;
+    b {
+      font-size: 16px;
+      margin-right: 10px;
+    }
+    span {
+      font-size: 14px;
+    }
+  }
+}
+clr-accordion ::ng-deep {
+  .clr-accordion-panel-inactive {
+    .clr-accordion-content {
+     
+      .clr-form-control {
+        label {
+          color: #fff;
+        }
+        input {
+          color: #fff;
+        }
+      }
+      h4 {
+        color: #fff;
+      }
+      clr-datagrid {
+        .datagrid-outer-wrapper {
+         
+          .datagrid {
+            .datagrid-table-wrapper {
+              background-color: gray;
+              .datagrid-column,.datagrid-column {
+                background-color: #1C2A32 !important;
+                .datagrid-column-flex {
+                  button, span {
+                    color: #fff !important;
+                    
+                    cds-icon {
+                      color: #fff !important;
+                      position: relative;
+                      top: -3px;
+                    }
+                  }
+                }
+              }
+            }
+            span {
+              &.active {
+                color: hsl(93, 85%, 32%);
+              }
+              &.deprecated {
+                color: hsl(9, 92%, 50%);
+              }
+              &.scheduled {
+                color: #F28B02;
+              }
+            }
+          }
+        }
+        clr-dg-footer {
+          background-color: #1C2A32 !important;
+          clr-dg-page-size {
+            color: #fff !important;
+            .clr-select-wrapper {
+              select {
+                color: #fff !important;
+              }
+            }
+          }
+          .pagination-description {
+            color: #fff !important;
+          }
+        }
+        .datagrid-placeholder {
+          background-color: #1C2A32 !important;
+        }
+        .datagrid-row  {
+          .datagrid-row-sticky {
+            background-color: #1C2A32 ;
+            .datagrid-detail-caret-icon {
+              color: #fff;
+            }
+          }
+          clr-dg-cell {
+            background-color: #1C2A32 !important;
+            color: #fff !important;
+          }
+        }
+        clr-dg-detail {
+          background-color: #1C2A32 !important;
+          color: #fff;
+          h5 {
+            color: #fff;
+          }
+        }
+      }
+      .workload-section {
+        display: flex;
+        .card {
+          width: 50%;
+          flex: 1;
+          padding: 10px;
+          margin-right: 15px;
+        }
+        .list {
+          li {
+            margin-bottom: 10px;
+            span {
+              box-sizing: inherit;
+              word-break: break-all;
+            }
+          }
+        }
+      }
+      .pods {
+        width: auto;
+        padding: 10px;
+      }
+      .vac-container {
+        .list {
+          padding-left: 5px;
+          li {
+            b {
+              display: inline-block;
+              width: 200px;
+              margin-right: 15px;
+              color: #fff;
+            }
+            span {
+              &.active {
+                color: hsl(93, 85%, 32%);
+              }
+              &.deprecated {
+                color: hsl(9, 92%, 50%);
+              }
+              &.scheduled {
+                color: #F28B02;
+              }
+              
+            }
+          }
+        }
+        .vac-policy {
+          display: flex;
+          .card {
+            .list {
+              li {
+                display: flex;
+                b {
+                  width: 160px;
+                }
+                span {
+                  flex: 1;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  .clr-accordion-header {
+   
+    .clr-accordion-title {
+      color: #fff;
+    }
+    .clr-accordion-angle {
+      color: #fff;
+    }
+  }
+}
+
+.bac-white {
+  &::ng-deep {
+    clr-dg-column {
+      background-color: #fff !important;
+      &::ng-deep {
+        button {
+          color: #333 !important;
+        }
+      }
+    }
+    .datagrid-placeholder {
+        background-color: #fff !important;
+    }
+    clr-dg-cell {
+      background-color: #fff !important;
+      color: #333 !important;
+      word-break: break-all;
+    }
+    clr-dg-footer {
+      background-color: #fff !important;
+      color: #333 !important;
+    }
+  }
+}

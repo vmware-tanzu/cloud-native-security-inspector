@@ -230,7 +230,9 @@ app.use('/k8s-body/:type', (req, res) => {
       if (body.inspector_riskImage) {
         policy.spec.inspector.riskImage= body.inspector_riskImage
       }
-
+      if (body.inspector_pkgloadImage) {
+        policy.spec.inspector.pkgloadImage= body.inspector_pkgloadImage
+      }
       if (body.inspection_actions) {
         policy.spec.inspection.actions = body.inspection_actions
       }

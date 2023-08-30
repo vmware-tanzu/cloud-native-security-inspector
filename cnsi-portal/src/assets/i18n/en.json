@@ -53,7 +53,8 @@
       "Kube_bench": "Cluster Vulnerability Reports",
       "image_nspector_reports": "Image Risk Reports",
       "risk": "ArkSec Risk Reports",
-      "trivy": "Trivy Scanning Reports"
+      "trivy": "Trivy Scanning Reports",
+      "pkgload": "ArkSec Pkgload Reports"
     },
     "Insight": {
       "title": "Insight",
@@ -260,6 +261,9 @@
     "deprecationPolicy": "Deprecation Policy",
     "nonsupportpolicy": "Nonsupport Policy",
     "mustHarbor": "There must first be a harbor data source available."
+  },
+  "Pkgload": {
+    "nodeName": "Node Name"
   },
   "en": "English",
   "zh_CN": "中文 (简体)"
