@@ -254,11 +254,8 @@ type VulnDetail struct {
 type PkgLoadReport struct {
 	VulnLoaded      []VulnLoaded `json:"vulnLoaded"` // vuln loaded
 	NodeName        string       `json:"nodeName"`   // node name
-	CreateTimestamp string       `json:"createTime"` //  // unix timestamp
+	CreateTimestamp string       `json:"createTime"` // unix timestamp
 	DocID           string       `json:"docID"`      // doc id, pkgload-{nodeName}-{createdAt}
-	//CreateTimestamp string `json:"createTime"`
-	//NodeName        string `json:"nodeName"`
-	//DocID           string `json:"docID"`
 }
 
 func (p PkgLoadReport) GenDocID() string {
