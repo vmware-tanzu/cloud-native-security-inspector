@@ -16,6 +16,7 @@ spec:
     kubebenchImage: projects.registry.vmware.com/cnsi/kubebench:0.3
     riskImage: projects.registry.vmware.com/cnsi/risk:0.3
     workloadscannerImage: projects.registry.vmware.com/cnsi/workloadscanner:0.3
+    pkgLoadScannerImage: projects.registry.vmware.com/cnsi/pkgloadscanner:0.3.2
     imagePullPolicy: IfNotPresent
     exportConfig:
       openSearch:
