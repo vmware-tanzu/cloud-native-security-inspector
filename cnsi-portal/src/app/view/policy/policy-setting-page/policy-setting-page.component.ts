@@ -254,7 +254,7 @@ export class PolicySettingPageComponent implements OnInit {
           if (policyList[0].spec.inspector.riskImage) {
             imagesList.push('risk')
           }
-          if (policyList[0].spec.inspector.pkgloadImage) {
+          if (policyList[0].spec.inspector.pkgLoadScannerImage) {
             imagesList.push('pkgload')
           }
           this.policyForm.get('inspectionSetting')?.get('image')?.setValue(imagesList)
@@ -400,7 +400,7 @@ export class PolicySettingPageComponent implements OnInit {
       } else if (image === 'risk') {
         data.inspector_riskImage= this.imageList[2].url
       } else if (image === 'pkgload') {
-        data.inspector_pkgloadImage= this.imageList[3].url
+        data.inspector_pkgLoadScannerImage= this.imageList[3].url
       }
     });
     if(this.policyForm.get('inspectionResult')?.get('actions')?.value){

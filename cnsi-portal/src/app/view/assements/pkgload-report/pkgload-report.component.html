@@ -38,7 +38,7 @@
         </a>
       </clr-dg-cell>
       <clr-dg-cell>{{report?._source.nodeName}}</clr-dg-cell>
-      <clr-dg-cell>{{report?._source.createTimestamp}}</clr-dg-cell>
+      <clr-dg-cell>{{report?._source.createTime}}</clr-dg-cell>
     </clr-dg-row>
     <clr-dg-footer>
       <clr-dg-pagination #pagination [clrDgPageInputDisabled]="true" [clrDgPageSize]="defaultSize" [clrDgLastPage]="pageMaxCount">
@@ -53,7 +53,7 @@
     <div id="pkgload-left" class="report-detai-left"></div>
     <div id="pkgload-resize"></div>
     <div id="pkgload-right" class="report-detai" [ngClass]="{'show': showDetailFlag}" >
-      <app-pkgload-report-detail #reportDetail></app-pkgload-report-detail>
+      <app-pkgload-report-detail [currentReportInfo]="currentReportInfo" #reportDetail></app-pkgload-report-detail>
     </div>
   </div>
 </div>

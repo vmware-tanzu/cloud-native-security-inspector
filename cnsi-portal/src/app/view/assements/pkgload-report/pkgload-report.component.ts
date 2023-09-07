@@ -29,6 +29,7 @@ export class PkgloadReportComponent implements OnInit {
   namespaceFilterFlag = false
   nameFilterFlag = false
   imagesReportList:any[] = []
+  currentReportInfo: any
   // charts
   echartsOption!: ECOption
   myChart!: any
@@ -128,7 +129,7 @@ export class PkgloadReportComponent implements OnInit {
       from: filter.from ? filter.from: 0,
       sort: [
         {
-          timeStamp: {
+          createTime: {
             order: "desc"
           }
         }
@@ -170,7 +171,7 @@ export class PkgloadReportComponent implements OnInit {
       that.pagination.page.change
     } else {
       data.hits.hits.forEach((el: any) => {
-        el._source.createTimestamp = moment(el._source.createTimestamp).format('LLL')
+        el._source.createTime = moment(el._source.createTime * 1000).format('LLL')
         if (that.getKubeBenchReportListQuery && data.hits.total.value) {          
           if ((that.getKubeBenchReportListQuery.from + that.getKubeBenchReportListQuery.size) <= data.hits.total.value) {
             for (index < that.getKubeBenchReportListQuery.from + that.getKubeBenchReportListQuery.size; index++;) {
@@ -216,7 +217,7 @@ export class PkgloadReportComponent implements OnInit {
     if (this.isOder) {
       query['sort'] =[
         {
-          timeStamp: {
+          createTime: {
             order: "desc"
           }
         }
@@ -232,8 +233,8 @@ export class PkgloadReportComponent implements OnInit {
     that.pagination.page.from = that.from
     that.pagination.page.change
     const result = data.hits.hits
-    result.forEach((rp: {_source: {vulnLoaded: any[], createTimestamp: string}}) => {
-      rp._source.createTimestamp = moment(rp._source.createTimestamp).format('LLL')
+    result.forEach((rp: {_source: {vulnLoaded: any[], createTime: any}}) => {
+      rp._source.createTime = moment(rp._source.createTime * 1000).format('LLL')
     })    
     that.imagesReportList = data.hits.hits
     that.dgLoading = false
@@ -261,11 +262,11 @@ export class PkgloadReportComponent implements OnInit {
       from: 0,
       sort: [
         {
-          timeStamp: {
+          createTime: {
             order: "desc"
           }
         }
-      ]
+      ]   
     }
     this.assessmentService.getKubeBenchReport({url: this.opensearchInfo.url, index: 'pkgload-scanner', username: this.opensearchInfo.user, password: this.opensearchInfo.pswd, query, client: this.client, ca:this.ca}).subscribe(
       data => {
@@ -274,9 +275,9 @@ export class PkgloadReportComponent implements OnInit {
 
 
         const result = data.hits.hits
-        result.forEach((rp: {_source: {vulnLoaded: any[], createTimestamp: string}}) => {
-          rp._source.createTimestamp = moment(rp._source.createTimestamp).format('LLL')
-          lineDate.push(rp._source.createTimestamp)
+        result.forEach((rp: {_source: {vulnLoaded: any[], createTime: any}}) => {
+          rp._source.createTime = moment(rp._source.createTime * 1000).format('LLL')
+          lineDate.push(rp._source.createTime)
           let abCount = rp._source.vulnLoaded.length
           dataValue.push(abCount)
         })
@@ -286,50 +287,6 @@ export class PkgloadReportComponent implements OnInit {
         this.dgLoading = false
       },
       err => {
-        let lineDate: string[] = []
-        let dataValue: any[] = []
-        const data = {
-          hits: {
-            total: {
-              value: 1
-            },
-            hits: [
-              {
-                _source: {
-                  vulnLoaded: [{
-                    cve: "cve",
-                    severity: "low",
-                    pkgName: "libc6",
-                    version: "v1",
-                    pid: 111,
-                    user: "root",
-                    containerID: "eea",
-                    podName: "nginx",
-                    namespace: "test-app",
-                    nodeName: "zx-01",
-                    imageName: "10.1.1.127/nginx"
-                  }],
-                  createTimestamp: 1689297975725,
-                  nodeName: 'adad',
-                  docID: '123131'
-                }
-              }
-            ]
-          }
-        }
-
-        const result = data.hits.hits
-        result.forEach((rp: {_source: {vulnLoaded: any[], createTimestamp: any}}) => {
-          rp._source.createTimestamp = moment(rp._source.createTimestamp).format('LLL')
-          lineDate.push(rp._source.createTimestamp)
-          let abCount = rp._source.vulnLoaded.length
-          dataValue.push(abCount)
-        })
-        this.echartsRender(lineDate, dataValue)
-        this.pageMaxCount = Math.ceil(data.hits.total.value / this.defaultSize)
-        this.imagesReportList = data.hits.hits
-        this.dgLoading = false
-
         this.echartsLoading = false
         this.dgLoading = false
       }
@@ -424,7 +381,7 @@ export class PkgloadReportComponent implements OnInit {
 
   toReport(report: any) {    
     this.showDetailFlag = true
-    sessionStorage.setItem('cnsi-pkgload-report-detail',  JSON.stringify(report._source))
+    this.currentReportInfo = report._source
   }
 
   // show report detail
@@ -432,7 +389,7 @@ export class PkgloadReportComponent implements OnInit {
     for (let index = 0; index < event.target.classList.length; index++) { 
       if (event.target.classList[index] === 'report-detai-bg' || event.target.classList[index]  === 'report-detai-left') {
         this.showDetailFlag = false
-        sessionStorage.removeItem('cnsi-pkgload-report-detail')
+        this.currentReportInfo = {}
         this.shardService.currentReport = null
         continue;
       }      
