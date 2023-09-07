@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"os"
 	"regexp"
+	"strconv"
 	"time"
 
 	"github.com/go-co-op/gocron"
@@ -125,7 +126,7 @@ func (c *PkgLoadController) scan(ctx context.Context, policy *v1alpha1.Inspectio
 				targetImage := containerStatus.Image
 				aid := core.ParseArtifactIDFrom(targetImage, containerStatus.ImageID)
 				imageItem := data.NewImageItem(targetImage, aid)
-				// get report of image(image -> vuln list)
+				// get report of image(image -> vuln list) TODO: check image existance
 				imageHarborReport, err := imageItem.FetchHarborReport(c.adapter)
 				if err != nil {
 					log.Error(err, "fetch harbor report")
@@ -220,11 +221,18 @@ func (c *PkgLoadController) scan(ctx context.Context, policy *v1alpha1.Inspectio
 		return nil
 	}
 
-	// write report as CR
-	ExportPkgloadReports(PkgLoadReport{VulnLoaded: vulnLoaded}, policy)
+	pkgLoadReport := PkgLoadReport{
+		VulnLoaded:      vulnLoaded,
+		CreateTimestamp: strconv.FormatInt(time.Now().Unix(), 10),
+		NodeName:        currentNodeName,
+	}
+	pkgLoadReport.DocID = pkgLoadReport.GenDocID()
+
+	// export pkgload report
+	ExportPkgloadReports(pkgLoadReport, policy)
 
 	if _, ok := os.LookupEnv("DEBUG"); ok {
-		log.Info("vuln loaded", "vulnLoaded", vulnLoaded)
+		log.Info("pkgload report", pkgLoadReport)
 	}
 
 	log.Info("scan complete!!!")
@@ -244,7 +252,17 @@ type VulnDetail struct {
 }
 
 type PkgLoadReport struct {
-	VulnLoaded []VulnLoaded `json:"vulnLoaded"`
+	VulnLoaded      []VulnLoaded `json:"vulnLoaded"` // vuln loaded
+	NodeName        string       `json:"nodeName"`   // node name
+	CreateTimestamp string       `json:"createTime"` //  // unix timestamp
+	DocID           string       `json:"docID"`      // doc id, pkgload-{nodeName}-{createdAt}
+	//CreateTimestamp string `json:"createTime"`
+	//NodeName        string `json:"nodeName"`
+	//DocID           string `json:"docID"`
+}
+
+func (p PkgLoadReport) GenDocID() string {
+	return "pkgload-" + p.NodeName + "-" + p.CreateTimestamp
 }
 
 type VulnLoaded struct {
@@ -330,7 +348,7 @@ func inArray(need string, arr []string) bool {
 }
 
 func ExportPkgloadReports(report PkgLoadReport, pl *v1alpha1.InspectionPolicy) {
-	if bytes, err := json.Marshal(report); err != nil {
+	if bytes, err := json.Marshal(&report); err != nil {
 		// Marshal failure should be fatal because it is unforgivable
 		log.Fatal(err, "failed to marshal the insight struct")
 	} else {
