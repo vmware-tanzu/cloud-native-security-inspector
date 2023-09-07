@@ -6,6 +6,7 @@ import (
 	"os"
 	"regexp"
 	"strconv"
+	"sync"
 	"time"
 
 	"github.com/go-co-op/gocron"
@@ -39,7 +40,19 @@ type PkgLoadController struct {
 	pkgScanner pkgclient.PkgInfoClient
 
 	collector workload.Collector
+
+	// mu for scanStatus
+	mu         sync.Mutex
+	scanStatus scanStatusType
 }
+
+type scanStatusType string
+
+const (
+	scanStatusEmpty   scanStatusType = ""
+	scanStatusRunning scanStatusType = "running"
+	scanStatusDone    scanStatusType = "done"
+)
 
 var (
 	cfgDir = "./cfg/"
@@ -52,12 +65,29 @@ func (c *PkgLoadController) Run(ctx context.Context, policy *v1alpha1.Inspection
 	}
 	s := gocron.NewScheduler(time.Local)
 	// TODO: get crontab from env
-	_, err := s.Cron(policy.Spec.Schedule).Do(c.scan, ctx, policy) // every minute
+	_, err := s.Cron(policy.Spec.Schedule).Do(c.Scan, ctx, policy)
 	if err != nil {
 		return errors.Wrap(err, "schedule scan")
 	}
 	s.StartBlocking()
 	return nil
+}
+
+func (c *PkgLoadController) Scan(ctx context.Context, policy *v1alpha1.InspectionPolicy) error {
+	c.mu.Lock()
+	if c.scanStatus == scanStatusRunning {
+		log.Info("scan is running, skip")
+		c.mu.Unlock()
+		return nil
+	}
+	c.scanStatus = scanStatusRunning
+	c.mu.Unlock()
+	defer func() {
+		c.mu.Lock()
+		c.scanStatus = scanStatusDone
+		c.mu.Unlock()
+	}()
+	return c.scan(ctx, policy)
 }
 
 func (c *PkgLoadController) scan(ctx context.Context, policy *v1alpha1.InspectionPolicy) error {
@@ -124,8 +154,8 @@ func (c *PkgLoadController) scan(ctx context.Context, policy *v1alpha1.Inspectio
 				}
 				// get image of container(container -> image)
 				targetImage := containerStatus.Image
-				aid := core.ParseArtifactIDFrom(targetImage, containerStatus.ImageID)
-				imageItem := data.NewImageItem(targetImage, aid)
+				aid := core.ParseArtifactIDFrom(targetImage, containerStatus.ImageID) // FIXME: k8s imageId may be mismatched with target image, use the right digest sha for target image
+				imageItem := data.NewImageItem(targetImage, aid)                      // FIXME: parse image id incorrectly
 				// get report of image(image -> vuln list) TODO: check image existance
 				imageHarborReport, err := imageItem.FetchHarborReport(c.adapter)
 				if err != nil {
@@ -138,8 +168,10 @@ func (c *PkgLoadController) scan(ctx context.Context, policy *v1alpha1.Inspectio
 					continue
 				}
 
+				log.Infof("scanning artID:%s, imageID:%s", imageItem.ArtifactID.String(), containerStatus.ImageID)
+
 				// scan pkg installed files of the image(pkg -> installed files, set using map)
-				scanReport, err := c.pkgScanner.ScanImage(ctx, targetImage)
+				scanReport, err := c.pkgScanner.ScanImage(ctx, imageItem.ArtifactID.String()) // TODO: use image instead
 				if err != nil {
 					log.Error(err, "scan image pkg info")
 					continue

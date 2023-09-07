@@ -260,6 +260,10 @@ func (r *InspectionPolicyReconciler) constructPkgloadDaemonSet(
 				Name:  "PKG_SCANNER_NETWORK",
 				Value: "unix",
 			},
+			{
+				Name:  "CONTAINERD_NAMESPACE",
+				Value: "k8s.io",
+			},
 		},
 		SecurityContext: &corev1.SecurityContext{
 			Privileged: &privileged,

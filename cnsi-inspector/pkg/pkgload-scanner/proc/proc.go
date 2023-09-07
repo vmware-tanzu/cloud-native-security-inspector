@@ -24,6 +24,10 @@ const k8sContainerdReg = `(?P<id>\w):cpuset:\/kubepods.slice/(.+)/(.+)/cri-conta
 const k8sLowRegV2 = `(?P<id>\w)::\/(.+)\/(.+)\/docker-(?P<container>\w+).scope`
 const k8sCrioRegV2 = `(?P<id>\w)::\/(.+)\/(.+)\/crio-(?P<container>\w+).scope`
 const k8sContainerdRegV2 = `(?P<id>\w)::\/kubepods.slice\/(.+)\/(.+)\/cri-containerd-(?P<container>\w+).scope`
+const k8sContainerdRegV2MoreFlexible = `cri-containerd-(?P<container>\w+).scope`
+
+// NOTE: example for kind deployment nginx-1.24.0 pid
+// 0::/kubelet.slice/kubelet-kubepods.slice/kubelet-kubepods-besteffort.slice/kubelet-kubepods-besteffort-podeacee042_b28f_45dd_9afc_cbed13cf6a49.slice/cri-containerd-1ad60e6e49915933dbd00fd57046e939af9e3808bad383030bd88a1ae6e9d2f7.scope
 
 var procTool *ProcTool
 
@@ -54,6 +58,7 @@ func init() {
 	k8sPatternsV2 = append(k8sPatternsV2, regexp.MustCompile(k8sLowRegV2))
 	k8sPatternsV2 = append(k8sPatternsV2, regexp.MustCompile(k8sCrioRegV2))
 	k8sPatternsV2 = append(k8sPatternsV2, regexp.MustCompile(k8sContainerdRegV2))
+	k8sPatternsV2 = append(k8sPatternsV2, regexp.MustCompile(k8sContainerdRegV2MoreFlexible))
 
 	if s := os.Getenv("CONTAINER_K8S_REGEXP"); s != "" {
 		if e := recover(); e != nil {
@@ -73,6 +78,7 @@ func (k *ProcTool) GetContainerFromPID(pid int) (container string, err error) {
 		} else {
 			if err != nil {
 				//return "", err
+				//log.Printf("k8s getContainerFromFile: filename: %s, error :%v", fileName, err)
 			}
 		}
 	}

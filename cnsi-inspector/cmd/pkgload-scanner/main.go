@@ -75,7 +75,14 @@ func main() {
 
 	// init client of pkg-scanner
 	log.Info("starting pkg-scanner")
-	pkgscannerCmd := exec.Command("/scanner", "pkg-file-server")
+	scannerArgs := []string{}
+	scannerArgs = append(scannerArgs, "pkg-file-server")
+	cacheDir := os.Getenv("FSCANNER_CACHE_DIR")
+	if cacheDir != "" {
+		log.Debug("using cache dir: ", cacheDir)
+		scannerArgs = append(scannerArgs, "-c", cacheDir)
+	}
+	pkgscannerCmd := exec.Command("/scanner", scannerArgs...)
 	if err := pkgscannerCmd.Start(); err != nil {
 		log.Error(err, "failed to start pkg-scanner")
 		os.Exit(1)
