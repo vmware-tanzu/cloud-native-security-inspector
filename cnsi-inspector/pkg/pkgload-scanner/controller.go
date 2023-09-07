@@ -255,7 +255,7 @@ func (c *PkgLoadController) scan(ctx context.Context, policy *v1alpha1.Inspectio
 
 	pkgLoadReport := PkgLoadReport{
 		VulnLoaded:      vulnLoaded,
-		CreateTimestamp: strconv.FormatInt(time.Now().Unix(), 10),
+		CreateTimestamp: time.Now().Unix(),
 		NodeName:        currentNodeName,
 	}
 	pkgLoadReport.DocID = pkgLoadReport.GenDocID()
@@ -286,12 +286,12 @@ type VulnDetail struct {
 type PkgLoadReport struct {
 	VulnLoaded      []VulnLoaded `json:"vulnLoaded"` // vuln loaded
 	NodeName        string       `json:"nodeName"`   // node name
-	CreateTimestamp string       `json:"createTime"` // unix timestamp
+	CreateTimestamp int64        `json:"createTime"` // unix timestamp
 	DocID           string       `json:"docID"`      // doc id, pkgload-{nodeName}-{createdAt}
 }
 
 func (p PkgLoadReport) GenDocID() string {
-	return "pkgload-" + p.NodeName + "-" + p.CreateTimestamp
+	return "pkgload-" + p.NodeName + "-" + strconv.Itoa(int(p.CreateTimestamp))
 }
 
 type VulnLoaded struct {
