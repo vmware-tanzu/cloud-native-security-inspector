@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ShardService } from 'src/app/service/shard.service';
+import { ShardTestModule } from 'src/app/shard/shard/shard.module';
 
 import { PkgloadReportComponent } from './pkgload-report.component';
 
@@ -8,7 +10,9 @@ describe('PkgloadReportComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PkgloadReportComponent ]
+      imports: [ShardTestModule],
+      declarations: [ PkgloadReportComponent ],
+      providers: [ShardService]
     })
     .compileComponents();
 
