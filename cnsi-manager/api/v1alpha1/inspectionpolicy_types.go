@@ -24,8 +24,8 @@ const (
 	CronjobRisk = "Risk"
 	// CronjobWorkloadscanner describes the Workloadscanner type of the cronjob
 	CronjobWorkloadscanner = "Workloadscanner"
-	// CronjobPkgLoadScaner describes the PkgLoadScanner type of the cronjob.
-	CronjobPkgLoadScanner = "PkgLoadScanner"
+	// DaemonSetPkgLoadScaner describes the PkgLoadScanner type of the cronjob.
+	DaemonSetPkgLoadScanner = "PkgLoadScanner"
 )
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
@@ -190,6 +190,9 @@ type Inspector struct {
 	// Image of the pkgloadscanner.
 	// +kubebuilder:validation:Optional
 	PkgLoadScannerImage string `json:"pkgLoadScannerImage"`
+	// Image of the pkgscanner.
+	// +kubebuilder:validation:Optional
+	PkgScannerImage string `json:"pkgScannerImage"`
 	// Image of the workloadscanner.
 	// +kubebuilder:validation:Optional
 	WorkloadScannerImage string `json:"workloadscannerImage"`

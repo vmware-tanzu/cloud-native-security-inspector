@@ -315,6 +315,9 @@ spec:
                   pkgLoadScannerImage:
                     description: Image of the pkgloadscanner.
                     type: string
+                  pkgScannerImage:
+                    description: Image of the pkgscanner.
+                    type: string
                   riskImage:
                     description: Image of the risk.
                     type: string

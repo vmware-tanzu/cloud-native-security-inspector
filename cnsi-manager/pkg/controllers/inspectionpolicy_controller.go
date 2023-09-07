@@ -49,13 +49,20 @@ const (
 	optCniBinPath                   = "/opt/cni/bin/"
 )
 
+const (
+	crioSockPath       = "/var/run/crio/crio.sock"
+	dockerSockPath     = "/var/run/docker.sock"
+	containerdSockPath = "/run/containerd/containerd.sock"
+)
+
 // InspectionPolicyReconciler reconciles a InspectionPolicy object
 type InspectionPolicyReconciler struct {
 	client.Client
-	Scheme    *runtime.Scheme
-	nodeList  []string
-	pathList  []string
-	namespace string
+	Scheme      *runtime.Scheme
+	nodeList    []string
+	criSockList []string
+	pathList    []string
+	namespace   string
 }
 
 //+kubebuilder:rbac:groups=goharbor.goharbor.io,resources=inspectionpolicies,verbs=get;list;watch;create;update;patch;delete
@@ -156,7 +163,7 @@ func (r *InspectionPolicyReconciler) Reconcile(ctx context.Context, req ctrl.Req
 	statusNeedUpdateForRisk, err = r.cronjobForInspection(ctx, policy, goharborv1.CronjobRisk)
 	// Process the cronjob for PkgLoadScanner
 	var statusNeedUpdateForPkgLoadScanner bool
-	statusNeedUpdateForPkgLoadScanner, err = r.cronjobForInspection(ctx, policy, goharborv1.CronjobPkgLoadScanner)
+	statusNeedUpdateForPkgLoadScanner, err = r.checkPkgLoad(ctx, policy)
 	// Process the cronjob for workloadscanner
 	var statusNeedUpdateForWorkloadScanner bool
 	statusNeedUpdateForWorkloadScanner, err = r.cronjobForInspection(ctx, policy, goharborv1.CronjobWorkloadscanner)
@@ -174,6 +181,171 @@ func (r *InspectionPolicyReconciler) Reconcile(ctx context.Context, req ctrl.Req
 	}
 	log.Info("Reconcile completed")
 	return ctrl.Result{}, nil
+}
+
+// checkPkgLoad checks if the pkgload scanner ds should be created or deleted.
+func (r *InspectionPolicyReconciler) checkPkgLoad(ctx context.Context, policy *goharborv1.InspectionPolicy) (bool, error) {
+	if policy.Spec.Inspector.PkgLoadScannerImage == "" {
+		log.Info(nil, "the user doesn't involve Kubebench Image in policy")
+		return false, nil
+	}
+	var pkgloadDaemonSet appsv1.DaemonSet
+	namespacedName := types.NamespacedName{
+		Name:      fmt.Sprintf("%s-pkgload-daemonset", policy.Name),
+		Namespace: *policy.Spec.WorkNamespace,
+	}
+	if err := r.Get(ctx, namespacedName, &pkgloadDaemonSet); err != nil {
+		if !apierrors.IsNotFound(err) {
+			log.Error(err, "failed to get information of the pkgload daemonset")
+			return true, err
+		} else {
+			// cannot find the DaemonSet resource
+			dsStruct, err := r.constructPkgloadDaemonSet(policy)
+			if err != nil {
+				log.Error(err, "failed to construct the DaemonSet struct")
+				return true, err
+			} else {
+				err = r.Client.Create(ctx, dsStruct)
+				if err != nil {
+					log.Errorf("failed to create the DaemonSet for pkgload %s, err:", err)
+					return true, err
+				}
+				return false, err
+			}
+		}
+	}
+	log.Debug("The daemonSet is already existing")
+	return false, nil
+}
+
+func (r *InspectionPolicyReconciler) constructPkgloadDaemonSet(
+	policy *goharborv1.InspectionPolicy) (*appsv1.DaemonSet, error) {
+	pkgloadCommand := "/pkgloadscanner"
+	pkgScannerCommand := "/scanner pkg-file-server"
+	rootUid := int64(0)
+	fsPolicy := corev1.FSGroupChangeOnRootMismatch
+	// pkgload runtime scanner container
+	pkgloadContainer := corev1.Container{
+		Name:            "pkgload",
+		Image:           policy.Spec.Inspector.PkgLoadScannerImage,
+		ImagePullPolicy: getImagePullPolicy(policy),
+		Command:         []string{pkgloadCommand},
+		Args: []string{
+			"--policy",
+			policy.Name,
+		},
+		Env: []corev1.EnvVar{
+			{
+				Name:  "NARROWS_NAMESPACE",
+				Value: r.namespace,
+			},
+			{
+				Name: "NODE_NAME",
+				ValueFrom: &corev1.EnvVarSource{
+					FieldRef: &corev1.ObjectFieldSelector{
+						FieldPath: "spec.nodeName",
+					},
+				},
+			},
+			{
+				Name:  "PKG_SCANNER_ADDR",
+				Value: "/var/share/pkgscanner.sock",
+			},
+			{
+				Name:  "PKG_SCANNER_NETWORK",
+				Value: "unix",
+			},
+		},
+	}
+
+	// pkgscanner image pkg installed files scanning
+	privileged := true
+	pkgScannerContainer := corev1.Container{
+		Name:            "pkgscanner",
+		Image:           policy.Spec.Inspector.PkgScannerImage,
+		ImagePullPolicy: getImagePullPolicy(policy),
+		Command:         []string{pkgScannerCommand},
+		Args: []string{
+			"--policy",
+			policy.Name,
+		},
+		Env: []corev1.EnvVar{
+			{
+				Name:  "NARROWS_NAMESPACE",
+				Value: r.namespace,
+			},
+			{
+				Name: "NODE_NAME",
+				ValueFrom: &corev1.EnvVarSource{
+					FieldRef: &corev1.ObjectFieldSelector{
+						FieldPath: "spec.nodeName",
+					},
+				},
+			},
+			{
+				Name:  "PKG_SCANNER_ADDR",
+				Value: "/var/share/pkgscanner.sock",
+			},
+			{
+				Name:  "PKG_SCANNER_NETWORK",
+				Value: "unix",
+			},
+		},
+		SecurityContext: &corev1.SecurityContext{
+			Privileged: &privileged,
+		},
+	}
+	// pkgScannerContainer
+	r.addCriSockToContainer(&pkgScannerContainer)
+	podSpec := corev1.PodSpec{
+		HostPID: true,
+		SecurityContext: &corev1.PodSecurityContext{
+			RunAsUser:           &rootUid,
+			FSGroupChangePolicy: &fsPolicy,
+		},
+		Containers:         []corev1.Container{pkgloadContainer, pkgScannerContainer},
+		RestartPolicy:      corev1.RestartPolicyAlways,
+		ServiceAccountName: saName,
+		ImagePullSecrets:   policy.Spec.Inspector.ImagePullSecrets,
+	}
+	r.addCriSockToPodSpec(&podSpec)
+	ds := appsv1.DaemonSet{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      fmt.Sprintf("%s-pkgload-daemonset", policy.Name),
+			Namespace: *policy.Spec.WorkNamespace,
+			Labels: map[string]string{
+				labelOwnerKey: policy.Name,
+				labelTypeKey:  goharborv1.DaemonSetKubebench,
+			},
+			Annotations: make(map[string]string),
+		},
+		Spec: appsv1.DaemonSetSpec{
+			Selector: &metav1.LabelSelector{
+				MatchLabels: map[string]string{
+					appLabelKey: "pkgload",
+				},
+			},
+			Template: corev1.PodTemplateSpec{
+				ObjectMeta: metav1.ObjectMeta{
+					Labels: map[string]string{
+						appLabelKey: "pkgload",
+					},
+				},
+				Spec: podSpec,
+			},
+		},
+	}
+	// Set owner reference.
+	if err := ctrl.SetControllerReference(policy, &ds, r.Scheme); err != nil {
+		return nil, err
+	}
+	jdata, err := json.Marshal(ds.Spec)
+	if err != nil {
+		return nil, err
+	}
+	ds.Annotations[lastAppliedAnnotation] = string(jdata)
+	log.Infof("PkgLoad DaemonSet %s constructed", ds.ObjectMeta.Name)
+	return &ds, nil
 }
 
 func (r *InspectionPolicyReconciler) checkKubebench(ctx context.Context, policy *goharborv1.InspectionPolicy) (bool, error) {
@@ -290,7 +462,8 @@ func (r *InspectionPolicyReconciler) cronjobForInspection(ctx context.Context, p
 		return false, nil
 	} else if cronjobType == goharborv1.CronjobRisk && policy.Spec.Inspector.RiskImage == "" {
 		return false, nil
-	} else if cronjobType == goharborv1.CronjobPkgLoadScanner && policy.Spec.Inspector.PkgLoadScannerImage == "" {
+	} else if cronjobType == goharborv1.DaemonSetPkgLoadScanner &&
+		(policy.Spec.Inspector.PkgLoadScannerImage == "" || policy.Spec.Inspector.PkgScannerImage == "") {
 		return false, nil
 	} else if cronjobType == goharborv1.CronjobWorkloadscanner && policy.Spec.Inspector.WorkloadScannerImage == "" {
 		return false, nil
@@ -390,6 +563,11 @@ func (r *InspectionPolicyReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		usrBinPath,
 		etcCniNetdPath,
 		optCniBinPath,
+	}
+	r.criSockList = []string{
+		crioSockPath,
+		dockerSockPath,
+		containerdSockPath,
 	}
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&goharborv1.InspectionPolicy{}).
@@ -558,7 +736,7 @@ func (r *InspectionPolicyReconciler) checkCronJob(ctx context.Context, policy *g
 		exec = policy.Status.InspectionExecutor
 	} else if cronjobType == goharborv1.CronjobRisk {
 		exec = policy.Status.RiskExecutor
-	} else if cronjobType == goharborv1.CronjobPkgLoadScanner {
+	} else if cronjobType == goharborv1.DaemonSetPkgLoadScanner {
 		exec = policy.Status.PkgLoadScannerExecutor
 	} else if cronjobType == goharborv1.CronjobWorkloadscanner {
 		exec = policy.Status.WorkloadScannerExecutor
@@ -621,6 +799,32 @@ func (r *InspectionPolicyReconciler) addVolumeToPodSpec(podSpec *corev1.PodSpec)
 	}
 }
 
+func (r *InspectionPolicyReconciler) addCriSockToContainer(container *corev1.Container) {
+	for i, path := range r.criSockList {
+		mount := corev1.VolumeMount{
+			Name:             strconv.Itoa(i),
+			ReadOnly:         true,
+			MountPath:        path,
+			SubPath:          "",
+			MountPropagation: nil,
+			SubPathExpr:      "",
+		}
+		container.VolumeMounts = append(container.VolumeMounts, mount)
+	}
+}
+
+func (r *InspectionPolicyReconciler) addCriSockToPodSpec(podSpec *corev1.PodSpec) {
+	hostPathType := corev1.HostPathFile
+	for i, path := range r.criSockList {
+		hostPath := corev1.HostPathVolumeSource{Path: path, Type: &hostPathType}
+		volume := corev1.Volume{
+			Name:         strconv.Itoa(i),
+			VolumeSource: corev1.VolumeSource{HostPath: &hostPath},
+		}
+		podSpec.Volumes = append(podSpec.Volumes, volume)
+	}
+}
+
 func (r *InspectionPolicyReconciler) generateCronJobCR(policy *goharborv1.InspectionPolicy, cronjobType string) (*batchv1.CronJob, error) {
 	var fl int32 = 1
 	var name, image, command string
@@ -630,9 +834,6 @@ func (r *InspectionPolicyReconciler) generateCronJobCR(policy *goharborv1.Inspec
 	} else if cronjobType == goharborv1.CronjobRisk {
 		name = "risk"
 		command = "/risk"
-	} else if cronjobType == goharborv1.CronjobPkgLoadScanner {
-		name = "pkgLoadScanner"
-		command = "/pkgLoadScanner scan"
 	} else if cronjobType == goharborv1.CronjobWorkloadscanner {
 		name = "workloadscanner"
 		command = "/workloadscanner"
@@ -721,8 +922,8 @@ func (r *InspectionPolicyReconciler) generateCronJobCR(policy *goharborv1.Inspec
 		})
 	}
 
-	// TODO: more setting for CronjobPkgLoadScaner
-	if cronjobType == goharborv1.CronjobPkgLoadScanner {
+	// TODO: more setting for CronjobPkgLoadScaner NOTE: REMOVE
+	if cronjobType == goharborv1.DaemonSetPkgLoadScanner {
 		// append container for pkg scanner TODO: add another container
 		cj.Spec.JobTemplate.Spec.Template.Spec.Containers = append(cj.Spec.JobTemplate.Spec.Template.Spec.Containers, corev1.Container{
 			Name:            "pkgscanner",

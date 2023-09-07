@@ -3,7 +3,9 @@ package pkgload_scanner
 import (
 	"context"
 	"encoding/json"
+	"time"
 
+	"github.com/go-co-op/gocron"
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 	exporter_inputs "github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-exporter/pkg/inputs"
@@ -41,10 +43,27 @@ var (
 )
 
 func (c *PkgLoadController) Run(ctx context.Context, policy *v1alpha1.InspectionPolicy) error {
+	// read crontab from policy
+	if policy.Spec.Schedule == "" {
+		return errors.New("schedule is not set")
+	}
+	s := gocron.NewScheduler(time.Local)
+	_, err := s.Cron(policy.Spec.Schedule).Do(c.scan, ctx, policy) // every minute
+	if err != nil {
+		return errors.Wrap(err, "schedule scan")
+	}
+	s.StartBlocking()
+	return nil
+}
+
+func (c *PkgLoadController) scan(ctx context.Context, policy *v1alpha1.InspectionPolicy) error {
 	viper.SetConfigName("config") // name of config file (without extension)
 	viper.AddConfigPath(cfgDir)
 
-	_ = ReadEnvConfig() // TODO: read inspector config from env
+	currentNodeName := getEnv("NODE_NAME", "")
+	if currentNodeName == "" { // should not happen
+		return errors.New("NODE_NAME env is not set")
+	}
 
 	// Skip work namespace.
 	skips := []string{*policy.Spec.WorkNamespace}
@@ -83,6 +102,10 @@ func (c *PkgLoadController) Run(ctx context.Context, policy *v1alpha1.Inspection
 
 		// range pods
 		for _, pod := range pods.Items {
+			// filter pods of current node
+			if pod.Spec.NodeName != currentNodeName {
+				continue
+			}
 			// range containers
 			for _, containerStatus := range pod.Status.ContainerStatuses {
 				if !containerStatus.Ready {
@@ -141,7 +164,7 @@ func (c *PkgLoadController) Run(ctx context.Context, policy *v1alpha1.Inspection
 						for vulnPkg, vulnPkgDetail := range mVulnPkg2Detail {
 							// filter unused vuln pkg
 							if _, ok := vulnPkgDetail.MapInstalledFiles[filename]; ok {
-								// TODO: assemble & append report
+								// assemble & append report
 								vulnLoaded = append(vulnLoaded, VulnLoaded{
 									CVE:         vulnPkgDetail.CVE,
 									Severity:    vulnPkgDetail.Severity,
@@ -241,8 +264,9 @@ func (c *PkgLoadController) WithScheme(scheme *runtime.Scheme) *PkgLoadControlle
 	return c
 }
 
-func (c *PkgLoadController) WithPkgScanner() *PkgLoadController {
-	panic("implement me")
+func (c *PkgLoadController) WithPkgScanner(client pkgclient.PkgInfoClient) *PkgLoadController {
+	c.pkgScanner = client
+	return c
 }
 
 // WithAdapter sets adapter.

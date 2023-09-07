@@ -6,6 +6,7 @@ require github.com/goharbor/harbor/src v0.0.0-20230320075937-2b3f178a5095
 
 require (
 	github.com/aquasecurity/trivy v0.40.0
+	github.com/go-co-op/gocron v1.28.0
 	github.com/imroc/req/v3 v3.35.0
 )
 
@@ -147,7 +148,7 @@ require (
 	github.com/quic-go/qtls-go1-20 v0.2.2 // indirect
 	github.com/quic-go/quic-go v0.34.0 // indirect
 	github.com/robfig/cron v1.2.0 // indirect
-	github.com/robfig/cron/v3 v3.0.0 // indirect
+	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/samber/lo v1.37.0 // indirect
 	github.com/shiena/ansicolor v0.0.0-20200904210342-c7312218db18 // indirect
 	github.com/spf13/afero v1.9.3 // indirect

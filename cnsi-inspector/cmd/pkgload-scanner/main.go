@@ -6,6 +6,7 @@ import (
 	"os"
 
 	pkgloadscanner "github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-inspector/pkg/pkgload-scanner"
+	pkgclient "github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-inspector/pkg/pkgload-scanner/client"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/api/v1alpha1"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/pkg/data/providers"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/lib/log"
@@ -68,15 +69,22 @@ func main() {
 		os.Exit(1)
 	}
 
-	// TODO: init client of pkg-scanner
+	// init client of pkg-scanner
+	network := os.Getenv("PKG_SCANNER_NETWORK")
+	addr := os.Getenv("PKG_SCANNER_ADDR")
+	if network == "" || addr == "" {
+		log.Error("pkg-scanner network or addr is empty")
+		os.Exit(1)
+	}
+	pkgscannerClient := pkgclient.New(network, addr)
 
 	// run pkgloadscanner controller
 	runner := pkgloadscanner.NewController().
 		WithScheme(scheme).
 		WithK8sClient(k8sClient).
 		WithAdapter(provider).
+		WithPkgScanner(pkgscannerClient).
 		CTRL()
-
 	if err = runner.Run(ctx, inspectionPolicy); err != nil {
 		log.Error(err, "risk manager controller run")
 		os.Exit(1)
