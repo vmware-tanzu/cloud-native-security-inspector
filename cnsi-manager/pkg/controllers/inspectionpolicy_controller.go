@@ -86,6 +86,7 @@ type InspectionPolicyReconciler struct {
 func (r *InspectionPolicyReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 
 	log.Info("Reconciling inspector policy")
+	log.Info("with pkgload feature enabled")
 
 	r.nodeList = []string{}
 	nodeList := corev1.NodeList{}
@@ -779,9 +780,8 @@ func (r *InspectionPolicyReconciler) addCriSockToContainer(container *corev1.Con
 }
 
 func (r *InspectionPolicyReconciler) addCriSockToPodSpec(podSpec *corev1.PodSpec) {
-	hostPathType := corev1.HostPathFile
 	for i, path := range r.criSockList {
-		hostPath := corev1.HostPathVolumeSource{Path: path, Type: &hostPathType}
+		hostPath := corev1.HostPathVolumeSource{Path: path}
 		volume := corev1.Volume{
 			Name:         strconv.Itoa(i),
 			VolumeSource: corev1.VolumeSource{HostPath: &hostPath},
