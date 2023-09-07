@@ -142,6 +142,7 @@ docker-push-backend: ## Build all the images except portal.
 	$(DOCKERCMD) push ${IMG_CMD_INSPECTOR}
 	$(DOCKERCMD) push ${IMG_CMD_KUBEBENCH}
 	$(DOCKERCMD) push ${RISK}
+	$(DOCKERCMD) push ${IMG_CMD_PKGLOAD_SCANNER}
 	$(DOCKERCMD) push ${IMG_CMD_WORKLOAD_SCANNER}
 	$(DOCKERCMD) push ${IMG_CMD_TRIVY}
 

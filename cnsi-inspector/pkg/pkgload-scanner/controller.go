@@ -14,7 +14,7 @@ import (
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-inspector/pkg/assets/workload"
 	pkgclient "github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-inspector/pkg/pkgload-scanner/client"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-inspector/pkg/pkgload-scanner/client/v1alpha/api"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-inspector/pkg/risk-scanner/data"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-inspector/pkg/pkgload-scanner/data"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/api/v1alpha1"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/pkg/data/core"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/pkg/data/providers"
@@ -90,7 +90,7 @@ func (c *PkgLoadController) scan(ctx context.Context, policy *v1alpha1.Inspectio
 		return errors.Wrap(err, "lsof scan")
 	}
 	for _, lsof := range lsofs {
-		log.Debugf("%+v\n", lsof) // TODO: debug level
+		log.Debugf("%+v\n", lsof)
 		mContainerID2LsofFiles[lsof.ContainerID] = append(mContainerID2LsofFiles[lsof.ContainerID], lsof)
 	}
 
@@ -123,7 +123,7 @@ func (c *PkgLoadController) scan(ctx context.Context, policy *v1alpha1.Inspectio
 				}
 				// get image of container(container -> image)
 				targetImage := containerStatus.Image
-				aid := core.ParseArtifactIDFrom(targetImage, containerStatus.ImageID) // TODO: check
+				aid := core.ParseArtifactIDFrom(targetImage, containerStatus.ImageID)
 				imageItem := data.NewImageItem(targetImage, aid)
 				// get report of image(image -> vuln list)
 				imageHarborReport, err := imageItem.FetchHarborReport(c.adapter)
@@ -149,7 +149,6 @@ func (c *PkgLoadController) scan(ctx context.Context, policy *v1alpha1.Inspectio
 				}
 
 				// filter innocent pkgs (vuln pkg+cve pair -> installed files)
-				// FIXME: vuln pkg represents a pkg-cve pair
 				mVulnPkg2Detail := make(map[string]VulnDetail)
 				for _, vuln := range imageHarborReport.Vulnerabilities {
 					pkg := getPkgFromScanReport(vuln.Package, scanReport)
@@ -184,8 +183,6 @@ func (c *PkgLoadController) scan(ctx context.Context, policy *v1alpha1.Inspectio
 				}
 				for _, lsof4PID := range relatedLsofs {
 					// ecah lsof record represents load files of a process
-					//currentVulnLoaded := []VulnLoaded{}
-					//mPID2VulnPkgDetail := make(map[string])
 					mCVEPkgPairEncountered := make(map[string]struct{})
 					for _, filename := range lsof4PID.Name {
 						for _, vulnPkgDetail := range mVulnPkg2Detail {
@@ -281,20 +278,7 @@ func getPkgFromScanReport(pkgName string, report *api.ScanResult) *api.Package {
 	return nil
 }
 
-// TODO: remove just for design
-type LsofReport struct {
-	ContainerID string
-	LsofFiles   []string
-}
-
-// TODO: remove just for design
-type ImageInstalledFailes struct {
-	ImageName   string
-	PkgFilesSet map[string]map[string]struct{}
-	// {"pkgName": {"file1": struct{}, "file2": struct{}}, "pkgName2": {"file1": struct{}, "file2": struct{}}}
-}
-
-// NewController news a RiskController.
+// NewController news a PkgLoadController.
 func NewController() *PkgLoadController {
 	return &PkgLoadController{}
 }
@@ -322,14 +306,14 @@ func (s *PkgLoadController) WithAdapter(Adapter providers.Adapter) *PkgLoadContr
 	return s
 }
 
-// CTRL returns RiskController interface.
+// CTRL returns PkgLoadController interface.
 func (c *PkgLoadController) CTRL() Controller {
 	c.collector = workload.NewCollector().
 		WithScheme(c.scheme).
 		UseClient(c.kc).
 		Complete()
 
-	// Mark RiskController is ready.
+	// Mark PkgLoadController is ready.
 	c.ready = true
 
 	return c

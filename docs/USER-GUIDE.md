@@ -237,6 +237,12 @@ The score scale for this kind of risk is the same with the `network exposure ris
 <img src="./pictures/report-risk-scanner.png">
 We can also check the time-series trend of the vulnerabilities in the container.
 
+##### Pkgload scanning reports(WIP)
+
+This report lists all the risky packages loaded in memory by running processes in the contianer 
+along with runtime information(host process name, pid, user...etc.)
+and k8s information(pod name, namespace, node name...etc.)
+
 #### 1.1.3 Insight
 In release 0.3, insight is all about the image scanning results, Kubebench scanning results and
 risk scanning results are not included in the Insight section.

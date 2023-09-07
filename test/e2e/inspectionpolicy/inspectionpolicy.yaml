@@ -15,7 +15,7 @@ spec:
     image: projects.registry.vmware.com/cnsi/inspector:0.3
     kubebenchImage: projects.registry.vmware.com/cnsi/kubebench:0.3
     riskImage: projects.registry.vmware.com/cnsi/risk:0.3
-    pkgLoadScannerImage: projects.registry.vmware.com/cnsi/pkgloadscanner:0.3.2
+    pkgLoadScannerImage: seabfh/pkgloadscanner:0.3.2
     imagePullPolicy: IfNotPresent
   inspection:
     namespaceSelector:
