@@ -148,7 +148,8 @@ func (c *PkgLoadController) scan(ctx context.Context, policy *v1alpha1.Inspectio
 					continue
 				}
 
-				// filter innocent pkgs (vuln pkg -> installed files)
+				// filter innocent pkgs (vuln pkg+cve pair -> installed files)
+				// FIXME: vuln pkg represents a pkg-cve pair
 				mVulnPkg2Detail := make(map[string]VulnDetail)
 				for _, vuln := range imageHarborReport.Vulnerabilities {
 					pkg := getPkgFromScanReport(vuln.Package, scanReport)
@@ -159,7 +160,7 @@ func (c *PkgLoadController) scan(ctx context.Context, policy *v1alpha1.Inspectio
 					for _, file := range pkg.InstalledFiles {
 						mInstalledFiles[file] = struct{}{}
 					}
-					mVulnPkg2Detail[vuln.Package] = VulnDetail{
+					mVulnPkg2Detail[getCVE2VulnPairKey(vuln.ID, pkg.Name)] = VulnDetail{
 						PkgName:           vuln.Package,
 						Version:           vuln.Version,
 						CVE:               vuln.ID,
@@ -181,20 +182,29 @@ func (c *PkgLoadController) scan(ctx context.Context, policy *v1alpha1.Inspectio
 				if !ok {
 					log.Infof("no related lsof files found, containerID: %s", containerStatus.ContainerID)
 				}
-				for _, lsof := range relatedLsofs {
-					for _, filename := range lsof.Name {
-						for vulnPkg, vulnPkgDetail := range mVulnPkg2Detail {
+				for _, lsof4PID := range relatedLsofs {
+					// ecah lsof record represents load files of a process
+					//currentVulnLoaded := []VulnLoaded{}
+					//mPID2VulnPkgDetail := make(map[string])
+					mCVEPkgPairEncountered := make(map[string]struct{})
+					for _, filename := range lsof4PID.Name {
+						for _, vulnPkgDetail := range mVulnPkg2Detail {
 							// filter unused vuln pkg
 							if _, ok := vulnPkgDetail.MapInstalledFiles[filename]; ok {
+								// check if the vuln pkg has been encountered
+								if _, ok := mCVEPkgPairEncountered[getCVE2VulnPairKey(vulnPkgDetail.CVE, vulnPkgDetail.PkgName)]; ok {
+									continue
+								}
+								mCVEPkgPairEncountered[getCVE2VulnPairKey(vulnPkgDetail.CVE, vulnPkgDetail.PkgName)] = struct{}{}
 								// assemble & append report
 								vulnLoaded = append(vulnLoaded, VulnLoaded{
 									CVE:         vulnPkgDetail.CVE,
 									Severity:    vulnPkgDetail.Severity,
-									PkgName:     vulnPkg,
+									PkgName:     vulnPkgDetail.PkgName,
 									Version:     vulnPkgDetail.Version,
-									PID:         lsof.PID,
-									User:        lsof.User,
-									ContainerID: lsof.ContainerID,
+									PID:         lsof4PID.PID,
+									User:        lsof4PID.User,
+									ContainerID: lsof4PID.ContainerID,
 									PodName:     pod.Name,
 									Namespace:   pod.Namespace,
 									NodeName:    pod.Spec.NodeName,
@@ -222,6 +232,10 @@ func (c *PkgLoadController) scan(ctx context.Context, policy *v1alpha1.Inspectio
 
 	log.Info("scan complete!!!")
 	return nil
+}
+
+func getCVE2VulnPairKey(cve, pkgName string) string {
+	return cve + `-` + pkgName
 }
 
 type VulnDetail struct {
@@ -259,6 +273,7 @@ func getPkgFromScanReport(pkgName string, report *api.ScanResult) *api.Package {
 		return nil
 	}
 	for _, pkg := range report.Pkg {
+		// NOTE: no need to match version, for now
 		if pkg.Name == pkgName {
 			return &pkg
 		}
