@@ -59,16 +59,16 @@ function check_golang {
 		golang_version=${BASH_REMATCH[1]}
 		golang_version_part1=${BASH_REMATCH[2]}
 		golang_version_part2=${BASH_REMATCH[3]}
+        required_version="1.19"
 
 		# the version of golang does not meet the requirement
-		if [ "$golang_version_part1" -ne 1 ]||[ "$golang_version_part2" -ne 19 ] 
-		then
+        if [ "$(printf '%s\n' "$required_version" "$golang_version" | sort -V | head -n1)" = "$required_version" ]; then
+			note "golang version: $golang_version"
+        else
 			note "golang version: $golang_version"
 			error "Need to upgrade golang package to 1.19.0+ ."
 			exit 1
-		else
-			note "golang version: $golang_version"
-		fi
+        fi
 	else
 		warn "Failed to parse golang version."
 		return

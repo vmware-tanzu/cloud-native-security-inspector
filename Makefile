@@ -94,7 +94,7 @@ build-kube-bench: generate fmt vet ## Build kubebench binary.
 build-risk: generate fmt vet ## Build risk binary.
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/risk cnsi-inspector/cmd/risk-scanner/main.go
 
-build-pkgloadscanner: generate fmt vet ## Build kubebench binary.
+build-pkgloadscanner: generate fmt vet ## Build pkgloadscanner binary.
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/pkgloadscanner cnsi-inspector/cmd/pkgload-scanner/main.go
 
 build-workloadscanner: generate fmt vet ## Build workloadscanner binary.
@@ -105,7 +105,7 @@ build-trivy: generate fmt vet ## Build trivy binary.
 
 ##@ Build OCI images
 
-docker-build-backend: docker-build-manager docker-build-exporter docker-build-inspector docker-build-kubebench docker-build-risk docker-build-workloadscanner docker-build-scanner-trivy
+docker-build-backend: docker-build-manager docker-build-exporter docker-build-inspector docker-build-kubebench docker-build-risk docker-build-workloadscanner docker-build-scanner-trivy docker-build-pkgload
 
 docker-build-all: docker-build-backend docker-build-portal
 
