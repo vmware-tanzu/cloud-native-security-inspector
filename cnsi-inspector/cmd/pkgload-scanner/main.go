@@ -38,6 +38,8 @@ func main() {
 	flag.StringVar(&policy, "policy", "", "name of the inspection policy")
 	flag.Parse()
 
+	log.Info("starting pkgload-scanner inspector")
+
 	k8sClient, err := client.New(ctrl.GetConfigOrDie(), client.Options{
 		Scheme: scheme,
 	})
@@ -72,6 +74,7 @@ func main() {
 	}
 
 	// init client of pkg-scanner
+	log.Info("starting pkg-scanner")
 	pkgscannerCmd := exec.Command("/scanner", "pkg-file-server")
 	if err := pkgscannerCmd.Start(); err != nil {
 		log.Error(err, "failed to start pkg-scanner")
@@ -83,9 +86,13 @@ func main() {
 				log.Error("pkg-scanner exited")
 				os.Exit(1)
 			}
+			time.Sleep(5 * time.Second)
 		}
 	}()
 	defer pkgscannerCmd.Process.Kill()
+	// wait for pkg-scanner ready
+	time.Sleep(5 * time.Second)
+
 	network := os.Getenv("PKG_SCANNER_NETWORK")
 	addr := os.Getenv("PKG_SCANNER_ADDR")
 	if network == "" || addr == "" {

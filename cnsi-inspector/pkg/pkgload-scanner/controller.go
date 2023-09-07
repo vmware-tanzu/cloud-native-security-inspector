@@ -3,6 +3,8 @@ package pkgload_scanner
 import (
 	"context"
 	"encoding/json"
+	"os"
+	"regexp"
 	"time"
 
 	"github.com/go-co-op/gocron"
@@ -48,6 +50,7 @@ func (c *PkgLoadController) Run(ctx context.Context, policy *v1alpha1.Inspection
 		return errors.New("schedule is not set")
 	}
 	s := gocron.NewScheduler(time.Local)
+	// TODO: get crontab from env
 	_, err := s.Cron(policy.Spec.Schedule).Do(c.scan, ctx, policy) // every minute
 	if err != nil {
 		return errors.Wrap(err, "schedule scan")
@@ -57,6 +60,7 @@ func (c *PkgLoadController) Run(ctx context.Context, policy *v1alpha1.Inspection
 }
 
 func (c *PkgLoadController) scan(ctx context.Context, policy *v1alpha1.InspectionPolicy) error {
+	log.Info("start scanning!!!")
 	viper.SetConfigName("config") // name of config file (without extension)
 	viper.AddConfigPath(cfgDir)
 
@@ -86,6 +90,7 @@ func (c *PkgLoadController) scan(ctx context.Context, policy *v1alpha1.Inspectio
 		return errors.Wrap(err, "lsof scan")
 	}
 	for _, lsof := range lsofs {
+		log.Debugf("%+v\n", lsof) // TODO: debug level
 		mContainerID2LsofFiles[lsof.ContainerID] = append(mContainerID2LsofFiles[lsof.ContainerID], lsof)
 	}
 
@@ -98,6 +103,11 @@ func (c *PkgLoadController) scan(ctx context.Context, policy *v1alpha1.Inspectio
 			ctx, corev1.LocalObjectReference{Name: ns.Name}, policy.Spec.Inspection.WorkloadSelector, &pods)
 		if err != nil {
 			log.Error(err, "list pods")
+		}
+
+		if len(pods.Items) == 0 {
+			log.Infof("no pods found in namespace %s", ns.Name)
+			continue
 		}
 
 		// range pods
@@ -158,7 +168,19 @@ func (c *PkgLoadController) scan(ctx context.Context, policy *v1alpha1.Inspectio
 					}
 				}
 				// get container load files(container -> load files)
-				relatedLsofs := mContainerID2LsofFiles[containerStatus.ContainerID]
+				// regex containerID
+				// containerd://e405daabf14caa702dc86c9f294397aa0c98c782059b5196ed1a5c677bc63d3f
+				// docker://e405daabf14caa702dc86c9f294397aa0c98c782059b5196ed1a5c677bc63d3f
+				regexpContainerID := regexp.MustCompile(`^.*://(.*)$`)
+				containerID := regexpContainerID.ReplaceAllString(containerStatus.ContainerID, "$1")
+				if containerID == "" {
+					log.Errorf("invalid containerID: %s", containerStatus.ContainerID)
+					continue
+				}
+				relatedLsofs, ok := mContainerID2LsofFiles[containerID]
+				if !ok {
+					log.Infof("no related lsof files found, containerID: %s", containerStatus.ContainerID)
+				}
 				for _, lsof := range relatedLsofs {
 					for _, filename := range lsof.Name {
 						for vulnPkg, vulnPkgDetail := range mVulnPkg2Detail {
@@ -186,9 +208,19 @@ func (c *PkgLoadController) scan(ctx context.Context, policy *v1alpha1.Inspectio
 		}
 	}
 
+	if len(vulnLoaded) == 0 {
+		log.Info("no loaded vulnerabilities found")
+		return nil
+	}
+
 	// write report as CR
 	ExportImageReports(PkgLoadReport{VulnLoaded: vulnLoaded}, policy)
 
+	if _, ok := os.LookupEnv("DEBUG"); ok {
+		log.Info("vuln loaded", "vulnLoaded", vulnLoaded)
+	}
+
+	log.Info("scan complete!!!")
 	return nil
 }
 
