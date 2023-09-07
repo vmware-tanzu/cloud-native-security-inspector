@@ -145,7 +145,7 @@ func (c *PkgLoadController) scan(ctx context.Context, policy *v1alpha1.Inspectio
 					continue
 				}
 				if !scanReport.Success {
-					log.Error("scan image pkg info failed")
+					log.Errorf("scan image pkg info failed,err:%s", scanReport.Msg)
 					continue
 				}
 
