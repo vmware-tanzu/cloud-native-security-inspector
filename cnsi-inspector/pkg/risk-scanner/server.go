@@ -5,6 +5,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/http"
+	"os"
+	"strings"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-exporter/pkg/inputs"
 	riskdata "github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-inspector/pkg/risk-scanner/data"
@@ -12,10 +17,6 @@ import (
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/api/v1alpha1"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/pkg/data/providers"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/lib/log"
-	"net/http"
-	"os"
-	"strings"
-	"time"
 )
 
 // Status risk evaluation status

@@ -3,7 +3,6 @@ package data
 import (
 	"context"
 	"fmt"
-
 	"github.com/goharbor/harbor/src/pkg/scan/vuln"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/api/v1alpha1"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/pkg/data"

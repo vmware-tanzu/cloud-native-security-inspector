@@ -5,9 +5,10 @@ package controllers
 import (
 	"context"
 	"fmt"
-	appsv1 "k8s.io/api/apps/v1"
 	"os"
 	"strconv"
+
+	appsv1 "k8s.io/api/apps/v1"
 
 	"strings"
 
@@ -153,13 +154,16 @@ func (r *InspectionPolicyReconciler) Reconcile(ctx context.Context, req ctrl.Req
 	// Process the cronjob for risk
 	var statusNeedUpdateForRisk bool
 	statusNeedUpdateForRisk, err = r.cronjobForInspection(ctx, policy, goharborv1.CronjobRisk)
+	// Process the cronjob for PkgLoadScanner
+	var statusNeedUpdateForPkgLoadScanner bool
+	statusNeedUpdateForPkgLoadScanner, err = r.cronjobForInspection(ctx, policy, goharborv1.CronjobPkgLoadScanner)
 	// Process the cronjob for workloadscanner
 	var statusNeedUpdateForWorkloadScanner bool
 	statusNeedUpdateForWorkloadScanner, err = r.cronjobForInspection(ctx, policy, goharborv1.CronjobWorkloadscanner)
 
 	// either inspection or kubebench or risk or workloadscanner needs update, it should be updated
 	var statusNeedUpdate bool
-	if statusNeedUpdateForInspection || statusNeedUpdateForKubebench || statusNeedUpdateForRisk || statusNeedUpdateForWorkloadScanner {
+	if statusNeedUpdateForInspection || statusNeedUpdateForKubebench || statusNeedUpdateForRisk || statusNeedUpdateForWorkloadScanner || statusNeedUpdateForPkgLoadScanner {
 		statusNeedUpdate = true
 	}
 
@@ -285,6 +289,8 @@ func (r *InspectionPolicyReconciler) cronjobForInspection(ctx context.Context, p
 	if cronjobType == goharborv1.CronjobInpsection && policy.Spec.Inspector.Image == "" {
 		return false, nil
 	} else if cronjobType == goharborv1.CronjobRisk && policy.Spec.Inspector.RiskImage == "" {
+		return false, nil
+	} else if cronjobType == goharborv1.CronjobPkgLoadScanner && policy.Spec.Inspector.PkgLoadScannerImage == "" {
 		return false, nil
 	} else if cronjobType == goharborv1.CronjobWorkloadscanner && policy.Spec.Inspector.WorkloadScannerImage == "" {
 		return false, nil
@@ -552,6 +558,8 @@ func (r *InspectionPolicyReconciler) checkCronJob(ctx context.Context, policy *g
 		exec = policy.Status.InspectionExecutor
 	} else if cronjobType == goharborv1.CronjobRisk {
 		exec = policy.Status.RiskExecutor
+	} else if cronjobType == goharborv1.CronjobPkgLoadScanner {
+		exec = policy.Status.PkgLoadScannerExecutor
 	} else if cronjobType == goharborv1.CronjobWorkloadscanner {
 		exec = policy.Status.WorkloadScannerExecutor
 	}
@@ -622,6 +630,9 @@ func (r *InspectionPolicyReconciler) generateCronJobCR(policy *goharborv1.Inspec
 	} else if cronjobType == goharborv1.CronjobRisk {
 		name = "risk"
 		command = "/risk"
+	} else if cronjobType == goharborv1.CronjobPkgLoadScanner {
+		name = "pkgLoadScanner"
+		command = "/pkgLoadScanner scan"
 	} else if cronjobType == goharborv1.CronjobWorkloadscanner {
 		name = "workloadscanner"
 		command = "/workloadscanner"
@@ -708,6 +719,46 @@ func (r *InspectionPolicyReconciler) generateCronJobCR(policy *goharborv1.Inspec
 				},
 			},
 		})
+	}
+
+	// TODO: more setting for CronjobPkgLoadScaner
+	if cronjobType == goharborv1.CronjobPkgLoadScanner {
+		// append container for pkg scanner TODO: add another container
+		cj.Spec.JobTemplate.Spec.Template.Spec.Containers = append(cj.Spec.JobTemplate.Spec.Template.Spec.Containers, corev1.Container{
+			Name:            "pkgscanner",
+			Image:           image,
+			ImagePullPolicy: getImagePullPolicy(policy),
+			Command:         []string{command},
+			Args: []string{
+				"--policy",
+				policy.Name,
+			},
+			Env: []corev1.EnvVar{
+				{
+					Name:  "SERVER_ADDR",
+					Value: ":8080",
+				},
+				{
+					Name: "NODE_NAME",
+					ValueFrom: &corev1.EnvVarSource{
+						FieldRef: &corev1.ObjectFieldSelector{
+							FieldPath: "spec.nodeName",
+						},
+					},
+				},
+				{
+					Name:  "NARROWS_NAMESPACE",
+					Value: r.namespace,
+				},
+			},
+		})
+
+		// privilege & hostPID
+		privileged := true
+		cj.Spec.JobTemplate.Spec.Template.Spec.Containers[0].SecurityContext = &corev1.SecurityContext{
+			Privileged: &privileged,
+		}
+		cj.Spec.JobTemplate.Spec.Template.Spec.HostPID = true
 	}
 
 	if policy.Spec.Inspector != nil {

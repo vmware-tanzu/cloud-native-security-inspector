@@ -400,6 +400,11 @@ func (in *InspectionPolicyStatus) DeepCopyInto(out *InspectionPolicyStatus) {
 		*out = new(corev1.ObjectReference)
 		**out = **in
 	}
+	if in.PkgLoadScannerExecutor != nil {
+		in, out := &in.PkgLoadScannerExecutor, &out.PkgLoadScannerExecutor
+		*out = new(corev1.ObjectReference)
+		**out = **in
+	}
 	if in.WorkloadScannerExecutor != nil {
 		in, out := &in.WorkloadScannerExecutor, &out.WorkloadScannerExecutor
 		*out = new(corev1.ObjectReference)

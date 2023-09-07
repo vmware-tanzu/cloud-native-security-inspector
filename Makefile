@@ -15,6 +15,7 @@ IMG_CMD_TRIVY ?= $(REGISTRY)/trivy:$(IMG_TAG)
 IMG_CMD_KUBEBENCH ?= $(REGISTRY)/kubebench:$(IMG_TAG)
 PORTAl ?= $(REGISTRY)/portal:$(IMG_TAG)
 RISK ?= $(REGISTRY)/risk:$(IMG_TAG)
+IMG_CMD_PKGLOAD_SCANNER ?= $(REGISTRY)/pkgloadscanner:$(IMG_TAG)
 IMG_CMD_WORKLOAD_SCANNER ?= $(REGISTRY)/workloadscanner:$(IMG_TAG)
 
 # Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
@@ -93,6 +94,9 @@ build-kube-bench: generate fmt vet ## Build kubebench binary.
 build-risk: generate fmt vet ## Build risk binary.
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/risk cnsi-inspector/cmd/risk-scanner/main.go
 
+build-pkgloadscanner: generate fmt vet ## Build kubebench binary.
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/pkgloadscanner cnsi-inspector/cmd/pkgload-scanner/main.go
+
 build-workloadscanner: generate fmt vet ## Build workloadscanner binary.
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/workloadscanner cnsi-inspector/cmd/workload-scanner/main.go
 
@@ -125,6 +129,9 @@ docker-build-kubebench: build-kube-bench ## Build docker image of kube-bench sca
 
 docker-build-risk: build-risk ## Build docker image of risk scanner.
 	$(DOCKERCMD) buildx build -t ${RISK} -f deployments/dockerfiles/Dockerfile.riskmanager .
+
+docker-build-pkgload: build-pkgloadscanner ## Build docker image of pkgload scanner.
+	$(DOCKERCMD) buildx build -t ${IMG_CMD_PKGLOAD_SCANNER} -f deployments/dockerfiles/Dockerfile.pkgloadscanner .
 
 docker-build-workloadscanner: build-workloadscanner ## Build docker image with workload scanner.
 	$(DOCKERCMD) buildx build -t ${IMG_CMD_WORKLOAD_SCANNER} -f deployments/dockerfiles/Dockerfile.workloadscanner .

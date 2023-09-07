@@ -2,6 +2,8 @@ package risk_scanner
 
 import (
 	"context"
+	"time"
+
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-inspector/pkg/assets/workload"
@@ -12,7 +14,6 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	"time"
 )
 
 // Controller controls the inspection flow.

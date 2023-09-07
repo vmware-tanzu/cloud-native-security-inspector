@@ -5,7 +5,7 @@ import (
 	"flag"
 	"os"
 
-	riskmanager "github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-inspector/pkg/risk-scanner"
+	pkgloadscanner "github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-inspector/pkg/pkgload-scanner"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/api/v1alpha1"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/pkg/data/providers"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/lib/log"
@@ -32,8 +32,6 @@ func init() {
 
 func main() {
 	var policy string
-	var mode string
-	flag.StringVar(&mode, "mode", "standalone", "running mode")
 	flag.StringVar(&policy, "policy", "", "name of the inspection policy")
 	flag.Parse()
 
@@ -55,40 +53,32 @@ func main() {
 		os.Exit(1)
 	}
 
-	if mode == "server-only" {
-		setting := &v1alpha1.Setting{}
-		if err = k8sClient.Get(ctx, client.ObjectKey{Name: inspectionPolicy.Spec.SettingsName}, setting); err != nil {
-			if !apierrors.IsNotFound(err) {
-				log.Error(err, "unable to get setting")
-			}
-			// Ignore the not found error.
-			os.Exit(1)
+	// get data source provider
+	setting := &v1alpha1.Setting{}
+	if err = k8sClient.Get(ctx, client.ObjectKey{Name: inspectionPolicy.Spec.SettingsName}, setting); err != nil {
+		if !apierrors.IsNotFound(err) {
+			log.Error(err, "unable to get setting")
 		}
+		// Ignore the not found error.
+		os.Exit(1)
+	}
+	provider, err := providers.NewProvider(ctx, k8sClient, setting)
+	if err != nil {
+		log.Error(err, "failed to create provider")
+		os.Exit(1)
+	}
 
-		// get data source provider
-		provider, err := providers.NewProvider(ctx, k8sClient, setting)
-		if err != nil {
-			log.Error(err, "failed to create provider")
-			os.Exit(1)
-		}
+	// TODO: init client of pkg-scanner
 
-		conf := riskmanager.ReadEnvConfig()
+	// run pkgloadscanner controller
+	runner := pkgloadscanner.NewController().
+		WithScheme(scheme).
+		WithK8sClient(k8sClient).
+		WithAdapter(provider).
+		CTRL()
 
-		log.Info("mode server-only")
-		server := riskmanager.NewServer().
-			WithAdapter(provider).
-			WithPolicy(inspectionPolicy).
-			WithContext(ctx)
-		server.Run(conf.Server)
-	} else {
-		runner := riskmanager.NewController().
-			WithScheme(scheme).
-			WithK8sClient(k8sClient).
-			CTRL()
-
-		if err = runner.Run(ctx, inspectionPolicy); err != nil {
-			log.Error(err, "risk manager controller run")
-			os.Exit(1)
-		}
+	if err = runner.Run(ctx, inspectionPolicy); err != nil {
+		log.Error(err, "risk manager controller run")
+		os.Exit(1)
 	}
 }
