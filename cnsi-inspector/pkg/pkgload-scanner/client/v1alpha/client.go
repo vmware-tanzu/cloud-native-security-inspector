@@ -102,7 +102,7 @@ func (psc *PkgScannerClient) ping(ctx context.Context) error {
 		log.Println("error:", err)
 		log.Println("raw content:")
 		log.Println(resp.Dump()) // Record raw content when error occurs.
-		return fmt.Errorf("%w,msg:%w", errcode.ErrUnknown, err)
+		return fmt.Errorf("%w,msg:%v", errcode.ErrUnknown, err)
 	}
 
 	if resp.IsErrorState() { // Status code >= 400.
@@ -136,7 +136,7 @@ func (psc *PkgScannerClient) getScanJobStatus(ctx context.Context, jobID string)
 		log.Println("error:", err)
 		log.Println("raw content:")
 		log.Println(resp.Dump()) // Record raw content when error occurs.
-		return nil, fmt.Errorf("%w,msg:%w", errcode.ErrUnknown, err)
+		return nil, fmt.Errorf("%w,msg:%v", errcode.ErrUnknown, err)
 	}
 
 	if resp.IsErrorState() { // Status code >= 400.
@@ -171,7 +171,7 @@ func (psc *PkgScannerClient) getScanJobResult(ctx context.Context, jobID string)
 		log.Println("error:", err)
 		log.Println("raw content:")
 		log.Println(resp.Dump()) // Record raw content when error occurs.
-		return nil, fmt.Errorf("%w,msg:%w", errcode.ErrUnknown, err)
+		return nil, fmt.Errorf("%w,msg:%v", errcode.ErrUnknown, err)
 	}
 
 	if resp.IsErrorState() { // Status code >= 400.
@@ -206,7 +206,7 @@ func (psc *PkgScannerClient) addScanJob(ctx context.Context, imageName string) (
 		log.Println("error:", err)
 		log.Println("raw content:")
 		log.Println(resp.Dump()) // Record raw content when error occurs.
-		return "", fmt.Errorf("%w,msg:%w", errcode.ErrUnknown, err)
+		return "", fmt.Errorf("%w,msg:%v", errcode.ErrUnknown, err)
 	}
 
 	if resp.IsErrorState() { // Status code >= 400.
