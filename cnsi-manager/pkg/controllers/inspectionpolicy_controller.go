@@ -136,7 +136,10 @@ func (r *InspectionPolicyReconciler) Reconcile(ctx context.Context, req ctrl.Req
 	policy.Spec.WorkNamespace = wns
 
 	// Ensure Setting is correctly configured.
-	if policy.Spec.Inspector.Image != "" || policy.Spec.Inspector.KubebenchImage != "" || policy.Spec.Inspector.RiskImage != "" {
+	if policy.Spec.Inspector.Image != "" ||
+		policy.Spec.Inspector.KubebenchImage != "" ||
+		policy.Spec.Inspector.RiskImage != "" ||
+		policy.Spec.Inspector.PkgLoadScannerImage != "" {
 		datasource, err := r.EnsureSettings(ctx, policy)
 		if err != nil {
 			log.Error(err, "unable to ensure the settings in inspection policy")
@@ -186,7 +189,7 @@ func (r *InspectionPolicyReconciler) Reconcile(ctx context.Context, req ctrl.Req
 // checkPkgLoad checks if the pkgload scanner ds should be created or deleted.
 func (r *InspectionPolicyReconciler) checkPkgLoad(ctx context.Context, policy *goharborv1.InspectionPolicy) (bool, error) {
 	if policy.Spec.Inspector.PkgLoadScannerImage == "" {
-		log.Info(nil, "the user doesn't involve Kubebench Image in policy")
+		log.Info(nil, "the user doesn't involve Pkgload Image in policy")
 		return false, nil
 	}
 	var pkgloadDaemonSet appsv1.DaemonSet
@@ -215,16 +218,17 @@ func (r *InspectionPolicyReconciler) checkPkgLoad(ctx context.Context, policy *g
 		}
 	}
 	log.Debug("The daemonSet is already existing")
+	// TODO: check policy spec and update the daemonset if necessary (crontab)
 	return false, nil
 }
 
 func (r *InspectionPolicyReconciler) constructPkgloadDaemonSet(
 	policy *goharborv1.InspectionPolicy) (*appsv1.DaemonSet, error) {
 	pkgloadCommand := "/pkgloadscanner"
-	pkgScannerCommand := "/scanner pkg-file-server"
 	rootUid := int64(0)
 	fsPolicy := corev1.FSGroupChangeOnRootMismatch
 	// pkgload runtime scanner container
+	privileged := true
 	pkgloadContainer := corev1.Container{
 		Name:            "pkgload",
 		Image:           policy.Spec.Inspector.PkgLoadScannerImage,
@@ -249,42 +253,7 @@ func (r *InspectionPolicyReconciler) constructPkgloadDaemonSet(
 			},
 			{
 				Name:  "PKG_SCANNER_ADDR",
-				Value: "/var/share/pkgscanner.sock",
-			},
-			{
-				Name:  "PKG_SCANNER_NETWORK",
-				Value: "unix",
-			},
-		},
-	}
-
-	// pkgscanner image pkg installed files scanning
-	privileged := true
-	pkgScannerContainer := corev1.Container{
-		Name:            "pkgscanner",
-		Image:           policy.Spec.Inspector.PkgScannerImage,
-		ImagePullPolicy: getImagePullPolicy(policy),
-		Command:         []string{pkgScannerCommand},
-		Args: []string{
-			"--policy",
-			policy.Name,
-		},
-		Env: []corev1.EnvVar{
-			{
-				Name:  "NARROWS_NAMESPACE",
-				Value: r.namespace,
-			},
-			{
-				Name: "NODE_NAME",
-				ValueFrom: &corev1.EnvVarSource{
-					FieldRef: &corev1.ObjectFieldSelector{
-						FieldPath: "spec.nodeName",
-					},
-				},
-			},
-			{
-				Name:  "PKG_SCANNER_ADDR",
-				Value: "/var/share/pkgscanner.sock",
+				Value: "/var/run/pkgscanner.sock",
 			},
 			{
 				Name:  "PKG_SCANNER_NETWORK",
@@ -295,15 +264,16 @@ func (r *InspectionPolicyReconciler) constructPkgloadDaemonSet(
 			Privileged: &privileged,
 		},
 	}
+
 	// pkgScannerContainer
-	r.addCriSockToContainer(&pkgScannerContainer)
+	r.addCriSockToContainer(&pkgloadContainer)
 	podSpec := corev1.PodSpec{
 		HostPID: true,
 		SecurityContext: &corev1.PodSecurityContext{
 			RunAsUser:           &rootUid,
 			FSGroupChangePolicy: &fsPolicy,
 		},
-		Containers:         []corev1.Container{pkgloadContainer, pkgScannerContainer},
+		Containers:         []corev1.Container{pkgloadContainer},
 		RestartPolicy:      corev1.RestartPolicyAlways,
 		ServiceAccountName: saName,
 		ImagePullSecrets:   policy.Spec.Inspector.ImagePullSecrets,
@@ -461,9 +431,6 @@ func (r *InspectionPolicyReconciler) cronjobForInspection(ctx context.Context, p
 	if cronjobType == goharborv1.CronjobInpsection && policy.Spec.Inspector.Image == "" {
 		return false, nil
 	} else if cronjobType == goharborv1.CronjobRisk && policy.Spec.Inspector.RiskImage == "" {
-		return false, nil
-	} else if cronjobType == goharborv1.DaemonSetPkgLoadScanner &&
-		(policy.Spec.Inspector.PkgLoadScannerImage == "" || policy.Spec.Inspector.PkgScannerImage == "") {
 		return false, nil
 	} else if cronjobType == goharborv1.CronjobWorkloadscanner && policy.Spec.Inspector.WorkloadScannerImage == "" {
 		return false, nil
@@ -736,8 +703,6 @@ func (r *InspectionPolicyReconciler) checkCronJob(ctx context.Context, policy *g
 		exec = policy.Status.InspectionExecutor
 	} else if cronjobType == goharborv1.CronjobRisk {
 		exec = policy.Status.RiskExecutor
-	} else if cronjobType == goharborv1.DaemonSetPkgLoadScanner {
-		exec = policy.Status.PkgLoadScannerExecutor
 	} else if cronjobType == goharborv1.CronjobWorkloadscanner {
 		exec = policy.Status.WorkloadScannerExecutor
 	}
@@ -920,46 +885,6 @@ func (r *InspectionPolicyReconciler) generateCronJobCR(policy *goharborv1.Inspec
 				},
 			},
 		})
-	}
-
-	// TODO: more setting for CronjobPkgLoadScaner NOTE: REMOVE
-	if cronjobType == goharborv1.DaemonSetPkgLoadScanner {
-		// append container for pkg scanner TODO: add another container
-		cj.Spec.JobTemplate.Spec.Template.Spec.Containers = append(cj.Spec.JobTemplate.Spec.Template.Spec.Containers, corev1.Container{
-			Name:            "pkgscanner",
-			Image:           image,
-			ImagePullPolicy: getImagePullPolicy(policy),
-			Command:         []string{command},
-			Args: []string{
-				"--policy",
-				policy.Name,
-			},
-			Env: []corev1.EnvVar{
-				{
-					Name:  "SERVER_ADDR",
-					Value: ":8080",
-				},
-				{
-					Name: "NODE_NAME",
-					ValueFrom: &corev1.EnvVarSource{
-						FieldRef: &corev1.ObjectFieldSelector{
-							FieldPath: "spec.nodeName",
-						},
-					},
-				},
-				{
-					Name:  "NARROWS_NAMESPACE",
-					Value: r.namespace,
-				},
-			},
-		})
-
-		// privilege & hostPID
-		privileged := true
-		cj.Spec.JobTemplate.Spec.Template.Spec.Containers[0].SecurityContext = &corev1.SecurityContext{
-			Privileged: &privileged,
-		}
-		cj.Spec.JobTemplate.Spec.Template.Spec.HostPID = true
 	}
 
 	if policy.Spec.Inspector != nil {

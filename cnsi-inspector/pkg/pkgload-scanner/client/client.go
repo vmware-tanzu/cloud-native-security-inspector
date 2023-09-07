@@ -9,6 +9,8 @@ import (
 
 type PkgInfoClient interface {
 	ScanImage(ctx context.Context, imageName string) (scanResult *api.ScanResult, err error)
+	Ping(ctx context.Context) (err error)
+	WaitForReady(ctx context.Context) (err error)
 }
 
 func New(network string, address string) PkgInfoClient {

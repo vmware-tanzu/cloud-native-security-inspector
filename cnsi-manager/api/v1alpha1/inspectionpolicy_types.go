@@ -190,9 +190,6 @@ type Inspector struct {
 	// Image of the pkgloadscanner.
 	// +kubebuilder:validation:Optional
 	PkgLoadScannerImage string `json:"pkgLoadScannerImage"`
-	// Image of the pkgscanner.
-	// +kubebuilder:validation:Optional
-	PkgScannerImage string `json:"pkgScannerImage"`
 	// Image of the workloadscanner.
 	// +kubebuilder:validation:Optional
 	WorkloadScannerImage string `json:"workloadscannerImage"`

@@ -226,6 +226,30 @@ func (psc *PkgScannerClient) addScanJob(ctx context.Context, imageName string) (
 	return "", nil
 }
 
+func (psc *PkgScannerClient) Ping(ctx context.Context) error {
+	return psc.ping(ctx)
+}
+
+func (psc *PkgScannerClient) WaitForReady(ctx context.Context) error {
+	pingFunc := func(ctx context.Context) error {
+		ctx, cancel := context.WithTimeout(ctx, psc.timeout)
+		defer cancel()
+		return psc.ping(ctx)
+	}
+	// wait for server ready
+	for {
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		default:
+			if err := pingFunc(ctx); err == nil {
+				return nil
+			}
+			time.Sleep(psc.pollingInterval)
+		}
+	}
+}
+
 func NewClient(network string, address string) *PkgScannerClient {
 	return &PkgScannerClient{
 		network: network,

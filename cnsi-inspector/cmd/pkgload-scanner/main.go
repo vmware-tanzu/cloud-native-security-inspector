@@ -4,6 +4,8 @@ import (
 	"context"
 	"flag"
 	"os"
+	"os/exec"
+	"time"
 
 	pkgloadscanner "github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-inspector/pkg/pkgload-scanner"
 	pkgclient "github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-inspector/pkg/pkgload-scanner/client"
@@ -70,6 +72,20 @@ func main() {
 	}
 
 	// init client of pkg-scanner
+	pkgscannerCmd := exec.Command("/scanner", "pkg-file-server")
+	if err := pkgscannerCmd.Start(); err != nil {
+		log.Error(err, "failed to start pkg-scanner")
+		os.Exit(1)
+	}
+	go func() {
+		for {
+			if pkgscannerCmd.ProcessState != nil && pkgscannerCmd.ProcessState.Exited() {
+				log.Error("pkg-scanner exited")
+				os.Exit(1)
+			}
+		}
+	}()
+	defer pkgscannerCmd.Process.Kill()
 	network := os.Getenv("PKG_SCANNER_NETWORK")
 	addr := os.Getenv("PKG_SCANNER_ADDR")
 	if network == "" || addr == "" {
@@ -77,6 +93,13 @@ func main() {
 		os.Exit(1)
 	}
 	pkgscannerClient := pkgclient.New(network, addr)
+	timeoutSec := 30
+	ctxTimeout, cancel := context.WithTimeout(context.Background(), time.Duration(timeoutSec)*time.Second)
+	defer cancel()
+	if err := pkgscannerClient.WaitForReady(ctxTimeout); err != nil {
+		log.Error(err, "pkg-scanner is not ready after ", timeoutSec, " seconds")
+		os.Exit(1)
+	}
 
 	// run pkgloadscanner controller
 	runner := pkgloadscanner.NewController().
