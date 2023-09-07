@@ -224,7 +224,7 @@ func (c *PkgLoadController) scan(ctx context.Context, policy *v1alpha1.Inspectio
 	}
 
 	// write report as CR
-	ExportImageReports(PkgLoadReport{VulnLoaded: vulnLoaded}, policy)
+	ExportPkgloadReports(PkgLoadReport{VulnLoaded: vulnLoaded}, policy)
 
 	if _, ok := os.LookupEnv("DEBUG"); ok {
 		log.Info("vuln loaded", "vulnLoaded", vulnLoaded)
@@ -345,20 +345,20 @@ func inArray(need string, arr []string) bool {
 	return false
 }
 
-func ExportImageReports(report PkgLoadReport, pl *v1alpha1.InspectionPolicy) {
+func ExportPkgloadReports(report PkgLoadReport, pl *v1alpha1.InspectionPolicy) {
 	if bytes, err := json.Marshal(report); err != nil {
 		// Marshal failure should be fatal because it is unforgivable
 		log.Fatal(err, "failed to marshal the insight struct")
 	} else {
 		exportStruct := &v1alpha1.ReportData{
-			Source:       "insight_report",
+			Source:       "pkgload-scanner",
 			ExportConfig: pl.Spec.Inspector.ExportConfig,
 			Payload:      string(bytes),
 		}
 		err = exporter_inputs.PostReport(exportStruct)
 		if err != nil {
 			// Post failure is error because network issues could happen
-			log.Error(err, "failed to post the insight report", "Policy", pl.Name)
+			log.Error(err, "failed to post the pkgload report", "Policy", pl.Name)
 		}
 	}
 }
