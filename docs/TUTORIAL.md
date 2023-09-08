@@ -262,6 +262,12 @@ We can check the report under the "ID" column to check the details of a certain 
 
 <img src="pictures/report-risk-detail.png">
 
+#### Pkgload scanning reports
+
+We can check the pkg with vulnerabilities which affect running processes discovered by the Pkgload scanner.
+
+WIP 
+
 For the detailed explanation of the reports, please check [User Guide](USER-GUIDE.md).
 
 ### Check the insights

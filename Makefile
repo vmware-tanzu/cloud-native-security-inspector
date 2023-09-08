@@ -15,6 +15,7 @@ IMG_CMD_TRIVY ?= $(REGISTRY)/trivy:$(IMG_TAG)
 IMG_CMD_KUBEBENCH ?= $(REGISTRY)/kubebench:$(IMG_TAG)
 PORTAl ?= $(REGISTRY)/portal:$(IMG_TAG)
 RISK ?= $(REGISTRY)/risk:$(IMG_TAG)
+IMG_CMD_PKGLOAD_SCANNER ?= $(REGISTRY)/pkgloadscanner:$(IMG_TAG)
 IMG_CMD_WORKLOAD_SCANNER ?= $(REGISTRY)/workloadscanner:$(IMG_TAG)
 
 # Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
@@ -65,7 +66,7 @@ fmt: ## Run go fmt against code.
 	go fmt ./...
 
 vet: ## Run go vet against code.
-	go vet ./...
+	go vet -structtag=false ./...
 
 ENVTEST_ASSETS_DIR=$(shell pwd)/testbin
 test: fmt ## Run tests.
@@ -93,6 +94,9 @@ build-kube-bench: generate fmt vet ## Build kubebench binary.
 build-risk: generate fmt vet ## Build risk binary.
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/risk cnsi-inspector/cmd/risk-scanner/main.go
 
+build-pkgloadscanner: generate fmt vet ## Build pkgloadscanner binary.
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/pkgloadscanner cnsi-inspector/cmd/pkgload-scanner/main.go
+
 build-workloadscanner: generate fmt vet ## Build workloadscanner binary.
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/workloadscanner cnsi-inspector/cmd/workload-scanner/main.go
 
@@ -101,7 +105,7 @@ build-trivy: generate fmt vet ## Build trivy binary.
 
 ##@ Build OCI images
 
-docker-build-backend: docker-build-manager docker-build-exporter docker-build-inspector docker-build-kubebench docker-build-risk docker-build-workloadscanner docker-build-scanner-trivy
+docker-build-backend: docker-build-manager docker-build-exporter docker-build-inspector docker-build-kubebench docker-build-risk docker-build-workloadscanner docker-build-scanner-trivy docker-build-pkgload
 
 docker-build-all: docker-build-backend docker-build-portal
 
@@ -126,6 +130,9 @@ docker-build-kubebench: build-kube-bench ## Build docker image of kube-bench sca
 docker-build-risk: build-risk ## Build docker image of risk scanner.
 	$(DOCKERCMD) buildx build -t ${RISK} -f deployments/dockerfiles/Dockerfile.riskmanager .
 
+docker-build-pkgload: build-pkgloadscanner ## Build docker image of pkgload scanner.
+	$(DOCKERCMD) buildx build -t ${IMG_CMD_PKGLOAD_SCANNER} -f deployments/dockerfiles/Dockerfile.pkgloadscanner .
+
 docker-build-workloadscanner: build-workloadscanner ## Build docker image with workload scanner.
 	$(DOCKERCMD) buildx build -t ${IMG_CMD_WORKLOAD_SCANNER} -f deployments/dockerfiles/Dockerfile.workloadscanner .
 
@@ -135,6 +142,7 @@ docker-push-backend: ## Build all the images except portal.
 	$(DOCKERCMD) push ${IMG_CMD_INSPECTOR}
 	$(DOCKERCMD) push ${IMG_CMD_KUBEBENCH}
 	$(DOCKERCMD) push ${RISK}
+	$(DOCKERCMD) push ${IMG_CMD_PKGLOAD_SCANNER}
 	$(DOCKERCMD) push ${IMG_CMD_WORKLOAD_SCANNER}
 	$(DOCKERCMD) push ${IMG_CMD_TRIVY}
 

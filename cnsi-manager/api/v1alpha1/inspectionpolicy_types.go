@@ -24,6 +24,8 @@ const (
 	CronjobRisk = "Risk"
 	// CronjobWorkloadscanner describes the Workloadscanner type of the cronjob
 	CronjobWorkloadscanner = "Workloadscanner"
+	// DaemonSetPkgLoadScaner describes the PkgLoadScanner type of the cronjob.
+	DaemonSetPkgLoadScanner = "PkgLoadScanner"
 )
 
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
@@ -185,6 +187,9 @@ type Inspector struct {
 	// Image of the risk.
 	// +kubebuilder:validation:Optional
 	RiskImage string `json:"riskImage"`
+	// Image of the pkgloadscanner.
+	// +kubebuilder:validation:Optional
+	PkgLoadScannerImage string `json:"pkgLoadScannerImage"`
 	// Image of the workloadscanner.
 	// +kubebuilder:validation:Optional
 	WorkloadScannerImage string `json:"workloadscannerImage"`
@@ -254,6 +259,10 @@ type InspectionPolicyStatus struct {
 	// RiskExecutor of this policy. It is always an object reference to the underlying cronjob.
 	// +kubebuilder:validation:Optional
 	RiskExecutor *corev1.ObjectReference `json:"riskExecutor"`
+
+	// PkgLoadScannerExecutor of this policy. It is always an object reference to the underlying cronjob.
+	// +kubebuilder:validation:Optional
+	PkgLoadScannerExecutor *corev1.ObjectReference `json:"pkgLoadScannerExecutor"`
 
 	// WorkloadscannerExecutor of this policy. It is always an object reference to the underlying cronjob.
 	// +kubebuilder:validation:Optional

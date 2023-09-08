@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"flag"
+	"os"
+
 	riskmanager "github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-inspector/pkg/risk-scanner"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/api/v1alpha1"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-manager/pkg/data/providers"
@@ -11,7 +13,6 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
-	"os"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )

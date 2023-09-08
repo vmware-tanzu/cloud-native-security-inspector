@@ -8,15 +8,16 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	harborclient "github.com/goharbor/go-client/pkg/harbor"
-	"github.com/goharbor/harbor/src/pkg/scan/vuln"
-	"github.com/vmware-tanzu/cloud-native-security-inspector/lib/log"
 	"io"
 	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
 	"time"
+
+	harborclient "github.com/goharbor/go-client/pkg/harbor"
+	"github.com/goharbor/harbor/src/pkg/scan/vuln"
+	"github.com/vmware-tanzu/cloud-native-security-inspector/lib/log"
 
 	"github.com/goharbor/go-client/pkg/harbor"
 	"github.com/goharbor/go-client/pkg/sdk/v2.0/client/artifact"
@@ -610,6 +611,7 @@ func (a *Adapter) GetVulnerabilitiesList(ctx context.Context, id core.ArtifactID
 	err = json.NewDecoder(res.Body).Decode(&report)
 	if err != nil {
 		body, _ := io.ReadAll(res.Body)
+		// TODO: differentiate error type, image not found or other error
 		log.Errorf("vuln report json unmarshal: (%s) \n", string(body[:256]))
 		return nil, err
 	}

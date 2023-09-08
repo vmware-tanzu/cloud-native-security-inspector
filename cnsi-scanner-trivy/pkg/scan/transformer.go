@@ -7,6 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/etc"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/trivy"
+
 	//"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/harbor"
 	"github.com/vmware-tanzu/cloud-native-security-inspector/cnsi-scanner-trivy/pkg/harbor"
 )
@@ -60,8 +61,10 @@ func (t *transformer) Transform(artifact harbor.Artifact, source *trivyType.Repo
 	//}
 	return harbor.ScanReport{
 		GeneratedAt: t.clock.Now(),
-		Scanner:     harbor.Scanner{Name: etc.GetScannerMetadata().Name, Vendor: etc.GetScannerMetadata().Vendor, Version: etc.GetScannerMetadata().Version},
-		Artifact:    artifact,
+		Scanner: harbor.Scanner{Name: etc.GetScannerMetadata().Name,
+			Vendor:  etc.GetScannerMetadata().Vendor,
+			Version: etc.GetScannerMetadata().Version},
+		Artifact: artifact,
 		//Severity:    t.toHighestSeverity(vulnerabilities),
 		Report: source,
 	}

@@ -326,6 +326,39 @@ func TestE2E(t *testing.T) {
 			}).Feature()
 	testEnv.Test(t, kubebenchDaemonSet)
 
+	// Test the pkgload daemonSet can be created
+	pkgloadDaemonSet := features.New("Pkgload daemonSet").
+		Assess("Check if pkgload DaemonSet created",
+			func(ctx context.Context, t *testing.T, c *envconf.Config) context.Context {
+				r, err := resources.New(c.Client().RESTConfig())
+				if err != nil {
+					log.Fatalf("failed to create the k8s client, err: %s", err.Error())
+					t.Fail()
+				}
+				r.WithNamespace(namespace)
+				var pkgloadDaemonSet appsv1.DaemonSet
+				iterations := 5
+				waitTime := 30
+				for i := 0; i < iterations; i++ {
+					// The reconciler may need some time for creating the DaemonSet
+					err = r.Get(ctx, "inspectionpolicy-test-pkgload-daemonset", namespace, &pkgloadDaemonSet)
+					if err != nil {
+						if apierrors.IsNotFound(err) {
+							time.Sleep(time.Duration(waitTime) * time.Second)
+						} else {
+							log.Fatalf("failed to get the pkgload daemonSet, err: %s", err.Error())
+							t.Fail()
+							return ctx
+						}
+					} else {
+						log.Info("Verified that the pkgload daemonSet has been created")
+						return ctx
+					}
+				}
+				return ctx
+			}).Feature()
+	testEnv.Test(t, pkgloadDaemonSet)
+
 	// Test the policy can be deleted
 	deletePolicy := features.New("delete policy").
 		Assess("Check If policy can be deleted", func(ctx context.Context, t *testing.T, c *envconf.Config) context.Context {
