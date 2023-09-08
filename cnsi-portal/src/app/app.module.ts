@@ -96,6 +96,8 @@ import { TrivyViewDetailComponent } from './view/assements/trivy-view-detail/tri
 import { SecretComponent } from './view/setting/secret/secret.component';
 import { CacheComponent } from './view/setting/cache/cache.component';
 import { CacheSettingComponent } from './view/setting/cache/cache-setting/cache-setting.component';
+import { PkgloadReportComponent } from './view/assements/pkgload-report/pkgload-report.component';
+import { PkgloadReportDetailComponent } from './view/assements/pkgload-report-detail/pkgload-report-detail.component';
 
 ClarityIcons.addIcons(
   userIcon,
@@ -180,7 +182,9 @@ ClarityIcons.addIcons(
     SecretComponent,
     CacheComponent,
     SettingComponent,
-    CacheSettingComponent
+    CacheSettingComponent,
+    PkgloadReportComponent,
+    PkgloadReportDetailComponent
   ],
   imports: [
     BrowserModule,

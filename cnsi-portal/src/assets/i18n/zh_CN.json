@@ -53,7 +53,8 @@
       "Kube_bench": "kubebench扫描报告",
       "image_nspector_reports": "镜像扫描报告",
       "risk": "风险扫描报告",
-      "trivy": "Trivy扫描报告"
+      "trivy": "Trivy扫描报告",
+      "pkgload": "包装负载扫描报告"
     },
     "Insight": {
       "title": "数据洞察",
@@ -261,6 +262,9 @@
     "deprecationPolicy": "弃用策略",
     "nonsupportpolicy": "不支持策略",
     "mustHarbor": "必须先有一个可用的harbor数据源"
+  },
+  "Pkgload": {
+    "nodeName": "节点名称"
   },
   "en": "English",
   "zh_CN": "中文 (简体)"

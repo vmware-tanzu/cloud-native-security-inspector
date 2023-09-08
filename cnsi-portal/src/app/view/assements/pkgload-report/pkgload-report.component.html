@@ -1,0 +1,59 @@
+<!--
+    Copyright 2022 VMware, Inc.
+    SPDX-License-Identifier: Apache-2.0
+-->
+
+<div class="report">
+  <h2>
+    
+    {{'Nav.Assessments.pkgload'| translate}}</h2>
+    <div class="echarts-loading" *ngIf="echartsLoading">
+      <span class="spinner spinner-lg">
+        Loading...
+      </span>
+    </div>
+    <div id="report-line" style="flex: 1;height:450px; overflow: hidden;"> </div>
+
+  <clr-datagrid [clrDgLoading]="dgLoading" style="height: 450px; overflow: auto;" (clrDgRefresh)="pageChange($event)">
+    <clr-dg-column class="namespace-filter">{{'CommonlyUse.name'|translate}}
+    </clr-dg-column>
+    <clr-dg-column class="namespace-filter">
+      {{'Pkgload.nodeName'|translate}}
+      <cds-icon shape="filter-grid" class="is-solid" (click)="namespaceFilterFlag = !namespaceFilterFlag"></cds-icon>
+      <div class="filter-warp" *ngIf="namespaceFilterFlag">
+        <cds-icon style="position: absolute; right: 10px; top: 10px;" shape="window-close" (click)="namespaceFilterFlag=false"></cds-icon>
+        <app-dg-filter label="kube" labelKey="name" [pageSize]="10" (updateListHandler)="getKubeBenchReportList($event)">
+        </app-dg-filter>
+      </div>
+    </clr-dg-column>
+    <clr-dg-column >
+      {{'CommonlyUse.create_time'|translate}}
+      <cds-icon (click)="createTimeSort()" shape="arrow" [class]="{oder: isOder}"></cds-icon>  
+    </clr-dg-column>
+    <clr-dg-row *clrDgItems="let report of imagesReportList">
+      <clr-dg-cell>
+        <a href="javascript:;" (click)="toReport(report)" >
+          <cds-icon style="color: skyblue; cursor: pointer;" shape="pop-out"></cds-icon>
+          {{report?._source.docID}}
+        </a>
+      </clr-dg-cell>
+      <clr-dg-cell>{{report?._source.nodeName}}</clr-dg-cell>
+      <clr-dg-cell>{{report?._source.createTime}}</clr-dg-cell>
+    </clr-dg-row>
+    <clr-dg-footer>
+      <clr-dg-pagination #pagination [clrDgPageInputDisabled]="true" [clrDgPageSize]="defaultSize" [clrDgLastPage]="pageMaxCount">
+          <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Reports per page</clr-dg-page-size>
+          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+          of {{pagination.totalItems}} reports
+      </clr-dg-pagination>
+  </clr-dg-footer>
+  
+  </clr-datagrid>
+  <div id="pkgload-box" class="report-detai-bg" (click)='showDetail($event)' [hidden]="!showDetailFlag">
+    <div id="pkgload-left" class="report-detai-left"></div>
+    <div id="pkgload-resize"></div>
+    <div id="pkgload-right" class="report-detai" [ngClass]="{'show': showDetailFlag}" >
+      <app-pkgload-report-detail [currentReportInfo]="currentReportInfo" #reportDetail></app-pkgload-report-detail>
+    </div>
+  </div>
+</div>

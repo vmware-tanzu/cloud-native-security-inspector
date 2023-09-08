@@ -9,6 +9,7 @@ const history = require('connect-history-api-fallback');
 const fs = require('fs')
 const port = 3800
 const APISERVER='https://kubernetes.default.svc'
+// const APISERVER='http://localhost:8082'
 const SERVICEACCOUNT='/var/run/secrets/kubernetes.io/serviceaccount'
 const { Client } = require('@opensearch-project/opensearch')
 const elastic = require('@elastic/elasticsearch')
@@ -230,7 +231,9 @@ app.use('/k8s-body/:type', (req, res) => {
       if (body.inspector_riskImage) {
         policy.spec.inspector.riskImage= body.inspector_riskImage
       }
-
+      if (body.inspector_pkgLoadScannerImage) {
+        policy.spec.inspector.pkgLoadScannerImage= body.inspector_pkgLoadScannerImage
+      }
       if (body.inspection_actions) {
         policy.spec.inspection.actions = body.inspection_actions
       }
@@ -262,6 +265,7 @@ app.get('/', (req, res) => {
 
 app.post('/open-search', (req, res) => {
   const body = req.body
+  // body.url = 'https://localhost:9999'
   console.log('body', body)
 
   if (body.client === 'opensearch') {
@@ -322,17 +326,6 @@ app.post('/open-search', (req, res) => {
 })
 
 open_search = async (client, body) => { 
-  let query = { 
-    query: { 
-      match: { 
-        createTime: {
-          query: "2022-11-23T07:45:18Z",
-        },
-      }, 
-    }, 
-    size: 10,
-    from: 4
-  }; 
   try {
     let response = await client.search({ index: body.index, body: body.query }); 
     console.log("Searching:"); 
@@ -344,17 +337,6 @@ open_search = async (client, body) => {
 }
 
 elastic_search = async (client, body) => { 
-  let query = { 
-    query: { 
-      match: { 
-        createTime: {
-          query: "2022-11-23T07:45:18Z",
-        },
-      }, 
-    }, 
-    size: 10,
-    from: 4
-  }; 
   try {
     let response = await client.search({ index: body.index, body: body.query }); 
     console.log("Searching:"); 

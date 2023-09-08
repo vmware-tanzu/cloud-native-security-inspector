@@ -1,0 +1,116 @@
+/*
+ * Copyright 2022 VMware, Inc.
+ * SSPDX-License-Identifier: Apache-2.0
+ */
+
+ .report {
+  position: relative;
+  padding: 15px;
+  h2 {
+    color: #fff;
+  }
+  .report-detai-bg {
+    position: absolute;
+    z-index: 1000;
+    right: 0;
+    top: 0;
+    background-color: rgba(28,42,50, 0);
+    width: 100%;
+    height: 100%;
+    .report-detai {
+      height: auto;
+      min-height: 100vh;
+      opacity: 0;
+      &.show {
+        opacity: 1;
+      }
+    }
+  }
+  &::ng-deep {
+    clr-datagrid {
+      clr-dg-column {
+       
+        .datagrid-column-flex {
+          button {
+            color: #fff;
+          }
+        }
+        &.namespace-filter {
+          .datagrid-column-flex {
+            .datagrid-column-title {
+              display: flex;
+              justify-content: space-between;
+              position: relative;
+            }
+          }
+          .filter-warp {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            margin-top: 0.24rem;
+            background: #21333b;
+            border-width: 0.05rem;
+            border-style: solid;
+            border-color: #000;
+            padding: 0.9rem;
+            padding-top: 2rem;
+            box-shadow: 0 0.05rem 0.15rem rgb(140 140 140 / 25%);
+            box-shadow: 0 0.05rem 0.15rem var(--clr-datagrid-popovers-box-shadow-color, rgba(140, 140, 140, 0.25));
+            border-radius: 0.15rem;
+            font-weight: 400;
+          }
+        }
+      }
+      clr-dg-footer {
+       
+        clr-dg-page-size {
+          color: #fff;
+          .clr-select-wrapper {
+            select {
+              color: #fff;
+            }
+          }
+        }
+        .pagination-description {
+          color: #fff;
+        }
+      }
+      clr-dg-row {
+       
+        clr-dg-cell {
+          color: #fff;
+        }
+      }
+    }
+  }
+  .echarts-loading {
+    position: relative;
+    width: 1400px;
+    .spinner {
+      position: absolute;
+      left: 50%;
+      top: 150px
+    }
+  }
+  #pkgload-box {
+    flex: 1;
+    #pkgload-resize {
+      width: 5px;
+      height: 100%;
+      cursor: w-resize;
+      float: left;
+      position: relative;
+      left: 0;
+      background-color: #21333B;
+    }
+    #pkgload-right {
+      width: 995px;
+      float: right;
+    }
+    #pkgload-left {
+      float: left;
+      width: calc(100% - 1000px);
+      height: 100%;
+    }
+  }
+}
