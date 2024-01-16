@@ -1,6 +1,6 @@
 module github.com/vmware-tanzu/cloud-native-security-inspector
 
-go 1.19
+go 1.20
 
 require github.com/goharbor/harbor/src v0.0.0-20231031103200-f75a2f9407cb
 
