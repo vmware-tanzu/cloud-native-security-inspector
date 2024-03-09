@@ -28,6 +28,8 @@ else
 GOBIN=$(shell go env GOBIN)
 endif
 
+OS_ARCH := $(shell go env GOARCH)
+
 # Setting SHELL to bash allows bash commands to be executed by recipes.
 # This is a requirement for 'setup-envtest.sh' in the test target.
 # Options are set to exit when a recipe line exits non-zero or a piped command fails.
@@ -77,31 +79,31 @@ test: fmt ## Run tests.
 ##@ Build binaries
 
 build-manager: generate fmt vet ## Build manager binary.
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o bin/manager cnsi-manager/cmd/main.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=$(OS_ARCH) go build -o bin/manager cnsi-manager/cmd/main.go
 
 build-exporter: fmt vet ## Build exporter binary.
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/exporter cnsi-exporter/cmd/main.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=$(OS_ARCH) go build -a -o bin/exporter cnsi-exporter/cmd/main.go
 
 build-image-scanner: generate fmt vet ## Build inspector binary.
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/inspector cnsi-inspector/cmd/image-scanner/main.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=$(OS_ARCH) go build -a -o bin/inspector cnsi-inspector/cmd/image-scanner/main.go
 
 build-scanner-trivy: generate fmt ## Build trivy binary.
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/trivy cnsi-scanner-trivy/cmd/scanner-trivy/main.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=$(OS_ARCH) go build -a -o bin/trivy cnsi-scanner-trivy/cmd/scanner-trivy/main.go
 
 build-kube-bench: generate fmt vet ## Build kubebench binary.
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/kubebench cnsi-inspector/cmd/kube-bench/main.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=$(OS_ARCH) go build -a -o bin/kubebench cnsi-inspector/cmd/kube-bench/main.go
 
 build-risk: generate fmt vet ## Build risk binary.
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/risk cnsi-inspector/cmd/risk-scanner/main.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=$(OS_ARCH) go build -a -o bin/risk cnsi-inspector/cmd/risk-scanner/main.go
 
 build-pkgloadscanner: generate fmt vet ## Build pkgloadscanner binary.
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/pkgloadscanner cnsi-inspector/cmd/pkgload-scanner/main.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=$(OS_ARCH) go build -a -o bin/pkgloadscanner cnsi-inspector/cmd/pkgload-scanner/main.go
 
 build-workloadscanner: generate fmt vet ## Build workloadscanner binary.
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/workloadscanner cnsi-inspector/cmd/workload-scanner/main.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=$(OS_ARCH) go build -a -o bin/workloadscanner cnsi-inspector/cmd/workload-scanner/main.go
 
 build-trivy: generate fmt vet ## Build trivy binary.
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o bin/trivy cnsi-scanner-trivy/cmd/scanner-trivy/main.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=$(OS_ARCH) go build -a -o bin/trivy cnsi-scanner-trivy/cmd/scanner-trivy/main.go
 
 ##@ Build OCI images
 
