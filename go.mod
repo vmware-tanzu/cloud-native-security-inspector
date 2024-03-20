@@ -17,7 +17,7 @@ require (
 	github.com/aquasecurity/harbor-scanner-trivy v0.30.11
 	github.com/aquasecurity/kube-bench v0.6.12
 	github.com/caarlos0/env/v6 v6.10.1
-	github.com/docker/docker v24.0.7+incompatible
+	github.com/docker/docker v24.0.9+incompatible
 	github.com/docker/go-connections v0.4.0
 	github.com/fsnotify/fsnotify v1.6.0
 	github.com/gin-gonic/gin v1.9.1
